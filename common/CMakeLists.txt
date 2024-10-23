@@ -17,4 +17,5 @@ target_sources(taller_common
     thread.h
     lobby_message.h
     lobby_command.h
+    constants.h
     )

@@ -7,7 +7,7 @@
 struct LobbyCommand {
     int player_id; //probablemente no sea seguro mandar el id asi
     uint8_t type;
-    uint8_t id_partida;
+    int match_id;
 };
 
 #endif

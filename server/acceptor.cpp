@@ -38,5 +38,5 @@ void Acceptor::run() {
 void Acceptor::stop() {
     is_alive = false;
     lobby.stop();
-
+    lobby.join();
 }

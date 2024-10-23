@@ -18,9 +18,12 @@ private:
     std::list<Player*> players;
     std::list<Match*> matches;
     Queue<LobbyCommand> lobby_queue;
+    int match_counter_ids;
 
     void send_first_message(Player* player);
     void process_command(const LobbyCommand& cmd);
+    Player* find_player_by_id(const int id);
+    Match* find_match_by_id(const int id);
 
 public:
     explicit Lobby();

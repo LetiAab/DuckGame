@@ -23,9 +23,10 @@ bool ServerProtocol::send_lobby_message(const LobbyMessage& message){
 }
 
 LobbyCommand ServerProtocol::get_lobby_command(){
+    //recibir el mensaje por el socket
     LobbyCommand cmd;
     cmd.type = 0; 
-    //recibir el mensaje por el socket
+
     return cmd;
 }
 
