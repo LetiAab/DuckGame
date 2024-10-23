@@ -35,7 +35,5 @@ void Server::run() {
 
     } catch (const std::exception& e) {
         std::cerr << "Exception in Server::run(): " << e.what() << std::endl;
-    } catch (...) {
-        std::cerr << "Unknown exception in Server::run()" << std::endl;
     }
 }

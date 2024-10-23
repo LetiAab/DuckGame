@@ -5,9 +5,19 @@ target_sources(taller_server
     server.cpp
     acceptor.cpp
     server_protocol.cpp
+    lobby.cpp
+    match.cpp
+    player.cpp
+    receiver.cpp
+    sender.cpp
     PUBLIC
     # .h files
     server.h
     acceptor.h
     server_protocol.h
+    lobby.h
+    match.h
+    player.h
+    receiver.h
+    sender.h
     )

@@ -7,12 +7,15 @@
 
 #include "common/socket.h"
 #include "common/thread.h"
+#include "lobby.h"
 
 
 class Acceptor: public Thread {
 private:
     Socket& skt_listener;
     bool is_alive;
+    Lobby lobby;
+    int ids_counter;
 
 public:
     explicit Acceptor(Socket& skt);

@@ -4,6 +4,8 @@
 #include <string>
 
 #include "common/socket.h"
+#include "common/lobby_message.h"
+#include "common/lobby_command.h"
 
 
 class ServerProtocol {
@@ -16,6 +18,10 @@ public:
     //int send_data(const Message& message);
 
     //Command get_data();
+
+    bool send_lobby_message(const LobbyMessage& message);
+
+    LobbyCommand get_lobby_command();
 
     void shutdown();
 

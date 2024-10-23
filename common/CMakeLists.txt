@@ -15,4 +15,6 @@ target_sources(taller_common
     socket.h
     queue.h
     thread.h
+    lobby_message.h
+    lobby_command.h
     )
