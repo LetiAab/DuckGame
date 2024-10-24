@@ -7,32 +7,34 @@
 
 #include "common/queue.h"
 #include "common/lobby_command.h"
+#include "common/lobby_message.h"
 #include "match.h"
 #include "player.h"
 #include "common/thread.h"
 
 
-class Lobby: public Thread {
+class Lobby : public Thread {
 private:
     bool is_alive;
-    std::list<Player*> players;
-    std::list<Match*> matches;
+    std::list<std::shared_ptr<Player>> players;
+    std::list<std::shared_ptr<Match>> matches;
     Queue<LobbyCommand> lobby_queue;
-    int match_counter_ids;
+    uint16_t match_counter_ids;
 
-    void send_first_message(Player* player);
-    void process_command(const LobbyCommand& cmd);
-    Player* find_player_by_id(const int id);
-    Match* find_match_by_id(const int id);
+    LobbyMessage process_command(const LobbyCommand& cmd);
+    std::shared_ptr<Player> find_player_by_id(const uint16_t id);
+    std::shared_ptr<Match> find_match_by_id(const uint16_t id);
+    void get_all_match_ids(std::vector<uint16_t>& match_ids);
+    LobbyMessage create_lobby_message(uint16_t player_id);
+    LobbyMessage create_lobby_response(uint16_t player_id, uint8_t type, uint16_t current_match);
 
 public:
     explicit Lobby();
 
     void run() override;
 
-    void add_player(Player* player);
-
-    Queue<LobbyCommand>& get_lobby_queue(); 
+    void add_player(std::shared_ptr<Player> player);
+    Queue<LobbyCommand>& get_lobby_queue();
 
     void stop() override;
 
@@ -42,5 +44,6 @@ public:
     Lobby(Lobby&&) = default;
     Lobby& operator=(Lobby&&) = default;
 };
+
 
 #endif

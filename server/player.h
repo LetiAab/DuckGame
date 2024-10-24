@@ -16,7 +16,7 @@ class Player {
     
 private:
     ServerProtocol protocol;
-    const int player_id;
+    const uint16_t player_id;
     Sender sender;
     Receiver receiver;
     bool connected;
@@ -24,7 +24,7 @@ private:
 
 
 public:
-    Player(Socket&& socket, const int id, Queue<LobbyCommand>& lobby_queue);
+    Player(Socket&& socket, const uint16_t id, Queue<LobbyCommand>& lobby_queue);
 
     void start();
 
@@ -36,7 +36,7 @@ public:
 
     void stop_playing();
 
-    int get_player_id();
+    uint16_t get_player_id();
 
     //Queue<Message>& get_message_queue();
 };

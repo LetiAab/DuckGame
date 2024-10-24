@@ -15,7 +15,7 @@ private:
     Socket& skt_listener;
     bool is_alive;
     Lobby lobby;
-    int ids_counter;
+    uint16_t ids_counter;
 
 public:
     explicit Acceptor(Socket& skt);

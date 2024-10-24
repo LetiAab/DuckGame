@@ -5,7 +5,7 @@
 
 
 
-Player::Player(Socket&& socket, const int id, Queue<LobbyCommand>& lobby_queue):
+Player::Player(Socket&& socket, const uint16_t id, Queue<LobbyCommand>& lobby_queue):
         protocol(std::move(socket)),
         player_id(id),
         sender(protocol),
@@ -38,7 +38,7 @@ void Player::stop_playing() {
     receiver.join();
 }
 
-int Player::get_player_id() { return player_id; }
+uint16_t Player::get_player_id() { return player_id; }
 
 bool Player::is_connected() { return connected; }
 

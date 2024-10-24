@@ -5,9 +5,9 @@
 #include <string>
 
 struct LobbyCommand {
-    int player_id; //probablemente no sea seguro mandar el id asi
+    uint16_t player_id; //probablemente no sea seguro mandar el id asi
     uint8_t type;
-    int match_id;
+    uint16_t match_id;
 };
 
 #endif

@@ -11,112 +11,142 @@
 #include <utility>
 
 
-Lobby::Lobby(): is_alive(true), players(), matches(), lobby_queue(), match_counter_ids(0){}
+Lobby::Lobby(): is_alive(true), players(), matches(), lobby_queue(), match_counter_ids(1){}
 
 void Lobby::run() {
     try {
-        while(is_alive){
+        while (is_alive) {
+            LobbyCommand cmd = lobby_queue.pop(); // OJO: bloqueante, quizás tengamos que usar try_pop + sleep
+            LobbyMessage msg = process_command(cmd);
 
-            LobbyCommand cmd = lobby_queue.pop();
-            process_command(cmd);
+            std::shared_ptr<Player> player = find_player_by_id(msg.player_id);
+            if (player) {
+                player->send_lobby_message(msg);
+            }
         }
-
-    } catch (const ClosedQueue& e){
-        std::cout << "Se cerro la queue del lobby\n";
-
+    } catch (const ClosedQueue& e) {
+        std::cout << "Se cerró la queue del lobby\n";
     }
-
 }
 
-void Lobby::add_player(Player* player){
+void Lobby::add_player(std::shared_ptr<Player> player) {
+    LobbyMessage msg = create_lobby_message(player->get_player_id());
 
-    send_first_message(player);
+    player->send_lobby_message(msg);
     players.push_back(player);
-
 }
 
 void Lobby::stop() {
     is_alive = false;
     lobby_queue.close();
-    //liberar memoria, etc
-
+    // liberar memoria, etc
 }
 
-Queue<LobbyCommand>& Lobby::get_lobby_queue(){
+Queue<LobbyCommand>& Lobby::get_lobby_queue() {
     return lobby_queue;
 }
 
-void Lobby::send_first_message(Player* player){
-    LobbyMessage msg;
-    msg.player_id = player->get_player_id();
-    //llenar con la info de los match, etc
 
-    player->send_lobby_message(msg);
-
-}
-
-Player* Lobby::find_player_by_id(const int id) {
-    for (Player* player : players) {
+std::shared_ptr<Player> Lobby::find_player_by_id(const uint16_t id) {
+    for (auto& player : players) {
         if (player->get_player_id() == id) {
-            return player; 
+            return player;
         }
     }
     return nullptr;
 }
 
-Match* Lobby::find_match_by_id(const int id) {
-    for (Match* match : matches) {
+std::shared_ptr<Match> Lobby::find_match_by_id(const uint16_t id) {
+    for (auto& match : matches) {
         if (match->get_match_id() == id) {
-            return match; 
+            return match;
         }
     }
     return nullptr;
 }
 
-void Lobby::process_command(const LobbyCommand& cmd){
-
-    Player* player = find_player_by_id(cmd.player_id);
-    uint8_t type = cmd.type;
-
-    
-    if (type == NEW_MATCH) {
-        Match* new_match = new Match(match_counter_ids);
-        matches.push_back(new_match);
-
-        new_match->add_player(player);
-        std::cout << "El jugador creo una nueva partida\n";
-        //mandar un mensaje al jugador con el id de su partida
-        match_counter_ids += 1;
-
-
-    } else if(type == EXISTING_MATCH) {
-        Match* match = find_match_by_id(cmd.match_id);
-
-        if(match->add_player(player)){
-            std::cout << "El jugador se conecto a la partida existente\n";
-            //mandar un mensaje al jugador con el id de su partida
-        } else{
-            std::cout << "El jugador NO pudo conectarse a la partida\n";
-            //enviarle al jugador que no pudo conectarse
+void Lobby::get_all_match_ids(std::vector<uint16_t>& match_ids) {
+    for (auto& match : matches) {
+        if (match->is_match_avaiable()) {
+            match_ids.push_back(match->get_match_id());
         }
-
-    
-    } else if(cmd.type == START_MATCH){
-        Match* match = find_match_by_id(cmd.match_id);
-
-        if(match->start_match()){
-            std::cout << "La partida se inició exitosamente\n";
-            //avisarle al jugador 
-
-        } else{
-            std::cout << "No se puede iniciar esta partida aun\n";
-            //avisarle al jugador 
-        }
-
-
-    } else {
-        //salir: sacar al jugador
     }
-   
-
 }
+
+LobbyMessage Lobby::create_lobby_message(uint16_t player_id) {
+    LobbyMessage msg;
+    msg.player_id = player_id;
+    msg.type = FIRST_LOBBY_MESSAGE;
+    msg.len_matches = matches.size();
+    get_all_match_ids(msg.existing_matches);
+    msg.current_match_id = 0;
+
+    return msg;
+}
+
+LobbyMessage Lobby::create_lobby_response(uint16_t player_id, uint8_t type, uint16_t current_match) {
+    LobbyMessage msg;
+    msg.player_id = player_id;
+    msg.type = type;
+    msg.len_matches = 0;
+    msg.current_match_id = current_match;
+
+    if (type == LOBBY_COMMAND_FAIL) {
+        msg.len_matches = matches.size();
+        get_all_match_ids(msg.existing_matches);
+        msg.current_match_id = 0;
+    }
+
+    return msg;
+}
+
+
+LobbyMessage Lobby::process_command(const LobbyCommand& cmd) {
+    std::shared_ptr<Player> player = find_player_by_id(cmd.player_id);
+    uint8_t type = cmd.type;
+    uint16_t match_id = 0;
+
+    switch (type) {
+        case NEW_MATCH_CODE: {
+            std::shared_ptr<Match> new_match = std::make_shared<Match>(match_counter_ids);
+            matches.push_back(new_match);
+            new_match->add_player(player);
+            match_counter_ids += 1;
+            match_id = new_match->get_match_id();
+
+            std::cout << "El jugador creó una nueva partida\n";
+            break;
+        }
+        case EXISTING_MATCH_CODE: {
+            std::shared_ptr<Match> match = find_match_by_id(cmd.match_id);
+
+            if (match->add_player(player)) {
+                match_id = cmd.match_id;
+                std::cout << "El jugador se conectó a la partida existente\n";
+            } else {
+                std::cout << "El jugador NO pudo conectarse a la partida\n";
+                type = LOBBY_COMMAND_FAIL;
+            }
+            break;
+        }
+        default: {
+            std::shared_ptr<Match> match = find_match_by_id(cmd.match_id);
+
+            if (match->start_match()) {
+                //OJO ACA
+                //Se esta iniciando la partida Y DESPUES se le avisa SOLO al jugador que la inicio
+                //ver como manejamos esto...
+                match_id = match->get_match_id();
+                std::cout << "La partida se inició\n";
+            } else {
+                std::cout << "No se puede iniciar esta partida aún\n";
+                type = LOBBY_COMMAND_FAIL;
+            }
+            break;
+        }
+    }
+
+    return create_lobby_response(cmd.player_id, type, match_id);
+}
+
+

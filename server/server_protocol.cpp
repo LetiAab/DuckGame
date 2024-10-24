@@ -17,15 +17,19 @@ ServerProtocol::ServerProtocol(Socket&& skt): skt(std::move(skt)) {}
 bool ServerProtocol::send_lobby_message(const LobbyMessage& message){
     //mandar el mensaje por el socket bien
     bool was_closed = false;
-    skt.sendall(&message, 10, &was_closed);
+    skt.sendall(&message.player_id, 2, &was_closed);
+    skt.sendall(&message.type, 1, &was_closed);
 
     return true;
 }
 
 LobbyCommand ServerProtocol::get_lobby_command(){
-    //recibir el mensaje por el socket
     LobbyCommand cmd;
-    cmd.type = 0; 
+    bool was_closed = false;
+
+    skt.recvall(&cmd.player_id, 2, &was_closed);
+    skt.recvall(&cmd.type, 1, &was_closed);
+    skt.recvall(&cmd.match_id, 2, &was_closed);
 
     return cmd;
 }

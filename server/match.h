@@ -7,23 +7,25 @@
 class Match {
     
 private:
-    int match_id;
+    uint16_t match_id;
     bool is_running;
     uint8_t min_players;
     uint8_t max_players;
-    std::list<Player*> players;
+    std::list<std::shared_ptr<Player>> players;
     //Game game;
 
 
 
 public:
-    Match(int match_id);
+    Match(uint16_t match_id);
 
-    bool add_player(Player* player);
+    bool add_player(std::shared_ptr<Player> player);
 
     bool start_match();
 
-    int get_match_id();
+    uint16_t get_match_id();
+
+    bool is_match_avaiable();
 
 
 };

@@ -3,10 +3,15 @@
 
 #include <cstdint>
 #include <string>
+#include <vector>
 
 struct LobbyMessage {
-    int player_id;
-    //identificadores de partidas existentes, podria ser una lista de match_id
+    uint16_t player_id;
+    uint8_t type;
+    uint16_t len_matches;
+    std::vector<uint16_t> existing_matches;
+    uint8_t current_match_id;
 };
+
 
 #endif
