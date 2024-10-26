@@ -10,6 +10,7 @@ const uint8_t LOBBY_COMMAND_FAIL = 0x04;
 const uint8_t NEW_MATCH_CODE = 0x05;
 const uint8_t EXISTING_MATCH_CODE = 0x06;
 const uint8_t START_MATCH_CODE = 0x07;
+const uint8_t LOBBY_STOP_CODE = 0x08;
 
 
 static const char QUIT_SERVER[] = "q";

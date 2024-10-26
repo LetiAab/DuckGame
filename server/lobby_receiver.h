@@ -3,24 +3,22 @@
 
 #include "common/queue.h"
 #include "common/thread.h"
-#include "common/command.h"
+#include "common/lobby_command.h"
 
 #include "server_protocol.h"
 
-#ifndef RECEIVER_H
-#define RECEIVER_H
+#ifndef LOBBY_RECEIVER_H
+#define LOBBY_RECEIVER_H
 
-class Receiver: public Thread {
+class LobbyReceiver: public Thread {
 private:
     ServerProtocol& protocol;
     bool is_alive;
-    Queue<Command>& command_queue;
+    Queue<LobbyCommand>& lobby_queue;
 
 
 public:
-    Receiver(ServerProtocol& protocol, Queue<Command>& command_queue);
-
-    //void set_queue(Queue<Command>& queue);
+    LobbyReceiver(ServerProtocol& protocol, Queue<LobbyCommand>& lobby_queue);
 
     void run() override;
 

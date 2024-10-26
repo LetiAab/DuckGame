@@ -9,9 +9,10 @@ Player::Player(Socket&& socket, const uint16_t id, Queue<LobbyCommand>& lobby_qu
         protocol(std::move(socket)),
         player_id(id),
         sender(protocol),
-        receiver(protocol, lobby_queue),
+        //receiver(protocol),
+        lobby_receiver(protocol, lobby_queue),
         connected(true),
-        in_match(false) {}
+        playing(false) {}
 
 bool Player::send_lobby_message(const LobbyMessage& msg) {
         protocol.send_lobby_message(msg);
@@ -19,23 +20,38 @@ bool Player::send_lobby_message(const LobbyMessage& msg) {
 }
 
 void Player::start() {
-    receiver.start();
+    lobby_receiver.start();
 }
 
+
 void Player::start_playing() {
-    //seteo nuevas queues al sender y receiver (?)
-    //sender.start()
+    //detengo el hilo para que el cliente no hable mas con el lobby
+    lobby_receiver.stop();
+    lobby_receiver.join();
+    //receiver = Receiver(protocol,queue); //no puedo hacer esto, voy a tener que crear otra clase
+    //receiver.start();
+    sender.start();
+    playing = true;
+
 }
 
 void Player::stop_playing() {
     connected = false;
     protocol.shutdown();
 
-    receiver.stop();
+    //receiver.stop();
     sender.stop();
 
     sender.join();
-    receiver.join();
+    //receiver.join();
+}
+
+void Player::stop() {
+    connected = false;
+    protocol.shutdown();
+
+    lobby_receiver.stop();
+    lobby_receiver.join();
 }
 
 uint16_t Player::get_player_id() { return player_id; }

@@ -18,4 +18,6 @@ target_sources(taller_common
     lobby_message.h
     lobby_command.h
     constants.h
+    #message.h
+    command.h
     )

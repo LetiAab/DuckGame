@@ -8,8 +8,10 @@ target_sources(taller_server
     lobby.cpp
     match.cpp
     player.cpp
+    lobby_receiver.cpp
     receiver.cpp
     sender.cpp
+    
     PUBLIC
     # .h files
     server.h
@@ -18,6 +20,7 @@ target_sources(taller_server
     lobby.h
     match.h
     player.h
+    lobby_receiver.h
     receiver.h
     sender.h
     )

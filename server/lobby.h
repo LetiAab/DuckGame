@@ -22,6 +22,8 @@ private:
     uint16_t match_counter_ids;
 
     LobbyMessage process_command(const LobbyCommand& cmd);
+    void process_start_match_command(const LobbyCommand& cmd);
+    void send_message(const LobbyMessage& msg);
     std::shared_ptr<Player> find_player_by_id(const uint16_t id);
     std::shared_ptr<Match> find_match_by_id(const uint16_t id);
     void get_all_match_ids(std::vector<uint16_t>& match_ids);
