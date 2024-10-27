@@ -1,0 +1,9 @@
+{
+        "files.associations": {
+                "*.tcc": "c",
+                "deque": "c",
+                "vector": "c",
+                "compare": "c",
+                "cstdint": "c"
+        }
+}

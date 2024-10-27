@@ -11,6 +11,7 @@ target_sources(taller_server
     lobby_receiver.cpp
     receiver.cpp
     sender.cpp
+    game.cpp
     
     PUBLIC
     # .h files
@@ -23,4 +24,5 @@ target_sources(taller_server
     lobby_receiver.h
     receiver.h
     sender.h
+    game.h
     )
