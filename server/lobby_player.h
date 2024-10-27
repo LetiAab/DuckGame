@@ -10,8 +10,7 @@
 
 #include "server_protocol.h"
 #include "lobby_receiver.h"
-#include "receiver.h"
-#include "sender.h"
+#include "player.h"
 
 
 class LobbyPlayer {
@@ -22,7 +21,7 @@ private:
     LobbyReceiver lobby_receiver;
     bool connected;
     bool playing;
-    //Receiver receiver;
+    uint16_t match_id;
 
 
 public:
@@ -31,16 +30,16 @@ public:
     void start();
 
     bool send_lobby_message(const LobbyMessage& msj); 
-
-    //void set_game_queue(Queue<Command>& queue);
     
-    void start_playing();
+    std::shared_ptr<Player> start_game(Queue<Command>& game_queue);
 
     bool is_connected();
 
-    void stop_playing();
-
     uint16_t get_player_id();
+
+    void set_match_id(uint16_t id);
+
+    uint16_t get_match_id();
 
     void stop();
 

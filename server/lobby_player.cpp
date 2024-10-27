@@ -10,7 +10,8 @@ LobbyPlayer::LobbyPlayer(Socket&& socket, const uint16_t id, Queue<LobbyCommand>
         player_id(id),
         lobby_receiver(protocol, lobby_queue),
         connected(true),
-        playing(false) {}
+        playing(false),
+        match_id(0) {}
 
 bool LobbyPlayer::send_lobby_message(const LobbyMessage& msg) {
         protocol.send_lobby_message(msg);
@@ -22,31 +23,32 @@ void LobbyPlayer::start() {
 }
 
 
-void LobbyPlayer::start_playing() {
+std::shared_ptr<Player> LobbyPlayer::start_game(Queue<Command>& game_queue) {
     //detengo el hilo para que el cliente no hable mas con el lobby
+    playing = true;
     lobby_receiver.stop();
     lobby_receiver.join();
-    //receiver = Receiver(protocol,queue); //no puedo hacer esto, voy a tener que crear otra clase
-    //receiver.start();
-    playing = true;
+
+    //en lugar de mover el protocolo podria crear uno nuevo exclusivo de Game
+    std::shared_ptr<Player> player = std::make_shared<Player>(std::move(protocol), player_id, game_queue);
+    return  player;
 
 }
 
-void LobbyPlayer::stop_playing() {
-    connected = false;
-    protocol.shutdown();
-
-}
 
 void LobbyPlayer::stop() {
-    connected = false;
-    protocol.shutdown();
 
     lobby_receiver.stop();
     lobby_receiver.join();
 }
 
 uint16_t LobbyPlayer::get_player_id() { return player_id; }
+
+void LobbyPlayer::set_match_id(uint16_t id){
+    match_id = id;
+}
+
+uint16_t LobbyPlayer::get_match_id() { return match_id; }
 
 bool LobbyPlayer::is_connected() { return connected; }
 

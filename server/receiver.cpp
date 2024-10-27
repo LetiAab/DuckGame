@@ -32,6 +32,4 @@ void Receiver::run() {
 
 bool Receiver::is_running() { return is_alive; }
 
-//void Receiver::set_queue(Queue<Command>& queue) { command_queue = queue; }
-
 void Receiver::stop() { is_alive = false; }

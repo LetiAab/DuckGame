@@ -20,8 +20,6 @@ private:
 public:
     Receiver(ServerProtocol& protocol, Queue<Command>& command_queue);
 
-    //void set_queue(Queue<Command>& queue);
-
     void run() override;
 
     bool is_running();
