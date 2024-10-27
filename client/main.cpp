@@ -9,6 +9,20 @@
 using namespace SDL2pp;
 
 int main() try {
+	/* 
+	The client should:
+	1. Initilize resources
+	2. Update logic
+	3. Clean screen
+	4. Change frames state
+	5. Render screen
+	6. Sleep and calc next iteration
+	7. Go back to second step
+
+	Remember that we are going to communicate only the changing elements, so there will be a structure that 
+	saves last state, to be modified in an intermediate step (Or just the second step).
+	*/
+
 	// Initialize SDL library
 	SDL sdl(SDL_INIT_VIDEO);
 
