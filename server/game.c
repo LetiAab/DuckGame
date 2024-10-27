@@ -16,19 +16,19 @@ void Game::initialize_map(Update update) {
         */
 }
 
-void check_move_effects(Duck moving_duck){
+void Game::check_move_effects(Duck moving_duck){
         // Check if after this movement, duck is hit by a projectile
 
         // Maybe there should be a simulation round in which where make all this things instead of this
 }
 
-bool check_valid_position(int duck_x_position, int duck_y_position) {
+bool Game::check_valid_position(int duck_x_position, int duck_y_position) {
         // Basically check if does not collisionates with a structure or a box
         return true;
 }
 
 
-void duck_move(int player_id) {
+void Game::duck_move(int player_id) {
         Duck selected_duck = get_duck();
 
         if (selected_duck.direction == 0){
@@ -46,12 +46,12 @@ void duck_move(int player_id) {
         check_move_effects();
 }
 
-bool is_touching_floor(int duck_x_position, int duck_y_position) {
+bool Game::is_touching_floor(int duck_x_position, int duck_y_position) {
         // Check if duck is touching floor with its feet
         return true;
 }
 
-void duck_jump(int player_id) {
+void Game::duck_jump(int player_id) {
         Duck selected_duck = get_duck();
 
         if (is_touching_floor(selected_duck.x_position, selected_duck.y_position)){
@@ -69,36 +69,36 @@ void duck_jump(int player_id) {
         check_move_effects();
 }
 
-void duck_shoot(int player_id) {
+void Game::duck_shoot(int player_id) {
         Duck selected_duck = get_duck();
 
         // Make a big if-else chain depending on the gun equipped
 }
 
-void duck_take_item(int player_id) {
+void Game::duck_take_item(int player_id) {
         Duck selected_duck = get_duck();
 
         // Remember that ammo may be different between guns
 }
 
-void duck_drop_gun(int player_id) {
+void Game::duck_drop_gun(int player_id) {
         Duck selected_duck = get_duck();
 
         // Drop ammo?
 }
 
-void duck_drop_armor(int player_id) {
+void Game::duck_drop_armor(int player_id) {
         Duck selected_duck = get_duck();
 
         
 }
 
-void duck_aim_up(int player_id) {
+void Game::duck_aim_up(int player_id) {
         Duck selected_duck = get_duck();
 
 }
 
-void duck_floor(int player_id) {
+void Game::duck_floor(int player_id) {
         Duck selected_duck = get_duck();
 
         // what happens when a duck floors in the air?
