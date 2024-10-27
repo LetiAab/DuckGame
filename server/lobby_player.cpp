@@ -28,6 +28,7 @@ std::shared_ptr<Player> LobbyPlayer::start_game(Queue<Command>& game_queue) {
     playing = true;
     lobby_receiver.stop();
     lobby_receiver.join();
+    connected = false;
 
     //en lugar de mover el protocolo podria crear uno nuevo exclusivo de Game
     std::shared_ptr<Player> player = std::make_shared<Player>(std::move(protocol), player_id, game_queue);

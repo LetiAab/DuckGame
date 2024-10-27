@@ -25,12 +25,21 @@ void Lobby::run() {
                 LobbyMessage msg = process_command(cmd);
                 send_message(msg);
             }
+
+            clean_disconnected_players();
         }
 
     } catch (const ClosedQueue& e) {
         std::cout << "Se cerró la queue del lobby\n";
     }
 }
+
+void Lobby::clean_disconnected_players() {
+    lobby_players.remove_if([](const std::shared_ptr<LobbyPlayer>& player) {
+        return !player->is_connected();
+    });
+}
+
 
 void Lobby::add_player(std::shared_ptr<LobbyPlayer> player) {
     LobbyMessage msg = create_lobby_message(player->get_player_id());
