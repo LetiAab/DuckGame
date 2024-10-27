@@ -4,6 +4,7 @@
 
 #include "common/queue.h"
 #include "common/thread.h"
+#include "common/message.h"
 
 #include "server_protocol.h"
 
@@ -14,7 +15,7 @@ class Sender: public Thread {
 private:
     ServerProtocol& protocol;
     bool is_alive;
-    //Queue<Message> message_queue;
+    Queue<Message> message_queue;
 
 
 public:
@@ -26,7 +27,7 @@ public:
 
     void stop() override;
 
-    //Queue<Message>& get_queue();
+    Queue<Message>& get_queue();
 };
 
 #endif

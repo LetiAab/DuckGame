@@ -4,6 +4,7 @@
 #include "player.h"
 #include "common/queue.h"
 #include "common/command.h"
+#include "game_queue_monitor.h"
 //#include "game.h"
 #include <list>
 
@@ -17,6 +18,7 @@ private:
     uint8_t current_players; 
     std::list<std::shared_ptr<Player>> players;
     Queue<Command> queue; //quizas la deba tener game
+    GameQueueMonitor monitor;
     //Game game;
 
 

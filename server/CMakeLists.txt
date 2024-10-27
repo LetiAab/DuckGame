@@ -13,6 +13,7 @@ target_sources(taller_server
     sender.cpp
     #game.cpp
     lobby_player.cpp
+    game_queue_monitor.cpp
     
     PUBLIC
     # .h files
@@ -27,4 +28,5 @@ target_sources(taller_server
     sender.h
     #game.h
     lobby_player.h
+    game_queue_monitor.h
     )

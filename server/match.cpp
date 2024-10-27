@@ -2,7 +2,7 @@
 
 
 Match::Match(uint16_t match_id): 
-match_id(match_id), is_running(false), min_players(2), max_players(6), current_players(0), players(), queue() /*,game(match_id) */{}
+match_id(match_id), is_running(false), min_players(2), max_players(6), current_players(0), players(), queue(), monitor() /*,game(match_id) */{}
 
 
 bool Match::add_player(std::shared_ptr<Player> player) {
@@ -31,7 +31,7 @@ bool Match::is_able_to_start(){
 void Match::start_match() {
     is_running = true;
     for(auto& player: players){
-        //TODO: antes de empezar hay que guardar la queue del sender en un monitor
+        monitor.add_queue(&player->get_message_queue());
         player->start_playing();
     }
 

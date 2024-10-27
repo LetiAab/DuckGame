@@ -5,7 +5,7 @@
 #include "common/liberror.h"
 
 
-Sender::Sender(ServerProtocol& protocol): protocol(protocol), is_alive(true) {}
+Sender::Sender(ServerProtocol& protocol): protocol(protocol), is_alive(true), message_queue() {}
 
 
 void Sender::run() {
@@ -28,7 +28,7 @@ void Sender::run() {
     }
 }
 
-//Queue<Message>& Sender::get_queue() { return message_queue; }
+Queue<Message>& Sender::get_queue() { return message_queue; }
 
 bool Sender::is_running() { return is_alive; }
 

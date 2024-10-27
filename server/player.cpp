@@ -37,4 +37,4 @@ uint16_t Player::get_player_id() { return player_id; }
 
 bool Player::is_connected() { return connected; }
 
-//Queue<Message>& Player::get_message_queue() { return sender.get_queue(); }
+Queue<Message>& Player::get_message_queue() { return sender.get_queue(); }

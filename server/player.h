@@ -4,8 +4,7 @@
 #include <string>
 
 #include "common/queue.h"
-#include "common/lobby_message.h"
-#include "common/lobby_command.h"
+#include "common/message.h"
 #include "common/command.h"
 
 #include "server_protocol.h"
@@ -35,8 +34,7 @@ public:
 
     uint16_t get_player_id();
 
-
-    //Queue<Message>& get_message_queue();
+    Queue<Message>& get_message_queue();
 };
 
 #endif
