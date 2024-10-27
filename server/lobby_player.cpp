@@ -38,7 +38,7 @@ std::shared_ptr<Player> LobbyPlayer::start_game(Queue<Command>& game_queue) {
 
 
 void LobbyPlayer::stop() {
-
+    connected = false;
     lobby_receiver.stop();
     lobby_receiver.join();
 }
@@ -53,4 +53,3 @@ uint16_t LobbyPlayer::get_match_id() { return match_id; }
 
 bool LobbyPlayer::is_connected() { return connected; }
 
-//Queue<Message>& Player::get_message_queue() { return sender.get_queue(); }

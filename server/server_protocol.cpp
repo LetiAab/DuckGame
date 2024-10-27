@@ -15,10 +15,29 @@
 ServerProtocol::ServerProtocol(Socket&& skt): skt(std::move(skt)) {}
 
 bool ServerProtocol::send_lobby_message(const LobbyMessage& message){
-    //mandar el mensaje por el socket bien
     bool was_closed = false;
-    skt.sendall(&message.player_id, 2, &was_closed);
-    skt.sendall(&message.type, 1, &was_closed);
+
+    if (!skt.sendall(&message.player_id, sizeof(message.player_id), &was_closed) || was_closed) {
+        return false;
+    }
+
+    if (!skt.sendall(&message.type, sizeof(message.type), &was_closed) || was_closed) {
+        return false;
+    }
+
+    if (!skt.sendall(&message.len_matches, sizeof(message.len_matches), &was_closed) || was_closed) {
+        return false;
+    }
+
+    for (uint16_t match_id : message.existing_matches) {
+        if (!skt.sendall(&match_id, sizeof(match_id), &was_closed) || was_closed) {
+            return false;
+        }
+    }
+
+    if (!skt.sendall(&message.current_match_id, sizeof(message.current_match_id), &was_closed) || was_closed) {
+        return false;
+    }
 
     return true;
 }
