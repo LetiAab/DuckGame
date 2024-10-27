@@ -1,9 +1,9 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "../common/queue.h"
-#include "../common/thread.h"
-#include "../common/command.h"
+#include "common/queue.h"
+#include "common/thread.h"
+#include "common/command.h"
 #include <list>
 #include <vector>
 

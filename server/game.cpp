@@ -199,4 +199,4 @@ void Game::run() {
         }
 }
 
-void Game::stop() { running = false; }
+void Game::stop() { is_running = false; }
