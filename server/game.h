@@ -17,6 +17,16 @@ typedef struct update {
         // More fields?
 } Update;
 
+typedef struct duck {
+        int duck_id;            // Maybe a name instead
+        int x_position;
+        int y_position;
+        int equipped_weapon;    // Should be an object
+        int equipped_armor;     // Should be an object
+        // bool is_fluttering;
+        // More fields?
+} Duck;
+
 #define SLEEP_TIME 200
 
 class Game: public Thread {
@@ -29,12 +39,6 @@ private:
     std::vector<std::vector<char>> scenario;
     int game_round;
 
-
-    bool process_commands();
-
-    void pick_box(int box_id, const char* player_name);
-
-    void simulate_iteration();
 
 public:
     //explicit Game(Monitor& monitor);
