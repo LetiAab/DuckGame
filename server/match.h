@@ -5,6 +5,7 @@
 #include "common/lobby_message.h"
 #include "common/queue.h"
 #include "common/command.h"
+#include "server/game.h"
 #include <list>
 
 class Match {
@@ -16,7 +17,7 @@ private:
     uint8_t max_players;
     std::list<std::shared_ptr<Player>> players;
     Queue<Command> queue; //quizas la deba tener game
-    //Game game;
+    Game game;
 
 
 

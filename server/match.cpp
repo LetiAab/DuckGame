@@ -1,7 +1,7 @@
 #include "match.h"
 
 
-Match::Match(uint16_t match_id): match_id(match_id), is_running(false), min_players(2), max_players(6), players(), queue() {}
+Match::Match(uint16_t match_id): match_id(match_id), is_running(false), min_players(2), max_players(6), players(), queue(), game(match_id) {}
 
 bool Match::add_player(std::shared_ptr<Player> player) {
     if ((players.size() < max_players) && !is_running) {
@@ -31,7 +31,7 @@ bool Match::is_able_to_start(){
 void Match::start_match(const LobbyMessage& msg) {
     is_running = true;
     notify_players(msg);
-    //game.start();
+    game.start();
 }
 
 uint16_t Match::get_match_id() {
