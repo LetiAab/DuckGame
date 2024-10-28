@@ -24,15 +24,13 @@ struct Crate {
 struct GameState {
 	Duck duck;
 	Crate crates[4];
-	SDL_Texture* crate;
-	SDL_Texture* duck_t;
-	SDL_Texture* background;
+	SDL_Texture *crate, *duck_t, *background;
 	SDL_Renderer* renderer;
 };
 
-SDL_Surface* loadImage(const std::string name_img) {
+SDL_Surface* loadImage(const std::string& name_img) {
 	SDL_Surface* img = NULL;
-	std::string path = "/client/imgs/" + name_img + ".png";
+	const std::string path = std::string(IMAGE_PATH) + name_img + ".png";
 	img = IMG_Load(path.c_str());
 	if (img == NULL) {
 		std::cerr << "Error loading " << name_img << ".png: " << IMG_GetError() << "\n";
