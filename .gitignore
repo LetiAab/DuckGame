@@ -1,2 +1,8 @@
 build/
 tags.*
+
+# Idea files
+.idea/
+
+# CMake files
+cmake-build-debug/

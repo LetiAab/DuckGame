@@ -12,6 +12,7 @@ endif()
 # -Wpedantic being enabled and -std=c++20 and -std=gnu++20 for example
 # when compiling with PCH enabled
 set(CMAKE_CXX_EXTENSIONS ON)
+#set(CMAKE_CXX_EXTENSIONS OFF)
 
 project(taller_tp
     VERSION 1.0
@@ -53,6 +54,11 @@ if(TALLER_CLIENT OR TALLER_EDITOR)
         libSDL2pp
         URL https://github.com/libSDL2pp/libSDL2pp/archive/cc198c9a5657048bee67ece82de620b2d5661084.zip
     )
+
+    # set up SDL2pp library
+    set(SDL2PP_WITH_IMAGE YES)
+    set(SDL2PP_WITH_TTF YES)
+    set(SDL2PP_WITH_MIXER YES)
 
     FetchContent_MakeAvailable(libSDL2pp)
 endif()
