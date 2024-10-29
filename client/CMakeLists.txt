@@ -13,3 +13,6 @@ target_sources(taller_client
     client_receiver.h
     client_sender.h
     )
+
+# Path de imagenes
+target_compile_definitions(taller_client PRIVATE IMAGE_PATH="${CMAKE_CURRENT_SOURCE_DIR}/imgs/")
