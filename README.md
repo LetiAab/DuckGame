@@ -1,3 +1,20 @@
+# DuckGame
+
+# Librería SDL
+Para descargar las depencias de la librería SDL2, primero se deben ejecutar los siguientes comandos :
+```
+sudo apt-get install libjpeg-dev libpng-dev libfreetype-dev libopusfile-dev libflac-dev libxmp-dev libfluidsynth-dev libwavpack-dev cmake libmodplug-dev libsdl2-dev
+```
+Luego se deben compilar e instalar las librerías `SDL2_image`, `SDL2_mixer` y `SDL2_ttf`. Para ello se deben ejecutar los siguientes comandos:
+```
+cd nombre_de_la carpeta_descomprimida
+mkdir build
+cd build
+cmake ..
+make -j4
+sudo make install
+```
+
 # Como ejecutar el programa
 
 1. Compilacion: En la consola escribe make
