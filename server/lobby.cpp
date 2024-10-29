@@ -16,11 +16,19 @@ Lobby::Lobby(): is_alive(true), lobby_players(), matches(), lobby_queue(), match
 void Lobby::run() {
     try {
         while (is_alive) {
+            
+            
             LobbyCommand cmd = lobby_queue.pop(); // OJO: bloqueante, quizás tengamos que usar try_pop + sleep
+
 
             if(cmd.type == START_MATCH_CODE) {
                 process_start_match_command(cmd);
 
+            } else if (cmd.type == EXISTING_MATCH_CODE){
+                //devolver partidas existentes
+            
+
+            
             } else {
                 LobbyMessage msg = process_command(cmd);
                 send_message(msg);

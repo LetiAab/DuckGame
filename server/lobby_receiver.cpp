@@ -16,6 +16,9 @@ void LobbyReceiver::run() {
 
             LobbyCommand cmd = protocol.get_lobby_command();
 
+            std::cout << "Recibo comando de Player id: " << cmd.player_id << "\n";
+    
+
             if (cmd.type == LOBBY_STOP_CODE) {
                 is_alive = false;
                 break;

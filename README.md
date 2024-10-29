@@ -1,3 +1,24 @@
+# Como ejecutar el programa
+
+1. Compilacion: En la consola escribe make
+
+```
+make
+```
+2. Levantar cliente y servidor: Dentro de la carpeta build ejecuta
+
+Para levantar el server
+```
+ ./taller_server 8080
+```
+
+Para levantar el cliente
+```
+ ./taller_client localhost 8080
+```
+
+
+
 # Ejemplo de CMAKE para el TP Final
 
 **Importante:** el primer commit de este repositorio tiene el setup

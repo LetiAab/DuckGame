@@ -7,6 +7,8 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
+#include "client.h"
+
 using namespace SDL2pp;
 
 #define ERROR 1
@@ -32,7 +34,7 @@ struct GameState {
 
 SDL_Surface* loadImage(const std::string name_img) {
 	SDL_Surface* img = NULL;
-	std::string path = "/client/imgs/" + name_img + ".png";
+	std::string path = "../client/imgs/" + name_img + ".png";
 	img = IMG_Load(path.c_str());
 	if (img == NULL) {
 		std::cerr << "Error loading " << name_img << ".png: " << IMG_GetError() << "\n";
@@ -143,6 +145,18 @@ int main(int argc, const char* argv[]) {
 		const std::string hostname = argv[1];
 		const std::string servname = argv[2];
 
+
+
+		//------------------Clase cliente--------------------------------
+		std::cout << "Levanto cliente en hostname: " << hostname << " y servername: " << servname << "\n";
+
+		Client cliente(hostname, servname);
+     	cliente.start();	
+
+		//-------------------------------------------------------
+		
+
+		/*
 		GameState game{};
 		SDL_Window* window = NULL;
 		SDL_Renderer* renderer = NULL;
@@ -184,6 +198,9 @@ int main(int argc, const char* argv[]) {
 
 		// Limpiar
 		SDL_Quit();
+
+		*/
+		
 		return SUCCESS;
 
 	} catch (const std::exception& err) {
