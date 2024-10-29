@@ -8,12 +8,24 @@
 ClientReceiver::ClientReceiver(ClientProtocol& protocol, uint16_t id):
         protocol(protocol), id(id), is_alive(true), message_queue() {}
 
+void printExistingMatches2(const std::vector<uint16_t>& existing_matches) {
+    std::cout << "Lobby Message. Existing matches: ";
+    if (existing_matches.empty()) {
+        std::cout << "No existing matches.";
+    } else {
+        for (size_t i = 0; i < existing_matches.size(); ++i) {
+            std::cout << existing_matches[i];
+            if (i < existing_matches.size() - 1) {
+                std::cout << ", ";  
+            }
+        }
+    }
+    std::cout << "\n"; 
+}
+
 
 void ClientReceiver::run() {
     try {
-        
-
-
         while (is_alive) {
             /*
 
@@ -23,13 +35,39 @@ void ClientReceiver::run() {
             command_queue.push(cmd);
             */
 
-            Message message = protocol.recive_message();
+            LobbyMessage lobbyMessage = protocol.recive_lobby_message();
 
-            std::cout << "Recibo message del server" << "\n";
+            //cada vez que mando un mensaje el server me responde pero no se para que
             
-            std::cout << "Player id: " << message.player_id << "\n";
-            std::cout << "Type: " << static_cast<int>(message.type) << "\n"; 
             
+            
+            if (lobbyMessage.type == NEW_MATCH_CODE){
+                            
+                std::cout << "Partida creada con id: " << static_cast<int>(lobbyMessage.current_match_id) << "\n"; 
+
+            }
+
+            if (lobbyMessage.type == EXISTING_MATCH_CODE){
+                std::cout << "Conectado a partida con id: " << static_cast<int>(lobbyMessage.current_match_id) << "\n"; 
+
+            }
+
+            if (lobbyMessage.type == START_MATCH_CODE){
+                std::cout << "Partida iniciada con id: " << static_cast<int>(lobbyMessage.current_match_id) << "\n"; 
+                
+                LobbyCommand command2;
+                command2.player_id = id;
+                command2.type = LOBBY_STOP_CODE;
+                command2.match_id = 0;
+
+                if (protocol.send_lobby_command(command2)){
+                    //std::cout << "Stop code" << "\n";
+                    continue;
+                };
+            }
+
+        
+            std::cout << "\n";
 
         }
 

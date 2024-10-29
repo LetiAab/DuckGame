@@ -24,11 +24,6 @@ void Lobby::run() {
             if(cmd.type == START_MATCH_CODE) {
                 process_start_match_command(cmd);
 
-            } else if (cmd.type == EXISTING_MATCH_CODE){
-                //devolver partidas existentes
-            
-
-            
             } else {
                 LobbyMessage msg = process_command(cmd);
                 send_message(msg);
@@ -144,12 +139,15 @@ void Lobby::notify_players(std::shared_ptr<Match> match, LobbyMessage msg){
 }
 
 void Lobby::process_start_match_command(const LobbyCommand& cmd) {
+
+
     std::shared_ptr<LobbyPlayer> player = find_player_by_id(cmd.player_id);
     std::shared_ptr<Match> match = find_match_by_id(cmd.match_id);
 
     if (match and match->is_able_to_start()) {
 
-        LobbyMessage msg = create_lobby_response(0, LOBBY_STOP_CODE, cmd.match_id);
+        LobbyMessage msg = create_lobby_response(0, START_MATCH_CODE, cmd.match_id);
+
         notify_players(match, msg);
         match->start_match();
 

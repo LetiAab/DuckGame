@@ -5,6 +5,8 @@
 #include "common/queue.h"
 #include "common/thread.h"
 #include  "common/command.h"
+#include  "common/message.h"
+
 
 #include "client_protocol.h"
 #include "common/constants.h"

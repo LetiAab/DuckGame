@@ -54,7 +54,7 @@ LobbyCommand ServerProtocol::get_lobby_command(){
     
     //Este me esta bloqueando. Definir bien que es un command y un lobby command. 
     //Por que serian dos distintos?
-    //skt.recvall(&cmd.match_id, 2, &was_closed);
+    skt.recvall(&cmd.match_id, 2, &was_closed);
 
 
     return cmd;
