@@ -4,9 +4,7 @@
 
 #include "common/queue.h"
 #include "common/thread.h"
-#include  "common/command.h"
-#include  "common/message.h"
-
+#include  "common/lobby_command.h"
 
 #include "client_protocol.h"
 #include "common/constants.h"
@@ -18,13 +16,12 @@
 class ClientSender: public Thread {
 private:
     ClientProtocol& protocol;
-    uint16_t id;
     bool is_alive;
-    Queue<Command> command_queue;
+    Queue<LobbyCommand> command_queue;
 
 
 public:
-    explicit ClientSender(ClientProtocol& protocol, uint16_t id);
+    explicit ClientSender(ClientProtocol& protocol);
 
     void run() override;
 
@@ -32,7 +29,7 @@ public:
 
     void stop() override;
 
-    Queue<Message>& get_queue();
+    Queue<LobbyCommand>& get_queue();
 };
 
 #endif

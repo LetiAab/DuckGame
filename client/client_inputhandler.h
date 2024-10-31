@@ -1,25 +1,28 @@
 #include <cstdint>
 #include <string>
 
+
 #include "common/queue.h"
 #include "common/thread.h"
-#include "common/lobby_message.h"
+#include "common/lobby_command.h"
+
 
 #include "client_protocol.h"
 #include "common/constants.h"
 
-#ifndef CLIENT_RECEIVER_H
-#define CLIENT_RECEIVER_H
 
-class ClientReceiver: public Thread {
+#ifndef INPUT_HANDLER_H
+#define INPUT_HANDLER_H
+
+class InputHandler: public Thread {
 private:
-    ClientProtocol& protocol;
+    uint16_t id;
     bool is_alive;
-    Queue<LobbyMessage> message_queue;
+    Queue<LobbyCommand>& command_queue;
 
 
 public:
-    ClientReceiver(ClientProtocol& protocol);
+    explicit InputHandler(uint16_t id, Queue<LobbyCommand>& command_queue);
 
     void run() override;
 
@@ -27,7 +30,6 @@ public:
 
     void stop() override;
 
-    Queue<LobbyMessage>& get_queue();
 };
 
 #endif

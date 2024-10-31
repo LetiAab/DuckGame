@@ -10,7 +10,7 @@
 
 
 Acceptor::Acceptor(Socket& skt):
-        skt_listener(skt), is_alive(true), lobby(), ids_counter(0){}
+        skt_listener(skt), is_alive(true), lobby(), ids_counter(1){}
 
 void Acceptor::run() {
     try {

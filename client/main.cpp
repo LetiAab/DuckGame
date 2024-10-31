@@ -147,14 +147,16 @@ int main(int argc, const char* argv[]) {
 
 		//------------------Clase cliente--------------------------------
 		
-		/*
+		
 		std::cout << "Levanto cliente en hostname: " << hostname << " y servername: " << servname << "\n";
 
 		Client cliente(hostname, servname);
-     	cliente.start();	
-		*/
+     	cliente.start();
+		
 		//-------------------------------------------------------
 		
+
+		/*
 
 		
 		GameState game{};
@@ -199,6 +201,7 @@ int main(int argc, const char* argv[]) {
 		// Limpiar
 		SDL_Quit();
 
+		*/
 		
 		return SUCCESS;
 

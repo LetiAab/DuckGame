@@ -8,19 +8,21 @@
 
 
 #include "client_protocol.h"
-#include "../common/socket.h"
-#include "../common/message.h"
-#include "../common/command.h"
-#include "../common/constants.h"
+#include "common/socket.h"
+#include "common/message.h"
+#include "common/command.h"
+#include "common/constants.h"
 
 #include "client_sender.h"
 #include "client_receiver.h"
+#include "client_inputhandler.h"
 
 class Client {
 private:
     ClientProtocol protocol;
-    std::unique_ptr<ClientSender> sender;   
+    std::unique_ptr<ClientSender> sender;
     std::unique_ptr<ClientReceiver> receiver;
+    std::unique_ptr<InputHandler> input_handler;
 
 
 public:
