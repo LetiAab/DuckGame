@@ -7,7 +7,7 @@
 class Sendable {
 public:
     virtual ~Sendable() = default;
-    virtual void send_myself(ClientProtocol& protocol) const = 0;
+    virtual void send_myself(ClientProtocol& protocol) = 0;
 };
 
 #endif

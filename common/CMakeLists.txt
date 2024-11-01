@@ -6,6 +6,7 @@ target_sources(taller_common
     resolver.cpp
     resolvererror.cpp
     socket.cpp
+    command.cpp
     PUBLIC
     # .h files
     foo.h
