@@ -4,8 +4,8 @@
 #include <utility>
 
 
-Player::Player(ServerProtocol&& protocol, const uint16_t id, Queue<std::shared_ptr<Executable>>& game_queue):
-        protocol(std::move(protocol)),
+Player::Player(ServerProtocol&& prot, const uint16_t id, Queue<std::shared_ptr<Executable>>& game_queue):
+        protocol(std::move(prot)),
         player_id(id),
         sender(protocol),
         receiver(protocol, game_queue),
