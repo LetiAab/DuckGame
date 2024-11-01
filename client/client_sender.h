@@ -3,10 +3,10 @@
 
 #include "common/queue.h"
 #include "common/thread.h"
-#include "common/lobby_command.h"
+#include "common/command.h"
 #include "common/sendable.h"
 
-#include "common/client_protocol.h"
+#include "client_protocol.h"
 #include "common/constants.h"
 
 
@@ -17,7 +17,7 @@ class ClientSender: public Thread {
 private:
     ClientProtocol& protocol;
     bool is_alive;
-    Queue<std::shared_ptr<Sendable>> command_queue;
+    Queue<Command> command_queue;
 
 
 public:
@@ -29,7 +29,7 @@ public:
 
     void stop() override;
 
-    Queue<std::shared_ptr<Sendable>>& get_queue();
+    Queue<Command>& get_queue();
 };
 
 #endif

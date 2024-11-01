@@ -1,6 +1,6 @@
 #include "client.h"
-#include "common/lobby_command.h"
-#include "common/lobby_message.h"
+#include "common/command.h"
+#include "common/message.h"
 #include "common/queue.h"
 #include "common/sendable.h"
 
@@ -27,7 +27,7 @@ void printExistingMatches(const std::vector<uint16_t>& existing_matches) {
     std::cout << "\n";
 }
 
-void print_first_message(LobbyMessage& first_message){
+void print_first_message(Message& first_message){
     std::cout << "First Message. My Player ID is: " << first_message.player_id << "\n";
     std::cout << "OPTIONS: " << "\n";
     std::cout << "Create a new match: 5" << "\n";
@@ -42,7 +42,7 @@ void print_first_message(LobbyMessage& first_message){
 int Client::start(){
 
     // primer mensaje de la conexion para saber mi id
-    LobbyMessage first_message = protocol.recive_lobby_message();
+    Message first_message = protocol.recive_message();
 
     //persisto mi id
     uint16_t id = first_message.player_id;
@@ -58,7 +58,7 @@ int Client::start(){
 
     //obtengo la queue para procesar los mensajes que me manda el server
     //probablemnete deba mandarsela a SDL
-    Queue<LobbyMessage>& message_queue = receiver->get_queue();
+    Queue<Message>& message_queue = receiver->get_queue();
 
     //inicio los hilos
     sender->start();
@@ -67,7 +67,7 @@ int Client::start(){
 
     //-----------------MOVER ESTO A OTRA CLASE-------------------------------------
     while(true){
-        LobbyMessage message = message_queue.pop();
+        Message message = message_queue.pop();
 
         if (message.type == NEW_MATCH_CODE){
                             
@@ -86,9 +86,9 @@ int Client::start(){
             std::cout << "Partida iniciada con id: " << static_cast<int>(message.current_match_id) << "\n";
 
             //esto no es muy lindo pero de momento funciona
-            auto cmd = LobbyCommand(id, LOBBY_STOP_CODE, 0);
+            auto cmd = Command(id, LOBBY_STOP_CODE, 0);
 
-            if (protocol.send_lobby_command(cmd)){
+            if (protocol.send_command(cmd)){
                 std::cout << "Me desconecte del lobby. Ahora voy a comunicarme con el juego" << "\n";
                 break;
             };

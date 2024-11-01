@@ -3,9 +3,9 @@
 
 #include "common/queue.h"
 #include "common/thread.h"
-#include "common/lobby_message.h"
+#include "common/message.h"
 
-#include "common/client_protocol.h"
+#include "client_protocol.h"
 #include "common/constants.h"
 
 #ifndef CLIENT_RECEIVER_H
@@ -15,7 +15,7 @@ class ClientReceiver: public Thread {
 private:
     ClientProtocol& protocol;
     bool is_alive;
-    Queue<LobbyMessage> message_queue;
+    Queue<Message> message_queue;
 
 
 public:
@@ -27,7 +27,7 @@ public:
 
     void stop() override;
 
-    Queue<LobbyMessage>& get_queue();
+    Queue<Message>& get_queue();
 };
 
 #endif

@@ -8,28 +8,12 @@
 ClientReceiver::ClientReceiver(ClientProtocol& protocol):
         protocol(protocol), is_alive(true), message_queue() {}
 
-void printExistingMatches2(const std::vector<uint16_t>& existing_matches) {
-    std::cout << "Lobby Message. Existing matches: ";
-    if (existing_matches.empty()) {
-        std::cout << "No existing matches.";
-    } else {
-        for (size_t i = 0; i < existing_matches.size(); ++i) {
-            std::cout << existing_matches[i];
-            if (i < existing_matches.size() - 1) {
-                std::cout << ", ";
-            }
-        }
-    }
-    std::cout << "\n";
-}
-
 
 void ClientReceiver::run() {
     try {
         while (is_alive) {
 
-            //por ahora recibo solo LobbyMessage
-            LobbyMessage msg = protocol.recive_lobby_message();
+            Message msg = protocol.recive_message();
             message_queue.push(msg);
 
         }
@@ -45,7 +29,7 @@ void ClientReceiver::run() {
         std::cerr << "Exeption running the receiver: " << e.what() << std::endl;
     }
 }
-Queue<LobbyMessage>& ClientReceiver::get_queue(){ return message_queue; }
+Queue<Message>& ClientReceiver::get_queue(){ return message_queue; }
 
 bool ClientReceiver::is_running() { return is_alive; }
 

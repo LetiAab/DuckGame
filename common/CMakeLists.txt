@@ -6,9 +6,6 @@ target_sources(taller_common
     resolver.cpp
     resolvererror.cpp
     socket.cpp
-    command.cpp
-    lobby_command.cpp
-    client_protocol.cpp
     PUBLIC
     # .h files
     foo.h
@@ -25,5 +22,4 @@ target_sources(taller_common
     message.h
     executable.h
     sendable.h
-    client_protocol.h
     )

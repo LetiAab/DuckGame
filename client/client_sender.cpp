@@ -14,7 +14,7 @@ void ClientSender::run() {
         while (is_alive) {
 
             auto cmd = command_queue.pop();
-            cmd->send_myself(protocol);
+            protocol.send_command(cmd);
 
         }
 
@@ -30,7 +30,7 @@ void ClientSender::run() {
     }
 }
 
-Queue<std::shared_ptr<Sendable>>& ClientSender::get_queue(){ return command_queue; }
+Queue<Command>& ClientSender::get_queue(){ return command_queue; }
 
 
 bool ClientSender::is_running() { return is_alive; }

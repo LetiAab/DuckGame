@@ -3,11 +3,8 @@
 
 #include "common/queue.h"
 #include "common/thread.h"
-#include "common/lobby_command.h"
-#include "common/sendable.h"
+#include "common/command.h"
 
-
-#include "common/client_protocol.h"
 #include "common/constants.h"
 
 
@@ -18,11 +15,11 @@ class InputHandler: public Thread {
 private:
     uint16_t id;
     bool is_alive;
-    Queue<std::shared_ptr<Sendable>>& command_queue;
+    Queue<Command>& command_queue;
 
 
 public:
-    explicit InputHandler(uint16_t id, Queue<std::shared_ptr<Sendable>>& command_queue);
+    explicit InputHandler(uint16_t id, Queue<Command>& command_queue);
 
     void run() override;
 

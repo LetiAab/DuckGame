@@ -1,23 +1,17 @@
-#include "sendable.h"
-#include "client_protocol.h"
-
 #ifndef COMMAND_H
 #define COMMAND_H
 
 #include <cstdint>
 #include <string>
 
-class Command : public Sendable {
-private:
-    uint16_t player_id;
+struct Command {
+    uint16_t player_id; //probablemente no sea seguro mandar el id asi
     uint8_t type;
+    uint16_t match_id;
 
-
-public:
-    Command(uint16_t player_id, uint8_t type);
-
-    void send_myself(ClientProtocol& protocol) override;
-
+    Command(uint16_t player_id, uint8_t type, uint16_t match_id)
+        : player_id(player_id), type(type), match_id(match_id) {}
 };
+
 
 #endif

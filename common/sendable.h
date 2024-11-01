@@ -1,5 +1,4 @@
 // Interfaz Sendable
-#include "client_protocol.h"
 
 #ifndef SENDABLE_H
 #define SENDABLE_H

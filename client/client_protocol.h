@@ -4,8 +4,8 @@
 #include <string>
 
 #include "common/socket.h"
-#include "common/lobby_message.h"
-#include "common/lobby_command.h"
+#include "common/message.h"
+#include "common/command.h"
 
 #include <cstdint>
 
@@ -17,9 +17,9 @@ private:
 public:
     explicit ClientProtocol(Socket&& skt);
 
-    LobbyMessage recive_lobby_message();
+    Message recive_message();
 
-    bool send_lobby_command(LobbyCommand lobbyCommand);
+    bool send_command(Command lobbyCommand);
 
     void shutdown();
 

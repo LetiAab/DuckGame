@@ -6,12 +6,14 @@ target_sources(taller_client
     client_receiver.cpp
     client_sender.cpp
     client_inputhandler.cpp
+    client_protocol.cpp
     PUBLIC
     # .h files
     client.h
     client_receiver.h
     client_sender.h
     client_inputhandler.h
+    client_protocol.h
     )
 
 # Path de imagenes

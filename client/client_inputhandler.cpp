@@ -3,10 +3,9 @@
 #include <iostream>
 
 #include "common/liberror.h"
-#include "common/lobby_command.h"
 
 
-InputHandler::InputHandler(uint16_t id, Queue<std::shared_ptr<Sendable>>& command_queue):
+InputHandler::InputHandler(uint16_t id, Queue<Command>& command_queue):
 id(id), is_alive(true), command_queue(command_queue) {}
 
 uint16_t getMatchId() {
@@ -46,7 +45,7 @@ void InputHandler::run() {
             }
 
             if (input == "5") {
-                auto command = std::make_shared<LobbyCommand>(id, NEW_MATCH_CODE, actual_match_id);
+                auto command = Command(id, NEW_MATCH_CODE, actual_match_id);
 
                 if (command_queue.try_push(command)){
                     std::cout << "Creando partida..." << "\n";
@@ -57,7 +56,7 @@ void InputHandler::run() {
                 //este es para conectarte
                 actual_match_id = getMatchId();//esto bloquea hasta que le pases un match id
 
-                auto command = std::make_shared<LobbyCommand>(id, EXISTING_MATCH_CODE, actual_match_id);
+                auto command = Command(id, EXISTING_MATCH_CODE, actual_match_id);
                 
                 if (command_queue.try_push(command)){
                     std::cout << "Conectando a partida..." << "\n";
@@ -66,7 +65,7 @@ void InputHandler::run() {
 
             if (input == "7"){
                 //iniciar partida a la que estoy conectado
-                auto command = std::make_shared<LobbyCommand>(id, START_MATCH_CODE, actual_match_id);
+                auto command = Command(id, START_MATCH_CODE, actual_match_id);
 
                 if (command_queue.try_push(command)){
                     std::cout << "Iniciando partida..." << "\n";

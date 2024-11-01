@@ -1,16 +1,16 @@
 #include "client_protocol.h"
 
 
-#include "../common/liberror.h"
-#include "../common/constants.h"
+#include "common/liberror.h"
+#include "common/constants.h"
 
 ClientProtocol::ClientProtocol(Socket&& skt): skt(std::move(skt)) {}
 
 
-LobbyMessage ClientProtocol::recive_lobby_message(){
+Message ClientProtocol::recive_message(){
     
     bool was_closed = false;
-    LobbyMessage message;
+    Message message;
 
 
     skt.recvall(&message.player_id, 2, &was_closed);
@@ -28,7 +28,7 @@ LobbyMessage ClientProtocol::recive_lobby_message(){
     return message;
 }
 
-bool ClientProtocol::send_lobby_command(LobbyCommand command){
+bool ClientProtocol::send_command(Command command){
 
     bool was_closed = false;
 
