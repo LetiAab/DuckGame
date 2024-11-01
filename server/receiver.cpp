@@ -5,16 +5,16 @@
 #include "common/liberror.h"
 
 
-Receiver::Receiver(ServerProtocol& protocol, Queue<Command>& queue):
-        protocol(protocol), is_alive(true), command_queue(queue) {}
+Receiver::Receiver(ServerProtocol& protocol, Queue<std::shared_ptr<Executable>>& game_queue):
+        protocol(protocol), is_alive(true), game_queue(game_queue) {}
 
 
 void Receiver::run() {
     try {
         while (is_alive) {
             /*
-            Command cmd = protocol.get_command();
-            command_queue.push(cmd);
+            auto cmd = protocol.receive_command();
+            game_queue.push(cmd);
             */
         }
 

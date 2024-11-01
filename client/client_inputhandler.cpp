@@ -73,6 +73,10 @@ void InputHandler::run() {
                 };
             }
 
+            if (input == "d"){
+                //crear comando de mover a la derecha y agregarlo a la queue
+            }
+
         }
 
     } catch (const ClosedQueue& e) {

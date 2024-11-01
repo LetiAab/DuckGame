@@ -19,7 +19,7 @@ void Acceptor::run() {
         while (is_alive) {
             Socket peer = skt_listener.accept();
 
-            std::shared_ptr<LobbyPlayer> new_player = std::make_shared<LobbyPlayer>(std::move(peer), ids_counter, lobby.get_lobby_queue());
+            std::shared_ptr<LobbyPlayer> new_player = std::make_unique<LobbyPlayer>(std::move(peer), ids_counter, lobby.get_lobby_queue());
             new_player->start();
 
             lobby.add_player(new_player);

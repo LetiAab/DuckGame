@@ -7,6 +7,7 @@
 #include "common/lobby_message.h"
 #include "common/lobby_command.h"
 #include "common/command.h"
+#include "common/executable.h"
 
 #include "server_protocol.h"
 #include "lobby_receiver.h"
@@ -29,9 +30,9 @@ public:
 
     void start();
 
-    bool send_lobby_message(const LobbyMessage& msj); 
+    bool send_lobby_message(const LobbyMessage& msj);
     
-    std::shared_ptr<Player> start_game(Queue<Command>& game_queue);
+    std::shared_ptr<Player> start_game(Queue<std::shared_ptr<Executable>>& game_queue);
 
     bool is_connected();
 

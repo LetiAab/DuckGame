@@ -6,6 +6,7 @@
 #include "common/queue.h"
 #include "common/message.h"
 #include "common/command.h"
+#include "common/executable.h"
 
 #include "server_protocol.h"
 #include "receiver.h"
@@ -24,7 +25,7 @@ private:
 
 
 public:
-    Player(ServerProtocol&& protocol, const uint16_t id, Queue<Command>& game_queue);
+    Player(ServerProtocol&& protocol, const uint16_t id, Queue<std::shared_ptr<Executable>>& game_queue);
 
     void start_playing();
 

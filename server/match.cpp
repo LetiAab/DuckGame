@@ -2,12 +2,13 @@
 
 
 Match::Match(uint16_t match_id): 
-match_id(match_id), is_running(false), min_players(2), max_players(6), current_players(0), players(), queue(), monitor() /*,game(match_id) */{}
+match_id(match_id), is_running(false), min_players(2), max_players(6), current_players(0), players(),
+monitor(), game(match_id, monitor) {}
 
 
 bool Match::add_player(std::shared_ptr<Player> player) {
    
-    players.push_back(player); 
+    players.push_back(player);
     return true;
 
 }
@@ -49,6 +50,6 @@ bool Match::is_match_avaiable() {
     return false;
 }
 
-Queue<Command>& Match::get_game_queue(){
-    return queue;
+Queue<std::shared_ptr<Executable>>& Match::get_game_queue(){
+    return game.get_game_queue();
 }

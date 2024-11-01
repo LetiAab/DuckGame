@@ -2,10 +2,11 @@
 #define MATCH_H
 
 #include "player.h"
+#include "common/executable.h"
 #include "common/queue.h"
 #include "common/command.h"
 #include "game_queue_monitor.h"
-//#include "game.h"
+#include "game.h"
 #include <list>
 
 class Match {
@@ -15,11 +16,10 @@ private:
     bool is_running;
     uint8_t min_players;
     uint8_t max_players;
-    uint8_t current_players; 
+    uint8_t current_players;
     std::list<std::shared_ptr<Player>> players;
-    Queue<Command> queue; //quizas la deba tener game
     GameQueueMonitor monitor;
-    //Game game;
+    Game game;
 
 
 
@@ -38,7 +38,7 @@ public:
 
     bool is_match_avaiable();
 
-    Queue<Command>& get_game_queue();
+    Queue<std::shared_ptr<Executable>>& get_game_queue();
 
 
 };

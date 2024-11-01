@@ -23,7 +23,7 @@ void LobbyPlayer::start() {
 }
 
 
-std::shared_ptr<Player> LobbyPlayer::start_game(Queue<Command>& game_queue) {
+std::shared_ptr<Player> LobbyPlayer::start_game(Queue<std::shared_ptr<Executable>>& game_queue) {
     //detengo el hilo para que el cliente no hable mas con el lobby
     playing = true;
     lobby_receiver.stop();

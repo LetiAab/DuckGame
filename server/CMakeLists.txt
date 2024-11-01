@@ -11,7 +11,7 @@ target_sources(taller_server
     lobby_receiver.cpp
     receiver.cpp
     sender.cpp
-    #game.cpp
+    game.cpp
     lobby_player.cpp
     game_queue_monitor.cpp
     
@@ -26,7 +26,7 @@ target_sources(taller_server
     lobby_receiver.h
     receiver.h
     sender.h
-    #game.h
+    game.h
     lobby_player.h
     game_queue_monitor.h
     )

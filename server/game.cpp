@@ -1,19 +1,41 @@
 #include "game.h"
 
 
-Game::Game(uint16_t match_id): , is_running(true), match_id(match_id), players(), scenario(), game_round(0) { 
-        initialize_map();
+Game::Game(uint16_t match_id, GameQueueMonitor& monitor):
+match_id(match_id), monitor(monitor), is_running(true), game_queue() {}
+
+Queue<std::shared_ptr<Executable>>& Game::get_game_queue(){
+        return game_queue;
 }
 
+
+void Game::run() {
+        while (is_running) {
+                // saco de 5 comandos de la queue y los ejecuto
+                int i = 0;
+                std::shared_ptr<Executable> command;
+                while( i < 5 && game_queue.try_pop(command)){
+                        //command.execute();
+                        i += 1;
+                }
+
+                //bloadcast();
+
+        }
+
+}
+
+/*
+
 void Game::initialize_map(Update update) {
-        /*
+        
                 Things to initialize:
                 - Players
                 - Boxes
                 - Spawn places
                 - Stage grounds
                 - Map limit (if we model it)
-        */
+        
 }
 
 void Game::check_move_effects(Duck moving_duck){
@@ -106,7 +128,7 @@ void Game::duck_floor(int player_id) {
 }
 
 void Game::process_update(Update update) {
-        /*
+        
                 Possible duck updates:
                 - Move (left or right)
                 - Jump or Flutter (slow the fall). Since it depends on if the duck is in ground or not it's better the server determine it
@@ -123,7 +145,7 @@ void Game::process_update(Update update) {
 
                 Remember that in this function when a duck is hit by an attack we update stats
                 The constants are going to be configurable by a yaml, but that could be a later refactor
-        */
+        
 
         if (update.type == update_type::Move) {
                 move_duck_move(update.player_id);
@@ -198,5 +220,8 @@ void Game::run() {
                 current_round++;
         }
 }
+
+
+*/
 
 void Game::stop() { is_running = false; }

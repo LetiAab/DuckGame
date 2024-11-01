@@ -1,12 +1,40 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include "game_queue_monitor.h"
+#include "common/executable.h"
 #include "common/queue.h"
 #include "common/thread.h"
 #include "common/command.h"
 #include <list>
 #include <vector>
 
+
+class Game: public Thread {
+
+private:
+        uint16_t match_id;
+        GameQueueMonitor& monitor;
+        bool is_running;
+        Queue<std::shared_ptr<Executable>> game_queue;
+
+public:
+explicit Game(uint16_t match_id, GameQueueMonitor& monitor);
+
+Queue<std::shared_ptr<Executable>>& get_game_queue();
+
+void run() override;
+void stop() override;
+
+Game(const Game&) = delete;
+Game& operator=(const Game&) = delete;
+};
+
+
+
+
+
+/*
 enum update_type {
         Move, Jump, Shoot, TakeGunOrArmor, LeaveGun, LeaveArmor, AimUp, Floor
 };
@@ -69,16 +97,8 @@ private:
         void broadcast_changes(Update update);
 
         void renew_iteration(Update update);
+*/
 
-public:
-    //explicit Game(Monitor& monitor);
-    explicit Game(uint16_t match_id);
 
-    void run() override;
-    void stop() override;
-
-    Game(const Game&) = delete;
-    Game& operator=(const Game&) = delete;
-};
 
 #endif  // GAME_H

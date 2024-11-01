@@ -85,7 +85,7 @@ int Client::start(){
         if (message.type == START_MATCH_CODE){
             std::cout << "Partida iniciada con id: " << static_cast<int>(message.current_match_id) << "\n";
 
-            //esto no es muy lindo pero de momento anda
+            //esto no es muy lindo pero de momento funciona
             auto cmd = LobbyCommand(id, LOBBY_STOP_CODE, 0);
 
             if (protocol.send_lobby_command(cmd)){

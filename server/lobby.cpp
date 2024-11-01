@@ -3,6 +3,7 @@
 
 #include "common/lobby_message.h"
 #include "common/constants.h"
+#include "common/executable.h"
 
 #include <exception>
 #include <iostream>
@@ -123,7 +124,7 @@ LobbyMessage Lobby::create_lobby_response(uint16_t player_id, uint8_t type, uint
 
 void Lobby::notify_players(std::shared_ptr<Match> match, LobbyMessage msg){
     uint16_t match_id = match->get_match_id();
-    Queue<Command>& queue = match->get_game_queue();
+    Queue<std::shared_ptr<Executable>>& queue = match->get_game_queue();
 
     for (auto& lobby_player : lobby_players) {
 
@@ -135,7 +136,7 @@ void Lobby::notify_players(std::shared_ptr<Match> match, LobbyMessage msg){
             
         }
     }
-    //TODO: eliminar los lobby_players que empezaron la partida
+    
 }
 
 void Lobby::process_start_match_command(const LobbyCommand& cmd) {

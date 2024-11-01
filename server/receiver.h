@@ -4,6 +4,7 @@
 #include "common/queue.h"
 #include "common/thread.h"
 #include "common/command.h"
+#include "common/executable.h"
 
 #include "server_protocol.h"
 
@@ -14,11 +15,11 @@ class Receiver: public Thread {
 private:
     ServerProtocol& protocol;
     bool is_alive;
-    Queue<Command>& command_queue;
+    Queue<std::shared_ptr<Executable>>& game_queue;
 
 
 public:
-    Receiver(ServerProtocol& protocol, Queue<Command>& command_queue);
+    Receiver(ServerProtocol& protocol, Queue<std::shared_ptr<Executable>>& game_queue);
 
     void run() override;
 

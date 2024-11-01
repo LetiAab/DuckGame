@@ -4,7 +4,7 @@
 #include <utility>
 
 
-Player::Player(ServerProtocol&& protocol, const uint16_t id, Queue<Command>& game_queue):
+Player::Player(ServerProtocol&& protocol, const uint16_t id, Queue<std::shared_ptr<Executable>>& game_queue):
         protocol(std::move(protocol)),
         player_id(id),
         sender(protocol),
