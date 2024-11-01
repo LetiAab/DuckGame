@@ -2,6 +2,8 @@
 #ifndef EXECUTABLE_H
 #define EXECUTABLE_H
 
+#include <memory>
+
 class Executable {
 public:
     virtual ~Executable() = default;

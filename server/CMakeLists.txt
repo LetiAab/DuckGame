@@ -14,6 +14,7 @@ target_sources(taller_server
     game.cpp
     lobby_player.cpp
     game_queue_monitor.cpp
+    move_left_command.cpp
     
     PUBLIC
     # .h files
@@ -29,4 +30,6 @@ target_sources(taller_server
     game.h
     lobby_player.h
     game_queue_monitor.h
+    executable.h
+    move_left_command.h
     )

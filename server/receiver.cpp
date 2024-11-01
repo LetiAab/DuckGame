@@ -12,10 +12,10 @@ Receiver::Receiver(ServerProtocol& protocol, Queue<std::shared_ptr<Executable>>&
 void Receiver::run() {
     try {
         while (is_alive) {
-            /*
+
             auto cmd = protocol.receive_command();
             game_queue.push(cmd);
-            */
+            
         }
 
     } catch (const ClosedQueue& e) {

@@ -36,7 +36,7 @@ void Match::start_match() {
         player->start_playing();
     }
 
-    //game.start();
+    game.start();
 }
 
 uint16_t Match::get_match_id() {

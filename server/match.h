@@ -2,7 +2,7 @@
 #define MATCH_H
 
 #include "player.h"
-#include "common/executable.h"
+#include "executable.h"
 #include "common/queue.h"
 #include "common/command.h"
 #include "game_queue_monitor.h"

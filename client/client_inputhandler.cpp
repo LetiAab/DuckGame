@@ -72,8 +72,13 @@ void InputHandler::run() {
                 };
             }
 
-            if (input == "d"){
-                //crear comando de mover a la derecha y agregarlo a la queue
+            if (input == "a"){
+                //moverme a la izquierda
+                auto command = Command(id, 8);
+
+                if (command_queue.try_push(command)){
+                    std::cout << "Moviendome a la izquierda..." << "\n";
+                };
             }
 
         }

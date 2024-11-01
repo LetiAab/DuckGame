@@ -2,7 +2,7 @@
 #define GAME_H
 
 #include "game_queue_monitor.h"
-#include "common/executable.h"
+#include "executable.h"
 #include "common/queue.h"
 #include "common/thread.h"
 #include "common/command.h"

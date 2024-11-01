@@ -11,6 +11,7 @@
 #include <sys/socket.h>
 
 #include "common/liberror.h"
+#include "move_left_command.h"
 
 ServerProtocol::ServerProtocol(Socket&& skt): skt(std::move(skt)) {}
 
@@ -51,9 +52,6 @@ LobbyCommand ServerProtocol::get_lobby_command(){
 
     skt.recvall(&player_id, sizeof(player_id), &was_closed);
     skt.recvall(&type, sizeof(type), &was_closed);
-    
-    //Este me esta bloqueando. Definir bien que es un command y un lobby command. 
-    //Por que serian dos distintos?
     skt.recvall(&match_id, sizeof(match_id), &was_closed);
 
     LobbyCommand cmd(player_id, type, match_id);
@@ -62,7 +60,26 @@ LobbyCommand ServerProtocol::get_lobby_command(){
 }
 
 
+
+std::shared_ptr<Executable> ServerProtocol::receive_command(){
+
+    uint16_t player_id = 0;
+    uint8_t type = 0;
+    uint16_t match_id = 0;
+    bool was_closed = false;
+
+    skt.recvall(&player_id, sizeof(player_id), &was_closed);
+    skt.recvall(&type, sizeof(type), &was_closed);
+    skt.recvall(&match_id, sizeof(match_id), &was_closed);
+    
+    //aca deberia fijarme el type y devolver el comando que corresponda
+    return std::make_shared<MoveLeftCommand>(player_id);
+
+}
+
+
 void ServerProtocol::shutdown() {
     skt.shutdown(2);
     skt.close();
 }
+

@@ -35,7 +35,7 @@ void LobbyReceiver::run() {
 
     } catch (const std::exception& e) {
         is_alive = false;
-        std::cerr << "Exeption running the receiver: " << e.what() << std::endl;
+        std::cerr << "Exeption running the Lobby_receiver: " << e.what() << std::endl;
     }
 }
 

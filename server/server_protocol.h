@@ -6,6 +6,8 @@
 #include "common/socket.h"
 #include "common/lobby_message.h"
 #include "common/lobby_command.h"
+#include "common/command.h"
+#include "executable.h"
 
 
 class ServerProtocol {
@@ -22,6 +24,8 @@ public:
     bool send_lobby_message(const LobbyMessage& message);
 
     LobbyCommand get_lobby_command();
+
+    std::shared_ptr<Executable> receive_command();
 
     void shutdown();
 

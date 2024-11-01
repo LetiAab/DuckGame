@@ -15,7 +15,7 @@ void Game::run() {
                 int i = 0;
                 std::shared_ptr<Executable> command;
                 while( i < 5 && game_queue.try_pop(command)){
-                        //command.execute();
+                        command->execute();
                         i += 1;
                 }
 

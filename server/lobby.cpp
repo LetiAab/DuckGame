@@ -3,7 +3,7 @@
 
 #include "common/lobby_message.h"
 #include "common/constants.h"
-#include "common/executable.h"
+#include "executable.h"
 
 #include <exception>
 #include <iostream>

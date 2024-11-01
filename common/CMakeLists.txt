@@ -20,6 +20,4 @@ target_sources(taller_common
     constants.h
     command.h
     message.h
-    executable.h
-    sendable.h
     )
