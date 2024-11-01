@@ -1,5 +1,5 @@
 #include "sendable.h"
-#include "client/client_protocol.h"
+#include "client_protocol.h"
 
 #ifndef COMMAND_H
 #define COMMAND_H

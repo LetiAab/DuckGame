@@ -5,7 +5,7 @@
 #include "common/thread.h"
 #include "common/lobby_message.h"
 
-#include "client_protocol.h"
+#include "common/client_protocol.h"
 #include "common/constants.h"
 
 #ifndef CLIENT_RECEIVER_H

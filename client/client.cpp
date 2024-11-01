@@ -2,6 +2,7 @@
 #include "common/lobby_command.h"
 #include "common/lobby_message.h"
 #include "common/queue.h"
+#include "common/sendable.h"
 
 
 const int OK = 0;
@@ -83,13 +84,11 @@ int Client::start(){
 
         if (message.type == START_MATCH_CODE){
             std::cout << "Partida iniciada con id: " << static_cast<int>(message.current_match_id) << "\n";
-            
-            LobbyCommand command2;
-            command2.player_id = id;
-            command2.type = LOBBY_STOP_CODE;
-            command2.match_id = 0;
 
-            if (protocol.send_lobby_command(command2)){
+            //esto no es muy lindo pero de momento anda
+            auto cmd = LobbyCommand(id, LOBBY_STOP_CODE, 0);
+
+            if (protocol.send_lobby_command(cmd)){
                 std::cout << "Me desconecte del lobby. Ahora voy a comunicarme con el juego" << "\n";
                 break;
             };

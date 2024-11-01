@@ -13,12 +13,9 @@ void ClientSender::run() {
     try {
         while (is_alive) {
 
-            //Este hilo que se encarga de mandar los comandos al servidor
-            //Por ahora solo funciona con LobbyCommand
-            //despues se cambiara por command u otro tipo mas amplio
+            auto cmd = command_queue.pop();
+            cmd->send_myself(protocol);
 
-            LobbyCommand cmd = command_queue.pop();
-            protocol.send_lobby_command(cmd);
         }
 
     } catch (const ClosedQueue& e) {
@@ -33,7 +30,7 @@ void ClientSender::run() {
     }
 }
 
-Queue<LobbyCommand>& ClientSender::get_queue(){ return command_queue; }
+Queue<std::shared_ptr<Sendable>>& ClientSender::get_queue(){ return command_queue; }
 
 
 bool ClientSender::is_running() { return is_alive; }

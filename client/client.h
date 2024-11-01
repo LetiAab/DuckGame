@@ -7,7 +7,7 @@
 #include <iostream>
 
 
-#include "client_protocol.h"
+#include "common/client_protocol.h"
 #include "common/socket.h"
 #include "common/message.h"
 #include "common/command.h"

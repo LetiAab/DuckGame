@@ -1,8 +1,10 @@
 // Interfaz Sendable
-#include "client/client_protocol.h"
+#include "client_protocol.h"
 
 #ifndef SENDABLE_H
 #define SENDABLE_H
+
+class ClientProtocol;
 
 class Sendable {
 public:

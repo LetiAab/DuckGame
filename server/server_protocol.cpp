@@ -44,18 +44,19 @@ bool ServerProtocol::send_lobby_message(const LobbyMessage& message){
 
 LobbyCommand ServerProtocol::get_lobby_command(){
 
-
-    LobbyCommand cmd;
-
+    uint16_t player_id = 0;
+    uint8_t type = 0;
+    uint16_t match_id = 0;
     bool was_closed = false;
 
-    skt.recvall(&cmd.player_id, 2, &was_closed);
-    skt.recvall(&cmd.type, 1, &was_closed);
+    skt.recvall(&player_id, sizeof(player_id), &was_closed);
+    skt.recvall(&type, sizeof(type), &was_closed);
     
     //Este me esta bloqueando. Definir bien que es un command y un lobby command. 
     //Por que serian dos distintos?
-    skt.recvall(&cmd.match_id, 2, &was_closed);
+    skt.recvall(&match_id, sizeof(match_id), &was_closed);
 
+    LobbyCommand cmd(player_id, type, match_id);
 
     return cmd;
 }

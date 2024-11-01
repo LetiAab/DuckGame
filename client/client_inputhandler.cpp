@@ -3,9 +3,10 @@
 #include <iostream>
 
 #include "common/liberror.h"
+#include "common/lobby_command.h"
 
 
-InputHandler::InputHandler(uint16_t id, Queue<LobbyCommand>& command_queue):
+InputHandler::InputHandler(uint16_t id, Queue<std::shared_ptr<Sendable>>& command_queue):
 id(id), is_alive(true), command_queue(command_queue) {}
 
 uint16_t getMatchId() {
@@ -40,15 +41,12 @@ void InputHandler::run() {
             std::string input;
             std::getline(std::cin, input);
 
-            LobbyCommand command;
-            command.player_id = id;
-
             if (input.empty() || input == "Exit") {
                 break;
             }
 
-            if (input == "5"){
-                command.type = NEW_MATCH_CODE;
+            if (input == "5") {
+                auto command = std::make_shared<LobbyCommand>(id, NEW_MATCH_CODE, actual_match_id);
 
                 if (command_queue.try_push(command)){
                     std::cout << "Creando partida..." << "\n";
@@ -57,13 +55,10 @@ void InputHandler::run() {
 
             if (input == "6"){
                 //este es para conectarte
-                command.type = EXISTING_MATCH_CODE;
-                command.match_id = getMatchId();//esto bloquea hasta que le pases un match id
+                actual_match_id = getMatchId();//esto bloquea hasta que le pases un match id
 
-                //que el hilo tenga el match al que me conecté
-                actual_match_id = command.match_id;
-
-
+                auto command = std::make_shared<LobbyCommand>(id, EXISTING_MATCH_CODE, actual_match_id);
+                
                 if (command_queue.try_push(command)){
                     std::cout << "Conectando a partida..." << "\n";
                 };
@@ -71,8 +66,7 @@ void InputHandler::run() {
 
             if (input == "7"){
                 //iniciar partida a la que estoy conectado
-                command.type = START_MATCH_CODE;
-                command.match_id = actual_match_id;
+                auto command = std::make_shared<LobbyCommand>(id, START_MATCH_CODE, actual_match_id);
 
                 if (command_queue.try_push(command)){
                     std::cout << "Iniciando partida..." << "\n";

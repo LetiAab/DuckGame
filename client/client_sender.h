@@ -1,12 +1,12 @@
 #include <cstdint>
 #include <string>
 
-
 #include "common/queue.h"
 #include "common/thread.h"
-#include  "common/lobby_command.h"
+#include "common/lobby_command.h"
+#include "common/sendable.h"
 
-#include "client_protocol.h"
+#include "common/client_protocol.h"
 #include "common/constants.h"
 
 
@@ -17,7 +17,7 @@ class ClientSender: public Thread {
 private:
     ClientProtocol& protocol;
     bool is_alive;
-    Queue<LobbyCommand> command_queue;
+    Queue<std::shared_ptr<Sendable>> command_queue;
 
 
 public:
@@ -29,7 +29,7 @@ public:
 
     void stop() override;
 
-    Queue<LobbyCommand>& get_queue();
+    Queue<std::shared_ptr<Sendable>>& get_queue();
 };
 
 #endif

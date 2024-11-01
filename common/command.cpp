@@ -1,5 +1,5 @@
 #include "sendable.h"
-#include "client/client_protocol.h"
+#include "client_protocol.h"
 
 #include <cstdint>
 #include <string>
