@@ -15,6 +15,12 @@ const uint8_t START_MATCH_CODE = 0x07;
 const uint8_t LOBBY_STOP_CODE = 0x08;
 const uint8_t LIST_MATCH_AVAILABLE = 0x09;
 
+const uint8_t MOVE_LEFT = 0x10;
+const uint8_t MOVE_RIGHT = 0x11;
+const uint8_t MOVE_UP = 0x12;
+const uint8_t MOVE_DOWN = 0x13;
+
+
 static const char QUIT_SERVER[] = "q";
 
 const int WINDOW_WIDTH = 800;

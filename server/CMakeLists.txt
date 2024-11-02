@@ -15,7 +15,11 @@ target_sources(taller_server
     lobby_player.cpp
     game_queue_monitor.cpp
     game_map.cpp
-    move_left_command.cpp
+    executables/move_left_command.cpp
+    executables/move_right_command.cpp
+    executables/move_down_command.cpp
+    executables/move_up_command.cpp
+
 
     
     PUBLIC
@@ -32,7 +36,10 @@ target_sources(taller_server
     game.h
     lobby_player.h
     game_queue_monitor.h
-    executable.h
+    executables/executable.h
     game_map.h
-    move_left_command.h
+    executables/move_left_command.h
+    executables/move_right_command.h
+    executables/move_down_command.h
+    executables/move_up_command.h
     )

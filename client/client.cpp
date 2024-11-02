@@ -97,11 +97,16 @@ int Client::start(){
     handleLobby(id, message_queue);
 
     //aca deberia recibir un mensaje especial con el Mapa, y dibujarlo
-    sdl_handler->run();
+    //sdl_handler->run();
 
-    //recibo los mensajes del juego con las actualizaciones
+    //recibo los mensajes del juego con las actualizaciones del mundo
     while(true){
         Message message = message_queue.pop();
+
+        std::cout << "Mensaje recibido:" << std::endl;
+        std::cout << "  Player ID: " << message.player_id << std::endl;
+        std::cout << "  Type: " << static_cast<int>(message.type) << std::endl; // Convertir a int para mostrar el valor de uint8_t
+        
 
         //procesar el mensaje
         break;

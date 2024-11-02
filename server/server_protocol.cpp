@@ -11,7 +11,9 @@
 #include <sys/socket.h>
 
 #include "common/liberror.h"
-#include "move_left_command.h"
+
+
+#include "common/constants.h"
 
 ServerProtocol::ServerProtocol(Socket&& skt): skt(std::move(skt)) {}
 
@@ -73,6 +75,28 @@ std::shared_ptr<Executable> ServerProtocol::receive_command(){
     skt.recvall(&match_id, sizeof(match_id), &was_closed);
     
     //aca deberia fijarme el type y devolver el comando que corresponda
+
+    std::cout << "Comando recibido: " << std::endl;    
+    std::cout << "  Player ID: " << player_id << std::endl;
+    std::cout << "  Type: " << static_cast<int>(type) << std::endl; // Convertir a int para mostrar el valor de uint8_t
+    std::cout << "  Match ID: " << match_id << std::endl;
+
+    switch (type)
+    {
+    case MOVE_LEFT:
+        return std::make_shared<MoveLeftCommand>(player_id);
+    case MOVE_RIGHT:
+        return std::make_shared<MoveRightCommand>(player_id);
+    case MOVE_UP:
+        return std::make_shared<MoveUpCommand>(player_id);
+    case MOVE_DOWN:
+        return std::make_shared<MoveDownCommand>(player_id);    
+    default:
+        break;
+    }
+
+
+    //TODO: manejar el error
     return std::make_shared<MoveLeftCommand>(player_id);
 
 }

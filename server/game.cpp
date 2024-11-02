@@ -11,15 +11,17 @@ Queue<std::shared_ptr<Executable>>& Game::get_game_queue(){
 
 void Game::run() {
         while (is_running) {
+                std::cout << "GAME CORRIENDO" << "\n";
                 // saco de 5 comandos de la queue y los ejecuto
                 int i = 0;
                 std::shared_ptr<Executable> command;
                 while( i < 5 && game_queue.try_pop(command)){
+                        
                         command->execute();
                         i += 1;
                 }
 
-                //bloadcast();
+                //bloadcast(); para avisarle a los jugadores lo que cambió
 
                 std::this_thread::sleep_for(std::chrono::milliseconds(200));
         }

@@ -74,10 +74,33 @@ void InputHandler::run() {
 
             if (input == "a"){
                 //moverme a la izquierda
-                auto command = Command(id, 8);
+                auto command = Command(id, MOVE_LEFT);
 
                 if (command_queue.try_push(command)){
                     std::cout << "Moviendome a la izquierda..." << "\n";
+                };
+            }
+            if (input == "d"){
+                auto command = Command(id, MOVE_RIGHT);
+
+                if (command_queue.try_push(command)){
+                    std::cout << "Moviendome a la derecha..." << "\n";
+                };
+            }
+            if (input == "w"){
+                //moverme a la izquierda
+                auto command = Command(id, MOVE_UP);
+
+                if (command_queue.try_push(command)){
+                    std::cout << "Moviendome hacia arriba w..." << "\n";
+                };
+            }
+            if (input == "s"){
+                //moverme a la izquierda
+                auto command = Command(id, MOVE_DOWN);
+
+                if (command_queue.try_push(command)){
+                    std::cout << "Moviendome hacia abajo..." << "\n";
                 };
             }
 

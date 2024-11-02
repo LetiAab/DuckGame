@@ -6,7 +6,7 @@
 #include "common/queue.h"
 #include "common/message.h"
 #include "common/command.h"
-#include "executable.h"
+#include "executables/executable.h"
 
 #include "server_protocol.h"
 #include "receiver.h"

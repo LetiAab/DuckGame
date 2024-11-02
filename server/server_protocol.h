@@ -7,7 +7,12 @@
 #include "common/lobby_message.h"
 #include "common/lobby_command.h"
 #include "common/command.h"
-#include "executable.h"
+#include "executables/executable.h"
+
+#include "executables/move_left_command.h"
+#include "executables/move_right_command.h"
+#include "executables/move_down_command.h"
+#include "executables/move_up_command.h"
 
 
 class ServerProtocol {
