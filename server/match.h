@@ -5,8 +5,8 @@
 #include "executables/executable.h"
 #include "common/queue.h"
 #include "common/command.h"
-#include "game_queue_monitor.h"
-#include "game.h"
+#include "game/game_queue_monitor.h"
+#include "game/game.h"
 #include <list>
 
 class Match {

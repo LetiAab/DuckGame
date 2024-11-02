@@ -7,7 +7,7 @@
 
 #include "common/socket.h"
 #include "common/thread.h"
-#include "lobby.h"
+#include "lobby/lobby.h"
 
 
 class Acceptor: public Thread {

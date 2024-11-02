@@ -8,7 +8,7 @@
 #include "common/queue.h"
 #include "common/lobby_command.h"
 #include "common/lobby_message.h"
-#include "match.h"
+#include "../match.h"
 #include "lobby_player.h"
 #include "common/thread.h"
 

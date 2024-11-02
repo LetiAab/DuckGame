@@ -1,6 +1,6 @@
 #include "game.h"
 
-
+//TODO: Tamanio del mapa hardcodeado
 Game::Game(uint16_t match_id, GameQueueMonitor& monitor):
 match_id(match_id), monitor(monitor), is_running(true), game_queue(), map(15, 10) {}
 
@@ -10,6 +10,11 @@ Queue<std::shared_ptr<Executable>>& Game::get_game_queue(){
 
 
 void Game::run() {
+
+        //Creo el mapa con los objetos fijos (bloques) y la posicion inicial de los patos
+
+        map.printMap();
+
         while (is_running) {
                 std::cout << "GAME CORRIENDO" << "\n";
                 // saco de 5 comandos de la queue y los ejecuto
@@ -27,6 +32,11 @@ void Game::run() {
         }
 
 }
+
+void Game::inicializate_map(){
+        
+}
+
 
 /*
 

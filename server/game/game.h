@@ -2,7 +2,7 @@
 #define GAME_H
 
 #include "game_queue_monitor.h"
-#include "executables/executable.h"
+#include "../executables/executable.h"
 #include "common/queue.h"
 #include "common/thread.h"
 #include "common/command.h"
@@ -24,6 +24,8 @@ public:
 explicit Game(uint16_t match_id, GameQueueMonitor& monitor);
 
 Queue<std::shared_ptr<Executable>>& get_game_queue();
+
+void inicializate_map();
 
 void run() override;
 void stop() override;

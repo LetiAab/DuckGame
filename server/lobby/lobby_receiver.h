@@ -5,7 +5,7 @@
 #include "common/thread.h"
 #include "common/lobby_command.h"
 
-#include "server_protocol.h"
+#include "../server_protocol.h"
 
 #ifndef LOBBY_RECEIVER_H
 #define LOBBY_RECEIVER_H

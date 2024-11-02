@@ -5,16 +5,16 @@ target_sources(taller_server
     server.cpp
     acceptor.cpp
     server_protocol.cpp
-    lobby.cpp
+    lobby/lobby.cpp
     match.cpp
     player.cpp
-    lobby_receiver.cpp
+    lobby/lobby_receiver.cpp
     receiver.cpp
     sender.cpp
-    game.cpp
-    lobby_player.cpp
-    game_queue_monitor.cpp
-    game_map.cpp
+    game/game.cpp
+    lobby/lobby_player.cpp
+    game/game_queue_monitor.cpp
+    game/game_map.cpp
     executables/move_left_command.cpp
     executables/move_right_command.cpp
     executables/move_down_command.cpp
@@ -27,17 +27,17 @@ target_sources(taller_server
     server.h
     acceptor.h
     server_protocol.h
-    lobby.h
+    lobby/lobby.h
     match.h
     player.h
-    lobby_receiver.h
+    lobby/lobby_receiver.h
     receiver.h
     sender.h
-    game.h
-    lobby_player.h
-    game_queue_monitor.h
+    game/game.h
+    lobby/lobby_player.h
+    game/game_queue_monitor.h
     executables/executable.h
-    game_map.h
+    game/game_map.h
     executables/move_left_command.h
     executables/move_right_command.h
     executables/move_down_command.h

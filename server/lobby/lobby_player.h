@@ -7,11 +7,11 @@
 #include "common/lobby_message.h"
 #include "common/lobby_command.h"
 #include "common/command.h"
-#include "executables/executable.h"
+#include "../executables/executable.h"
 
-#include "server_protocol.h"
+#include "../server_protocol.h"
 #include "lobby_receiver.h"
-#include "player.h"
+#include "../player.h"
 
 
 class LobbyPlayer {
