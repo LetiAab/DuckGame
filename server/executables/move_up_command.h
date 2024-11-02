@@ -10,7 +10,7 @@ class MoveUpCommand : public Executable {
 public:
     MoveUpCommand(uint16_t player_id);
 
-    void execute() override;
+    void execute(Game& game) override;
 };
 
 #endif

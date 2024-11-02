@@ -10,7 +10,7 @@ class MoveRightCommand : public Executable {
 public:
     MoveRightCommand(uint16_t player_id);
 
-    void execute() override;
+    void execute(Game& game) override;
 };
 
 #endif
