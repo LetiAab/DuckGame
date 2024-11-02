@@ -1,18 +1,15 @@
 #include "client.h"
+
 #include "common/command.h"
 #include "common/message.h"
 #include "common/queue.h"
-
-
-const int OK = 0;
-
-
+#include "common/constants.h"
 
 Client::Client(const std::string& hostname, const std::string& port):
         protocol(Socket(hostname.c_str(), port.c_str())){}
 
 void printExistingMatches(const std::vector<uint16_t>& existing_matches) {
-    std::cout << "Ids de partidas disponibles: ";
+    std::cout << "=> Ids de partidas disponibles: ";
     if (existing_matches.empty()) {
         std::cout << "No existing matches.";
     } else {
@@ -28,6 +25,7 @@ void printExistingMatches(const std::vector<uint16_t>& existing_matches) {
 
 void print_first_message(Message& first_message){
     std::cout << "First Message. My Player ID is: " << first_message.player_id << "\n";
+    std::cout << "---------------------------------------------" << "\n";
     std::cout << "OPTIONS: " << "\n";
     std::cout << "Create a new match: 5" << "\n";
     std::cout << "Join an existing match: 6" << "\n";
@@ -38,39 +36,13 @@ void print_first_message(Message& first_message){
     std::cout << "\n";
 }
 
-int Client::start(){
-
-    // primer mensaje de la conexion para saber mi id
-    Message first_message = protocol.recive_message();
-
-    //persisto mi id
-    uint16_t id = first_message.player_id;
-
-    print_first_message(first_message);
-
-
-    //inputhandler ---> sender
-    //SDL? <--- receiver
-    sender = std::make_unique<ClientSender>(protocol);
-    input_handler = std::make_unique<InputHandler> (id, sender->get_queue());
-    receiver = std::make_unique<ClientReceiver>(protocol);
-
-    //obtengo la queue para procesar los mensajes que me manda el server
-    //probablemnete deba mandarsela a SDL
-    Queue<Message>& message_queue = receiver->get_queue();
-
-    //inicio los hilos
-    sender->start();
-    receiver->start();
-    input_handler->start();
-
-    //-----------------MOVER ESTO A OTRA CLASE-------------------------------------
+void Client::handleLobby(uint16_t& id, Queue<Message>& message_queue) {
     while(true){
         Message message = message_queue.pop();
 
         if (message.type == NEW_MATCH_CODE){
-                            
             std::cout << "Partida creada con id: " << static_cast<int>(message.current_match_id) << "\n";
+            printExistingMatches(message.existing_matches);
         }
 
         if (message.type == EXISTING_MATCH_CODE){
@@ -92,12 +64,40 @@ int Client::start(){
                 break;
             };
         }
-
         std::cout << "\n";
     }
+}
+
+int Client::start(){
+    // primer mensaje de la conexion para saber mi id
+    Message first_message = protocol.recive_message();
+
+    //persisto mi id
+    uint16_t id = first_message.player_id;
+
+    print_first_message(first_message);
+
+    //inputhandler ---> sender
+    //SDL? <--- receiver
+    sender = std::make_unique<ClientSender>(protocol);
+    input_handler = std::make_unique<InputHandler> (id, sender->get_queue());
+    receiver = std::make_unique<ClientReceiver>(protocol);
+    sdl_handler = std::make_unique<SDLHandler>();
+
+    //obtengo la queue para procesar los mensajes que me manda el server
+    //probablemnete deba mandarsela a SDL
+    Queue<Message>& message_queue = receiver->get_queue();
+
+    //inicio los hilos
+    sender->start();
+    receiver->start();
+    input_handler->start();
+
+    //manejo la interaccion con el lobby
+    handleLobby(id, message_queue);
 
     //aca deberia recibir un mensaje especial con el Mapa, y dibujarlo
-    
+    sdl_handler->run();
 
     //recibo los mensajes del juego con las actualizaciones
     while(true){
@@ -116,6 +116,6 @@ int Client::start(){
     sender->join();
     receiver->join();
 
-    return OK;
+    return SUCCESS;
 }
 

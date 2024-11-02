@@ -3,19 +3,13 @@
 #define CLIENT_H
 
 #include <string>
-#include <vector>
-#include <iostream>
-
-
 #include "client_protocol.h"
-#include "common/socket.h"
-#include "common/message.h"
-#include "common/command.h"
-#include "common/constants.h"
-
 #include "client_sender.h"
 #include "client_receiver.h"
 #include "client_inputhandler.h"
+#include "sdl_handler.h"
+
+class SDLHandler;
 
 class Client {
 private:
@@ -23,8 +17,8 @@ private:
     std::unique_ptr<ClientSender> sender;
     std::unique_ptr<ClientReceiver> receiver;
     std::unique_ptr<InputHandler> input_handler;
-
-
+    std::unique_ptr<SDLHandler> sdl_handler;
+    void handleLobby(uint16_t& id, Queue<Message>& message_queue);
 public:
     Client(const std::string& hostname, const std::string& port);
     int start();
