@@ -24,16 +24,17 @@ void printExistingMatches(const std::vector<uint16_t>& existing_matches) {
 }
 
 void print_first_message(Message& first_message){
-    std::cout << "First Message. My Player ID is: " << first_message.player_id << "\n";
-    std::cout << "---------------------------------------------" << "\n";
-    std::cout << "OPTIONS: " << "\n";
-    std::cout << "Create a new match: 5" << "\n";
-    std::cout << "Join an existing match: 6" << "\n";
+    std::cout << "First Message. My Player ID is: " << first_message.player_id << std::endl;
+    std::cout << "---------------------------------------------" << std::endl;
+    std::cout << "OPTIONS: " << std::endl;
+    std::cout << "Create a new match: 5" << std::endl;
+    std::cout << "Join an existing match: 6" << std::endl;
     //por ahora muestro los match ids, esto despues se va a mostrar solo si el jugador
     //hace click en ver partidas existente y vamos a mostrar el nombre de la partida
     printExistingMatches(first_message.existing_matches);
-    std::cout << "Once you are in a match, you can start it with: 7" << "\n";
-    std::cout << "\n";
+    std::cout << "Once you are in a match, you can start it with: 7" << std::endl;
+    std::cout << "If you want to close the client, you can do it with 'Exit'" << std::endl;
+    std::cout << std::endl;
 }
 
 void Client::handleLobby(uint16_t& id, Queue<Message>& message_queue) {
