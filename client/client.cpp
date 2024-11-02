@@ -96,6 +96,19 @@ int Client::start(){
         std::cout << "\n";
     }
 
+    //aca deberia recibir un mensaje especial con el Mapa, y dibujarlo
+    
+
+    //recibo los mensajes del juego con las actualizaciones
+    while(true){
+        Message message = message_queue.pop();
+
+        //procesar el mensaje
+        break;
+
+        std::cout << "\n";
+    }
+
     //---------------------------------------------------------------------------------------
 
     //protocol.close();

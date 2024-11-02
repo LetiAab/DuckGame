@@ -2,7 +2,7 @@
 
 
 Game::Game(uint16_t match_id, GameQueueMonitor& monitor):
-match_id(match_id), monitor(monitor), is_running(true), game_queue() {}
+match_id(match_id), monitor(monitor), is_running(true), game_queue(), map(15, 10) {}
 
 Queue<std::shared_ptr<Executable>>& Game::get_game_queue(){
         return game_queue;
@@ -21,6 +21,7 @@ void Game::run() {
 
                 //bloadcast();
 
+                std::this_thread::sleep_for(std::chrono::milliseconds(200));
         }
 
 }

@@ -6,6 +6,7 @@
 #include "common/queue.h"
 #include "common/thread.h"
 #include "common/command.h"
+#include "game_map.h"
 #include <list>
 #include <vector>
 
@@ -17,6 +18,7 @@ private:
         GameQueueMonitor& monitor;
         bool is_running;
         Queue<std::shared_ptr<Executable>> game_queue;
+        GameMap map;
 
 public:
 explicit Game(uint16_t match_id, GameQueueMonitor& monitor);
