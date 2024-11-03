@@ -51,7 +51,6 @@ bool GameMap::canMoveDuckTo(int x, int y, char duck_id) {
 }
 
 void GameMap::setEscenario() {
-
     for (int x = 0; x < width; ++x) {
         map[height - 1][x] = PLATFORM; // Piso
     }
@@ -61,6 +60,18 @@ void GameMap::setEscenario() {
         map[y][0] = PLATFORM;          // Costado izquierdo
         map[y][width - 1] = PLATFORM;  // Costado derecho
     }
+
+    // Debug platforms
+    map[height - 2][3] = PLATFORM;
+    map[height - 2][4] = PLATFORM;
+
+    map[height - 2][7] = PLATFORM;
+    map[height - 2][8] = PLATFORM;
+    map[height - 3][7] = PLATFORM;
+    map[height - 3][8] = PLATFORM;
+
+    map[height - 2][11] = PLATFORM;
+    map[height - 2][12] = PLATFORM;
 }
 
 
