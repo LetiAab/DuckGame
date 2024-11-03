@@ -44,7 +44,7 @@ void Game::run() {
                         i += 1;
                 }
 
-                // Simulate one round???
+                // Simulo una ronda de movimientos
                 simulate_round();
 
                 //monitor.broadcast();
@@ -75,6 +75,7 @@ void Game::inicializate_map(){
 //TODO: Esto solo sirve para dos patos y siempre tiene en cuenta que es el mismo distribucion de obstaculos
 void Game::create_ducks(const std::vector<uint16_t>& ids) {
     // Lista de posiciones fijas donde se colocarán los patos
+    
     std::vector<std::pair<int, int>> positions = {{1, 1}, {6, 1}};
     
     for (size_t i = 0; i < ids.size() && i < positions.size(); ++i) {

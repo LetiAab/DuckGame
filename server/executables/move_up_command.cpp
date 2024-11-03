@@ -9,5 +9,5 @@ void MoveUpCommand::execute(Game& game) {
     std::cout << "Jugador " << player_id << " se movió hacia arriba\n";
     
     Duck* duck = game.getDuckById(player_id);
-    duck->speed_y --; // Si queremos que salte dos casillas deberíamos cambiar esto
+    duck->speed_y -= 2; // Si queremos que salte N casillas cambiar por N
 }
