@@ -14,6 +14,16 @@
 #include <cstdlib>  // Para rand y srand
 #include <ctime>    // Para time
 
+typedef struct update
+{
+        int duck_id;
+        int previous_x_position;
+        int previous_y_position;
+        int x_movement;
+        int y_movement;
+} Update;
+// Con esta lógica el cliente tendría que chequear quien está en esa posición y después moverlo
+
 
 //se me genera una dependencia circular entre game y executable
 class Executable;
@@ -25,6 +35,7 @@ private:
         GameQueueMonitor& monitor;
         bool is_running;
         Queue<std::shared_ptr<Executable>> game_queue;
+        std::vector<Update> updates;
 
 public:
         GameMap map;
@@ -43,6 +54,9 @@ void create_ducks(const std::vector<uint16_t>& ids);
 void refreshDuckPositions();
 
 Duck* getDuckById(uint16_t id);
+
+void simulate_round();
+
     
 void run() override;
 void stop() override;

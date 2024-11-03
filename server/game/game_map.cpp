@@ -97,7 +97,11 @@ int GameMap::get_width(){return width;}
 void GameMap::printMap() const {
     for (const auto& row : map) {
         for (int cell : row) {
-            std::cout << cell << " ";
+            if (cell == 0) {
+                std::cout << " " << " ";
+            } else {
+                std::cout << cell << " ";
+            }
         }
         std::cout << "\n";
     }

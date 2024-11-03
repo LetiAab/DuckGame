@@ -12,9 +12,15 @@ private:
 
 
 public:
+
+    int speed_x;
+    int speed_y;
+
     Duck(uint16_t id, int x, int y, GameMap& map);
 
-    void update_position(int delta_x, int delta_y);
+//    void update_position(int delta_x, int delta_y);
+
+    void update_position_speed();
 
     uint16_t get_id() const;
     int get_x() const;

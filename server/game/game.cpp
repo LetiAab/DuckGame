@@ -9,6 +9,12 @@ Queue<std::shared_ptr<Executable>>& Game::get_game_queue(){
         return game_queue;
 }
 
+void Game::simulate_round() {
+        for (Duck& duck : ducks) {  
+                duck.update_position_speed();
+        }
+}
+
 
 void Game::run() {
 
@@ -29,18 +35,21 @@ void Game::run() {
 
         while (is_running) {
                 // saco de 5 comandos de la queue y los ejecuto
-                int i = 0;
                 std::shared_ptr<Executable> command;
+
+                int i = 0;
                 while( i < 5 && game_queue.try_pop(command)){
-                        
                         command->execute(*this);
+
                         i += 1;
                 }
 
-                
+                // Simulate one round???
+                simulate_round();
 
                 //monitor.broadcast();
-                // broadcast(); para avisarle a los jugadores lo que cambió
+
+                // renew_iteration(); para resetear cosas que duren una ronda
 
                 std::this_thread::sleep_for(std::chrono::milliseconds(200));
         }
