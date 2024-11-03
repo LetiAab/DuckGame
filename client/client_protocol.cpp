@@ -21,9 +21,9 @@ Message ClientProtocol::recive_message(){
     switch (message.type)
     {
     case MAP_INICIALIZATION:
-        message.map.resize(10, std::vector<int>(15));  // Cambia las dimensiones aquí
+        message.map.resize(10, std::vector<char>(15));  // Cambia las dimensiones aquí
         for (size_t i = 0; i < 10; ++i) { // 10 filas
-            skt.recvall(message.map[i].data(), 15 * sizeof(int), &was_closed); // Recibir cada fila
+            skt.recvall(message.map[i].data(), 15 * sizeof(char), &was_closed); // Recibir cada fila
         }
     break;
     

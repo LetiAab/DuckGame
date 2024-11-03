@@ -2,13 +2,13 @@
 #include <iostream>
 #include <vector>
 
-const int EMPTY = 0;
-const int DUCK = 1;
-const int OBSTACLE = 2;
+const char EMPTY = '0';
+const char DUCK = '1';
+const char OBSTACLE = '2';
 
 
 GameMap::GameMap(int width, int height) : width(width), height(height) {
-    map.resize(height, std::vector<int>(width, EMPTY));
+    map.resize(height, std::vector<char>(width, EMPTY));
 }
 
 //Esto no contempla colisiones entre patos
@@ -96,7 +96,7 @@ int GameMap::get_width(){return width;}
 // METODO TEMPORAL: Imprime el mapa en la consola
 void GameMap::printMap() const {
     for (const auto& row : map) {
-        for (int cell : row) {
+        for (char cell : row) {
             if (cell == 0) {
                 std::cout << " " << " ";
             } else {
@@ -112,6 +112,6 @@ void GameMap::printMap() const {
 
 
 
-std::vector<std::vector<int>> GameMap::getMap(){
+std::vector<std::vector<char>> GameMap::getMap(){
     return map;
 }

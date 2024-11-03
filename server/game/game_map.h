@@ -8,7 +8,7 @@ class GameMap {
 private:
     int width;
     int height;
-    std::vector<std::vector<int>> map;
+    std::vector<std::vector<char>> map;
 
 public:
     GameMap(int width, int height);
@@ -26,7 +26,7 @@ public:
     int get_height();
     int get_width();
 
-    std::vector<std::vector<int>> getMap();
+    std::vector<std::vector<char>> getMap();
 
     //METODO TEMPORAL: Imprime el mapa en la consola
     void printMap() const;

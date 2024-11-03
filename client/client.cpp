@@ -23,9 +23,9 @@ void printExistingMatches(const std::vector<uint16_t>& existing_matches) {
     std::cout << "\n";
 }
 
-void printMap(const std::vector<std::vector<int>>& map) {
+void printMap(const std::vector<std::vector<char>>& map) {
     for (const auto& row : map) {
-        for (int cell : row) {
+        for (char cell : row) {
             std::cout << cell << " "; // Imprime cada celda
         }
         std::cout << std::endl; // Nueva línea después de cada fila
@@ -95,7 +95,7 @@ int Client::start(){
     sdl_handler = std::make_unique<SDLHandler>();
 
     //obtengo la queue para procesar los mensajes que me manda el server
-    //probablemnete deba mandarsela a SDL
+    //probablemente deba mandarsela a SDL
     Queue<Message>& message_queue = receiver->get_queue();
 
     //inicio los hilos
