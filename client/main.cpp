@@ -15,7 +15,7 @@ int main(int argc, const char* argv[]) {
 		std::cout << "Levanto cliente en hostname: " << hostname << " y servername: " << servname << "\n";
 
 		Client client(hostname, servname);
-     		client.start();
+		client.start();
 
 		return SUCCESS;
 	} catch (const std::exception& err) {

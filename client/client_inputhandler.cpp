@@ -41,10 +41,15 @@ void InputHandler::run() {
             std::getline(std::cin, input);
 
             if (input.empty() || input == "Exit") {
+                //este es para salir del programa
+                auto stop_command = Command(id, LOBBY_EXIT_CODE);
+                command_queue.push(stop_command);
+                is_alive = false;
                 break;
             }
 
             if (input == "5") {
+                //este es para crear una partida
                 auto command = Command(id, NEW_MATCH_CODE, actual_match_id);
 
                 if (command_queue.try_push(command)){
@@ -120,4 +125,7 @@ void InputHandler::run() {
 
 bool InputHandler::is_running() { return is_alive; }
 
-void InputHandler::stop() { is_alive = false; }
+void InputHandler::stop() {
+    is_alive = false;
+    command_queue.close();
+}

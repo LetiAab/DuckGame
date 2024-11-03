@@ -50,6 +50,11 @@ void Client::handleLobby(uint16_t& id, Queue<Message>& message_queue) {
     while(true){
         Message message = message_queue.pop();
 
+        if (message.type == LOBBY_EXIT_CODE){
+            std::cout << "Comando para salir..." << "\n";
+            break;
+        }
+
         if (message.type == NEW_MATCH_CODE){
             std::cout << "Partida creada con id: " << static_cast<int>(message.current_match_id) << "\n";
             printExistingMatches(message.existing_matches);
@@ -80,11 +85,10 @@ void Client::handleLobby(uint16_t& id, Queue<Message>& message_queue) {
 
 int Client::start(){
     // primer mensaje de la conexion para saber mi id
-    Message first_message = protocol.recive_message();
+    Message first_message = protocol.receive_message();
 
     //persisto mi id
     uint16_t id = first_message.player_id;
-
     print_first_message(first_message);
 
     //inputhandler ---> sender
@@ -107,37 +111,41 @@ int Client::start(){
     handleLobby(id, message_queue);
 
     //aca deberia recibir un mensaje especial con el Mapa, y dibujarlo
-    std::cout << "Inicializacion del mapa" << std::endl;
+    /*std::cout << "Inicializacion del mapa" << std::endl;
 
     Message message = message_queue.pop();
-    printMap(message.map);
+    printMap(message.map);*/
 
     //sdl_handler->run();
 
     //recibo los mensajes del juego con las actualizaciones del mundo
-    while(true){
+    while(input_handler->is_running()){
         Message message = message_queue.pop();
 
         std::cout << "Mensaje recibido:" << std::endl;
         std::cout << "  Player ID: " << message.player_id << std::endl;
         std::cout << "  Type: " << static_cast<int>(message.type) << std::endl; 
-        
-
-
-        
 
         //procesar el mensaje
-        break;
+        //break;
 
         std::cout << "\n";
     }
 
     //---------------------------------------------------------------------------------------
 
-    //protocol.close();
+    std::cout << "Cerrando socket..." << std::endl;
+    protocol.shutdown();
+    std::cout << "Cerrando input handler..." << std::endl;
+    input_handler->stop();
     input_handler->join();
+    std::cout << "Cerrando sender..." << std::endl;
+    sender->stop();
     sender->join();
+    std::cout << "Cerrando receiver..." << std::endl;
+    receiver->stop();
     receiver->join();
+    std::cout << "Cliente cerrado..." << std::endl;
 
     return SUCCESS;
 }
