@@ -28,6 +28,8 @@ public:
 
     std::vector<std::vector<char>> getMap();
 
+    char get_position(int x, int y);
+
     //METODO TEMPORAL: Imprime el mapa en la consola
     void printMap() const;
 

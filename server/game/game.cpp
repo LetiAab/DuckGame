@@ -1,6 +1,8 @@
 #include "game.h"
 #include "common/constants.h"
 
+#include <random>
+
 //TODO: Tamanio del mapa hardcodeado
 Game::Game(uint16_t match_id, GameQueueMonitor& monitor):
 match_id(match_id), monitor(monitor), is_running(true), game_queue(), map(15, 10){}
@@ -57,7 +59,7 @@ void Game::run() {
 }
 
 void Game::inicializate_map(){
-        for (const Duck& duck : ducks) {
+/*         for (const Duck& duck : ducks) {
                 int x = duck.get_x(); 
                 int y = duck.get_y();
 
@@ -69,26 +71,54 @@ void Game::inicializate_map(){
                 std::cout << "Pato colocado en (" << x << ", " << y << ")\n";
                 }
         }
-
+ */
 }
 
 //TODO: Esto solo sirve para dos patos y siempre tiene en cuenta que es el mismo distribucion de obstaculos
 void Game::create_ducks(const std::vector<uint16_t>& ids) {
-    // Lista de posiciones fijas donde se colocarán los patos
-    
-    std::vector<std::pair<int, int>> positions = {{1, 1}, {6, 1}};
-    
-    for (size_t i = 0; i < ids.size() && i < positions.size(); ++i) {
-        // Obtén la posición fija para el pato actual
-        int fixed_x = positions[i].first;
-        int fixed_y = positions[i].second;
-        
-        ducks.emplace_back(ids[i], fixed_x, fixed_y, map); 
-    }
+        std::random_device rd;
+        std::mt19937 gen(rd());
+
+        std::uniform_int_distribution<> distrib_x(1, map.get_width() - 2);
+        std::uniform_int_distribution<> distrib_y(1, map.get_width() - 3);
+
+        for(uint16_t id: ids) {
+                char char_id = static_cast<char>(id + '0');
+                std::cout << "El id del pato a insertar es " << char_id << std::endl;
+
+                int random_x = distrib_x(gen);
+                int random_y = distrib_y(gen);
+                std::cout << "x: " << random_x << ", y: " << random_y << std::endl;
+
+                bool has_place = map.placeDuck(random_x, random_y, char_id);
+                while (has_place == false) {
+                        std::cout << "Posicion ocupada por una " << map.get_position(random_x, random_y) << std::endl;
+                        random_x = distrib_x(gen);
+                        random_y = distrib_y(gen);
+
+                        has_place = map.placeDuck(random_x, random_y, char_id); 
+                        std::cout << ", nueva posición x: " << random_x << ", y: " << random_y << ", has_place es ";
+                        
+                        if (has_place) {
+                                std::cout << "true" << std::endl;
+                        } else {
+                                std::cout << "false" << std::endl;
+                        }
+                        map.printMap();
+                }
+
+                std::cout << "Se definieron las coordenadas." << std::endl;
+                ducks.emplace_back(char_id, random_x, random_y, map);
+                std::cout << "Se inserto un pato en el mapa: x " << random_x << ", y " << random_y << std::endl;
+        }
 }
 
 
-Duck* Game::getDuckById(uint16_t id) {
+Duck* Game::getDuckById(char id) {
+        std::cout << "En getDuckById piden el id " << id <<", la lista de patos es: " << std::endl;
+        for (Duck& duck : ducks) {  
+                std::cout << "Pato de id " << duck.get_id() << std::endl;
+        }
     for (auto& duck : ducks) {
         if (duck.get_id() == id) {
             return &duck; // Retorna un puntero al pato encontrado
