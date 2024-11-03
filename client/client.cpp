@@ -124,11 +124,12 @@ int Client::start(){
 
         std::cout << "Mensaje recibido:" << std::endl;
         std::cout << "  Player ID: " << message.player_id << std::endl;
-        std::cout << "  Type: " << static_cast<int>(message.type) << std::endl; 
+        std::cout << "  Type: " << static_cast<int>(message.type) << std::endl;
 
         //procesar el mensaje
-        //break;
-
+        /*if (message.type == EXIT_GAME){
+            break;
+        }*/
         std::cout << "\n";
     }
 

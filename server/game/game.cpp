@@ -20,7 +20,7 @@ void Game::run() {
 
         //Creo el mapa con los objetos fijos (bloques) y la posicion inicial de los patos
         inicializate_map();
-        map.printMap();
+        //map.printMap();
 
 
         //Mando la posicion de todo el mapa por primera vez para tener referencia de donde estan

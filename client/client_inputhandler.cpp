@@ -108,6 +108,15 @@ void InputHandler::run() {
                     std::cout << "Moviendome hacia abajo..." << "\n";
                 };
             }
+            if (input[0] == EXIT_GAME) {
+                //este es para salir del juego
+                auto stop_command = Command(id, EXIT_GAME);
+                if (command_queue.try_push(stop_command)){
+                    std::cout << "Escape!" << "\n";
+                };
+                is_alive = false;
+                break;
+            }
 
         }
 

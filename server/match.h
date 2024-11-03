@@ -36,7 +36,7 @@ public:
 
     uint16_t get_match_id();
 
-    bool is_match_avaiable();
+    bool is_match_available();
 
     Queue<std::shared_ptr<Executable>>& get_game_queue();
 

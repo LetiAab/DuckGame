@@ -28,7 +28,7 @@ void Duck::update_position_speed() {
     if (map.canMoveDuckTo(position_x, position_y + 1)) { // check if use position_x or delta_x
         map.cleanDuckOldPosition(position_x, position_y);
 
-        position_y += 1; 
+        position_y += 1;
 
         map.setDuckNewPosition(position_x, position_y);
     }

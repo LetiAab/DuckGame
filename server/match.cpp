@@ -7,14 +7,13 @@ monitor(), game(match_id, monitor) {}
 
 
 bool Match::add_player(std::shared_ptr<Player> player) {
-   
     players.push_back(player);
     return true;
 
 }
 
 bool Match::add_player() {
-    if(is_match_avaiable()){
+    if(is_match_available()){
         current_players += 1;
         return true;
     }
@@ -51,7 +50,7 @@ uint16_t Match::get_match_id() {
     return match_id;
 }
 
-bool Match::is_match_avaiable() {
+bool Match::is_match_available() {
     if ((current_players < max_players) and !is_running) {
         return true;
     }
