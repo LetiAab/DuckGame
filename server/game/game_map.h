@@ -17,7 +17,7 @@ public:
 
     void setEscenario();
 
-    bool canMoveDuckTo(int x, int y);
+    bool canMoveDuckTo(int x, int y, char duck_id);
 
     void cleanDuckOldPosition(int x, int y);
 

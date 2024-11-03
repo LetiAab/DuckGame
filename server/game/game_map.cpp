@@ -16,18 +16,33 @@ GameMap::GameMap(int width, int height) : width(width), height(height) {
     map.resize(height, std::vector<char>(width, EMPTY));
 }
 
-//Esto no contempla colisiones entre patos
-bool GameMap::canMoveDuckTo(int x, int y) {
+bool GameMap::canMoveDuckTo(int x, int y, char duck_id) {
 
     // Verifica que las coordenadas estén dentro de los límites del mapa
     if (x < 0 || x >= width || y < 0 || y >= height) {
         return false; 
     }
 
+    // Verifica que el movimiento no colisione con una plataforma
     for (int i = x; i < x + 2; ++i) {
         for (int j = y; j < y + 3; ++j) {
             if (map[j][i] == PLATFORM) {
                 return false;
+            }
+        }
+    }
+
+    // Verifica que el movimiento no colisione con otro pato
+    for (int i = x; i < x + 2; ++i) {
+        for (int j = y; j < y + 3; ++j) {
+            for (int l = 1; l < 7; l++) {
+                char duck_number = static_cast<char>(l + '0');
+                if (duck_number == duck_id) {
+                    continue;
+                }
+                if (map[j][i] == duck_number) {
+                    return false;
+                }
             }
         }
     }

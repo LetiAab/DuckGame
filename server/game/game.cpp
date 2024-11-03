@@ -57,24 +57,22 @@ void Game::run() {
 }
 
 void Game::inicializate_map(){
-
         for (const Duck& duck : ducks) {
-        int x = duck.get_x(); 
-        int y = duck.get_y();
+                int x = duck.get_x(); 
+                int y = duck.get_y();
 
-        char id = static_cast<char>(duck.get_id() + '0');
+                char id = static_cast<char>(duck.get_id() + '0');
 
-        if (!map.placeDuck(x, y, id)) {
-            std::cout << "No se pudo colocar el pato en (" << x << ", " << y << ")\n";
-        } else {
-            std::cout << "Pato colocado en (" << x << ", " << y << ")\n";
+                if (!map.placeDuck(x, y, id)) {
+                std::cout << "No se pudo colocar el pato en (" << x << ", " << y << ")\n";
+                } else {
+                std::cout << "Pato colocado en (" << x << ", " << y << ")\n";
+                }
         }
-    }
 
 }
 
 //TODO: Esto solo sirve para dos patos y siempre tiene en cuenta que es el mismo distribucion de obstaculos
-
 void Game::create_ducks(const std::vector<uint16_t>& ids) {
     // Lista de posiciones fijas donde se colocarán los patos
     std::vector<std::pair<int, int>> positions = {{1, 1}, {6, 1}};
