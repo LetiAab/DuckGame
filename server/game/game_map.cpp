@@ -98,58 +98,35 @@ void GameMap::setDuckNewPosition(int x, int y, char duck_id) {
 
 //Pone un pato en una posición (x, y) ocupando un rectángulo de 2x3
 bool GameMap::placeDuck(int x, int y, char duck_id) {
-    std::cout << "Entro a placeDuck con el valor " << duck_id << std::endl;
-    // me fijo si estoy dentro de los limites del mapa
-    std::cout << "Limites: x " << x+2 << " width " << width << " y " 
-    << y+3 << " height " << height << std::endl;
-
     if (x < 0 || y < 0 || (x + 2) > width || (y + 3) > height) {
-        std::cout << "Entro al if de limites " << std::endl;
         return false;
     }
-
-    std::cout << "Pase el if de limites" << std::endl;
     
     // veo que no haya obstaculos
     for (int i = x; i < x + 2; ++i) {
         for (int j = y; j < y + 3; ++j) {
-            std::cout << "Celda x:" << j << " y:" << i << std::endl;
-            std::cout << "el valor de la celda es " << map[j][i] << std::endl;
             if (map[j][i] == PLATFORM) {
-                std::cout << "Entra al if. " << std::endl;
                 return false;
             }
         }
     }
-
-    std::cout << "Pase el if de plataformas" << std::endl;
-
-
-    std::cout << "Previo a patos, cells son " << std::endl;
 
     // veo que no haya otro pato
     for (int i = x; i < x + 2; ++i) {
         for (int j = y; j < y + 3; ++j) {
-            std::cout << "Celda x:" << j << " y:" << i << std::endl;
-            std::cout << "el valor de la celda es " << map[j][i] << std::endl;
             if ((map[j][i] == DUCK_1) || (map[j][i] == DUCK_2) || (map[j][i] == DUCK_3)
              || (map[j][i] == DUCK_4) || (map[j][i] == DUCK_5) || (map[j][i] == DUCK_6)) {
-                std::cout << "Entra al if. " << std::endl;
                 return false;
             }
         }
     }
-    std::cout << "Pase el if de otros patos" << std::endl;
-
     
     // Si no hay obstáculos, marco las celdas donde esta el pato
     for (int i = x; i < x + 2; ++i) {
         for (int j = y; j < y + 3; ++j) {
-            std::cout << "Accediendo a map[" << j << "][" << i << "]" << std::endl;
             map[j][i] = duck_id;
         }
     }
-    std::cout << "Pintadas las celdas del pato, devuelve true" << std::endl;
 
     return true;
 }
@@ -176,8 +153,6 @@ std::vector<std::vector<char>> GameMap::getMap(){
 }
 
 char GameMap::get_position(int x, int y) {
-    std::cout << "Antes del pos, x es " << x << " e y es" << y << std::endl;
     char pos =  map[y][x];
-    std::cout << "Después del pos" << std::endl;
     return pos;
 }

@@ -11,8 +11,5 @@ void MoveRightCommand::execute(Game& game) {
     char char_id = static_cast<char>(player_id + '0');
 
     Duck* duck = game.getDuckById(char_id);
-    std::cout << "Despues de getDuck \n";
-    std::cout << "Duck es" << duck << "\n";
     duck->speed_x ++;
-    std::cout << "Despues de incr speed x \n";
 }

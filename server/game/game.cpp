@@ -84,47 +84,30 @@ void Game::create_ducks(const std::vector<uint16_t>& ids) {
 
         for(uint16_t id: ids) {
                 char char_id = static_cast<char>(id + '0');
-                std::cout << "El id del pato a insertar es " << char_id << std::endl;
 
                 int random_x = distrib_x(gen);
                 int random_y = distrib_y(gen);
-                std::cout << "x: " << random_x << ", y: " << random_y << std::endl;
 
                 bool has_place = map.placeDuck(random_x, random_y, char_id);
                 while (has_place == false) {
-                        std::cout << "Posicion ocupada por una " << map.get_position(random_x, random_y) << std::endl;
                         random_x = distrib_x(gen);
                         random_y = distrib_y(gen);
 
                         has_place = map.placeDuck(random_x, random_y, char_id); 
-                        std::cout << ", nueva posición x: " << random_x << ", y: " << random_y << ", has_place es ";
-                        
-                        if (has_place) {
-                                std::cout << "true" << std::endl;
-                        } else {
-                                std::cout << "false" << std::endl;
-                        }
-                        map.printMap();
                 }
 
-                std::cout << "Se definieron las coordenadas." << std::endl;
                 ducks.emplace_back(char_id, random_x, random_y, map);
-                std::cout << "Se inserto un pato en el mapa: x " << random_x << ", y " << random_y << std::endl;
         }
 }
 
 
 Duck* Game::getDuckById(char id) {
-        std::cout << "En getDuckById piden el id " << id <<", la lista de patos es: " << std::endl;
-        for (Duck& duck : ducks) {  
-                std::cout << "Pato de id " << duck.get_id() << std::endl;
+        for (auto& duck : ducks) {
+                if (duck.get_id() == id) {
+                        return &duck; // Retorna un puntero al pato encontrado
+                }
         }
-    for (auto& duck : ducks) {
-        if (duck.get_id() == id) {
-            return &duck; // Retorna un puntero al pato encontrado
-        }
-    }
-    return nullptr; // Retorna nullptr si no se encuentra el pato
+        return nullptr; // Retorna nullptr si no se encuentra el pato
 }
 
 
