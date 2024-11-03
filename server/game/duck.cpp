@@ -24,19 +24,30 @@ Duck::Duck(uint16_t id, int x, int y, GameMap& map) : id_player(id), position_x(
 void Duck::update_position_speed() {
     //TODO: TENER EN CUENTA QUE TENGO QUE VER TODO LO QUE OCUPA EL PATO Y NO SOLO EL PUNTO QUE GUARDA
 
-    if (map.canMoveDuckTo(this->position_x + this->speed_x, this->position_y + this->speed_y)) {
-        map.cleanDuckOldPosition(this->position_x, this->position_y);
+    // Gravity check. Can be modularized
+    if (map.canMoveDuckTo(position_x, position_y + 1)) { // check if use position_x or delta_x
+        map.cleanDuckOldPosition(position_x, position_y);
 
-        this->position_x += this->speed_x; 
-        this->position_y += this->speed_y; 
+        position_y += 1; 
 
-        map.setDuckNewPosition(this->position_x, this->position_y);
-
-        this->speed_x = 0;
-        this->speed_y = 0;
-
-        map.printMap();
+        map.setDuckNewPosition(position_x, position_y);
     }
+
+    int delta_x = position_x + speed_x;
+    int delta_y = position_y + speed_y;
+
+    if (map.canMoveDuckTo(delta_x, delta_y)) {
+        map.cleanDuckOldPosition(position_x, position_y);
+
+        position_x = delta_x; 
+        position_y = delta_y; 
+
+        map.setDuckNewPosition(delta_x, delta_y);
+    }
+    map.printMap();
+
+    speed_x = 0;
+    speed_y = 0;
 }
 
 
