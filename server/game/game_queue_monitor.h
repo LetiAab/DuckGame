@@ -25,6 +25,9 @@ public:
     void remove_queue(Queue<Message>* queue);
 
     void remove_all_queues();
+    
+    void broadcast(const Message& message);
+
 };
 
 #endif

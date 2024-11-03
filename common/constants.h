@@ -21,6 +21,10 @@ const uint8_t MOVE_UP = 0x12;
 const uint8_t MOVE_DOWN = 0x13;
 
 
+//messages from game
+const uint8_t MAP_INICIALIZATION = 0x14;
+
+
 static const char QUIT_SERVER[] = "q";
 
 const int WINDOW_WIDTH = 800;

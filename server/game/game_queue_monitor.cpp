@@ -24,6 +24,8 @@ bool GameQueueMonitor::send_message(const Message& message) {
     return true;
 }
 
+
+
 void GameQueueMonitor::remove_queue(Queue<Message>* queue) {
     std::unique_lock<std::mutex> lck(mtx);
 
@@ -42,3 +44,15 @@ void GameQueueMonitor::remove_all_queues() {
 
     queues.clear();
 }
+
+void GameQueueMonitor::broadcast(const Message& message) {
+    std::unique_lock<std::mutex> lck(mtx); // Bloquea el mutex
+
+    for (auto& q : queues) {
+        if (!q->try_push(message)) { // Intenta enviar el mensaje
+            std::cerr << "Error al enviar mensaje a una cola.\n"; 
+        }
+    }
+}
+
+

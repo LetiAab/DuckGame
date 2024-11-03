@@ -31,6 +31,7 @@ public:
         std::vector<Duck> ducks;
 
 
+
 explicit Game(uint16_t match_id, GameQueueMonitor& monitor);
 
 Queue<std::shared_ptr<Executable>>& get_game_queue();

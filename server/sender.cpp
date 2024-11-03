@@ -12,8 +12,8 @@ void Sender::run() {
     try {
 
         while (is_alive) {
-            //Message msj = message_queue.pop();
-            //protocol.send_data(msj);
+            Message msj = message_queue.pop();
+            protocol.send_message(msj);
         }
 
     } catch (const ClosedQueue& e) {

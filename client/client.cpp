@@ -23,6 +23,15 @@ void printExistingMatches(const std::vector<uint16_t>& existing_matches) {
     std::cout << "\n";
 }
 
+void printMap(const std::vector<std::vector<int>>& map) {
+    for (const auto& row : map) {
+        for (int cell : row) {
+            std::cout << cell << " "; // Imprime cada celda
+        }
+        std::cout << std::endl; // Nueva línea después de cada fila
+    }
+}
+
 void print_first_message(Message& first_message){
     std::cout << "First Message. My Player ID is: " << first_message.player_id << std::endl;
     std::cout << "---------------------------------------------" << std::endl;
@@ -98,6 +107,11 @@ int Client::start(){
     handleLobby(id, message_queue);
 
     //aca deberia recibir un mensaje especial con el Mapa, y dibujarlo
+    std::cout << "Inicializacion del mapa" << std::endl;
+
+    Message message = message_queue.pop();
+    printMap(message.map);
+
     //sdl_handler->run();
 
     //recibo los mensajes del juego con las actualizaciones del mundo
@@ -106,7 +120,10 @@ int Client::start(){
 
         std::cout << "Mensaje recibido:" << std::endl;
         std::cout << "  Player ID: " << message.player_id << std::endl;
-        std::cout << "  Type: " << static_cast<int>(message.type) << std::endl; // Convertir a int para mostrar el valor de uint8_t
+        std::cout << "  Type: " << static_cast<int>(message.type) << std::endl; 
+        
+
+
         
 
         //procesar el mensaje

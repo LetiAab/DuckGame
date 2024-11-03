@@ -1,4 +1,5 @@
 #include "game.h"
+#include "common/constants.h"
 
 //TODO: Tamanio del mapa hardcodeado
 Game::Game(uint16_t match_id, GameQueueMonitor& monitor):
@@ -15,6 +16,17 @@ void Game::run() {
         inicializate_map();
         map.printMap();
 
+
+        //Mando la posicion de todo el mapa por primera vez para tener referencia de donde estan
+        //Todos los obstaculos
+        Message message;
+        message.type = MAP_INICIALIZATION;
+        message.player_id = 0; //tengo que poner esto POR EL ORDEN DE LO QUE MANDAMOS, HAY QUE CAMBIAR PARA MANDAR SIEMPRE PRIMERO EL TYPE ASI NO HACE FALTA
+        message.map = map.getMap();
+
+        monitor.broadcast(message);
+
+
         while (is_running) {
                 // saco de 5 comandos de la queue y los ejecuto
                 int i = 0;
@@ -25,6 +37,9 @@ void Game::run() {
                         i += 1;
                 }
 
+                
+
+                //monitor.broadcast();
                 // broadcast(); para avisarle a los jugadores lo que cambió
 
                 std::this_thread::sleep_for(std::chrono::milliseconds(200));

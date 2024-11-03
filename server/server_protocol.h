@@ -28,6 +28,8 @@ public:
 
     bool send_lobby_message(const LobbyMessage& message);
 
+    bool send_message(Message& message);
+
     LobbyCommand get_lobby_command();
 
     std::shared_ptr<Executable> receive_command();

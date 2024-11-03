@@ -1,9 +1,13 @@
-#ifndef GAMEMAP_H
-#define GAMEMAP_H
+#ifndef CLIENT_GAMEMAP_H
+#define CLIENT_GAMEMAP_H
 
 #include <vector>
 
-class GameMap {
+class ClientGameMap {
+
+//ESTA CLASE LA COPIE DEL CLIENT MAP DEL SERVER
+//TODO: VER QUE COSAS NO SIRVEN
+
 
 private:
     int width;
@@ -11,7 +15,7 @@ private:
     std::vector<std::vector<int>> map;
 
 public:
-    GameMap(int width, int height);
+    ClientGameMap(int width, int height);
 
     bool placeDuck(int x, int y);
 
@@ -25,8 +29,6 @@ public:
 
     int get_height();
     int get_width();
-
-    std::vector<std::vector<int>> getMap();
 
     //METODO TEMPORAL: Imprime el mapa en la consola
     void printMap() const;

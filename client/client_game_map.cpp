@@ -1,4 +1,4 @@
-#include "game_map.h"
+#include "client_game_map.h"
 #include <iostream>
 #include <vector>
 
@@ -7,12 +7,12 @@ const int DUCK = 1;
 const int OBSTACLE = 2;
 
 
-GameMap::GameMap(int width, int height) : width(width), height(height) {
+ClientGameMap::ClientGameMap(int width, int height) : width(width), height(height) {
     map.resize(height, std::vector<int>(width, EMPTY));
 }
 
 //Esto no contempla colisiones entre patos
-bool GameMap::canMoveDuckTo(int x, int y) {
+bool ClientGameMap::canMoveDuckTo(int x, int y) {
 
     // Verifica que las coordenadas estén dentro de los límites del mapa
     if (x < 0 || x >= width || y < 0 || y >= height) {
@@ -30,7 +30,7 @@ bool GameMap::canMoveDuckTo(int x, int y) {
     return true;
 }
 
-void GameMap::setEscenario() {
+void ClientGameMap::setEscenario() {
 
     for (int x = 0; x < width; ++x) {
         map[height - 1][x] = OBSTACLE; // Piso
@@ -44,7 +44,7 @@ void GameMap::setEscenario() {
 }
 
 
-void GameMap::cleanDuckOldPosition(int x, int y) {
+void ClientGameMap::cleanDuckOldPosition(int x, int y) {
     for (int i = x; i < x + 2; ++i) { 
         for (int j = y; j < y + 3; ++j) {
             if (j >= 0 && j < height && i >= 0 && i < width) { // Verificar límites
@@ -54,7 +54,7 @@ void GameMap::cleanDuckOldPosition(int x, int y) {
     }
 }
 
-void GameMap::setDuckNewPosition(int x, int y) {
+void ClientGameMap::setDuckNewPosition(int x, int y) {
     for (int i = x; i < x + 2; ++i) {
         for (int j = y; j < y + 3; ++j) {
             if (j >= 0 && j < height && i >= 0 && i < width) { // Verificar límites
@@ -66,7 +66,7 @@ void GameMap::setDuckNewPosition(int x, int y) {
 
 
 //Pone un pato en una posición (x, y) ocupando un rectángulo de 2x3
-bool GameMap::placeDuck(int x, int y) {
+bool ClientGameMap::placeDuck(int x, int y) {
     // me fijo si estoy dentro de los limites del mapa
     if (x + 2 > width || y + 3 > height) {
         return false;
@@ -90,11 +90,11 @@ bool GameMap::placeDuck(int x, int y) {
     return true;
 }
 
-int GameMap::get_height(){return height;}
-int GameMap::get_width(){return width;}
+int ClientGameMap::get_height(){return height;}
+int ClientGameMap::get_width(){return width;}
 
 // METODO TEMPORAL: Imprime el mapa en la consola
-void GameMap::printMap() const {
+void ClientGameMap::printMap() const {
     for (const auto& row : map) {
         for (int cell : row) {
             std::cout << cell << " ";
@@ -108,6 +108,3 @@ void GameMap::printMap() const {
 
 
 
-std::vector<std::vector<int>> GameMap::getMap(){
-    return map;
-}

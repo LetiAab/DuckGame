@@ -19,7 +19,7 @@ ServerProtocol::ServerProtocol(Socket&& skt): skt(std::move(skt)) {}
 
 bool ServerProtocol::send_lobby_message(const LobbyMessage& message){
     bool was_closed = false;
-
+    
     if (!skt.sendall(&message.player_id, sizeof(message.player_id), &was_closed) || was_closed) {
         return false;
     }
@@ -44,6 +44,41 @@ bool ServerProtocol::send_lobby_message(const LobbyMessage& message){
 
     return true;
 }
+
+bool ServerProtocol::send_message(Message& message){
+    bool was_closed = false;
+
+    switch (message.type)
+    {
+    case MAP_INICIALIZATION:
+
+        //TODO: Mandar el player id es al pedo. PERO LO PONGO PORQUE NO QUIERO DAR VUELTA TODO
+        //LO QUE DEBERIAMOS HACER ES MANDAR SIEMPRE PRIMERO EL TYPE ASI DEL OTRO LADO SABES COMO
+        //ESPERAR EL MENSAJE
+        if (!skt.sendall(&message.player_id, sizeof(message.player_id), &was_closed) || was_closed) {
+            return false;
+        }
+        
+        if (!skt.sendall(&message.type, sizeof(message.type), &was_closed) || was_closed) {
+            return false;
+        }
+
+        // Enviar la matriz fila por fila
+        for (size_t i = 0; i < 10; ++i) { // 10 filas
+            if (!skt.sendall(message.map[i].data(), 15 * sizeof(int), &was_closed) || was_closed) {
+                return false;
+            }
+        }
+
+        break;
+    
+    default:
+        break;
+    }
+
+    return true;
+}
+
 
 LobbyCommand ServerProtocol::get_lobby_command(){
 
