@@ -25,7 +25,7 @@ void Game::run() {
                         i += 1;
                 }
 
-                //bloadcast(); para avisarle a los jugadores lo que cambió
+                // broadcast(); para avisarle a los jugadores lo que cambió
 
                 std::this_thread::sleep_for(std::chrono::milliseconds(200));
         }
