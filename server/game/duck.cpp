@@ -30,7 +30,9 @@ void Duck::update_position_speed() {
 
         position_y += 1; 
 
-        map.setDuckNewPosition(position_x, position_y);
+        char id = static_cast<char>(id_player + '0');
+
+        map.setDuckNewPosition(position_x, position_y, id);
     }
 
     int delta_x = position_x + speed_x;
@@ -42,7 +44,9 @@ void Duck::update_position_speed() {
         position_x = delta_x; 
         position_y = delta_y; 
 
-        map.setDuckNewPosition(delta_x, delta_y);
+        char id = static_cast<char>(id_player + '0');
+
+        map.setDuckNewPosition(delta_x, delta_y, id);
     }
     map.printMap();
 

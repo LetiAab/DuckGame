@@ -61,8 +61,10 @@ void Game::inicializate_map(){
         for (const Duck& duck : ducks) {
         int x = duck.get_x(); 
         int y = duck.get_y();
-        
-        if (!map.placeDuck(x, y)) {
+
+        char id = static_cast<char>(duck.get_id() + '0');
+
+        if (!map.placeDuck(x, y, id)) {
             std::cout << "No se pudo colocar el pato en (" << x << ", " << y << ")\n";
         } else {
             std::cout << "Pato colocado en (" << x << ", " << y << ")\n";

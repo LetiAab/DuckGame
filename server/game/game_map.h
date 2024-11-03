@@ -13,7 +13,7 @@ private:
 public:
     GameMap(int width, int height);
 
-    bool placeDuck(int x, int y);
+    bool placeDuck(int x, int y, char duck_id);
 
     void setEscenario();
 
@@ -21,7 +21,7 @@ public:
 
     void cleanDuckOldPosition(int x, int y);
 
-    void setDuckNewPosition(int x, int y);
+    void setDuckNewPosition(int x, int y, char duck_id);
 
     int get_height();
     int get_width();

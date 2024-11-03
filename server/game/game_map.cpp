@@ -2,9 +2,14 @@
 #include <iostream>
 #include <vector>
 
-const char EMPTY = '0';
-const char DUCK = '1';
-const char OBSTACLE = '2';
+const char EMPTY = ' ';
+const char DUCK_1 = '1';
+const char DUCK_2 = '2';
+const char DUCK_3 = '3';
+const char DUCK_4 = '4';
+const char DUCK_5 = '5';
+const char DUCK_6 = '6';
+const char PLATFORM = 'P';
 
 
 GameMap::GameMap(int width, int height) : width(width), height(height) {
@@ -21,7 +26,7 @@ bool GameMap::canMoveDuckTo(int x, int y) {
 
     for (int i = x; i < x + 2; ++i) {
         for (int j = y; j < y + 3; ++j) {
-            if (map[j][i] == OBSTACLE) {
+            if (map[j][i] == PLATFORM) {
                 return false;
             }
         }
@@ -33,13 +38,13 @@ bool GameMap::canMoveDuckTo(int x, int y) {
 void GameMap::setEscenario() {
 
     for (int x = 0; x < width; ++x) {
-        map[height - 1][x] = OBSTACLE; // Piso
+        map[height - 1][x] = PLATFORM; // Piso
     }
     
     // Coloca obstáculos en los costados (x = 0 y x = width - 1)
     for (int y = 0; y < height; ++y) {
-        map[y][0] = OBSTACLE;          // Costado izquierdo
-        map[y][width - 1] = OBSTACLE;  // Costado derecho
+        map[y][0] = PLATFORM;          // Costado izquierdo
+        map[y][width - 1] = PLATFORM;  // Costado derecho
     }
 }
 
@@ -54,11 +59,11 @@ void GameMap::cleanDuckOldPosition(int x, int y) {
     }
 }
 
-void GameMap::setDuckNewPosition(int x, int y) {
+void GameMap::setDuckNewPosition(int x, int y, char duck_id) {
     for (int i = x; i < x + 2; ++i) {
         for (int j = y; j < y + 3; ++j) {
             if (j >= 0 && j < height && i >= 0 && i < width) { // Verificar límites
-                map[j][i] = DUCK; 
+                map[j][i] = duck_id; 
             }
         }
     }
@@ -66,16 +71,27 @@ void GameMap::setDuckNewPosition(int x, int y) {
 
 
 //Pone un pato en una posición (x, y) ocupando un rectángulo de 2x3
-bool GameMap::placeDuck(int x, int y) {
+bool GameMap::placeDuck(int x, int y, char duck_id) {
     // me fijo si estoy dentro de los limites del mapa
     if (x + 2 > width || y + 3 > height) {
         return false;
     }
+    std::cout << "El unsigned char es " << duck_id << std::endl;
     
     // veo que no haya obstaculos
     for (int i = x; i < x + 2; ++i) {
         for (int j = y; j < y + 3; ++j) {
-            if (map[j][i] == OBSTACLE) {
+            if (map[j][i] == PLATFORM) {
+                return false;
+            }
+        }
+    }
+
+    // veo que no haya otro pato
+    for (int i = x; i < x + 2; ++i) {
+        for (int j = y; j < y + 3; ++j) {
+            if ((map[j][i] == DUCK_1) || (map[j][i] == DUCK_2) || (map[j][i] == DUCK_3)
+             || (map[j][i] == DUCK_4) || (map[j][i] == DUCK_5) || (map[j][i] == DUCK_6)) {
                 return false;
             }
         }
@@ -84,7 +100,7 @@ bool GameMap::placeDuck(int x, int y) {
     // Si no hay obstáculos, marco las celdas donde esta el pato
     for (int i = x; i < x + 2; ++i) {
         for (int j = y; j < y + 3; ++j) {
-            map[j][i] = DUCK;
+            map[j][i] = duck_id;
         }
     }
     return true;
@@ -97,17 +113,12 @@ int GameMap::get_width(){return width;}
 void GameMap::printMap() const {
     for (const auto& row : map) {
         for (char cell : row) {
-            if (cell == 0) {
-                std::cout << " " << " ";
-            } else {
-                std::cout << cell << " ";
-            }
+            std::cout << cell << " ";
         }
         std::cout << "\n";
     }
     
     std::cout << "\n";
-
 }
 
 
