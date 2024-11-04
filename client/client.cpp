@@ -110,13 +110,12 @@ int Client::start(){
     handleLobby(id, message_queue);
 
     //aca deberia recibir un mensaje especial con el Mapa, y dibujarlo
-    /*std::cout << "Inicializacion del mapa" << std::endl;
-
+    std::cout << "Inicializacion del mapa" << std::endl;
     Message message = message_queue.pop();
-    printMap(message.map);*/
+    printMap(message.map);
 
     sdl_handler = std::make_unique<SDLHandler>();
-    sdl_handler->run(message_queue, id);
+    sdl_handler->run(message.map, sender->get_queue(), id);
 
     //recibo los mensajes del juego con las actualizaciones del mundo
     while(input_handler->is_running()){

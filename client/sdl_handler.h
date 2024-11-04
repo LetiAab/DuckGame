@@ -3,7 +3,7 @@
 
 #include <SDL2/SDL.h>
 
-#include "common/message.h"
+#include "common/command.h"
 #include "common/queue.h"
 #include "common/constants.h"
 
@@ -23,14 +23,14 @@ struct GameState {
     SDL_Texture *crate, *duck_t, *background;
     SDL_Renderer* renderer;
     std::vector<std::vector<int>> *map;
-    Queue<Message>* message_queue;
+    Queue<Command>* command_queue;
 };
 
 class SDLHandler {
 public:
     SDLHandler();
     ~SDLHandler();
-    void run(Queue<Message>& message_queue, uint16_t id);
+    void run(std::vector<std::vector<int>> &map, Queue<Command>& command_queue, uint16_t id);
 
 private:
     SDL_Surface* loadImage(const std::string& name_img);

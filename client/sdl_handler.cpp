@@ -104,8 +104,7 @@ int SDLHandler::processEvents(SDL_Window* window, GameState* game, uint16_t id) 
         }
     }
     const uint8_t* state = SDL_GetKeyboardState(NULL);
-    Message msg;
-    msg.player_id = id;
+    uint8_t move = 0;
     // TODO: ver lo del numero id
     int new_x = game->ducks[id-1].x;
     int new_y = game->ducks[id-1].y;
@@ -113,23 +112,24 @@ int SDLHandler::processEvents(SDL_Window* window, GameState* game, uint16_t id) 
     if (state[SDL_SCANCODE_A]) {
         new_x -= TILE_SIZE;
         game->ducks[id-1].flipType = SDL_FLIP_HORIZONTAL;
-        msg.type = MOVE_LEFT;
+        //msg.type = MOVE_LEFT;
+        move = MOVE_LEFT;
         std::cout << "Pato " << id << " se movio a la izquierda\n";
     }
     if (state[SDL_SCANCODE_D]) {
         new_x += TILE_SIZE;
         game->ducks[id-1].flipType = SDL_FLIP_NONE;
-        msg.type = MOVE_RIGHT;
+        move = MOVE_RIGHT;
         std::cout << "Pato se movio a la derecha\n";
     }
     if (state[SDL_SCANCODE_W]) {
         new_y -= TILE_SIZE;
-        msg.type = MOVE_UP;
+        move = MOVE_UP;
         std::cout << "Pato se movio para arriba\n";
     }
     if (state[SDL_SCANCODE_S]) {
         new_y += TILE_SIZE;
-        msg.type = MOVE_DOWN;
+        move = MOVE_DOWN;
         std::cout << "Pato se movio para abajo\n";
     }
 
@@ -147,9 +147,9 @@ int SDLHandler::processEvents(SDL_Window* window, GameState* game, uint16_t id) 
     }
 
     if (positionUpdated) {
-        msg.duck_x = game->ducks[id-1].x;
-        msg.duck_y = game->ducks[id-1].y;
-        //game->message_queue->push(msg);
+        auto cmd = Command(id, move, game->ducks[id-1].x, game->ducks[id-1].y);
+        game->command_queue->push(cmd);
+
     }
 
     return done;
@@ -171,7 +171,7 @@ void SDLHandler::doRender(SDL_Renderer* renderer, GameState* game) {
     SDL_RenderPresent(renderer);
 }
 
-void SDLHandler::run(Queue<Message>& message_queue, uint16_t id) {
+void SDLHandler::run(std::vector<std::vector<int>> &map, Queue<Command>& command_queue, uint16_t id) {
     GameState game{};
     SDL_Window* window = SDL_CreateWindow("Duck Game",
                                           SDL_WINDOWPOS_UNDEFINED,
@@ -181,10 +181,8 @@ void SDLHandler::run(Queue<Message>& message_queue, uint16_t id) {
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     game.renderer = renderer;
 
-    Message first_message = message_queue.pop();
-    game.map = &first_message.map;
-    game.message_queue = &message_queue;
-    //uint16_t id = first_message.player_id;
+    game.map = &map;
+    game.command_queue = &command_queue;
     std::cout << "ID: " << id << "\n";
 
     loadGame(&game);
