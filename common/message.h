@@ -12,7 +12,8 @@ struct Message {
     std::vector<uint16_t> existing_matches;
     uint8_t current_match_id;
     std::vector<std::vector<int>> map;
-
+    int duck_x;
+    int duck_y;
 };
 
 

@@ -96,7 +96,6 @@ int Client::start(){
     sender = std::make_unique<ClientSender>(protocol);
     input_handler = std::make_unique<InputHandler> (id, sender->get_queue());
     receiver = std::make_unique<ClientReceiver>(protocol);
-    sdl_handler = std::make_unique<SDLHandler>();
 
     //obtengo la queue para procesar los mensajes que me manda el server
     //probablemnete deba mandarsela a SDL
@@ -116,7 +115,8 @@ int Client::start(){
     Message message = message_queue.pop();
     printMap(message.map);*/
 
-    //sdl_handler->run();
+    //sdl_handler = std::make_unique<SDLHandler>();
+    sdl_handler->run(message_queue);
 
     //recibo los mensajes del juego con las actualizaciones del mundo
     while(input_handler->is_running()){
