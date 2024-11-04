@@ -8,25 +8,27 @@ class GameMap {
 private:
     int width;
     int height;
-    std::vector<std::vector<int>> map;
+    std::vector<std::vector<char>> map;
 
 public:
     GameMap(int width, int height);
 
-    bool placeDuck(int x, int y);
+    bool placeDuck(int x, int y, char duck_id);
 
     void setEscenario();
 
-    bool canMoveDuckTo(int x, int y);
+    bool canMoveDuckTo(int x, int y, char duck_id);
 
     void cleanDuckOldPosition(int x, int y);
 
-    void setDuckNewPosition(int x, int y);
+    void setDuckNewPosition(int x, int y, char duck_id);
 
     int get_height();
     int get_width();
 
-    std::vector<std::vector<int>> getMap();
+    std::vector<std::vector<char>> getMap();
+
+    char get_position(int x, int y);
 
     //METODO TEMPORAL: Imprime el mapa en la consola
     void printMap() const;

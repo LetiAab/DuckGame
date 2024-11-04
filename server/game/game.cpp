@@ -1,6 +1,8 @@
 #include "game.h"
 #include "common/constants.h"
 
+#include <random>
+
 //TODO: Tamanio del mapa hardcodeado
 Game::Game(uint16_t match_id, GameQueueMonitor& monitor):
 match_id(match_id), monitor(monitor), is_running(true), game_queue(), map(15, 10){}
@@ -44,7 +46,7 @@ void Game::run() {
                         i += 1;
                 }
 
-                // Simulate one round???
+                // Simulo una ronda de movimientos
                 simulate_round();
 
                 //monitor.broadcast();
@@ -57,43 +59,55 @@ void Game::run() {
 }
 
 void Game::inicializate_map(){
+/*         for (const Duck& duck : ducks) {
+                int x = duck.get_x(); 
+                int y = duck.get_y();
 
-        for (const Duck& duck : ducks) {
-        int x = duck.get_x(); 
-        int y = duck.get_y();
-        
-        if (!map.placeDuck(x, y)) {
-            std::cout << "No se pudo colocar el pato en (" << x << ", " << y << ")\n";
-        } else {
-            std::cout << "Pato colocado en (" << x << ", " << y << ")\n";
+                char id = static_cast<char>(duck.get_id() + '0');
+
+                if (!map.placeDuck(x, y, id)) {
+                std::cout << "No se pudo colocar el pato en (" << x << ", " << y << ")\n";
+                } else {
+                std::cout << "Pato colocado en (" << x << ", " << y << ")\n";
+                }
         }
-    }
-
+ */
 }
 
 //TODO: Esto solo sirve para dos patos y siempre tiene en cuenta que es el mismo distribucion de obstaculos
-
 void Game::create_ducks(const std::vector<uint16_t>& ids) {
-    // Lista de posiciones fijas donde se colocarán los patos
-    std::vector<std::pair<int, int>> positions = {{1, 1}, {6, 1}};
-    
-    for (size_t i = 0; i < ids.size() && i < positions.size(); ++i) {
-        // Obtén la posición fija para el pato actual
-        int fixed_x = positions[i].first;
-        int fixed_y = positions[i].second;
-        
-        ducks.emplace_back(ids[i], fixed_x, fixed_y, map); 
-    }
+        std::random_device rd;
+        std::mt19937 gen(rd());
+
+        std::uniform_int_distribution<> distrib_x(1, map.get_width() - 2);
+        std::uniform_int_distribution<> distrib_y(1, map.get_width() - 3);
+
+        for(uint16_t id: ids) {
+                char char_id = static_cast<char>(id + '0');
+
+                int random_x = distrib_x(gen);
+                int random_y = distrib_y(gen);
+
+                bool has_place = map.placeDuck(random_x, random_y, char_id);
+                while (has_place == false) {
+                        random_x = distrib_x(gen);
+                        random_y = distrib_y(gen);
+
+                        has_place = map.placeDuck(random_x, random_y, char_id); 
+                }
+
+                ducks.emplace_back(char_id, random_x, random_y, map);
+        }
 }
 
 
-Duck* Game::getDuckById(uint16_t id) {
-    for (auto& duck : ducks) {
-        if (duck.get_id() == id) {
-            return &duck; // Retorna un puntero al pato encontrado
+Duck* Game::getDuckById(char id) {
+        for (auto& duck : ducks) {
+                if (duck.get_id() == id) {
+                        return &duck; // Retorna un puntero al pato encontrado
+                }
         }
-    }
-    return nullptr; // Retorna nullptr si no se encuentra el pato
+        return nullptr; // Retorna nullptr si no se encuentra el pato
 }
 
 

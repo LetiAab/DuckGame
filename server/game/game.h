@@ -53,7 +53,7 @@ void create_ducks(const std::vector<uint16_t>& ids);
 
 void refreshDuckPositions();
 
-Duck* getDuckById(uint16_t id);
+Duck* getDuckById(char id);
 
 void simulate_round();
 
