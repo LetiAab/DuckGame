@@ -21,12 +21,17 @@ Message ClientProtocol::receive_message(){
     switch (message.type)
     {
     case MAP_INICIALIZATION:
-        message.map.resize(10, std::vector<char>(15));  // Cambia las dimensiones aquí
-        for (size_t i = 0; i < 10; ++i) { // 10 filas
-            skt.recvall(message.map[i].data(), 15 * sizeof(char), &was_closed); // Recibir cada fila
+        message.map.resize(MATRIX_N, std::vector<char>(MATRIX_M));  
+        for (size_t i = 0; i < MATRIX_N; ++i) { 
+            skt.recvall(message.map[i].data(), MATRIX_M * sizeof(char), &was_closed); // Recibir cada fila
         }
     break;
-    
+
+    case DUCK_POS_UPDATE:
+        skt.recvall(&message.duck_x, sizeof(int), &was_closed);
+        skt.recvall(&message.duck_y, sizeof(int), &was_closed);
+        break;
+
     default:
 
         skt.recvall(&message.len_matches, 2, &was_closed);
@@ -38,6 +43,7 @@ Message ClientProtocol::receive_message(){
         }
 
         skt.recvall(&message.current_match_id, 1, &was_closed);
+        break;
     }
 
 
@@ -47,19 +53,44 @@ Message ClientProtocol::receive_message(){
 
 bool ClientProtocol::send_command(Command command){
 
+    if(command.type == 0){
+        return false;
+    }
+
     bool was_closed = false;
+    switch (command.type)
+    {
+    case MOVE_LEFT:
+    case MOVE_RIGHT:
+    case MOVE_DOWN:
+    case MOVE_UP:
+        std::cout << "MANDO MOVIMIENTO" << "\n";
+        if (!skt.sendall(&command.player_id, sizeof(command.player_id), &was_closed) || was_closed) {
+            return false;
+        }
 
-    if (!skt.sendall(&command.player_id, sizeof(command.player_id), &was_closed) || was_closed) {
-        return false;
+        if (!skt.sendall(&command.type, sizeof(command.type), &was_closed) || was_closed) {
+            return false;
+        }        
+        
+        break;
+    
+    default:
+        if (!skt.sendall(&command.player_id, sizeof(command.player_id), &was_closed) || was_closed) {
+            return false;
+        }
+
+        if (!skt.sendall(&command.type, sizeof(command.type), &was_closed) || was_closed) {
+            return false;
+        }
+
+        if (!skt.sendall(&command.match_id, sizeof(command.match_id), &was_closed) || was_closed) {
+            return false;
+        }    
+        break;
     }
 
-    if (!skt.sendall(&command.type, sizeof(command.type), &was_closed) || was_closed) {
-        return false;
-    }
 
-    if (!skt.sendall(&command.match_id, sizeof(command.match_id), &was_closed) || was_closed) {
-        return false;
-    }
 
     return true;
 }

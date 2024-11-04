@@ -115,7 +115,7 @@ int Client::start(){
     printMap(message.map);
 
     sdl_handler = std::make_unique<SDLHandler>();
-    sdl_handler->run(message.map, sender->get_queue(), id);
+    sdl_handler->run(message.map, sender->get_queue(), id, message_queue);
 
     //recibo los mensajes del juego con las actualizaciones del mundo
     while(input_handler->is_running()){

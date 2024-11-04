@@ -7,6 +7,7 @@ target_sources(taller_client
     client_sender.cpp
     client_inputhandler.cpp
     client_protocol.cpp
+    client_game_map.cpp
     sdl_handler.cpp
     PUBLIC
     # .h files
@@ -16,6 +17,7 @@ target_sources(taller_client
     client_inputhandler.h
     client_protocol.h
     sdl_handler.h
+    client_game_map.h
     )
 
 # Path de imagenes

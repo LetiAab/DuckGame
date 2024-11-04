@@ -64,13 +64,29 @@ bool ServerProtocol::send_message(Message& message){
         }
 
         // Enviar la matriz fila por fila
-        for (size_t i = 0; i < 10; ++i) { // 10 filas
-            if (!skt.sendall(message.map[i].data(), 15 * sizeof(int), &was_closed) || was_closed) {
+        for (size_t i = 0; i < MATRIX_N; ++i) { // 10 filas
+            if (!skt.sendall(message.map[i].data(), MATRIX_M * sizeof(char), &was_closed) || was_closed) {
                 return false;
             }
         }
 
         break;
+    case DUCK_POS_UPDATE:
+        if (!skt.sendall(&message.player_id, sizeof(message.player_id), &was_closed) || was_closed) {
+            return false;
+        }
+        
+        if (!skt.sendall(&message.type, sizeof(message.type), &was_closed) || was_closed) {
+            return false;
+        }
+
+        if (!skt.sendall(&message.duck_x, sizeof(message.duck_x), &was_closed) || was_closed) {
+            return false;
+        }
+
+        if (!skt.sendall(&message.duck_y, sizeof(message.duck_y), &was_closed) || was_closed) {
+            return false;
+        }
     
     default:
         break;
@@ -107,7 +123,7 @@ std::shared_ptr<Executable> ServerProtocol::receive_command(){
 
     skt.recvall(&player_id, sizeof(player_id), &was_closed);
     skt.recvall(&type, sizeof(type), &was_closed);
-    skt.recvall(&match_id, sizeof(match_id), &was_closed);
+    //skt.recvall(&match_id, sizeof(match_id), &was_closed);
     
     //aca deberia fijarme el type y devolver el comando que corresponda
 

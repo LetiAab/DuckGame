@@ -23,8 +23,11 @@ const uint8_t MOVE_UP = 0x12;
 const uint8_t MOVE_DOWN = 0x13;
 
 
+
 //messages from game
 const uint8_t MAP_INICIALIZATION = 0x14;
+
+const uint8_t DUCK_POS_UPDATE = 0x15;
 
 
 static const char QUIT_SERVER[] = "q";
@@ -34,5 +37,9 @@ const int WINDOW_HEIGHT = 600;
 
 const int MAX_PLAYERS = 6;
 
+const int MATRIX_N = 18;
+const int MATRIX_M = 25;
+
+const int TILE_SIZE = 32;
 
 #endif

@@ -55,6 +55,8 @@ void refreshDuckPositions();
 
 Duck* getDuckById(char id);
 
+void game_broadcast(Message message);
+
 void simulate_round();
 
     

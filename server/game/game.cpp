@@ -5,7 +5,7 @@
 
 //TODO: Tamanio del mapa hardcodeado
 Game::Game(uint16_t match_id, GameQueueMonitor& monitor):
-match_id(match_id), monitor(monitor), is_running(true), game_queue(), map(15, 10){}
+match_id(match_id), monitor(monitor), is_running(true), game_queue(), map(MATRIX_M, MATRIX_N){}
 
 Queue<std::shared_ptr<Executable>>& Game::get_game_queue(){
         return game_queue;
@@ -46,14 +46,27 @@ void Game::run() {
                         i += 1;
                 }
 
+                
+
                 // Simulo una ronda de movimientos
                 simulate_round();
 
-                //monitor.broadcast();
+                //mando la posicion de cada PATO
+                //NO ME GUSTA NADA ESTO PORQUE NO RESPETA QUIEN SE MOVIO PRIMERO
+                for (Duck& duck : ducks) {
+                        Message message;
+                        message.player_id = static_cast<uint16_t>(duck.get_id() - '0'); //lo convierto de nuevo a int xd
+                        message.type = DUCK_POS_UPDATE;
+                        message.duck_x = duck.get_x();
+                        message.duck_y = duck.get_y();
+                        monitor.broadcast(message);
+                }
+
+
 
                 // renew_iteration(); para resetear cosas que duren una ronda
 
-                std::this_thread::sleep_for(std::chrono::milliseconds(200));
+                std::this_thread::sleep_for(std::chrono::milliseconds(20));
         }
 
 }
@@ -110,6 +123,10 @@ Duck* Game::getDuckById(char id) {
         return nullptr; // Retorna nullptr si no se encuentra el pato
 }
 
+
+void Game::game_broadcast(Message message){
+        monitor.broadcast(message);
+}
 
 
 /*

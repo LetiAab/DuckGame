@@ -1,6 +1,9 @@
 #include "move_right_command.h"
 #include <iostream>
 
+#include "common/constants.h"
+
+
 
 MoveRightCommand::MoveRightCommand(uint16_t player_id) : player_id(player_id) {}
 
@@ -12,4 +15,5 @@ void MoveRightCommand::execute(Game& game) {
 
     Duck* duck = game.getDuckById(char_id);
     duck->speed_x ++;
+
 }

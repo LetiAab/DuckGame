@@ -6,7 +6,9 @@
 #include "common/command.h"
 #include "common/queue.h"
 #include "common/constants.h"
+#include "common/message.h"
 
+#include "client_game_map.h" // Si esta es la ubicación del archivo que declara ClientGameMap
 struct Duck {
     int x, y;
     SDL_RendererFlip flipType;
@@ -22,15 +24,19 @@ struct GameState {
     std::vector<Crate> crates;
     SDL_Texture *crate, *duck_t, *background;
     SDL_Renderer* renderer;
-    std::vector<std::vector<int>> *map;
+    //std::vector<std::vector<char>> *map;
+    ClientGameMap client_game_map;
     Queue<Command>* command_queue;
+
+    // Constructor para inicializar client_game_map
+    GameState() : client_game_map(MATRIX_M, MATRIX_N) {}
 };
 
 class SDLHandler {
 public:
     SDLHandler();
     ~SDLHandler();
-    void run(std::vector<std::vector<int>> &map, Queue<Command>& command_queue, uint16_t id);
+    void run(std::vector<std::vector<char>> &map, Queue<Command>& command_queue, uint16_t id, Queue<Message>& message_queue);
 
 private:
     SDL_Surface* loadImage(const std::string& name_img);

@@ -79,3 +79,6 @@ ni scripts adicionales (como correr valgrind).
 
 **Eso esta a cargo de los estudiantes,** tal como fue mostrado
 en los tps individuales, recaps y hands-on.
+
+
+# Calculos para el tamanio de PANTALLA, MATRIZ Y TILE SIZE

@@ -13,6 +13,10 @@ struct Message {
     uint8_t current_match_id;
     std::vector<std::vector<char>> map;
 
+    int duck_x;
+    int duck_y;
+
+
 
 };
 

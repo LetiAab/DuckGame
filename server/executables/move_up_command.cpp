@@ -1,6 +1,8 @@
 #include "move_up_command.h"
 #include <iostream>
 
+#include "common/constants.h"
+
 
 MoveUpCommand::MoveUpCommand(uint16_t player_id) : player_id(player_id) {}
 
@@ -13,4 +15,5 @@ void MoveUpCommand::execute(Game& game) {
 
     Duck* duck = game.getDuckById(char_id);
     duck->speed_y -= 3; // Si queremos que salte N casillas cambiar por N
+
 }
