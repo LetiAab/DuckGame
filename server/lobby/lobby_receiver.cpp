@@ -13,11 +13,8 @@ LobbyReceiver::LobbyReceiver(ServerProtocol& protocol, Queue<LobbyCommand>& lobb
 void LobbyReceiver::run() {
     try {
         while (is_alive) {
-
             LobbyCommand cmd = protocol.get_lobby_command();
-
-            std::cout << "Recibo comando de Player id: " << cmd.player_id << "\n";
-    
+            //std::cout << "Recibo comando de Player id: " << cmd.player_id << "\n";
 
             if (cmd.type == LOBBY_STOP_CODE) {
                 is_alive = false;
@@ -35,7 +32,7 @@ void LobbyReceiver::run() {
 
     } catch (const std::exception& e) {
         is_alive = false;
-        std::cerr << "Exeption running the Lobby_receiver: " << e.what() << std::endl;
+        std::cerr << "Exception running the Lobby_receiver: " << e.what() << std::endl;
     }
 }
 

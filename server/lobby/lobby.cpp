@@ -17,10 +17,7 @@ Lobby::Lobby(): is_alive(true), lobby_players(), matches(), lobby_queue(), match
 void Lobby::run() {
     try {
         while (is_alive) {
-            
-            
             LobbyCommand cmd = lobby_queue.pop(); // OJO: bloqueante, quizás tengamos que usar try_pop + sleep
-
 
             if(cmd.type == START_MATCH_CODE) {
                 process_start_match_command(cmd);
@@ -89,7 +86,7 @@ std::shared_ptr<Match> Lobby::find_match_by_id(const uint16_t id) {
 
 void Lobby::get_all_match_ids(std::vector<uint16_t>& match_ids) {
     for (auto& match : matches) {
-        if (match->is_match_avaiable()) {
+        if (match->is_match_available()) {
             match_ids.push_back(match->get_match_id());
         }
     }

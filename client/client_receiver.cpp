@@ -13,9 +13,8 @@ void ClientReceiver::run() {
     try {
         while (is_alive) {
 
-            Message msg = protocol.recive_message();
+            Message msg = protocol.receive_message();
             message_queue.push(msg);
-
         }
 
     } catch (const ClosedQueue& e) {
@@ -26,7 +25,7 @@ void ClientReceiver::run() {
 
     } catch (const std::exception& e) {
         is_alive = false;
-        std::cerr << "Exeption running the receiver: " << e.what() << std::endl;
+        std::cerr << "Exception running the receiver: " << e.what() << std::endl;
     }
 }
 Queue<Message>& ClientReceiver::get_queue(){ return message_queue; }

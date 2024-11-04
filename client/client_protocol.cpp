@@ -8,7 +8,7 @@
 ClientProtocol::ClientProtocol(Socket&& skt): skt(std::move(skt)) {}
 
 
-Message ClientProtocol::recive_message(){
+Message ClientProtocol::receive_message(){
     
     bool was_closed = false;
     Message message;

@@ -14,6 +14,8 @@ const uint8_t EXISTING_MATCH_CODE = 0x06; //esto es para conectarme (rarisimo el
 const uint8_t START_MATCH_CODE = 0x07;
 const uint8_t LOBBY_STOP_CODE = 0x08;
 const uint8_t LIST_MATCH_AVAILABLE = 0x09;
+const uint8_t LOBBY_EXIT_CODE = 0x0A;
+const uint8_t EXIT_GAME = 0x1B;
 
 const uint8_t MOVE_LEFT = 0x10;
 const uint8_t MOVE_RIGHT = 0x11;

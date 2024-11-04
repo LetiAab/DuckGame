@@ -17,7 +17,7 @@ private:
 public:
     explicit ClientProtocol(Socket&& skt);
 
-    Message recive_message();
+    Message receive_message();
 
     bool send_command(Command lobbyCommand);
 
