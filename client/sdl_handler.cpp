@@ -1,7 +1,6 @@
 #include "sdl_handler.h"
 #include <iostream>
 #include <SDL2/SDL_image.h>
-#include "common/constants.h"
 
 #define DELAY_TIME 50
 #define TILE_SIZE 60
@@ -28,37 +27,31 @@ SDL_Surface* SDLHandler::loadImage(const std::string& name_img) {
     return img;
 }
 
-// TODO: Segun el tipo de objeto, se lo ubica en la posicion correspondiente
-// 1 -> duck, 2 -> crate, etc
-/*void SDLHandler::locateObject(GameState* game, int& num) {
-    for (size_t i = 0; i < game->map->size(); ++i) {
-        for (size_t j = 0; j < (*game->map)[i].size(); ++j) {
-            if ((*game->map)[i][j] == num) {
-                Object obj;
-                obj.x = j * TILE_SIZE;
-                obj.y = i * TILE_SIZE;
-                game->objects.push_back(obj);
-            }
-        }
-    }
-}*/
-
 void SDLHandler::loadGame(GameState* game) {
     SDL_Surface* background = loadImage("forest");
     game->background = SDL_CreateTextureFromSurface(game->renderer, background);
     SDL_FreeSurface(background);
 
-    bool foundDuck = false;
-    for (size_t i = 0; i < game->map->size() && !foundDuck; ++i) {
-        for (size_t j = 0; j < (*game->map)[i].size() && !foundDuck; ++j) {
+    Duck duck{};
+    int count = 0;
+    game->ducks_quantity = 0;
+    for (size_t i = 0; i < game->map->size(); ++i) {
+        for (size_t j = 0; j < (*game->map)[i].size(); ++j) {
             if ((*game->map)[i][j] == 1) {
-                game->duck.x = j * TILE_SIZE;
-                game->duck.y = i * TILE_SIZE;
-                foundDuck = true;
+                duck.x = j * TILE_SIZE;
+                duck.y = i * TILE_SIZE;
+                duck.flipType = SDL_FLIP_NONE;
+                count++;
+                if (count == 6) {
+                    game->ducks[game->ducks_quantity] = duck;
+                    game->ducks_quantity++;
+                    count=0;
+                }
             }
         }
     }
-    game->duck.flipType = SDL_FLIP_NONE;
+    std::cout << "Cantidad de patos: " << game->ducks_quantity << "\n";
+
     SDL_Surface* duck_surface = loadImage("duck");
     game->duck_t = SDL_CreateTextureFromSurface(game->renderer, duck_surface);
     SDL_FreeSurface(duck_surface);
@@ -91,40 +84,41 @@ int SDLHandler::processEvents(SDL_Window* window, GameState* game, uint16_t id) 
                     window = NULL;
                     done = ERROR;
                 }
-                break;
+            break;
             case SDL_KEYUP:
                 std::cout << "Key released\n";
-                positionUpdated = true;
+            positionUpdated = true;
             break;
             case SDL_KEYDOWN:
                 switch (event.key.keysym.sym) {
                     case SDLK_ESCAPE:
                         done = ERROR;
-                        break;
+                    break;
                     default: break;
                 }
-                break;
+            break;
             case SDL_QUIT:
                 done = ERROR;
-                break;
+            break;
             default: break;
         }
     }
     const uint8_t* state = SDL_GetKeyboardState(NULL);
     Message msg;
     msg.player_id = id;
-    int new_x = game->duck.x;
-    int new_y = game->duck.y;
+    // TODO: ver lo del numero id
+    int new_x = game->ducks[id-1].x;
+    int new_y = game->ducks[id-1].y;
 
     if (state[SDL_SCANCODE_A]) {
         new_x -= TILE_SIZE;
-        game->duck.flipType = SDL_FLIP_HORIZONTAL;
+        game->ducks[id-1].flipType = SDL_FLIP_HORIZONTAL;
         msg.type = MOVE_LEFT;
-        std::cout << "Pato se movio a la izquierda\n";
+        std::cout << "Pato " << id << " se movio a la izquierda\n";
     }
     if (state[SDL_SCANCODE_D]) {
         new_x += TILE_SIZE;
-        game->duck.flipType = SDL_FLIP_NONE;
+        game->ducks[id-1].flipType = SDL_FLIP_NONE;
         msg.type = MOVE_RIGHT;
         std::cout << "Pato se movio a la derecha\n";
     }
@@ -145,17 +139,17 @@ int SDLHandler::processEvents(SDL_Window* window, GameState* game, uint16_t id) 
     if (new_grid_x >= 0 && new_grid_x < static_cast<int>(game->map->at(0).size())
             && new_grid_y >= 0 && new_grid_y < static_cast<int>(game->map->size()) &&
             (*game->map)[new_grid_y][new_grid_x] != 2) {
-        game->duck.x = new_x;
-        game->duck.y = new_y;
+        game->ducks[id-1].x = new_x;
+        game->ducks[id-1].y = new_y;
         positionUpdated = true;
     } else {
         std::cout << "PARED no se puede mover ahi\n";
     }
 
     if (positionUpdated) {
-        msg.duck_x = game->duck.x;
-        msg.duck_y = game->duck.y;
-        game->message_queue->push(msg);
+        msg.duck_x = game->ducks[id-1].x;
+        msg.duck_y = game->ducks[id-1].y;
+        //game->message_queue->push(msg);
     }
 
     return done;
@@ -164,8 +158,10 @@ int SDLHandler::processEvents(SDL_Window* window, GameState* game, uint16_t id) 
 void SDLHandler::doRender(SDL_Renderer* renderer, GameState* game) {
     SDL_RenderCopy(renderer, game->background, NULL, NULL);
 
-    SDL_Rect duck_rect = {game->duck.x, game->duck.y, TILE_SIZE, TILE_SIZE};
-    SDL_RenderCopyEx(renderer, game->duck_t, NULL, &duck_rect, 0, NULL, game->duck.flipType);
+    for (int i = 0; i < game->ducks_quantity; i++) {
+        SDL_Rect duck_rect = {game->ducks[i].x, game->ducks[i].y, TILE_SIZE, TILE_SIZE};
+        SDL_RenderCopyEx(renderer, game->duck_t, NULL, &duck_rect, 0, NULL, game->ducks[i].flipType);
+    }
 
     for (size_t i = 0; i < game->crates.size(); i++) {
         SDL_Rect crate_rect = {game->crates[i].x, game->crates[i].y, TILE_SIZE, TILE_SIZE};
@@ -175,7 +171,7 @@ void SDLHandler::doRender(SDL_Renderer* renderer, GameState* game) {
     SDL_RenderPresent(renderer);
 }
 
-void SDLHandler::run(Queue<Message>& message_queue) {
+void SDLHandler::run(Queue<Message>& message_queue, uint16_t id) {
     GameState game{};
     SDL_Window* window = SDL_CreateWindow("Duck Game",
                                           SDL_WINDOWPOS_UNDEFINED,
@@ -188,7 +184,8 @@ void SDLHandler::run(Queue<Message>& message_queue) {
     Message first_message = message_queue.pop();
     game.map = &first_message.map;
     game.message_queue = &message_queue;
-    uint16_t id = first_message.player_id;
+    //uint16_t id = first_message.player_id;
+    std::cout << "ID: " << id << "\n";
 
     loadGame(&game);
 

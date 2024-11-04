@@ -5,6 +5,7 @@
 
 #include "common/message.h"
 #include "common/queue.h"
+#include "common/constants.h"
 
 struct Duck {
     int x, y;
@@ -16,7 +17,8 @@ struct Crate {
 };
 
 struct GameState {
-    Duck duck;
+    Duck ducks[MAX_PLAYERS];
+    int ducks_quantity;
     std::vector<Crate> crates;
     SDL_Texture *crate, *duck_t, *background;
     SDL_Renderer* renderer;
@@ -28,12 +30,11 @@ class SDLHandler {
 public:
     SDLHandler();
     ~SDLHandler();
-    void run(Queue<Message>& message_queue);
+    void run(Queue<Message>& message_queue, uint16_t id);
 
 private:
     SDL_Surface* loadImage(const std::string& name_img);
     void loadGame(GameState* game);
-    //void locateObject(GameState* game, int& num);
     int processEvents(SDL_Window* window, GameState* game, uint16_t id);
     void doRender(SDL_Renderer* renderer, GameState* game);
 };
