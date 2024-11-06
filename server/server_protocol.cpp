@@ -108,7 +108,6 @@ std::shared_ptr<Executable> ServerProtocol::receive_command(){
 
     uint16_t player_id = 0;
     uint8_t type = 0;
-    uint16_t match_id = 0;
     bool was_closed = false;
 
     skt.recvall(&type, sizeof(type), &was_closed);
@@ -116,10 +115,9 @@ std::shared_ptr<Executable> ServerProtocol::receive_command(){
     
     //aca deberia fijarme el type y devolver el comando que corresponda
 
-    std::cout << "Comando recibido: " << std::endl;    
+    std::cout << "Comando recibido: " << std::endl;
     std::cout << "  Player ID: " << player_id << std::endl;
     std::cout << "  Type: " << static_cast<int>(type) << std::endl; // Convertir a int para mostrar el valor de uint8_t
-    std::cout << "  Match ID: " << match_id << std::endl;
 
     switch (type)
     {

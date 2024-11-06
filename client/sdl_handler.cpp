@@ -82,6 +82,96 @@ int SDLHandler::processEvents(SDL_Window* window, GameState* game, uint16_t id) 
     int done = SUCCESS;
     bool positionUpdated = false;
     SDL_Event event;
+
+    uint8_t move = 0;
+
+    while (SDL_PollEvent(&event)) {
+        switch (event.type) {
+            case SDL_WINDOWEVENT_CLOSE:
+                if (window) {
+                    SDL_DestroyWindow(window);
+                    window = NULL;
+                    done = ERROR;
+                }
+                break;
+
+            case SDL_KEYDOWN:  // Evento cuando se presiona una tecla
+                switch (event.key.keysym.sym) {
+                    case SDLK_ESCAPE:
+                        done = ERROR;
+                        break;
+                    case SDLK_a:  // Izquierda
+                        //game->ducks[id-1].flipType = SDL_FLIP_HORIZONTAL;
+                        move = MOVE_LEFT;
+                        positionUpdated = true;
+                        std::cout << "Pato " << id << " se movió a la izquierda\n";
+                        break;
+                    case SDLK_d:  // Derecha
+                        //game->ducks[id-1].flipType = SDL_FLIP_NONE;
+                        move = MOVE_RIGHT;
+                        positionUpdated = true;
+                        std::cout << "Pato " << id << " se movió a la derecha\n";
+                        break;
+                    case SDLK_w:  // Arriba
+                        move = MOVE_UP;
+                        positionUpdated = true;
+                        std::cout << "Pato " << id << " se movió para arriba\n";
+                        break;
+                    case SDLK_s:  // Abajo
+                        move = MOVE_DOWN;
+                        positionUpdated = true;
+                        std::cout << "Pato " << id << " se movió para abajo\n";
+                        break;
+                    default:
+                        break;
+                }
+                break;
+
+            case SDL_KEYUP:  // Evento cuando se suelta una tecla
+                /*switch (event.key.keysym.sym) {
+                    case SDLK_a:
+                        move = STOP_LEFT;
+                        positionUpdated = true;
+                        std::cout << "Pato " << id << " dejó de moverse a la izquierda\n";
+                        break;
+                    case SDLK_d:
+                        move = STOP_RIGHT;
+                        positionUpdated = true;
+                        std::cout << "Pato " << id << " dejó de moverse a la derecha\n";
+                        break;
+                    default:
+                        break;
+                }*/
+                break;
+
+            case SDL_QUIT:
+                done = ERROR;
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    // Envía el comando solo si hubo una actualización de posición o estado
+    if (positionUpdated) {
+        auto cmd = Command(id, move);
+        game->command_queue->push(cmd);
+    }
+
+    return done;
+}
+
+
+
+
+
+
+/*
+int SDLHandler::processEvents(SDL_Window* window, GameState* game, uint16_t id) {
+    int done = SUCCESS;
+    bool positionUpdated = false;
+    SDL_Event event;
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
             case SDL_WINDOWEVENT_CLOSE:
@@ -153,7 +243,7 @@ int SDLHandler::processEvents(SDL_Window* window, GameState* game, uint16_t id) 
     }
 
     return done;
-}
+}*/
 
 void SDLHandler::doRender(SDL_Renderer* renderer, GameState* game) {
     
@@ -198,7 +288,7 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
         //PRIMERO MANDO AL SERVER
         done = processEvents(window, &game, id);
 
-        //LUEGO RECIVO DEL SERVER Y HAGO EL RENDER
+        //LUEGO RECIBO DEL SERVER Y HAGO EL RENDER
         Message message;
         message_queue.try_pop(message);
         //TODO: MODULARIZAR
