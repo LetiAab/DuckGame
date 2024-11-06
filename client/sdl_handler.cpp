@@ -101,13 +101,11 @@ int SDLHandler::processEvents(SDL_Window* window, GameState* game, uint16_t id) 
                         done = ERROR;
                         break;
                     case SDLK_a:  // Izquierda
-                        //game->ducks[id-1].flipType = SDL_FLIP_HORIZONTAL;
                         move = MOVE_LEFT;
                         positionUpdated = true;
                         std::cout << "Pato " << id << " se movió a la izquierda\n";
                         break;
                     case SDLK_d:  // Derecha
-                        //game->ducks[id-1].flipType = SDL_FLIP_NONE;
                         move = MOVE_RIGHT;
                         positionUpdated = true;
                         std::cout << "Pato " << id << " se movió a la derecha\n";
@@ -173,87 +171,6 @@ int SDLHandler::processEvents(SDL_Window* window, GameState* game, uint16_t id) 
 }
 
 
-
-
-
-
-/*
-int SDLHandler::processEvents(SDL_Window* window, GameState* game, uint16_t id) {
-    int done = SUCCESS;
-    bool positionUpdated = false;
-    SDL_Event event;
-    while (SDL_PollEvent(&event)) {
-        switch (event.type) {
-            case SDL_WINDOWEVENT_CLOSE:
-                if (window) {
-                    SDL_DestroyWindow(window);
-                    window = NULL;
-                    done = ERROR;
-                }
-            break;
-            case SDL_KEYUP:
-                std::cout << "Key released\n";
-            positionUpdated = true;
-            break;
-            case SDL_KEYDOWN:
-                switch (event.key.keysym.sym) {
-                    case SDLK_ESCAPE:
-                        done = ERROR;
-                    break;
-                    default: break;
-                }
-            break;
-            case SDL_QUIT:
-                done = ERROR;
-            break;
-            default: break;
-        }
-    }
-    const uint8_t* state = SDL_GetKeyboardState(NULL);
-    uint8_t move = 0;
-    // TODO: ver lo del numero id
-    int new_x = game->ducks[id-1].x;
-    int new_y = game->ducks[id-1].y;
-
-    if (state[SDL_SCANCODE_A]) {
-        new_x -= TILE_SIZE;
-        game->ducks[id-1].flipType = SDL_FLIP_HORIZONTAL;
-        move = MOVE_LEFT;
-        positionUpdated = true;
-
-        std::cout << "Pato " << id << " se movio a la izquierda\n";
-    }
-    if (state[SDL_SCANCODE_D]) {
-        new_x += TILE_SIZE;
-        game->ducks[id-1].flipType = SDL_FLIP_NONE;
-        move = MOVE_RIGHT;
-        positionUpdated = true;
-
-        std::cout << "Pato se movio a la derecha\n";
-    }
-    if (state[SDL_SCANCODE_W]) {
-        new_y -= TILE_SIZE;
-        move = MOVE_UP;
-        positionUpdated = true;
-
-        std::cout << "Pato se movio para arriba\n";
-    }
-    if (state[SDL_SCANCODE_S]) {
-        new_y += TILE_SIZE;
-        move = MOVE_DOWN;
-        positionUpdated = true;
-
-        std::cout << "Pato se movio para abajo\n";
-    }
-
-  
-    if (positionUpdated) {
-        auto cmd = Command(id, move, game->ducks[id-1].x, game->ducks[id-1].y);
-        game->command_queue->push(cmd);
-    }
-
-    return done;
-}*/
 
 void SDLHandler::doRender(SDL_Renderer* renderer, GameState* game) {
     
