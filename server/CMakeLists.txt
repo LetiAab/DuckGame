@@ -16,10 +16,10 @@ target_sources(taller_server
     game/game_queue_monitor.cpp
     game/game_map.cpp
     game/duck.cpp
-    executables/move_left_command.cpp
-    executables/move_right_command.cpp
-    executables/move_down_command.cpp
-    executables/move_up_command.cpp
+    executables/start/move_left_command.cpp
+    executables/start/move_right_command.cpp
+    executables/start/move_down_command.cpp
+    executables/start/move_up_command.cpp
 
 
     
@@ -40,8 +40,9 @@ target_sources(taller_server
     game/game_map.h
     game/duck.h
     executables/executable.h
-    executables/move_left_command.h
-    executables/move_right_command.h
-    executables/move_down_command.h
-    executables/move_up_command.h
+    executables/commands.h
+    executables/start/move_left_command.h
+    executables/start/move_right_command.h
+    executables/start/move_down_command.h
+    executables/start/move_up_command.h
     )

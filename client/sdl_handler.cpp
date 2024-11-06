@@ -128,7 +128,7 @@ int SDLHandler::processEvents(SDL_Window* window, GameState* game, uint16_t id) 
                 break;
 
             case SDL_KEYUP:  // Evento cuando se suelta una tecla
-                /*switch (event.key.keysym.sym) {
+                switch (event.key.keysym.sym) {
                     case SDLK_a:
                         move = STOP_LEFT;
                         positionUpdated = true;
@@ -141,7 +141,7 @@ int SDLHandler::processEvents(SDL_Window* window, GameState* game, uint16_t id) 
                         break;
                     default:
                         break;
-                }*/
+                }
                 break;
 
             case SDL_QUIT:
