@@ -13,6 +13,6 @@ void StopMoveCommand::execute(Game& game) {
 
     Duck* duck = game.getDuckById(char_id);
     duck->speed_x = 0;
-    //duck->speed_y = 0;
+    duck->speed_y = 0;
     duck->is_moving = false;
 }
