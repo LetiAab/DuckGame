@@ -20,11 +20,11 @@ ServerProtocol::ServerProtocol(Socket&& skt): skt(std::move(skt)) {}
 bool ServerProtocol::send_lobby_message(const LobbyMessage& message){
     bool was_closed = false;
     
-    if (!skt.sendall(&message.player_id, sizeof(message.player_id), &was_closed) || was_closed) {
+    if (!skt.sendall(&message.type, sizeof(message.type), &was_closed) || was_closed) {
         return false;
     }
-
-    if (!skt.sendall(&message.type, sizeof(message.type), &was_closed) || was_closed) {
+    
+    if (!skt.sendall(&message.player_id, sizeof(message.player_id), &was_closed) || was_closed) {
         return false;
     }
 
@@ -48,23 +48,17 @@ bool ServerProtocol::send_lobby_message(const LobbyMessage& message){
 bool ServerProtocol::send_message(Message& message){
     bool was_closed = false;
 
+    //mando el type primero siempre
+    if (!skt.sendall(&message.type, sizeof(message.type), &was_closed) || was_closed) {
+            return false;
+        }
+
     switch (message.type)
     {
     case MAP_INICIALIZATION:
 
-        //TODO: Mandar el player id es al pedo. PERO LO PONGO PORQUE NO QUIERO DAR VUELTA TODO
-        //LO QUE DEBERIAMOS HACER ES MANDAR SIEMPRE PRIMERO EL TYPE ASI DEL OTRO LADO SABES COMO
-        //ESPERAR EL MENSAJE
-        if (!skt.sendall(&message.player_id, sizeof(message.player_id), &was_closed) || was_closed) {
-            return false;
-        }
-        
-        if (!skt.sendall(&message.type, sizeof(message.type), &was_closed) || was_closed) {
-            return false;
-        }
-
         // Enviar la matriz fila por fila
-        for (size_t i = 0; i < MATRIX_N; ++i) { // 10 filas
+        for (size_t i = 0; i < MATRIX_N; ++i) {
             if (!skt.sendall(message.map[i].data(), MATRIX_M * sizeof(char), &was_closed) || was_closed) {
                 return false;
             }
@@ -73,10 +67,6 @@ bool ServerProtocol::send_message(Message& message){
         break;
     case DUCK_POS_UPDATE:
         if (!skt.sendall(&message.player_id, sizeof(message.player_id), &was_closed) || was_closed) {
-            return false;
-        }
-        
-        if (!skt.sendall(&message.type, sizeof(message.type), &was_closed) || was_closed) {
             return false;
         }
 
@@ -103,8 +93,8 @@ LobbyCommand ServerProtocol::get_lobby_command(){
     uint16_t match_id = 0;
     bool was_closed = false;
 
-    skt.recvall(&player_id, sizeof(player_id), &was_closed);
     skt.recvall(&type, sizeof(type), &was_closed);
+    skt.recvall(&player_id, sizeof(player_id), &was_closed);
     skt.recvall(&match_id, sizeof(match_id), &was_closed);
 
     LobbyCommand cmd(player_id, type, match_id);
@@ -121,9 +111,8 @@ std::shared_ptr<Executable> ServerProtocol::receive_command(){
     uint16_t match_id = 0;
     bool was_closed = false;
 
-    skt.recvall(&player_id, sizeof(player_id), &was_closed);
     skt.recvall(&type, sizeof(type), &was_closed);
-    //skt.recvall(&match_id, sizeof(match_id), &was_closed);
+    skt.recvall(&player_id, sizeof(player_id), &was_closed);
     
     //aca deberia fijarme el type y devolver el comando que corresponda
 
