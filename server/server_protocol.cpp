@@ -77,6 +77,10 @@ bool ServerProtocol::send_message(Message& message){
         if (!skt.sendall(&message.duck_y, sizeof(message.duck_y), &was_closed) || was_closed) {
             return false;
         }
+
+        if (!skt.sendall(&message.looking, sizeof(message.looking), &was_closed) || was_closed) {
+            return false;
+        }
     
     default:
         break;

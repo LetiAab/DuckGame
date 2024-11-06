@@ -1,6 +1,8 @@
 #include "duck.h"
 
-Duck::Duck(char id, int x, int y, GameMap& map) : id_player(id), position_x(x), position_y(y), map(map), is_moving(false), speed_x(0), speed_y(0) {}
+Duck::Duck(char id, int x, int y, GameMap& map) :
+id_player(id), position_x(x), position_y(y), map(map),
+is_moving(false), speed_x(0), speed_y(0), looking(LOOKING_RIGHT) {}
 
 /* void Duck::update_position(int delta_x, int delta_y) {
 
@@ -41,15 +43,13 @@ void Duck::update_position_speed() {
     if (map.canMoveDuckTo(delta_x, delta_y, id_player)) {
         map.cleanDuckOldPosition(position_x, position_y);
 
-        position_x = delta_x; 
-        position_y = delta_y; 
+        position_x = delta_x;
+        position_y = delta_y;
 
         map.setDuckNewPosition(delta_x, delta_y, id_player);
     }
     map.printMap();
 
-    //speed_x = 0;
-    //speed_y = 0;
 }
 
 

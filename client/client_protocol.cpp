@@ -30,6 +30,7 @@ Message ClientProtocol::receive_message(){
         skt.recvall(&message.player_id, 2, &was_closed);
         skt.recvall(&message.duck_x, sizeof(int), &was_closed);
         skt.recvall(&message.duck_y, sizeof(int), &was_closed);
+        skt.recvall(&message.looking, sizeof(char), &was_closed);
         break;
 
     default:

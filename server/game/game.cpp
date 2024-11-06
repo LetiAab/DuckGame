@@ -60,6 +60,7 @@ void Game::run() {
                                 message.type = DUCK_POS_UPDATE;
                                 message.duck_x = duck.get_x();
                                 message.duck_y = duck.get_y();
+                                message.looking = duck.looking;
                                 monitor.broadcast(message);
                         }
                 }

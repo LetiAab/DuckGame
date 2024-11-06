@@ -322,6 +322,17 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
             game.ducks[pos_id].x = message.duck_x * TILE_SIZE;
             game.ducks[pos_id].y = message.duck_y * TILE_SIZE;
 
+            //con looking podemos hacer que el pato mire para arriba o aletee tambien (creo)
+            if(message.looking == LOOKING_LEFT){
+                //pato esta mirando a la izquierda
+                game.ducks[pos_id].flipType = SDL_FLIP_HORIZONTAL;
+                
+            } else {
+                //pato esta mirando a la derecha
+                game.ducks[pos_id].flipType = SDL_FLIP_NONE;
+            }
+
+
         }
 
         //game.client_game_map.printMap();
