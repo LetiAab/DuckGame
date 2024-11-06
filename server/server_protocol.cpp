@@ -129,6 +129,15 @@ std::shared_ptr<Executable> ServerProtocol::receive_command(){
         return std::make_shared<MoveUpCommand>(player_id);
     case MOVE_DOWN:
         return std::make_shared<MoveDownCommand>(player_id);
+
+    case STOP_LEFT:
+        return std::make_shared<StopMoveCommand>(player_id);
+    case STOP_RIGHT:
+        return std::make_shared<StopMoveCommand>(player_id);
+    case STOP_UP:
+        return std::make_shared<StopMoveCommand>(player_id);
+    case STOP_DOWN:
+        return std::make_shared<StopMoveCommand>(player_id);
     case EXIT_GAME:
         break;
     default:

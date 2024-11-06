@@ -24,6 +24,8 @@ const uint8_t MOVE_DOWN = 0x13;
 
 const uint8_t STOP_LEFT = 0x14;
 const uint8_t STOP_RIGHT = 0x15;
+const uint8_t STOP_UP = 0x16;
+const uint8_t STOP_DOWN = 0x17;
 
 //messages from game
 const uint8_t MAP_INICIALIZATION = 0x14;

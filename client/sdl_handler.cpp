@@ -3,7 +3,7 @@
 #include <SDL2/SDL_image.h>
 #include <common/message.h>
 
-#define DELAY_TIME 20
+#define DELAY_TIME 60
 #define DUCK_SIZE_X 2 //EN CANTIDAD DE TILE_SIZE
 #define DUCK_SIZE_Y 3 //EN CANTIDAD DE TILE_SIZE
 
@@ -138,6 +138,16 @@ int SDLHandler::processEvents(SDL_Window* window, GameState* game, uint16_t id) 
                         move = STOP_RIGHT;
                         positionUpdated = true;
                         std::cout << "Pato " << id << " dejó de moverse a la derecha\n";
+                        break;
+                    case SDLK_w:
+                        move = STOP_UP;
+                        positionUpdated = true;
+                        std::cout << "Pato " << id << " dejo de moverse para arriba\n";
+                        break;
+                    case SDLK_s:
+                        move = STOP_DOWN;
+                        positionUpdated = true;
+                        std::cout << "Pato " << id << " dejo de moverse para abajo\n";
                         break;
                     default:
                         break;

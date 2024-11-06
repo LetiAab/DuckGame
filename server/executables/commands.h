@@ -6,4 +6,6 @@
 #include "start/move_down_command.h"
 #include "start/move_up_command.h"
 
+#include "stop/stop_move_command.h"
+
 #endif  // EXECUTABLES_COMMANDS_H

@@ -46,8 +46,8 @@ void Duck::update_position_speed() {
     }
     map.printMap();
 
-    speed_x = 0;
-    speed_y = 0;
+    //speed_x = 0;
+    //speed_y = 0;
 }
 
 

@@ -64,6 +64,10 @@ bool ClientProtocol::send_command(Command command){
     case MOVE_RIGHT:
     case MOVE_DOWN:
     case MOVE_UP:
+    case STOP_LEFT:
+    case STOP_RIGHT:
+    case STOP_UP:
+    case STOP_DOWN:
         std::cout << "MANDO MOVIMIENTO" << "\n";
 
         if (!skt.sendall(&command.type, sizeof(command.type), &was_closed) || was_closed) {
