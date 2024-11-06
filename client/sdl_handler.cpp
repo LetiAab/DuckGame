@@ -251,8 +251,8 @@ void SDLHandler::doRender(SDL_Renderer* renderer, GameState* game) {
 
     for (int i = 0; i < game->ducks_quantity; i++) {
         std::cout << "RENDERIZO A LOS PATOS" << "\n";
-        SDL_Rect duck_rect = 
-            {game->ducks[i].x, game->ducks[i].y, 
+        SDL_Rect duck_rect =
+            {game->ducks[i].x, game->ducks[i].y,
             TILE_SIZE * DUCK_SIZE_X, TILE_SIZE * DUCK_SIZE_Y};
             
         SDL_RenderCopyEx(renderer, game->duck_t, NULL, &duck_rect, 0, NULL, game->ducks[i].flipType);
@@ -297,7 +297,7 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
         if (message.type == DUCK_POS_UPDATE){
 
             //de el lado de el cliente no importa tanto la matriz. porque es para ver las coliciones
-            // y eso se hace en el server. 
+            // y eso se hace en el server.
             //si a mi me llega la posicion del pato simplemente tengo que mover al pato a donte tien que ir
 
             std::cout << "ME LLEGO NOTIFICACION PARA ACTUALIZAR LA POS DEL PATO" << "\n";

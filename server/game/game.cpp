@@ -53,12 +53,15 @@ void Game::run() {
                 //mando la posicion de cada PATO
                 //NO ME GUSTA NADA ESTO PORQUE NO RESPETA QUIEN SE MOVIO PRIMERO
                 for (Duck& duck : ducks) {
-                        Message message;
-                        message.player_id = static_cast<uint16_t>(duck.get_id() - '0'); //lo convierto de nuevo a int xd
-                        message.type = DUCK_POS_UPDATE;
-                        message.duck_x = duck.get_x();
-                        message.duck_y = duck.get_y();
-                        monitor.broadcast(message);
+                        //solo mando la poscion de los patos que se movieron
+                        if (duck.is_moving){
+                                Message message;
+                                message.player_id = static_cast<uint16_t>(duck.get_id() - '0'); //lo convierto de nuevo a int xd
+                                message.type = DUCK_POS_UPDATE;
+                                message.duck_x = duck.get_x();
+                                message.duck_y = duck.get_y();
+                                monitor.broadcast(message);
+                        }
                 }
 
 

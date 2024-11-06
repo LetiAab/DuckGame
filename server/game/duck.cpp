@@ -1,6 +1,6 @@
 #include "duck.h"
 
-Duck::Duck(char id, int x, int y, GameMap& map) : id_player(id), position_x(x), position_y(y), map(map), speed_x(0), speed_y(0) {}
+Duck::Duck(char id, int x, int y, GameMap& map) : id_player(id), position_x(x), position_y(y), map(map), is_moving(false), speed_x(0), speed_y(0) {}
 
 /* void Duck::update_position(int delta_x, int delta_y) {
 

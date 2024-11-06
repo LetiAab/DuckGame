@@ -12,7 +12,7 @@ private:
 
 
 public:
-
+    bool is_moving;
     int speed_x;
     int speed_y;
 
