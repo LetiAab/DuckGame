@@ -66,7 +66,7 @@ void Game::run() {
 
                 // renew_iteration(); para resetear cosas que duren una ronda
 
-                std::this_thread::sleep_for(std::chrono::milliseconds(20));
+                std::this_thread::sleep_for(std::chrono::milliseconds(200));
         }
 
 }
