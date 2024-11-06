@@ -215,24 +215,12 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
             std::cout << "x " << message.duck_x <<"\n";
             std::cout << "x " << message.duck_y <<"\n";
 
+            int pos_id = message.player_id - 1;
 
-            int new_grid_x = message.duck_x / TILE_SIZE;
-            int new_grid_y = message.duck_y / TILE_SIZE;
+            std::cout << "POS_ID DEL PATO A MOVER: " << pos_id << "\n";
 
-
-            if (new_grid_x >= 0 && new_grid_x < static_cast<int>(game.client_game_map.map.at(0).size())
-                    && new_grid_y >= 0 && new_grid_y < static_cast<int>(game.client_game_map.map.size()) &&
-                    (game.client_game_map.map)[new_grid_y][new_grid_x] != 2) {
-                
-                int pos_id = message.player_id - 1;
-
-                std::cout << "POS_ID DEL PATO A MOVER: " << pos_id << "\n";
-
-                game.ducks[pos_id].x = message.duck_x * TILE_SIZE;
-                game.ducks[pos_id].y = message.duck_y * TILE_SIZE;
-            } else {
-                std::cout << "PARED no se puede mover ahi\n";
-            }
+            game.ducks[pos_id].x = message.duck_x * TILE_SIZE;
+            game.ducks[pos_id].y = message.duck_y * TILE_SIZE;
 
         }
 
