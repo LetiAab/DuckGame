@@ -9,9 +9,15 @@
 #include "common/message.h"
 
 #include "client_game_map.h" // Si esta es la ubicación del archivo que declara ClientGameMap
+
 struct Duck {
     int x, y;
     SDL_RendererFlip flipType;
+    bool isMoving;
+    int animationFrame; // Contador para controlar la animación
+    int currentFrameIndex; // Índice del fotograma actual en el *sprite sheet*
+    int frameWidth;
+    int frameHeight;
 };
 
 struct Crate {

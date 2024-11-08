@@ -36,6 +36,17 @@ void SDLHandler::loadGame(GameState* game) {
     game->background = SDL_CreateTextureFromSurface(game->renderer, background);
     SDL_FreeSurface(background);
 
+    // Cargar el sprite sheet del pato caminando
+    SDL_Surface* duck_surface = loadImage("duck-walking");
+    game->duck_t = SDL_CreateTextureFromSurface(game->renderer, duck_surface);
+    SDL_FreeSurface(duck_surface);
+
+    // Asumimos que el sprite sheet tiene 6 fotogramas en una fila
+    int sprite_sheet_width, sprite_sheet_height;
+    SDL_QueryTexture(game->duck_t, NULL, NULL, &sprite_sheet_width, &sprite_sheet_height);
+    int frame_width = sprite_sheet_width / 6;  // 6 fotogramas en una fila
+    int frame_height = sprite_sheet_height;    // Solo una fila
+
     Duck duck{};
     int count = 0;
     game->ducks_quantity = 0;
@@ -46,6 +57,14 @@ void SDLHandler::loadGame(GameState* game) {
                 duck.x = j * TILE_SIZE;
                 duck.y = i * TILE_SIZE;
                 duck.flipType = SDL_FLIP_NONE;
+                duck.isMoving = false;
+                duck.animationFrame = 0;
+                duck.currentFrameIndex = 0;
+
+                // Configurar el tamaño de los fotogramas del pato
+                duck.frameWidth = frame_width;
+                duck.frameHeight = frame_height;
+
                 count++;
                 if (count == 6) {
                     game->ducks[game->ducks_quantity] = duck;
@@ -57,10 +76,6 @@ void SDLHandler::loadGame(GameState* game) {
     }
 
     std::cout << "Cantidad de patos: " << game->ducks_quantity << "\n";
-
-    SDL_Surface* duck_surface = loadImage("duck");
-    game->duck_t = SDL_CreateTextureFromSurface(game->renderer, duck_surface);
-    SDL_FreeSurface(duck_surface);
 
     SDL_Surface* crate_surface = loadImage("crate");
     game->crate = SDL_CreateTextureFromSurface(game->renderer, crate_surface);
@@ -77,6 +92,7 @@ void SDLHandler::loadGame(GameState* game) {
         }
     }
 }
+
 
 int SDLHandler::processEvents(SDL_Window* window, GameState* game, uint16_t id) {
     int done = SUCCESS;
@@ -172,17 +188,34 @@ int SDLHandler::processEvents(SDL_Window* window, GameState* game, uint16_t id) 
 
 
 
+
 void SDLHandler::doRender(SDL_Renderer* renderer, GameState* game) {
-    
     SDL_RenderCopy(renderer, game->background, NULL, NULL);
 
     for (int i = 0; i < game->ducks_quantity; i++) {
-        std::cout << "RENDERIZO A LOS PATOS" << "\n";
-        SDL_Rect duck_rect =
-            {game->ducks[i].x, game->ducks[i].y,
-            TILE_SIZE * DUCK_SIZE_X, TILE_SIZE * DUCK_SIZE_Y};
-            
-        SDL_RenderCopyEx(renderer, game->duck_t, NULL, &duck_rect, 0, NULL, game->ducks[i].flipType);
+        Duck& duck = game->ducks[i];
+
+        // Cambiar el fotograma de animación si el pato está en movimiento
+        if (duck.isMoving) {
+            duck.currentFrameIndex = (duck.currentFrameIndex + 1) % 6;  // Ciclar entre 6 fotogramas
+        } else {
+            duck.currentFrameIndex = 0;  // Si no se mueve, detener la animación
+        }
+
+        SDL_Rect src_rect = {
+            duck.currentFrameIndex * duck.frameWidth, // Desplazar en el *sprite sheet*
+            0,
+            duck.frameWidth,
+            duck.frameHeight
+        };
+
+        SDL_Rect duck_rect = {
+            duck.x, duck.y,
+            TILE_SIZE * DUCK_SIZE_X,
+            TILE_SIZE * DUCK_SIZE_Y
+        };
+
+        SDL_RenderCopyEx(renderer, game->duck_t, &src_rect, &duck_rect, 0, NULL, duck.flipType);
     }
 
     for (size_t i = 0; i < game->crates.size(); i++) {
@@ -245,14 +278,13 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
                 game.ducks[pos_id].flipType = SDL_FLIP_HORIZONTAL;
                 
             } else {
-                //pato esta mirando a la derecha
+                //pato esta mirando a la derechas
                 game.ducks[pos_id].flipType = SDL_FLIP_NONE;
             }
+            game.ducks[pos_id].isMoving = true;
 
 
         }
-
-        //game.client_game_map.printMap();
 
         doRender(renderer, &game);
         SDL_Delay(DELAY_TIME);
