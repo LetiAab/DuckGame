@@ -57,13 +57,13 @@ void SDLHandler::loadGame(GameState* game) {
                 duck.x = j * TILE_SIZE;
                 duck.y = i * TILE_SIZE;
                 duck.flipType = SDL_FLIP_NONE;
-                duck.isMoving = false;
-                duck.animationFrame = 0;
-                duck.currentFrameIndex = 0;
+                duck.is_moving = false;
+                duck.animation_frame = 0;
+                duck.current_frame_index = 0;
 
                 // Configurar el tamaño de los fotogramas del pato
-                duck.frameWidth = frame_width;
-                duck.frameHeight = frame_height;
+                duck.frame_width = frame_width;
+                duck.frame_height = frame_height;
 
                 count++;
                 if (count == 6) {
@@ -196,17 +196,17 @@ void SDLHandler::doRender(SDL_Renderer* renderer, GameState* game) {
         Duck& duck = game->ducks[i];
 
         // Cambiar el fotograma de animación si el pato está en movimiento
-        if (duck.isMoving) {
-            duck.currentFrameIndex = (duck.currentFrameIndex + 1) % 6;  // Ciclar entre 6 fotogramas
+        if (duck.is_moving) {
+            duck.current_frame_index = (duck.current_frame_index + 1) % 6;  // Ciclar entre 6 fotogramas
         } else {
-            duck.currentFrameIndex = 0;  // Si no se mueve, detener la animación
+            duck.current_frame_index = 0;  // Si no se mueve, detener la animación
         }
 
         SDL_Rect src_rect = {
-            duck.currentFrameIndex * duck.frameWidth, // Desplazar en el *sprite sheet*
+            duck.current_frame_index * duck.frame_width, // Desplazar en el sprite sheet
             0,
-            duck.frameWidth,
-            duck.frameHeight
+            duck.frame_width,
+            duck.frame_height
         };
 
         SDL_Rect duck_rect = {
@@ -278,10 +278,16 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
                 game.ducks[pos_id].flipType = SDL_FLIP_HORIZONTAL;
                 
             } else {
-                //pato esta mirando a la derechas
+                //pato esta mirando a la derecha
                 game.ducks[pos_id].flipType = SDL_FLIP_NONE;
             }
-            game.ducks[pos_id].isMoving = true;
+
+            if (message.is_moving){
+                game.ducks[pos_id].is_moving = true;
+
+            } else {
+                game.ducks[pos_id].is_moving =false;
+            }
 
 
         }

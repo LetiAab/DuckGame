@@ -13,11 +13,11 @@
 struct Duck {
     int x, y;
     SDL_RendererFlip flipType;
-    bool isMoving;
-    int animationFrame; // Contador para controlar la animación
-    int currentFrameIndex; // Índice del fotograma actual en el *sprite sheet*
-    int frameWidth;
-    int frameHeight;
+    bool is_moving;
+    int animation_frame; // Contador para controlar la animación
+    int current_frame_index; // Índice del fotograma actual en el *sprite sheet*
+    int frame_width;
+    int frame_height;
 };
 
 struct Crate {

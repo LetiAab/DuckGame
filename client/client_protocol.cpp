@@ -31,6 +31,7 @@ Message ClientProtocol::receive_message(){
         skt.recvall(&message.duck_x, sizeof(int), &was_closed);
         skt.recvall(&message.duck_y, sizeof(int), &was_closed);
         skt.recvall(&message.looking, sizeof(char), &was_closed);
+        skt.recvall(&message.is_moving, sizeof(bool), &was_closed);
         break;
 
     default:
