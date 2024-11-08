@@ -31,11 +31,11 @@ void Duck::update_position_speed() {
         map.cleanDuckOldPosition(position_x, position_y);
 
         position_y += 1;
-        //se esta moviendo porque esta cayendo
-        is_moving = true;
 
         map.setDuckNewPosition(position_x, position_y, id_player);
     }
+
+
 
     int delta_x = position_x + speed_x;
     int delta_y = position_y + speed_y;
