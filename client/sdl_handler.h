@@ -2,6 +2,7 @@
 #define SDL_HANDLER_H
 
 #include <SDL2/SDL.h>
+#include <unordered_map>
 
 #include "common/command.h"
 #include "common/queue.h"
@@ -45,6 +46,7 @@ public:
     void run(std::vector<std::vector<char>> &map, Queue<Command>& command_queue, uint16_t id, Queue<Message>& message_queue);
 
 private:
+    std::unordered_map<SDL_Keycode, bool> keyState; //necesito esto para que se mande un solo comando
     SDL_Surface* loadImage(const std::string& name_img);
     void loadGame(GameState* game);
     int processEvents(SDL_Window* window, GameState* game, uint16_t id);

@@ -36,12 +36,11 @@ void SDLHandler::loadGame(GameState* game) {
     game->background = SDL_CreateTextureFromSurface(game->renderer, background);
     SDL_FreeSurface(background);
 
-    // Cargar el sprite sheet del pato caminando
     SDL_Surface* duck_surface = loadImage("duck-walking");
     game->duck_t = SDL_CreateTextureFromSurface(game->renderer, duck_surface);
     SDL_FreeSurface(duck_surface);
 
-    // Asumimos que el sprite sheet tiene 6 fotogramas en una fila
+    // el sprite sheet tiene 6 fotogramas en una fila
     int sprite_sheet_width, sprite_sheet_height;
     SDL_QueryTexture(game->duck_t, NULL, NULL, &sprite_sheet_width, &sprite_sheet_height);
     int frame_width = sprite_sheet_width / 6;  // 6 fotogramas en una fila
@@ -61,7 +60,7 @@ void SDLHandler::loadGame(GameState* game) {
                 duck.animation_frame = 0;
                 duck.current_frame_index = 0;
 
-                // Configurar el tamaño de los fotogramas del pato
+                // Configuro el tamaño de los fotogramas del pato
                 duck.frame_width = frame_width;
                 duck.frame_height = frame_height;
 
@@ -98,7 +97,6 @@ int SDLHandler::processEvents(SDL_Window* window, GameState* game, uint16_t id) 
     int done = SUCCESS;
     bool positionUpdated = false;
     SDL_Event event;
-
     uint8_t move = 0;
 
     while (SDL_PollEvent(&event)) {
@@ -111,60 +109,58 @@ int SDLHandler::processEvents(SDL_Window* window, GameState* game, uint16_t id) 
                 }
                 break;
 
-            case SDL_KEYDOWN:  // Evento cuando se presiona una tecla
-                switch (event.key.keysym.sym) {
-                    case SDLK_ESCAPE:
-                        done = ERROR;
-                        break;
-                    case SDLK_a:  // Izquierda
-                        move = MOVE_LEFT;
-                        positionUpdated = true;
-                        std::cout << "Pato " << id << " se movió a la izquierda\n";
-                        break;
-                    case SDLK_d:  // Derecha
-                        move = MOVE_RIGHT;
-                        positionUpdated = true;
-                        std::cout << "Pato " << id << " se movió a la derecha\n";
-                        break;
-                    case SDLK_w:  // Arriba
-                        move = MOVE_UP;
-                        positionUpdated = true;
-                        std::cout << "Pato " << id << " se movió para arriba\n";
-                        break;
-                    case SDLK_s:  // Abajo
-                        move = MOVE_DOWN;
-                        positionUpdated = true;
-                        std::cout << "Pato " << id << " se movió para abajo\n";
-                        break;
-                    default:
-                        break;
+            case SDL_KEYDOWN:
+                if (!keyState[event.key.keysym.sym]) {// solo si la tecla no estaba ya presionada
+                    keyState[event.key.keysym.sym] = true;
+                    switch (event.key.keysym.sym) {
+                        case SDLK_ESCAPE:
+                            done = ERROR;
+                            break;
+                        case SDLK_a:
+                            move = MOVE_LEFT;
+                            positionUpdated = true;
+                            break;
+                        case SDLK_d:
+                            move = MOVE_RIGHT;
+                            positionUpdated = true;
+                            break;
+                        case SDLK_w:
+                            move = MOVE_UP;
+                            positionUpdated = true;
+                            break;
+                        case SDLK_s:
+                            move = MOVE_DOWN;
+                            positionUpdated = true;
+                            break;
+                        default:
+                            break;
+                    }
                 }
                 break;
 
-            case SDL_KEYUP:  // Evento cuando se suelta una tecla
-                switch (event.key.keysym.sym) {
-                    case SDLK_a:
-                        move = STOP_LEFT;
-                        positionUpdated = true;
-                        std::cout << "Pato " << id << " dejó de moverse a la izquierda\n";
-                        break;
-                    case SDLK_d:
-                        move = STOP_RIGHT;
-                        positionUpdated = true;
-                        std::cout << "Pato " << id << " dejó de moverse a la derecha\n";
-                        break;
-                    case SDLK_w:
-                        move = STOP_UP;
-                        positionUpdated = true;
-                        std::cout << "Pato " << id << " dejo de moverse para arriba\n";
-                        break;
-                    case SDLK_s:
-                        move = STOP_DOWN;
-                        positionUpdated = true;
-                        std::cout << "Pato " << id << " dejo de moverse para abajo\n";
-                        break;
-                    default:
-                        break;
+            case SDL_KEYUP:
+                if (keyState[event.key.keysym.sym]) {//solo si la tecla estaba presionada
+                    keyState[event.key.keysym.sym] = false;
+                    switch (event.key.keysym.sym) {
+                        case SDLK_a:
+                            move = STOP_LEFT;
+                            positionUpdated = true;
+                            break;
+                        case SDLK_d:
+                            move = STOP_RIGHT;
+                            positionUpdated = true;
+                            break;
+                        case SDLK_w:
+                            move = STOP_UP;
+                            positionUpdated = true;
+                            break;
+                        case SDLK_s:
+                            move = STOP_DOWN;
+                            positionUpdated = true;
+                            break;
+                        default:
+                            break;
+                    }
                 }
                 break;
 
@@ -177,7 +173,6 @@ int SDLHandler::processEvents(SDL_Window* window, GameState* game, uint16_t id) 
         }
     }
 
-    // Envía el comando solo si hubo una actualización de posición o estado
     if (positionUpdated) {
         auto cmd = Command(id, move);
         game->command_queue->push(cmd);
@@ -185,6 +180,7 @@ int SDLHandler::processEvents(SDL_Window* window, GameState* game, uint16_t id) 
 
     return done;
 }
+
 
 
 
