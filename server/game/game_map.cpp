@@ -72,6 +72,11 @@ void GameMap::setEscenario() {
 
     map[height - 2][11] = PLATFORM;
     map[height - 2][12] = PLATFORM;
+
+    map[height - 6][16] = PLATFORM;
+    map[height - 6][17] = PLATFORM;
+    map[height - 6][18] = PLATFORM;
+
 }
 
 
