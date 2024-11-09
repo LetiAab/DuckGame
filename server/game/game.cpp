@@ -13,7 +13,7 @@ Queue<std::shared_ptr<Executable>>& Game::get_game_queue(){
 
 void Game::simulate_round() {
         for (Duck& duck : ducks) {
-                duck.update_position_speed();
+                duck.update_position();
         }
 }
 
@@ -44,8 +44,6 @@ void Game::run() {
 
                         i += 1;
                 }
-
-                
 
                 // Simulo una ronda de movimientos
                 simulate_round();

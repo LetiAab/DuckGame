@@ -45,13 +45,13 @@ void Duck::update_position_speed() {
 
 void Duck::update_position() {
 
-    check_gravity();
+    //check_gravity();
 
-    int delta_x = position_x + speed_x;
-    int delta_y = position_y + speed_y;
+    int delta_x = position.x + speed_x;
+    int delta_y = position.y + speed_y;
 
     Position new_pos(delta_x, delta_y);
-    //mueve al pato a la nueva poscion si esta libre o a la que este libre inmediatamente antes
+    //mueve al pato a la nueva posicion si esta libre o a la que este libre inmediatamente antes
     position = map.move_duck_to(position, new_pos, id_player);
 
 }
@@ -62,9 +62,9 @@ char Duck::get_id() const {
 }
 
 int Duck::get_x() const {
-    return position_x;
+    return position.x;
 }
 
 int Duck::get_y() const {
-    return position_y;
+    return position.y;
 }

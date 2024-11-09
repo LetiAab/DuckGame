@@ -21,7 +21,7 @@ target_sources(taller_server
     executables/start/move_down_command.cpp
     executables/start/move_up_command.cpp
     executables/stop/stop_move_command.cpp
-
+    executables/stop/stop_move_up_command.cpp
 
     
     PUBLIC
@@ -47,4 +47,5 @@ target_sources(taller_server
     executables/start/move_down_command.h
     executables/start/move_up_command.h
     executables/stop/stop_move_command.h
+    executables/stop/stop_move_up_command.h
     )
