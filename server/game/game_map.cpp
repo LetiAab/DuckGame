@@ -52,13 +52,13 @@ bool GameMap::canMoveDuckTo(int x, int y, char duck_id) {
 
 bool GameMap::is_touching_floor(int x, int y) {
     // Verifica que el pato no tenga plataformas en el piso
-    int i = x + 2;
-    for (int j = y; j < y + 3; ++j) {
+    int j = y + 3;
+    for (int i = x; i < x + 2; ++i) {
         if (map[j][i] == PLATFORM) {
             return true;
         }
     }
-
+    
     return false;
 }
 
