@@ -10,12 +10,14 @@ protected:
     std::string tipo;
     int alcance;
     int daño;
+    int pos_x;
+    int pos_y;
 
 public:
     int speed_x;
     int speed_y;
 
-    Proyectil(const std::string& tipo, int alcance, int daño, int speed_x, int speed_y)
+    Proyectil(const std::string& tipo, int alcance, int daño, int pos_x, int pos_y, int speed_x, int speed_y)
         : tipo(tipo), alcance(alcance), daño(daño), speed_x(speed_x), speed_y(speed_y)  {}
 
     virtual void simular() = 0;  // Define el movimiento en cada tipo de proyectil
@@ -28,11 +30,13 @@ class ProyectilGranada : public Proyectil {
 public:
     int tiempo_explosion;
 
-    ProyectilGranada(int tiempo, int speed_x, int speed_y) : Proyectil("Granada", 5, 15, speed_x, speed_y) {
+    ProyectilGranada(int tiempo, int pos_x, int pos_y, int speed_x, int speed_y) : Proyectil("Granada", 5, 15, pos_x, pos_y, speed_x, speed_y) {
         tiempo_explosion = tiempo;
     }
 
     void simular() override {
+        // Falta mover el proyectil
+
         tiempo_explosion += TIME_SLEEP;
 
         if (tiempo_explosion >= 4000) {
@@ -49,7 +53,7 @@ public:
 
 class ProyectilLaser : public Proyectil {
 public:
-    ProyectilLaser(int speed_x, int speed_y) : Proyectil("Rayo Láser", 38, 15, speed_x, speed_y) {}
+    ProyectilLaser(int pos_x, int pos_y, int speed_x, int speed_y) : Proyectil("Rayo Láser", 38, 15, pos_x, pos_y, speed_x, speed_y) {}
 
     void simular() override {
         std::cout << "El rayo láser avanza en línea recta con alcance de " << alcance << " tiles.\n";
@@ -62,9 +66,29 @@ public:
 
 class ProyectilBanana : public Proyectil {
 public:
-    ProyectilBanana(int speed_x, int speed_y) : Proyectil("Banana", 0, 0, speed_x, speed_y) {}
+    ProyectilBanana(int pos_x, int pos_y, int speed_x, int speed_y) : Proyectil("Banana", 0, 0, pos_x, pos_y, speed_x, speed_y) {}
 
     void simular() override {
+        // Mover hasta que toque el piso, entonces queda esperando que alguno la pise
+        
+        // Chequear si tocó el piso. Si es así cambiar las velocidades por 0
+        /*
+        if (game->map.toco_el_piso) {
+                speed_x = 0;
+                speed_y = 0;
+        }
+        */
+
+        // Si hay un pato que está ocupando la misma posición que yo entonces le activo un flag patinando o simplemente le hago daño
+        /*
+        Duck* duck = game.pato_en_posicion(pos_x, pos_y);
+        if (duck) {
+                duck.is_slippy = true;
+                o,
+                duck.life_points -= 10;
+        }
+        */
+
         std::cout << "La banana se queda en el suelo.\n";
     }
 

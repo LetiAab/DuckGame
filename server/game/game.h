@@ -64,7 +64,7 @@ void game_broadcast(Message message);
 
 void simulate_round();
 
-void add_projectile(Proyectil&& projectile, int pos_x, int pos_y);
+void add_projectile(Proyectil&& projectile);
 
     
 void run() override;

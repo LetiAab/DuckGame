@@ -16,10 +16,16 @@ void Game::simulate_round() {
         for (Duck& duck : ducks) {  
                 duck.update_position_speed();
         }
+
+        for (Proyectil& projectile: projectiles) {
+                // Acá hay que simular el movimiento de las cosas, el simular existe pero no hace mucho
+                projectile.simular();
+        }
 }
 
-void Game::add_projectile(Proyectil&& projectile, int pos_x, int pos_y) {
+void Game::add_projectile(Proyectil&& projectile) {
         // check position to see if can add a projectile ?
+        // with projectile.pos_x and projectile.pos_y (are private, make them public)
 
         projectiles.push_back(projectile);
 }
