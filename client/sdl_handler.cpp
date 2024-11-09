@@ -3,7 +3,7 @@
 #include <SDL2/SDL_image.h>
 #include <common/message.h>
 
-#define DELAY_TIME 20
+#define DELAY_TIME 60
 #define DUCK_SIZE_X 2 //EN CANTIDAD DE TILE_SIZE
 #define DUCK_SIZE_Y 3 //EN CANTIDAD DE TILE_SIZE
 
@@ -36,6 +36,16 @@ void SDLHandler::loadGame(GameState* game) {
     game->background = SDL_CreateTextureFromSurface(game->renderer, background);
     SDL_FreeSurface(background);
 
+    SDL_Surface* duck_surface = loadImage("duck-walking");
+    game->duck_t = SDL_CreateTextureFromSurface(game->renderer, duck_surface);
+    SDL_FreeSurface(duck_surface);
+
+    // el sprite sheet tiene 6 fotogramas en una fila
+    int sprite_sheet_width, sprite_sheet_height;
+    SDL_QueryTexture(game->duck_t, NULL, NULL, &sprite_sheet_width, &sprite_sheet_height);
+    int frame_width = sprite_sheet_width / 6;  // 6 fotogramas en una fila
+    int frame_height = sprite_sheet_height;    // Solo una fila
+
     Duck duck{};
     int count = 0;
     game->ducks_quantity = 0;
@@ -46,6 +56,14 @@ void SDLHandler::loadGame(GameState* game) {
                 duck.x = j * TILE_SIZE;
                 duck.y = i * TILE_SIZE;
                 duck.flipType = SDL_FLIP_NONE;
+                duck.is_moving = false;
+                duck.animation_frame = 0;
+                duck.current_frame_index = 0;
+
+                // Configuro el tamaño de los fotogramas del pato
+                duck.frame_width = frame_width;
+                duck.frame_height = frame_height;
+
                 count++;
                 if (count == 6) {
                     game->ducks[game->ducks_quantity] = duck;
@@ -57,10 +75,6 @@ void SDLHandler::loadGame(GameState* game) {
     }
 
     std::cout << "Cantidad de patos: " << game->ducks_quantity << "\n";
-
-    SDL_Surface* duck_surface = loadImage("duck");
-    game->duck_t = SDL_CreateTextureFromSurface(game->renderer, duck_surface);
-    SDL_FreeSurface(duck_surface);
 
     SDL_Surface* crate_surface = loadImage("crate");
     game->crate = SDL_CreateTextureFromSurface(game->renderer, crate_surface);
@@ -78,10 +92,13 @@ void SDLHandler::loadGame(GameState* game) {
     }
 }
 
+
 int SDLHandler::processEvents(SDL_Window* window, GameState* game, uint16_t id) {
     int done = SUCCESS;
     bool positionUpdated = false;
     SDL_Event event;
+    uint8_t move = 0;
+
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
             case SDL_WINDOWEVENT_CLOSE:
@@ -90,82 +107,111 @@ int SDLHandler::processEvents(SDL_Window* window, GameState* game, uint16_t id) 
                     window = NULL;
                     done = ERROR;
                 }
-            break;
-            case SDL_KEYUP:
-                std::cout << "Key released\n";
-            positionUpdated = true;
-            break;
+                break;
+
             case SDL_KEYDOWN:
-                switch (event.key.keysym.sym) {
-                    case SDLK_ESCAPE:
-                        done = ERROR;
-                    break;
-                    default: break;
+                if (!keyState[event.key.keysym.sym]) {// solo si la tecla no estaba ya presionada
+                    keyState[event.key.keysym.sym] = true;
+                    switch (event.key.keysym.sym) {
+                        case SDLK_ESCAPE:
+                            done = ERROR;
+                            break;
+                        case SDLK_a:
+                            move = MOVE_LEFT;
+                            positionUpdated = true;
+                            break;
+                        case SDLK_d:
+                            move = MOVE_RIGHT;
+                            positionUpdated = true;
+                            break;
+                        case SDLK_w:
+                            move = MOVE_UP;
+                            positionUpdated = true;
+                            break;
+                        case SDLK_s:
+                            move = MOVE_DOWN;
+                            positionUpdated = true;
+                            break;
+                        default:
+                            break;
+                    }
                 }
-            break;
+                break;
+
+            case SDL_KEYUP:
+                if (keyState[event.key.keysym.sym]) {//solo si la tecla estaba presionada
+                    keyState[event.key.keysym.sym] = false;
+                    switch (event.key.keysym.sym) {
+                        case SDLK_a:
+                            move = STOP_LEFT;
+                            positionUpdated = true;
+                            break;
+                        case SDLK_d:
+                            move = STOP_RIGHT;
+                            positionUpdated = true;
+                            break;
+                        case SDLK_w:
+                            move = STOP_UP;
+                            positionUpdated = true;
+                            break;
+                        case SDLK_s:
+                            move = STOP_DOWN;
+                            positionUpdated = true;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                break;
+
             case SDL_QUIT:
                 done = ERROR;
-            break;
-            default: break;
+                break;
+
+            default:
+                break;
         }
     }
-    const uint8_t* state = SDL_GetKeyboardState(NULL);
-    uint8_t move = 0;
-    // TODO: ver lo del numero id
-    int new_x = game->ducks[id-1].x;
-    int new_y = game->ducks[id-1].y;
 
-    if (state[SDL_SCANCODE_A]) {
-        new_x -= TILE_SIZE;
-        game->ducks[id-1].flipType = SDL_FLIP_HORIZONTAL;
-        move = MOVE_LEFT;
-        positionUpdated = true;
-
-        std::cout << "Pato " << id << " se movio a la izquierda\n";
-    }
-    if (state[SDL_SCANCODE_D]) {
-        new_x += TILE_SIZE;
-        game->ducks[id-1].flipType = SDL_FLIP_NONE;
-        move = MOVE_RIGHT;
-        positionUpdated = true;
-
-        std::cout << "Pato se movio a la derecha\n";
-    }
-    if (state[SDL_SCANCODE_W]) {
-        new_y -= TILE_SIZE;
-        move = MOVE_UP;
-        positionUpdated = true;
-
-        std::cout << "Pato se movio para arriba\n";
-    }
-    if (state[SDL_SCANCODE_S]) {
-        new_y += TILE_SIZE;
-        move = MOVE_DOWN;
-        positionUpdated = true;
-
-        std::cout << "Pato se movio para abajo\n";
-    }
-
-  
     if (positionUpdated) {
-        auto cmd = Command(id, move, game->ducks[id-1].x, game->ducks[id-1].y);
+        auto cmd = Command(id, move);
         game->command_queue->push(cmd);
     }
 
     return done;
 }
 
+
+
+
+
 void SDLHandler::doRender(SDL_Renderer* renderer, GameState* game) {
-    
     SDL_RenderCopy(renderer, game->background, NULL, NULL);
 
     for (int i = 0; i < game->ducks_quantity; i++) {
-        std::cout << "RENDERIZO A LOS PATOS" << "\n";
-        SDL_Rect duck_rect = 
-            {game->ducks[i].x, game->ducks[i].y, 
-            TILE_SIZE * DUCK_SIZE_X, TILE_SIZE * DUCK_SIZE_Y};
-            
-        SDL_RenderCopyEx(renderer, game->duck_t, NULL, &duck_rect, 0, NULL, game->ducks[i].flipType);
+        Duck& duck = game->ducks[i];
+
+        // Cambiar el fotograma de animación si el pato está en movimiento
+        if (duck.is_moving) {
+            duck.current_frame_index = (duck.current_frame_index + 1) % 6;  // Ciclar entre 6 fotogramas
+        } else {
+            duck.current_frame_index = 0;  // Si no se mueve, detener la animación
+        }
+
+        SDL_Rect src_rect = {
+            duck.current_frame_index * duck.frame_width, // Desplazar en el sprite sheet
+            0,
+            duck.frame_width,
+            duck.frame_height
+        };
+
+        SDL_Rect duck_rect = {
+            duck.x, duck.y,
+            TILE_SIZE * DUCK_SIZE_X,
+            TILE_SIZE * DUCK_SIZE_Y
+        };
+
+        SDL_RenderCopyEx(renderer, game->duck_t, &src_rect, &duck_rect, 0, NULL, duck.flipType);
     }
 
     for (size_t i = 0; i < game->crates.size(); i++) {
@@ -198,7 +244,7 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
         //PRIMERO MANDO AL SERVER
         done = processEvents(window, &game, id);
 
-        //LUEGO RECIVO DEL SERVER Y HAGO EL RENDER
+        //LUEGO RECIBO DEL SERVER Y HAGO EL RENDER
         Message message;
         message_queue.try_pop(message);
         //TODO: MODULARIZAR
@@ -207,7 +253,7 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
         if (message.type == DUCK_POS_UPDATE){
 
             //de el lado de el cliente no importa tanto la matriz. porque es para ver las coliciones
-            // y eso se hace en el server. 
+            // y eso se hace en el server.
             //si a mi me llega la posicion del pato simplemente tengo que mover al pato a donte tien que ir
 
             std::cout << "ME LLEGO NOTIFICACION PARA ACTUALIZAR LA POS DEL PATO" << "\n";
@@ -215,28 +261,32 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
             std::cout << "x " << message.duck_x <<"\n";
             std::cout << "x " << message.duck_y <<"\n";
 
+            int pos_id = message.player_id - 1;
 
-            int new_grid_x = message.duck_x / TILE_SIZE;
-            int new_grid_y = message.duck_y / TILE_SIZE;
+            std::cout << "POS_ID DEL PATO A MOVER: " << pos_id << "\n";
 
+            game.ducks[pos_id].x = message.duck_x * TILE_SIZE;
+            game.ducks[pos_id].y = message.duck_y * TILE_SIZE;
 
-            if (new_grid_x >= 0 && new_grid_x < static_cast<int>(game.client_game_map.map.at(0).size())
-                    && new_grid_y >= 0 && new_grid_y < static_cast<int>(game.client_game_map.map.size()) &&
-                    (game.client_game_map.map)[new_grid_y][new_grid_x] != 2) {
+            //con looking podemos hacer que el pato mire para arriba o aletee tambien (creo)
+            if(message.looking == LOOKING_LEFT){
+                //pato esta mirando a la izquierda
+                game.ducks[pos_id].flipType = SDL_FLIP_HORIZONTAL;
                 
-                int pos_id = message.player_id - 1;
-
-                std::cout << "POS_ID DEL PATO A MOVER: " << pos_id << "\n";
-
-                game.ducks[pos_id].x = message.duck_x * TILE_SIZE;
-                game.ducks[pos_id].y = message.duck_y * TILE_SIZE;
             } else {
-                std::cout << "PARED no se puede mover ahi\n";
+                //pato esta mirando a la derecha
+                game.ducks[pos_id].flipType = SDL_FLIP_NONE;
             }
 
-        }
+            if (message.is_moving){
+                game.ducks[pos_id].is_moving = true;
 
-        //game.client_game_map.printMap();
+            } else {
+                game.ducks[pos_id].is_moving =false;
+            }
+
+
+        }
 
         doRender(renderer, &game);
         SDL_Delay(DELAY_TIME);

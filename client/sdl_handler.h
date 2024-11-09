@@ -2,6 +2,7 @@
 #define SDL_HANDLER_H
 
 #include <SDL2/SDL.h>
+#include <unordered_map>
 
 #include "common/command.h"
 #include "common/queue.h"
@@ -9,9 +10,15 @@
 #include "common/message.h"
 
 #include "client_game_map.h" // Si esta es la ubicación del archivo que declara ClientGameMap
+
 struct Duck {
     int x, y;
     SDL_RendererFlip flipType;
+    bool is_moving;
+    int animation_frame; // Contador para controlar la animación
+    int current_frame_index; // Índice del fotograma actual en el *sprite sheet*
+    int frame_width;
+    int frame_height;
 };
 
 struct Crate {
@@ -39,6 +46,7 @@ public:
     void run(std::vector<std::vector<char>> &map, Queue<Command>& command_queue, uint16_t id, Queue<Message>& message_queue);
 
 private:
+    std::unordered_map<SDL_Keycode, bool> keyState; //necesito esto para que se mande un solo comando
     SDL_Surface* loadImage(const std::string& name_img);
     void loadGame(GameState* game);
     int processEvents(SDL_Window* window, GameState* game, uint16_t id);

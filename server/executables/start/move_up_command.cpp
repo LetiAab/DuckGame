@@ -15,5 +15,5 @@ void MoveUpCommand::execute(Game& game) {
 
     Duck* duck = game.getDuckById(char_id);
     duck->speed_y -= 3; // Si queremos que salte N casillas cambiar por N
-
+    duck->is_moving = true;
 }

@@ -1,5 +1,6 @@
 #include <cstdint>
 #include "game_map.h"
+#include "common/constants.h"
 #ifndef DUCK_H
 #define DUCK_H
 
@@ -12,9 +13,10 @@ private:
 
 
 public:
-
+    bool is_moving;
     int speed_x;
     int speed_y;
+    char looking;
 
     Duck(char id, int x, int y, GameMap& map);
 
