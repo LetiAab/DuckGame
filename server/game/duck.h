@@ -17,12 +17,15 @@ public:
     int speed_x;
     int speed_y;
     char looking;
+    bool is_jumping;
+    bool updated;
 
     Duck(char id, int x, int y, GameMap& map);
 
 //    void update_position(int delta_x, int delta_y);
 
     void update_position_speed();
+    void update_position();
 
     char get_id() const;
     int get_x() const;

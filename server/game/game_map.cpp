@@ -50,6 +50,7 @@ bool GameMap::canMoveDuckTo(int x, int y, char duck_id) {
     return true;
 }
 
+
 void GameMap::setEscenario() {
     for (int x = 0; x < width; ++x) {
         map[height - 1][x] = PLATFORM; // Piso
@@ -73,6 +74,7 @@ void GameMap::setEscenario() {
     map[height - 2][11] = PLATFORM;
     map[height - 2][12] = PLATFORM;
 
+    //plataforma en el aire
     map[height - 6][16] = PLATFORM;
     map[height - 6][17] = PLATFORM;
     map[height - 6][18] = PLATFORM;
