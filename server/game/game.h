@@ -14,6 +14,10 @@
 #include <cstdlib>  // Para rand y srand
 #include <ctime>    // Para time
 
+
+#define TIME_SLEEP 20
+// En gun.h tengo la misma variable, cambiar también ahí o mejorar el import
+
 typedef struct update
 {
         int duck_id;
@@ -36,6 +40,7 @@ private:
         bool is_running;
         Queue<std::shared_ptr<Executable>> game_queue;
         std::vector<Update> updates;
+        std::vector<Proyectil> projectiles;
 
 public:
         GameMap map;
@@ -58,6 +63,8 @@ Duck* getDuckById(char id);
 void game_broadcast(Message message);
 
 void simulate_round();
+
+void add_projectile(Proyectil&& projectile, int pos_x, int pos_y);
 
     
 void run() override;

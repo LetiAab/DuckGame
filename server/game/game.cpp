@@ -2,6 +2,7 @@
 #include "common/constants.h"
 
 #include <random>
+#include <utility>
 
 //TODO: Tamanio del mapa hardcodeado
 Game::Game(uint16_t match_id, GameQueueMonitor& monitor):
@@ -15,6 +16,12 @@ void Game::simulate_round() {
         for (Duck& duck : ducks) {  
                 duck.update_position_speed();
         }
+}
+
+void Game::add_projectile(Proyectil&& projectile, int pos_x, int pos_y) {
+        // check position to see if can add a projectile ?
+
+        projectiles.push_back(projectile);
 }
 
 
@@ -66,7 +73,7 @@ void Game::run() {
 
                 // renew_iteration(); para resetear cosas que duren una ronda
 
-                std::this_thread::sleep_for(std::chrono::milliseconds(20));
+                std::this_thread::sleep_for(std::chrono::milliseconds(TIME_SLEEP));
         }
 
 }
