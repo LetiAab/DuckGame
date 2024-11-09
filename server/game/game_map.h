@@ -1,3 +1,5 @@
+#include "common/position.h"
+
 #ifndef GAMEMAP_H
 #define GAMEMAP_H
 
@@ -18,6 +20,8 @@ public:
     void setEscenario();
 
     bool canMoveDuckTo(int x, int y, char duck_id);
+
+    Position move_duck_to(Position old_position, Position new_position, char duck_id);
 
     void cleanDuckOldPosition(int x, int y);
 

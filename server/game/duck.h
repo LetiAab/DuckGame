@@ -1,6 +1,7 @@
 #include <cstdint>
 #include "game_map.h"
 #include "common/constants.h"
+#include "common/position.h"
 #ifndef DUCK_H
 #define DUCK_H
 
@@ -9,6 +10,7 @@ private:
     char id_player;  // ID del jugador
     int position_x;      // Posición en el eje X
     int position_y;      // Posición en el eje Y
+    Position position;
     GameMap& map;   // Referencia al GameMap
 
 
@@ -26,6 +28,7 @@ public:
 
     void update_position_speed();
     void update_position();
+    void check_gravity();
 
     char get_id() const;
     int get_x() const;
