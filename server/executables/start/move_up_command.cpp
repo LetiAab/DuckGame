@@ -14,9 +14,9 @@ void MoveUpCommand::execute(Game& game) {
     char char_id = static_cast<char>(player_id + '0');
 
     Duck* duck = game.getDuckById(char_id);
-    if(duck->is_jumping){
+    if(duck->is_in_air()){
         //si estaba saltando antes, reduzco su velocidad para que caiga mas lento
-        duck->speed_y -= 1;
+        //duck->speed_y -= 1;
     } else {
         //si empieza a saltar
         duck->speed_y -= 4; // Si queremos que salte N casillas cambiar por N

@@ -29,6 +29,7 @@ public:
     void update_position_speed();
     void update_position();
     void check_gravity();
+    bool is_in_air();
 
     char get_id() const;
     int get_x() const;

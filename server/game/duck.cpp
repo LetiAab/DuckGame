@@ -1,15 +1,25 @@
 #include "duck.h"
+#include <iostream>
 
 Duck::Duck(char id, int x, int y, GameMap& map) :
 id_player(id), position_x(x), position_y(y), position(x, y), map(map),
 is_moving(false), speed_x(0), speed_y(0), looking(LOOKING_RIGHT), is_jumping(false), updated(false) {}
 
+bool Duck::is_in_air(){
+    return map.canMoveDuckTo(position.x, position.y + 1, id_player);
+
+}
 
 void Duck::check_gravity(){
-    bool can_fall = map.canMoveDuckTo(position_x, position_y + 1, id_player);
 
-    if(can_fall) {
-        speed_y +=2; //si solo podia caer 1, no pasa nada, la funcion move_duck_to() lo contempla
+    if(is_in_air()) { 
+        speed_y += 2;
+        /*int delta_x = position.x;
+        int delta_y = position.y + 2;
+
+        Position new_pos(delta_x, delta_y);
+        position = map.move_duck_to(position, new_pos, id_player);*/
+        
     }
 
 }
@@ -45,15 +55,20 @@ void Duck::update_position_speed() {
 
 void Duck::update_position() {
 
-    //check_gravity();
+    check_gravity();
 
     int delta_x = position.x + speed_x;
     int delta_y = position.y + speed_y;
+
+    std::cout << "Posición antes de mover: (" << position.x << ", " << position.y << ")" << std::endl;
 
     Position new_pos(delta_x, delta_y);
     //mueve al pato a la nueva posicion si esta libre o a la que este libre inmediatamente antes
     position = map.move_duck_to(position, new_pos, id_player);
 
+    std::cout << "Speed X: " << speed_x << ", Speed Y: " << speed_y << std::endl;
+    std::cout << "Posición despues de mover: (" << position.x << ", " << position.y << ")" << std::endl;
+    map.printMap();
 }
 
 
