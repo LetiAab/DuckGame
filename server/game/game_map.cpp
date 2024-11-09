@@ -50,6 +50,18 @@ bool GameMap::canMoveDuckTo(int x, int y, char duck_id) {
     return true;
 }
 
+bool GameMap::is_touching_floor(int x, int y) {
+    // Verifica que el pato no tenga plataformas en el piso
+    int i = x + 2;
+    for (int j = y; j < y + 3; ++j) {
+        if (map[j][i] == PLATFORM) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 void GameMap::setEscenario() {
     for (int x = 0; x < width; ++x) {
         map[height - 1][x] = PLATFORM; // Piso

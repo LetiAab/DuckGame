@@ -15,12 +15,15 @@ public:
 
     int speed_x;
     int speed_y;
+    bool is_fluttering;
 
     Duck(char id, int x, int y, GameMap& map);
 
 //    void update_position(int delta_x, int delta_y);
 
     void update_position_speed();
+
+    bool is_touching_floor();
 
     char get_id() const;
     int get_x() const;

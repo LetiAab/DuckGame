@@ -15,6 +15,8 @@ public:
 
     bool placeDuck(int x, int y, char duck_id);
 
+    bool is_touching_floor(int x, int y);
+
     void setEscenario();
 
     bool canMoveDuckTo(int x, int y, char duck_id);
