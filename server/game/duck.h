@@ -1,7 +1,10 @@
 #include <cstdint>
 #include "game_map.h"
+#include "../guns/gun.h"
 #ifndef DUCK_H
 #define DUCK_H
+
+#include <string>
 
 class Duck {
 private:
@@ -15,6 +18,7 @@ public:
 
     int speed_x;
     int speed_y;
+    Arma* gun;
     bool is_fluttering;
 
     Duck(char id, int x, int y, GameMap& map);
