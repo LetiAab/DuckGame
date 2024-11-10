@@ -20,6 +20,8 @@ public:
     int speed_y;
     Arma* gun;
     bool is_fluttering;
+    bool is_slippy;
+    int life_points;
 
     Duck(char id, int x, int y, GameMap& map);
 

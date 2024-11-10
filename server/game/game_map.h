@@ -3,6 +3,8 @@
 
 #include <vector>
 
+#include "duck.h"
+
 class GameMap {
 
 private:
@@ -15,7 +17,11 @@ public:
 
     bool placeDuck(int x, int y, char duck_id);
 
-    bool is_touching_floor(int x, int y);
+    bool is_duck_touching_floor(int x, int y);
+
+    bool is_element_touching_floor(int x, int y, int size_x, int size_y);
+
+    char duck_in_position(int x, int y, int size_x, int size_y);
 
     void setEscenario();
 

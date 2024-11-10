@@ -20,7 +20,7 @@ public:
     Proyectil(const std::string& tipo, int alcance, int daño, int pos_x, int pos_y, int speed_x, int speed_y)
         : tipo(tipo), alcance(alcance), daño(daño), speed_x(speed_x), speed_y(speed_y)  {}
 
-    virtual void simular() = 0;  // Define el movimiento en cada tipo de proyectil
+    virtual void simular(Game& game) = 0;  // Define el movimiento en cada tipo de proyectil
     virtual void impactar() = 0;  // Define el comportamiento al impactar
 
     virtual ~Proyectil() = default;
@@ -34,7 +34,7 @@ public:
         tiempo_explosion = tiempo;
     }
 
-    void simular() override {
+    void simular(Game& game) override {
         // Falta mover el proyectil
 
         tiempo_explosion += TIME_SLEEP;
@@ -55,7 +55,7 @@ class ProyectilLaser : public Proyectil {
 public:
     ProyectilLaser(int pos_x, int pos_y, int speed_x, int speed_y) : Proyectil("Rayo Láser", 38, 15, pos_x, pos_y, speed_x, speed_y) {}
 
-    void simular() override {
+    void simular(Game& game) override {
         std::cout << "El rayo láser avanza en línea recta con alcance de " << alcance << " tiles.\n";
     }
 
@@ -68,26 +68,26 @@ class ProyectilBanana : public Proyectil {
 public:
     ProyectilBanana(int pos_x, int pos_y, int speed_x, int speed_y) : Proyectil("Banana", 0, 0, pos_x, pos_y, speed_x, speed_y) {}
 
-    void simular() override {
+    void simular(Game& game) override {
         // Mover hasta que toque el piso, entonces queda esperando que alguno la pise
         
         // Chequear si tocó el piso. Si es así cambiar las velocidades por 0
-        /*
-        if (game->map.toco_el_piso) {
+        if (game.map.is_element_touching_floor(pos_x, pos_y, 1, 1)) {
                 speed_x = 0;
                 speed_y = 0;
         }
-        */
+        
 
         // Si hay un pato que está ocupando la misma posición que yo entonces le activo un flag patinando o simplemente le hago daño
-        /*
-        Duck* duck = game.pato_en_posicion(pos_x, pos_y);
+        
+        char duck_id = game.map.duck_in_position(pos_x, pos_y, 1, 1);
+        Duck* duck = game.getDuckById(duck_id);
         if (duck) {
-                duck.is_slippy = true;
-                o,
-                duck.life_points -= 10;
+                // Es una o la otra, lo del slippy no me gusta como idea, ver si va a ser necesario
+                duck->is_slippy = true;
+                duck->life_points -= 10;
         }
-        */
+       
 
         std::cout << "La banana se queda en el suelo.\n";
     }

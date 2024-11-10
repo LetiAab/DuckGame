@@ -19,7 +19,7 @@ void Game::simulate_round() {
 
         for (Proyectil& projectile: projectiles) {
                 // Acá hay que simular el movimiento de las cosas, el simular existe pero no hace mucho
-                projectile.simular();
+                projectile.simular(*this);
         }
 }
 

@@ -50,7 +50,7 @@ bool GameMap::canMoveDuckTo(int x, int y, char duck_id) {
     return true;
 }
 
-bool GameMap::is_touching_floor(int x, int y) {
+bool GameMap::is_duck_touching_floor(int x, int y) {
     // Verifica que el pato no tenga plataformas en el piso
     int j = y + 3;
     for (int i = x; i < x + 2; ++i) {
@@ -60,6 +60,33 @@ bool GameMap::is_touching_floor(int x, int y) {
     }
     
     return false;
+}
+
+bool GameMap::is_element_touching_floor(int x, int y, int size_x, int size_y) {
+    // Esto supone un tamaño de la banana de 1x1
+    int j = y + size_y;
+    for (int i = x; i < x + size_x; ++i) {
+        if (map[j][i] == PLATFORM) {
+            return true;
+        }
+    }
+    
+    return false;
+}
+
+char GameMap::duck_in_position(int x, int y, int size_x, int size_y) {
+    // Verifica que haya un pato, si no hay devuelve 0
+    for (int i = x; i < x + size_x; ++i) {
+        for (int j = y; j < y + size_y; ++j) {
+            for (int l = 1; l < 7; l++) {
+                char duck_number = static_cast<char>(l + '0');
+                if (map[j][i] == duck_number) {
+                    return duck_number;
+                }
+            }
+        }
+    }
+    return 0;
 }
 
 void GameMap::setEscenario() {
