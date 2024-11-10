@@ -10,6 +10,7 @@
 #include "common/message.h"
 
 #include "client_game_map.h" // Si esta es la ubicación del archivo que declara ClientGameMap
+#include "sdl_handletextures.h"
 
 struct Duck {
     int x, y;
@@ -39,9 +40,7 @@ struct GameState {
     Duck ducks[MAX_PLAYERS];
     int ducks_quantity;
     std::vector<Crate> crates;
-    SDL_Texture *crate, *duck_t, *background;
     SDL_Renderer* renderer;
-    //std::vector<std::vector<char>> *map;
     ClientGameMap client_game_map;
     Queue<Command>* command_queue;
 
@@ -56,9 +55,11 @@ public:
     void run(std::vector<std::vector<char>> &map, Queue<Command>& command_queue, uint16_t id, Queue<Message>& message_queue);
 
 private:
+    SDLHandleTextures handle_textures;
     std::unordered_map<SDL_Keycode, bool> keyState; //necesito esto para que se mande un solo comando
-    SDL_Surface* loadImage(const std::string& name_img);
     void loadGame(GameState* game);
+    void initializeDucks(GameState* game, int frame_width, int frame_height);
+    void initializeCrates(GameState* game);
     int processEvents(SDL_Window* window, GameState* game, uint16_t id);
     void doRender(SDL_Renderer* renderer, GameState* game, Message& message);
 };
