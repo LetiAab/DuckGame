@@ -14,10 +14,11 @@ private:
     int direction_y; 
     GameMap* map;   
     bool impacto;
+    char duck_id; //tengo que saber de quien es la bala para que no se autopegue cuando sale
 
 
 public:
-    Bullet(int start_x, int start_y, int direction_x, int direction_y, GameMap* map);
+    Bullet(int start_x, int start_y, int direction_x, int direction_y, GameMap* map, char duck_id);
     void comenzar_trayectoria();  
     void update_position();       
     int get_x() const;            
@@ -25,6 +26,9 @@ public:
 
     bool hubo_impacto();
     void cleanPostImpacto();
+    void impactar();
+
+    char getDuckId() const;
 
 
 };

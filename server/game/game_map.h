@@ -32,7 +32,7 @@ public:
     void setDuckNewPosition(int x, int y, char duck_id);
 
 
-    bool canMoveBulletTo(int x, int y);
+    bool canMoveBulletTo(int x, int y, char duck_id);
     void setBulletNewPosition(int x, int y);
     void cleanBulletOldPosition(int x, int y);
 

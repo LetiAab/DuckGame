@@ -15,7 +15,9 @@ Queue<std::shared_ptr<Executable>>& Game::get_game_queue(){
 
 
 void Game::simulate_round() {
-        
+
+        //map.printMap();
+
     for (Duck& duck : ducks) {  
         duck.update_position_speed();
         
@@ -23,12 +25,18 @@ void Game::simulate_round() {
                 it->update_position();
                 
                 if (it->hubo_impacto()) {
+                        //cuando la bala impacta la saco de la lista de lanzadas por el pato
+                        //de esta forma libero y encima me ahorro mandar el mensaje de la pos de la bala una vez que no existe mas. Porque el mensaje se crea viendo la lista de balas. Cosa que no me gusta demasiado pero bueno
+                        std::cout << "HUBO IMPACTO! en" << it->get_x() << std::endl;
+
                         it->cleanPostImpacto();
                         it = duck.bullets.erase(it);
                 } else {
                 ++it;
                 }
         }
+
+
     }
 
     for (std::unique_ptr<Proyectil>& projectile : projectiles) {
@@ -60,6 +68,7 @@ void Game::sendBulletPositionUpdate(const Bullet& bullet) {
 
     Message message;
     message.type = BULLET_POS_UPDATE;
+    message.player_id =static_cast<uint16_t>(bullet.getDuckId() - '0'); 
     message.bullet_x = bullet.get_x();
     message.bullet_y = bullet.get_y();
     monitor.broadcast(message);
@@ -70,7 +79,7 @@ void Game::sendBulletPositionUpdate(const Bullet& bullet) {
 void Game::run() {
 
         //Creo el mapa con los objetos fijos (bloques) y la posicion inicial de los patos
-        inicializate_map();
+        //inicializate_map();
         //map.printMap();
 
 

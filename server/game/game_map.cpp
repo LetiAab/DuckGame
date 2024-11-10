@@ -18,19 +18,43 @@ GameMap::GameMap(int width, int height) : width(width), height(height) {
     map.resize(height, std::vector<char>(width, EMPTY));
 }
 
-bool GameMap::canMoveBulletTo(int x, int y){
+bool GameMap::canMoveBulletTo(int x, int y, char duck_id){
+    
+    printMap();
+
+    
     if (x < 0 || x >= width || y < 0 || y >= height) {
         return false; 
     }
     
-    if(map[x + 1][y] != EMPTY){
+
+    if (map[y][x] == duck_id) {
+        std::cout << "CHOCO CONMIGO MISMO" << "\n";
+        return true;
+    }
+
+
+    if(map[y][x] != EMPTY){
+        
         //bala choca con ALGO
         return false;
     }
+    
 
     return true;
 
 }
+
+void GameMap::setBulletNewPosition(int x, int y){
+
+    map[y][x] = BULLET;
+}
+
+void GameMap::cleanBulletOldPosition(int x, int y){
+
+    map[y][x] = EMPTY;
+}
+
 
 bool GameMap::canMoveDuckTo(int x, int y, char duck_id) {
 
@@ -231,15 +255,6 @@ void GameMap::setDuckNewPosition(int x, int y, char duck_id) {
     }
 }
 
-void GameMap::setBulletNewPosition(int x, int y){
-
-    map[y][x] = BULLET;
-}
-
-void GameMap::cleanBulletOldPosition(int x, int y){
-
-    map[y][x] = EMPTY;
-}
 
 
 
