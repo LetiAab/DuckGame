@@ -1,36 +1,22 @@
 #include "duck.h"
 
-Duck::Duck(char id, int x, int y, GameMap& map) :
-id_player(id), position_x(x), position_y(y), map(map),
-is_moving(false), speed_x(0), speed_y(0), looking(LOOKING_RIGHT) {}
-
-/* void Duck::update_position(int delta_x, int delta_y) {
-
-    //TODO: TENER EN CUENTA QUE TENGO QUE VER TODO LO QUE OCUPA EL PATO Y NO SOLO EL PUNTO QUE GUARDA
-    int old_position_x = position_x;
-    int old_position_y = position_y;
+Duck::Duck(char id, int x, int y, GameMap& map) : id_player(id), position_x(x), position_y(y), 
+    map(map),is_moving(false), speed_x(0), speed_y(0), gun(NULL), is_fluttering(false), is_slippy(false), life_points(100) {}
 
 
-    if (map.canMoveDuckTo(delta_x, delta_y)){
-        position_x = delta_x; 
-        position_y = delta_y; 
-    
-        map.cleanDuckOldPosition(old_position_x, old_position_y);
-        map.setDuckNewPosition(delta_x, delta_y);
-
-        map.printMap();
-
-    }
-} */
 
 void Duck::update_position_speed() {
-    //TODO: TENER EN CUENTA QUE TENGO QUE VER TODO LO QUE OCUPA EL PATO Y NO SOLO EL PUNTO QUE GUARDA
+    // Tener en cuenta el pato y no solo el punto
 
     // Gravity check. Can be modularized
     if (map.canMoveDuckTo(position_x, position_y + 1, id_player)) { // check if use position_x or delta_x
         map.cleanDuckOldPosition(position_x, position_y);
 
-        position_y += 1;
+        // TODO: acá agregar la verificación del is_fluttering, pero necesitaría aumentar la velocidad de la gravedad
+        position_y += 2;
+        if (is_fluttering) {
+            position_y -= 1;
+        }
 
         map.setDuckNewPosition(position_x, position_y, id_player);
     }
@@ -52,6 +38,9 @@ void Duck::update_position_speed() {
 
 }
 
+bool Duck::is_touching_floor() {
+    return map.is_duck_touching_floor(position_x, position_y);    
+}
 
 char Duck::get_id() const {
     return id_player;
