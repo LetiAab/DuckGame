@@ -27,6 +27,7 @@ void Game::simulate_round() {
 void Game::add_projectile(std::unique_ptr<Proyectil> projectile) {
     // Transfiere la propiedad del proyectil usando std::move
     projectiles.push_back(std::move(projectile));
+
 }
 
 
@@ -81,6 +82,7 @@ void Game::run() {
                 // renew_iteration(); para resetear cosas que duren una ronda
 
                 std::this_thread::sleep_for(std::chrono::milliseconds(TIME_SLEEP));
+
         }
 
 }

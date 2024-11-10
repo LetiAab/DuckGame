@@ -4,6 +4,7 @@ Duck::Duck(char id, int x, int y, GameMap& map) : id_player(id), position_x(x), 
     map(map),is_moving(false), speed_x(0), speed_y(0), gun(NULL), is_fluttering(false), is_slippy(false), life_points(100) {}
 
 
+
 void Duck::update_position_speed() {
     // Tener en cuenta el pato y no solo el punto
 
