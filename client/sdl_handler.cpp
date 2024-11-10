@@ -259,7 +259,7 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
             std::cout << "ME LLEGO NOTIFICACION PARA ACTUALIZAR LA POS DEL PATO" << "\n";
 
             std::cout << "x " << message.duck_x <<"\n";
-            std::cout << "x " << message.duck_y <<"\n";
+            std::cout << "y " << message.duck_y <<"\n";
 
             int pos_id = message.player_id - 1;
 

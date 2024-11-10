@@ -15,6 +15,9 @@ private:
     char id_player;  // ID del jugador
     int position_x;      // Posición en el eje X
     int position_y;      // Posición en el eje Y
+
+    int old_position_x;
+    int old_position_y;
     GameMap& map;   // Referencia al GameMap
 
 
@@ -27,6 +30,7 @@ public:
     bool is_slippy;
     int life_points;
     char looking;
+    bool stop_notificated;
 
     Duck(char id, int x, int y, GameMap& map);
 
@@ -39,6 +43,12 @@ public:
     char get_id() const;
     int get_x() const;
     int get_y() const;
+
+    int get_old_x() const;
+    int get_old_y() const;
+
+    void set_old_x(int x) ;
+    void set_old_y(int y) ;
 };
 
 #endif // DUCK_H

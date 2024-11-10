@@ -1,7 +1,7 @@
 #include "duck.h"
 
-Duck::Duck(char id, int x, int y, GameMap& map) : id_player(id), position_x(x), position_y(y), 
-    map(map),is_moving(false), speed_x(0), speed_y(0), gun(NULL), is_fluttering(false), is_slippy(false), life_points(100) {}
+Duck::Duck(char id, int x, int y, GameMap& map) : id_player(id), position_x(x), position_y(y), old_position_x(x), old_position_y(y), 
+    map(map),is_moving(false), speed_x(0), speed_y(0), gun(NULL), is_fluttering(false), is_slippy(false), life_points(100), stop_notificated(false) {}
 
 
 
@@ -13,10 +13,15 @@ void Duck::update_position_speed() {
         map.cleanDuckOldPosition(position_x, position_y);
 
         // TODO: acá agregar la verificación del is_fluttering, pero necesitaría aumentar la velocidad de la gravedad
-        position_y += 2;
+        
+        //ROMPE
+        /*position_y += 2;
         if (is_fluttering) {
             position_y -= 1;
         }
+        */
+
+        position_y += 1;
 
         map.setDuckNewPosition(position_x, position_y, id_player);
     }
@@ -34,7 +39,7 @@ void Duck::update_position_speed() {
 
         map.setDuckNewPosition(delta_x, delta_y, id_player);
     }
-    map.printMap();
+    //map.printMap();
 
 }
 
@@ -52,4 +57,20 @@ int Duck::get_x() const {
 
 int Duck::get_y() const {
     return position_y;
+}
+
+int Duck::get_old_x() const {
+    return old_position_x;
+}
+
+int Duck::get_old_y() const {
+    return old_position_y;
+}
+
+void Duck::set_old_x(int x)  {
+    old_position_x = x;
+}
+
+void Duck::set_old_y(int y)  {
+    old_position_y = y;
 }
