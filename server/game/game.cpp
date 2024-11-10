@@ -30,6 +30,21 @@ void Game::add_projectile(std::unique_ptr<Proyectil> projectile) {
 
 }
 
+void Game::sendDuckPositionUpdate(const Duck& duck) {
+    std::cout << "Envío el mensaje con la posición x: " << duck.get_x() 
+              << " y: " << duck.get_y() << std::endl;
+
+    Message message;
+    message.player_id = static_cast<uint16_t>(duck.get_id() - '0'); // Convertimos el id a int
+    message.type = DUCK_POS_UPDATE;
+    message.duck_x = duck.get_x();
+    message.duck_y = duck.get_y();
+    message.looking = duck.looking;
+    message.is_moving = duck.is_moving;  // Indicamos si el pato está en movimiento o no
+    monitor.broadcast(message);
+}
+
+
 
 void Game::run() {
 
@@ -45,7 +60,6 @@ void Game::run() {
         message.map = map.getMap();
 
         monitor.broadcast(message);
-
 
         while (is_running) {
                 // saco de 5 comandos de la queue y los ejecuto
@@ -65,18 +79,28 @@ void Game::run() {
 
                 //mando la posicion de cada PATO
                 //NO ME GUSTA NADA ESTO PORQUE NO RESPETA QUIEN SE MOVIO PRIMERO
-                for (Duck& duck : ducks) {
-                        Message message;
-                        message.player_id = static_cast<uint16_t>(duck.get_id() - '0'); //lo convierto de nuevo a int xd
-                        message.type = DUCK_POS_UPDATE;
-                        message.duck_x = duck.get_x();
-                        message.duck_y = duck.get_y();
-                        message.looking = duck.looking;
-                        message.is_moving = duck.is_moving;
-                        monitor.broadcast(message);
-                        
+              for (Duck& duck : ducks) {
+
+                bool is_stationary = (duck.get_x() == duck.get_old_x()) && (duck.get_y() == duck.get_old_y());
+
+                if (is_stationary) {
+                        if (!duck.stop_notificated) {
+                        duck.is_moving = false;
+
+                        sendDuckPositionUpdate(duck);
+
+                        duck.stop_notificated = true;
+                        }
+                        continue;
+                } else {
+                        sendDuckPositionUpdate(duck);
+                        duck.stop_notificated = false;
+
                 }
 
+                duck.set_old_x(duck.get_x());
+                duck.set_old_y(duck.get_y());
+                }
 
 
                 // renew_iteration(); para resetear cosas que duren una ronda

@@ -1,7 +1,7 @@
 #ifndef LEAVE_GUN_COMMAND_H
 #define LEAVE_GUN_COMMAND_H
 
-#include "executable.h"
+#include "../executable.h"
 #include <cstdint>
 
 class LeaveGunCommand : public Executable {
@@ -10,7 +10,7 @@ class LeaveGunCommand : public Executable {
 public:
     LeaveGunCommand(uint16_t player_id);
 
-    void execute(Game& game) override;
+    //void execute(Game& game) override;
 };
 
 #endif

@@ -9,12 +9,13 @@ ClientProtocol::ClientProtocol(Socket&& skt): skt(std::move(skt)) {}
 
 
 Message ClientProtocol::receive_message(){
+
+    
     
     bool was_closed = false;
     Message message;
 
     skt.recvall(&message.type, 1, &was_closed);
-
 
     //ARMAR TODOS LOS CASOS
     switch (message.type)
@@ -27,11 +28,14 @@ Message ClientProtocol::receive_message(){
     break;
 
     case DUCK_POS_UPDATE:
+
+
         skt.recvall(&message.player_id, 2, &was_closed);
         skt.recvall(&message.duck_x, sizeof(int), &was_closed);
         skt.recvall(&message.duck_y, sizeof(int), &was_closed);
         skt.recvall(&message.looking, sizeof(char), &was_closed);
         skt.recvall(&message.is_moving, sizeof(bool), &was_closed);
+
         break;
 
     default:
@@ -70,7 +74,7 @@ bool ClientProtocol::send_command(Command command){
     case STOP_RIGHT:
     case STOP_UP:
     case STOP_DOWN:
-        std::cout << "MANDO MOVIMIENTO" << "\n";
+    case SHOOT:
 
         if (!skt.sendall(&command.type, sizeof(command.type), &was_closed) || was_closed) {
             return false;
