@@ -28,7 +28,13 @@ void LeaveGunCommand::execute(Game& game) {
         ProyectilGranada projectile(granada->tiempo_explosion, duck->get_x() + 1, duck->get_y() + 1, duck->speed_x + 1, duck->speed_y);
         game.add_projectile(std::move(projectile));
     }
-
+    
+    if (typeid(gun_to_delete) == typeid(Banana)) {
+        // Dudo que funcione por temas de ownership
+        Banana* banana = (Banana*)gun_to_delete;
+        ProyectilBanana projectile(duck->get_x() + 1, duck->get_y() + 1, duck->speed_x + 1, duck->speed_y);
+        game.add_projectile(std::move(projectile));
+    }
     gun_to_delete->~Arma();
     delete(gun_to_delete);
 }
