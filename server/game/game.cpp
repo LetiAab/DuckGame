@@ -15,8 +15,20 @@ Queue<std::shared_ptr<Executable>>& Game::get_game_queue(){
 
 
 void Game::simulate_round() {
+        
     for (Duck& duck : ducks) {  
         duck.update_position_speed();
+        
+        for (auto it = duck.bullets.begin(); it != duck.bullets.end(); ) {
+                it->update_position();
+                
+                if (it->hubo_impacto()) {
+                        it->cleanPostImpacto();
+                        it = duck.bullets.erase(it);
+                } else {
+                ++it;
+                }
+        }
     }
 
     for (std::unique_ptr<Proyectil>& projectile : projectiles) {
@@ -41,6 +53,15 @@ void Game::sendDuckPositionUpdate(const Duck& duck) {
     message.duck_y = duck.get_y();
     message.looking = duck.looking;
     message.is_moving = duck.is_moving;  // Indicamos si el pato está en movimiento o no
+    monitor.broadcast(message);
+}
+
+void Game::sendBulletPositionUpdate(const Bullet& bullet) {
+
+    Message message;
+    message.type = BULLET_POS_UPDATE;
+    message.bullet_x = bullet.get_x();
+    message.bullet_y = bullet.get_y();
     monitor.broadcast(message);
 }
 
@@ -80,6 +101,12 @@ void Game::run() {
                 //mando la posicion de cada PATO
                 //NO ME GUSTA NADA ESTO PORQUE NO RESPETA QUIEN SE MOVIO PRIMERO
               for (Duck& duck : ducks) {
+                
+                for (Bullet& bullet : duck.bullets) {
+                        
+                        sendBulletPositionUpdate(bullet);
+                        //bullet.update_position();
+                }
 
                 bool is_stationary = (duck.get_x() == duck.get_old_x()) && (duck.get_y() == duck.get_old_y());
 

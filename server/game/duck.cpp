@@ -74,3 +74,13 @@ void Duck::set_old_x(int x)  {
 void Duck::set_old_y(int y)  {
     old_position_y = y;
 }
+
+void Duck::disparar() {
+    int direccion_x = (looking == LOOKING_RIGHT) ? 1 : -1;  
+    int direccion_y = 0;  // La bala se mueve horizonalmente
+
+    Bullet nueva_bala(position_x, position_y, direccion_x, direccion_y, &map);
+    nueva_bala.comenzar_trayectoria();
+    bullets.push_back(nueva_bala);
+
+}

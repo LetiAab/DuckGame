@@ -15,9 +15,14 @@ void ShootCommand::execute(Game& game) {
     Duck* duck = game.getDuckById(char_id);
 
     // Ejecutar el disparo: veo si hay balas, resto las balas, pongo la bala en el mapa y le doy un movimiento
-    Arma* gun = duck->gun;
-    if (!gun)
-        return;
+    //Arma* gun = duck->gun;
+    //if (!gun)
+    //    return;
     
     //Proyectil* projectile = gun->disparar();
+
+    duck->disparar();
+
+
+
 }

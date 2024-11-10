@@ -7,8 +7,11 @@
 
 #include <string>
 
+#include "../guns/bullet.h"
+
 class Arma;
 class GameMap;
+class Bullet;  // Declaración adelantada de Bullet
 
 class Duck {
 private:
@@ -21,6 +24,8 @@ private:
     GameMap& map;   // Referencia al GameMap
 
 
+
+
 public:
     bool is_moving;
     int speed_x;
@@ -31,6 +36,7 @@ public:
     int life_points;
     char looking;
     bool stop_notificated;
+    std::vector<Bullet> bullets;  // Lista de balas disparadas
 
     Duck(char id, int x, int y, GameMap& map);
 
@@ -49,6 +55,8 @@ public:
 
     void set_old_x(int x) ;
     void set_old_y(int y) ;
+
+    void disparar();
 };
 
 #endif // DUCK_H

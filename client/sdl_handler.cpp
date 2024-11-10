@@ -254,6 +254,11 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
         message_queue.try_pop(message);
         //TODO: MODULARIZAR
         
+        if(message.type == BULLET_POS_UPDATE){
+            //Ver como mostrar las balas
+            std::cout << "ME LLEGO NOTIFICACION PARA MOVER UNA BALA" << "\n";
+
+        }
         
         if (message.type == DUCK_POS_UPDATE){
 

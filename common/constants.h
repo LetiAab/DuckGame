@@ -39,6 +39,8 @@ const uint8_t MAP_INICIALIZATION = 0x14;
 
 const uint8_t DUCK_POS_UPDATE = 0x15;
 
+const uint8_t BULLET_POS_UPDATE = 0x32;
+
 
 static const char QUIT_SERVER[] = "q";
 

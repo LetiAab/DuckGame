@@ -16,6 +16,9 @@ target_sources(taller_server
     game/game_queue_monitor.cpp
     game/game_map.cpp
     game/duck.cpp
+    guns/bullet.cpp
+    #guns/gun.cpp
+    #guns/projectile.cpp
     executables/start/move_left_command.cpp
     executables/start/move_right_command.cpp
     executables/start/move_down_command.cpp
@@ -41,6 +44,9 @@ target_sources(taller_server
     game/game_queue_monitor.h
     game/game_map.h
     game/duck.h
+    guns/bullet.h
+    #guns/gun.h
+    #guns/projectile.h
     executables/executable.h
     executables/commands.h
     executables/start/move_left_command.h
