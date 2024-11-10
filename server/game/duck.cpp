@@ -3,7 +3,8 @@
 
 Duck::Duck(char id, int x, int y, GameMap& map) :
 id_player(id), position_x(x), position_y(y), position(x, y), map(map),
-is_moving(false), speed_x(0), speed_y(0), looking(LOOKING_RIGHT), is_jumping(false), updated(false) {}
+is_moving(false), speed_x(0), speed_y(0), looking(LOOKING_RIGHT), is_jumping(false),
+is_fluttering(false), updated(false) {}
 
 bool Duck::is_in_air(){
     return map.canMoveDuckTo(position.x, position.y + 1, id_player);
@@ -12,13 +13,8 @@ bool Duck::is_in_air(){
 
 void Duck::check_gravity(){
 
-    if(is_in_air()) { 
+    if(is_in_air()) {
         speed_y += 2;
-        /*int delta_x = position.x;
-        int delta_y = position.y + 2;
-
-        Position new_pos(delta_x, delta_y);
-        position = map.move_duck_to(position, new_pos, id_player);*/
         
     }
 
@@ -56,7 +52,7 @@ void Duck::update_position_speed() {
 void Duck::update_position() {
 
     check_gravity();
-
+    
     int delta_x = position.x + speed_x;
     int delta_y = position.y + speed_y;
 
@@ -69,6 +65,18 @@ void Duck::update_position() {
     std::cout << "Speed X: " << speed_x << ", Speed Y: " << speed_y << std::endl;
     std::cout << "Posición despues de mover: (" << position.x << ", " << position.y << ")" << std::endl;
     map.printMap();
+
+    if ((is_jumping || is_fluttering) && !is_in_air()){
+        //si esta saltando o aleteando pero no esta en el aire, significa que aterrizo
+        is_jumping = false;
+        is_fluttering = false;
+        speed_y = 0;
+    }
+
+    if(!is_in_air()){
+        speed_y = 0;
+    }
+
 }
 
 

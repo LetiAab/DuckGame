@@ -14,6 +14,7 @@ Queue<std::shared_ptr<Executable>>& Game::get_game_queue(){
 void Game::simulate_round() {
         for (Duck& duck : ducks) {
                 duck.update_position();
+                
         }
 }
 

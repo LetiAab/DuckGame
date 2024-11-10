@@ -20,6 +20,7 @@ public:
     int speed_y;
     char looking;
     bool is_jumping;
+    bool is_fluttering;
     bool updated;
 
     Duck(char id, int x, int y, GameMap& map);

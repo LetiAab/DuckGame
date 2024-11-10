@@ -31,6 +31,9 @@ const uint8_t STOP_DOWN = 0x17;
 static const char LOOKING_RIGHT = 'd';
 static const char LOOKING_LEFT = 'a';
 
+//constantes para la gravedad
+const int DUCK_JUMP_POWER = 4;
+
 //messages from game
 const uint8_t MAP_INICIALIZATION = 0x14;
 
