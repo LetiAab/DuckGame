@@ -1,7 +1,7 @@
 #ifndef SHOOT_COMMAND_H
 #define SHOOT_COMMAND_H
 
-#include "executable.h"
+#include "../executable.h"
 #include <cstdint>
 
 class ShootCommand : public Executable {

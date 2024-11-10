@@ -123,9 +123,9 @@ std::shared_ptr<Executable> ServerProtocol::receive_command(){
     
     //aca deberia fijarme el type y devolver el comando que corresponda
 
-    std::cout << "Comando recibido: " << std::endl;
-    std::cout << "  Player ID: " << player_id << std::endl;
-    std::cout << "  Type: " << static_cast<int>(type) << std::endl; // Convertir a int para mostrar el valor de uint8_t
+    //std::cout << "Comando recibido: " << std::endl;
+    //std::cout << "  Player ID: " << player_id << std::endl;
+    //std::cout << "  Type: " << static_cast<int>(type) << std::endl; // Convertir a int para mostrar el valor de uint8_t
 
     switch (type)
     {
@@ -146,6 +146,8 @@ std::shared_ptr<Executable> ServerProtocol::receive_command(){
         return std::make_shared<StopMoveCommand>(player_id);
     case STOP_DOWN:
         return std::make_shared<StopMoveCommand>(player_id);
+    case SHOOT:
+        return std::make_shared<ShootCommand>(player_id);
     case EXIT_GAME:
         break;
     default:

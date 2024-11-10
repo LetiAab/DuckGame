@@ -132,6 +132,9 @@ int SDLHandler::processEvents(SDL_Window* window, GameState* game, uint16_t id) 
                             move = MOVE_DOWN;
                             positionUpdated = true;
                             break;
+                        case SDLK_f:
+                            move = SHOOT;
+                            positionUpdated = true;
                         default:
                             break;
                     }
@@ -158,6 +161,8 @@ int SDLHandler::processEvents(SDL_Window* window, GameState* game, uint16_t id) 
                             move = STOP_DOWN;
                             positionUpdated = true;
                             break;
+
+                        //stop shoot?
                         default:
                             break;
                     }
@@ -256,14 +261,14 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
             // y eso se hace en el server.
             //si a mi me llega la posicion del pato simplemente tengo que mover al pato a donte tien que ir
 
-            std::cout << "ME LLEGO NOTIFICACION PARA ACTUALIZAR LA POS DEL PATO" << "\n";
+            //std::cout << "ME LLEGO NOTIFICACION PARA ACTUALIZAR LA POS DEL PATO" << "\n";
 
-            std::cout << "x " << message.duck_x <<"\n";
-            std::cout << "y " << message.duck_y <<"\n";
+            //std::cout << "x " << message.duck_x <<"\n";
+            //std::cout << "y " << message.duck_y <<"\n";
 
             int pos_id = message.player_id - 1;
 
-            std::cout << "POS_ID DEL PATO A MOVER: " << pos_id << "\n";
+            //std::cout << "POS_ID DEL PATO A MOVER: " << pos_id << "\n";
 
             game.ducks[pos_id].x = message.duck_x * TILE_SIZE;
             game.ducks[pos_id].y = message.duck_y * TILE_SIZE;
