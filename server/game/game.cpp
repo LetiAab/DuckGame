@@ -15,13 +15,14 @@ Queue<std::shared_ptr<Executable>>& Game::get_game_queue(){
 
 
 void Game::simulate_round() {
-    for (Duck& duck : ducks) {  
-        duck.update_position_speed();
-    }
-
-    for (std::unique_ptr<Proyectil>& projectile : projectiles) {
+        for (Duck& duck : ducks) {
+                duck.update_position();
+                
+        }
+    
+        for (std::unique_ptr<Proyectil>& projectile : projectiles) {
         projectile->simular(*this);  // Llama a la función simular específica de cada proyectil
-    }
+        }
 }
 
 void Game::add_projectile(std::unique_ptr<Proyectil> projectile) {
@@ -71,8 +72,6 @@ void Game::run() {
 
                         i += 1;
                 }
-
-                
 
                 // Simulo una ronda de movimientos
                 simulate_round();

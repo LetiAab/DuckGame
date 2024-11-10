@@ -20,4 +20,5 @@ target_sources(taller_common
     constants.h
     command.h
     message.h
+    position.h
     )

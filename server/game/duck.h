@@ -2,6 +2,7 @@
 #include "game_map.h"
 #include "../guns/projectile.h"
 #include "common/constants.h"
+#include "common/position.h"
 #ifndef DUCK_H
 #define DUCK_H
 
@@ -13,11 +14,8 @@ class GameMap;
 class Duck {
 private:
     char id_player;  // ID del jugador
-    int position_x;      // Posición en el eje X
-    int position_y;      // Posición en el eje Y
-
-    int old_position_x;
-    int old_position_y;
+    Position position;
+    Position old_position;
     GameMap& map;   // Referencia al GameMap
 
 
@@ -26,19 +24,21 @@ public:
     int speed_x;
     int speed_y;
     Arma* gun;
+    char looking;
+    bool is_jumping;
     bool is_fluttering;
     bool is_slippy;
     int life_points;
-    char looking;
     bool stop_notificated;
 
     Duck(char id, int x, int y, GameMap& map);
 
-//    void update_position(int delta_x, int delta_y);
 
-    void update_position_speed();
+    //void update_position_speed();
 
-    bool is_touching_floor();
+    void update_position();
+    void check_gravity();
+    bool is_in_air();
 
     char get_id() const;
     int get_x() const;

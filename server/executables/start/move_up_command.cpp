@@ -15,14 +15,14 @@ void MoveUpCommand::execute(Game& game) {
 
     Duck* duck = game.getDuckById(char_id);
 
-    if (duck->is_touching_floor()){
-        // Jump
-        duck->speed_y -= 3; // Si queremos que salte N casillas cambiar por N
-        duck->is_moving = true;
-
-    } else {
-        // Flutter
+    if(duck->is_jumping){
+        //si estaba saltando antes, significa que empieza a aletear
+        duck->speed_y -= 1;
         duck->is_fluttering = true;
+    } else {
+        //si empieza a saltar
+        duck->speed_y -= DUCK_JUMP_POWER; // Si queremos que salte N casillas cambiar por N
+        duck->is_jumping = true;
     }
 
 

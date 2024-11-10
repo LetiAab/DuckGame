@@ -16,6 +16,55 @@ GameMap::GameMap(int width, int height) : width(width), height(height) {
     map.resize(height, std::vector<char>(width, EMPTY));
 }
 
+
+Position GameMap::move_duck_to(Position old_position, Position new_position, char duck_id) {
+    int final_x = old_position.x;
+    int final_y = old_position.y;
+
+    //determino la direccion del movimiento
+    int dx = (new_position.x > old_position.x) ? 1 : (new_position.x < old_position.x ? -1 : 0);
+    int dy = (new_position.y > old_position.y) ? 1 : (new_position.y < old_position.y ? -1 : 0);
+
+    //itero hasta llegar a la posición final o hasta encontrar un obstáculo
+    while (final_x != new_position.x || final_y != new_position.y) {
+        int next_x = final_x + dx;
+        int next_y = final_y + dy;
+
+        //verifico si la nueva posición está dentro de los límites del mapa
+        if (next_x < 0 || next_x + 1 >= width || next_y < 0 || next_y + 2 >= height) {
+            break;
+        }
+
+        // compruebo que este libre
+        bool is_free = true;
+        for (int y = next_y; y < next_y + 3; ++y) {
+            for (int x = next_x; x < next_x + 2; ++x) {
+                if (map[y][x] != EMPTY && map[y][x] != duck_id) {
+                    is_free = false;
+                    break;
+                }
+            }
+            if (!is_free) break;
+        }
+
+        //si el área está libre, actualizo la posición final
+        if (is_free) {
+            final_x = next_x;
+            final_y = next_y;
+        } else {
+            //si hay un obstáculo, me quedo en la última posición libre
+            break;
+        }
+    }
+
+    //actualizo la posición del pato en el mapa
+    cleanDuckOldPosition(old_position.x, old_position.y);
+    setDuckNewPosition(final_x, final_y, duck_id);
+
+    return Position(final_x, final_y);
+}
+
+
 bool GameMap::canMoveDuckTo(int x, int y, char duck_id) {
 
     // Verifica que las coordenadas estén dentro de los límites del mapa
@@ -192,6 +241,12 @@ void GameMap::setEscenario() {
 
     map[height - 2][11] = PLATFORM;
     map[height - 2][12] = PLATFORM;
+
+    //plataforma en el aire
+    map[height - 6][16] = PLATFORM;
+    map[height - 6][17] = PLATFORM;
+    map[height - 6][18] = PLATFORM;
+
 }
 
 
