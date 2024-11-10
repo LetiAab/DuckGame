@@ -1,7 +1,7 @@
 #ifndef MOVE_DOWN_COMMAND_H
 #define MOVE_DOWN_COMMAND_H
 
-#include "executable.h"
+#include "../executable.h"
 #include <cstdint>
 
 class MoveDownCommand : public Executable {

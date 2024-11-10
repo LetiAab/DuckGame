@@ -117,22 +117,8 @@ int Client::start(){
     sdl_handler = std::make_unique<SDLHandler>();
     sdl_handler->run(message.map, sender->get_queue(), id, message_queue);
 
-    //recibo los mensajes del juego con las actualizaciones del mundo
-    while(input_handler->is_running()){
-        Message message = message_queue.pop();
-
-        std::cout << "Mensaje recibido:" << std::endl;
-        std::cout << "  Player ID: " << message.player_id << std::endl;
-        std::cout << "  Type: " << static_cast<int>(message.type) << std::endl;
-
-        //procesar el mensaje
-        /*if (message.type == EXIT_GAME){
-            break;
-        }*/
-        std::cout << "\n";
-    }
-
-    //---------------------------------------------------------------------------------------
+    //---------------------------------------------------------
+    //hacer un cierre mas prolijo
 
     std::cout << "Cerrando socket..." << std::endl;
     protocol.shutdown();

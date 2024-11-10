@@ -1,7 +1,7 @@
 #ifndef MOVE_LEFT_COMMAND_H
 #define MOVE_LEFT_COMMAND_H
 
-#include "executable.h"
+#include "../executable.h"
 #include <cstdint>
 
 class MoveLeftCommand : public Executable {

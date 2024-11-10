@@ -1,6 +1,7 @@
 #include <cstdint>
 #include "game_map.h"
 #include "../guns/projectile.h"
+#include "common/constants.h"
 #ifndef DUCK_H
 #define DUCK_H
 
@@ -18,13 +19,14 @@ private:
 
 
 public:
-
+    bool is_moving;
     int speed_x;
     int speed_y;
     Arma* gun;
     bool is_fluttering;
     bool is_slippy;
     int life_points;
+    char looking;
 
     Duck(char id, int x, int y, GameMap& map);
 

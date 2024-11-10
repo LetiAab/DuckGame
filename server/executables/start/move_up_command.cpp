@@ -18,6 +18,7 @@ void MoveUpCommand::execute(Game& game) {
     if (duck->is_touching_floor()){
         // Jump
         duck->speed_y -= 3; // Si queremos que salte N casillas cambiar por N
+        duck->is_moving = true;
 
     } else {
         // Flutter

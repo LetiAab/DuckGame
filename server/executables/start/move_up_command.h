@@ -1,7 +1,7 @@
 #ifndef MOVE_UP_COMMAND_H
 #define MOVE_UP_COMMAND_H
 
-#include "executable.h"
+#include "../executable.h"
 #include <cstdint>
 
 class MoveUpCommand : public Executable {

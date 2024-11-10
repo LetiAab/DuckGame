@@ -13,7 +13,6 @@ Message ClientProtocol::receive_message(){
     bool was_closed = false;
     Message message;
 
-    skt.recvall(&message.player_id, 2, &was_closed); //hay que cambiar para recibir primero el type
     skt.recvall(&message.type, 1, &was_closed);
 
 
@@ -28,12 +27,15 @@ Message ClientProtocol::receive_message(){
     break;
 
     case DUCK_POS_UPDATE:
+        skt.recvall(&message.player_id, 2, &was_closed);
         skt.recvall(&message.duck_x, sizeof(int), &was_closed);
         skt.recvall(&message.duck_y, sizeof(int), &was_closed);
+        skt.recvall(&message.looking, sizeof(char), &was_closed);
+        skt.recvall(&message.is_moving, sizeof(bool), &was_closed);
         break;
 
     default:
-
+        skt.recvall(&message.player_id, 2, &was_closed);
         skt.recvall(&message.len_matches, 2, &was_closed);
 
         if(message.len_matches > 0){
@@ -64,29 +66,34 @@ bool ClientProtocol::send_command(Command command){
     case MOVE_RIGHT:
     case MOVE_DOWN:
     case MOVE_UP:
+    case STOP_LEFT:
+    case STOP_RIGHT:
+    case STOP_UP:
+    case STOP_DOWN:
         std::cout << "MANDO MOVIMIENTO" << "\n";
-        if (!skt.sendall(&command.player_id, sizeof(command.player_id), &was_closed) || was_closed) {
-            return false;
-        }
 
         if (!skt.sendall(&command.type, sizeof(command.type), &was_closed) || was_closed) {
             return false;
-        }        
+        }
+
+        if (!skt.sendall(&command.player_id, sizeof(command.player_id), &was_closed) || was_closed) {
+            return false;
+        }
         
         break;
     
     default:
-        if (!skt.sendall(&command.player_id, sizeof(command.player_id), &was_closed) || was_closed) {
+        if (!skt.sendall(&command.type, sizeof(command.type), &was_closed) || was_closed) {
             return false;
         }
 
-        if (!skt.sendall(&command.type, sizeof(command.type), &was_closed) || was_closed) {
+        if (!skt.sendall(&command.player_id, sizeof(command.player_id), &was_closed) || was_closed) {
             return false;
         }
 
         if (!skt.sendall(&command.match_id, sizeof(command.match_id), &was_closed) || was_closed) {
             return false;
-        }    
+        }
         break;
     }
 

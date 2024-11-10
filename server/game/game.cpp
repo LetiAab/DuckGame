@@ -41,7 +41,6 @@ void Game::run() {
         //Todos los obstaculos
         Message message;
         message.type = MAP_INICIALIZATION;
-        message.player_id = 0; //tengo que poner esto POR EL ORDEN DE LO QUE MANDAMOS, HAY QUE CAMBIAR PARA MANDAR SIEMPRE PRIMERO EL TYPE ASI NO HACE FALTA
         message.map = map.getMap();
 
         monitor.broadcast(message);
@@ -71,7 +70,10 @@ void Game::run() {
                         message.type = DUCK_POS_UPDATE;
                         message.duck_x = duck.get_x();
                         message.duck_y = duck.get_y();
+                        message.looking = duck.looking;
+                        message.is_moving = duck.is_moving;
                         monitor.broadcast(message);
+                        
                 }
 
 
