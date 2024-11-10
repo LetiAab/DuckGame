@@ -15,6 +15,9 @@ void Bullet::update_position() {
     std::cout << "Comienzo trayectoria desde x: " << position_x << "\n";
 
     //map->cleanBulletOldPosition(position_x, position_y);
+    int old_position_x = position_x;
+    int old_position_y = position_y;
+
 
     int delta_x = position_x + speed_x;
     int delta_y = position_y + speed_y;
@@ -23,7 +26,8 @@ void Bullet::update_position() {
         position_x = delta_x;
         position_y = delta_y;
         
-        map->setBulletNewPosition(position_x, position_y); 
+        map->setBulletNewPosition(position_x, position_y);
+        map->cleanBulletOldPosition(old_position_x, old_position_y); 
     } else {
         map->cleanBulletOldPosition(position_x, position_y);
         impacto = true;
