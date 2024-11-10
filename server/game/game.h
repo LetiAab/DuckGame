@@ -40,7 +40,7 @@ private:
         bool is_running;
         Queue<std::shared_ptr<Executable>> game_queue;
         std::vector<Update> updates;
-        std::vector<Proyectil> projectiles;
+        std::vector<std::unique_ptr<Proyectil>> projectiles;
 
 public:
         GameMap map;
@@ -64,7 +64,7 @@ void game_broadcast(Message message);
 
 void simulate_round();
 
-void add_projectile(Proyectil&& projectile);
+void add_projectile(std::unique_ptr<Proyectil> projectile);
 
     
 void run() override;

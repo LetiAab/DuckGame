@@ -3,9 +3,10 @@
 #include <vector>
 #include <cmath>
 
-#include "../game/game.h"
 
 #include "../guns/projectile.h"
+
+#include "../game/duck.h"
 
 #define TIME_SLEEP 20
 
@@ -33,148 +34,72 @@ class Granada : public Arma {
 public:
     int tiempo_explosion;
 
-    Granada(Duck& owner) : Arma("Granada", 1, 5, owner), seguro_removido(false), tiempo_explosion(4) {}
+    Granada(Duck& owner);
 
-    Proyectil* sacarSeguro() {
-        seguro_removido = true;
-        std::cout << "Seguro de la " << nombre << " removido. Explota en " << tiempo_explosion << " segundos.\n";
-        return NULL;
-    }
+    Proyectil* sacarSeguro();
 
-    void simulate_iteration() {
-        if (seguro_removido) {
-                tiempo_explosion += TIME_SLEEP;
-        }
+    void simulate_iteration();
 
-        if (tiempo_explosion >= 4000) {
-                std::cout << "Explosión!" << std::endl;
-                // Notar que debería devolver algo que diga que explotó, y entonces 
-                // el mapa recibe eso, genera los fragmentos y elimina al objeto
-        }
-    }
-
-    Proyectil* disparar() override {
-        return sacarSeguro();
-    }
+    Proyectil* disparar() override;
 };
 
 class Banana : public Arma {
 public:
-    Banana(Duck& owner) : Arma("Banana", 1, 5, owner) {}
+    Banana(Duck& owner);
 };
 
 class PewPewLaser : public Arma {
 public:
-    PewPewLaser(Duck& owner) : Arma("Pew-Pew Laser", 12, 37, owner) {}
+    PewPewLaser(Duck& owner);
 
-    Proyectil* disparar() override {
-        if (municiones > 0) {
-            std::cout << "Disparando ráfaga de 3 rayos con algo de dispersión.\n";
-            municiones--;
-        } else {
-            std::cout << "Sin municiones. Recarga necesaria.\n";
-        }
-
-        // Raro, no me sirve usar punteros salvo para los casos NULL, capaz puedo hacer un objeto ProyectilNull, y listo
-        ProyectilLaser projectile(owner.get_x() + 1, owner.get_y() + 1, owner.speed_x + 1, owner.speed_y);
-        return &projectile;
-    }
+    Proyectil* disparar() override;
 };
 
 class LaserRifle : public Arma {
 public:
-    LaserRifle(Duck& owner) : Arma("Laser Rifle", 10, 30, owner) {}
+    LaserRifle(Duck& owner);
 
-    Proyectil* disparar() override {
-        if (municiones > 0) {
-            std::cout << "Disparando rayo láser que rebota con inclinación ajustable.\n";
-            municiones--;
-        } else {
-            std::cout << "Sin municiones. Recarga necesaria.\n";
-        }
-    }
+    Proyectil* disparar() override;
 };
 
 class AK47 : public Arma {
 public:
-    AK47(Duck& owner) : Arma("AK-47", 30, 13, owner) {}
+    AK47(Duck& owner);
 
-    Proyectil* disparar() override {
-        if (municiones > 0) {
-            std::cout << "Disparando bala con dispersión y retroceso.\n";
-            municiones--;
-        } else {
-            std::cout << "Sin municiones. Recarga necesaria.\n";
-        }
-    }
+    Proyectil* disparar() override;
 };
 
 class PistolaDuelos : public Arma {
 public:
-    PistolaDuelos(Duck& owner) : Arma("Pistola de Duelos", 1, 5, owner) {}
+    PistolaDuelos(Duck& owner);
 
-    Proyectil* disparar() override {
-        if (municiones > 0) {
-            std::cout << "Disparando con dispersión considerable.\n";
-            municiones--;
-        } else {
-            std::cout << "Sin municiones. Recarga necesaria.\n";
-        }
-    }
+    Proyectil* disparar() override;
 };
 
 class PistolaCowboy : public Arma {
 public:
-    PistolaCowboy(Duck& owner) : Arma("Pistola Cowboy", 6, 20, owner) {}
+    PistolaCowboy(Duck& owner);
 
-    Proyectil* disparar() override {
-        if (municiones > 0) {
-            std::cout << "Disparando sin dispersión ni retroceso.\n";
-            municiones--;
-        } else {
-            std::cout << "Sin municiones. Recarga necesaria.\n";
-        }
-    }
+    Proyectil* disparar() override;
 };
 
 class Magnum : public Arma {
 public:
-    Magnum(Duck& owner) : Arma("Magnum", 6, 20, owner) {}
+    Magnum(Duck& owner);
 
-    Proyectil* disparar() override {
-        if (municiones > 0) {
-            std::cout << "Disparando con un poco de dispersión y retroceso.\n";
-            municiones--;
-        } else {
-            std::cout << "Sin municiones. Recarga necesaria.\n";
-        }
-    }
+    Proyectil* disparar() override;
 };
 
 class Escopeta : public Arma {
 public:
-    Escopeta(Duck& owner) : Arma("Escopeta", 2, 8, owner) {}
+    Escopeta(Duck& owner);
 
-    Proyectil* disparar() override {
-        if (municiones > 0) {
-            std::cout << "Disparando con gran dispersión. Recarga necesaria tras cada disparo.\n";
-            municiones--;
-        } else {
-            std::cout << "Sin municiones. Recarga necesaria.\n";
-        }
-    }
+    Proyectil* disparar() override;
 };
 
 class Sniper : public Arma {
 public:
-    Sniper(Duck& owner) : Arma("Sniper", 3, 64, owner) {}
+    Sniper(Duck& owner);
 
-    Proyectil* disparar() override {
-        if (municiones > 0) {
-            std::cout << "Disparando con precisión sin dispersión ni retroceso.\n";
-            municiones--;
-        } else {
-            std::cout << "Sin municiones. Recarga necesaria.\n";
-        }
-    }
+    Proyectil* disparar() override;
 };

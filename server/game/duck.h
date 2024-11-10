@@ -1,10 +1,13 @@
 #include <cstdint>
 #include "game_map.h"
-#include "../guns/gun.h"
+#include "../guns/projectile.h"
 #ifndef DUCK_H
 #define DUCK_H
 
 #include <string>
+
+class Arma;
+class GameMap;
 
 class Duck {
 private:

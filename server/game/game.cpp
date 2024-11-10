@@ -12,22 +12,21 @@ Queue<std::shared_ptr<Executable>>& Game::get_game_queue(){
         return game_queue;
 }
 
-void Game::simulate_round() {
-        for (Duck& duck : ducks) {  
-                duck.update_position_speed();
-        }
 
-        for (Proyectil& projectile: projectiles) {
-                // Acá hay que simular el movimiento de las cosas, el simular existe pero no hace mucho
-                projectile.simular(*this);
-        }
+
+void Game::simulate_round() {
+    for (Duck& duck : ducks) {  
+        duck.update_position_speed();
+    }
+
+    for (std::unique_ptr<Proyectil>& projectile : projectiles) {
+        projectile->simular(*this);  // Llama a la función simular específica de cada proyectil
+    }
 }
 
-void Game::add_projectile(Proyectil&& projectile) {
-        // check position to see if can add a projectile ?
-        // with projectile.pos_x and projectile.pos_y (are private, make them public)
-
-        projectiles.push_back(projectile);
+void Game::add_projectile(std::unique_ptr<Proyectil> projectile) {
+    // Transfiere la propiedad del proyectil usando std::move
+    projectiles.push_back(std::move(projectile));
 }
 
 

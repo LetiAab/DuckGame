@@ -1,7 +1,7 @@
 #include "duck.h"
 
 Duck::Duck(char id, int x, int y, GameMap& map) : id_player(id), position_x(x), position_y(y), 
-    map(map), speed_x(0), speed_y(0), gun(0), is_fluttering(false), is_slippy(false), life_points(100) {}
+    map(map), speed_x(0), speed_y(0), gun(NULL), is_fluttering(false), is_slippy(false), life_points(100) {}
 
 
 void Duck::update_position_speed() {

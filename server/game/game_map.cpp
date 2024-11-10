@@ -131,7 +131,7 @@ void GameMap::set_projectile_new_position(int x, int y,  int size_x, int size_y)
     }
 }
 
-bool GameMap::move_projectile(int position_x, int position_y, int speed_x, int speed_y, int size_x, int size_y) {
+void GameMap::move_projectile(int position_x, int position_y, int speed_x, int speed_y, int size_x, int size_y) {
     // Gravity check. Can be modularized
     if (can_move_projectile(position_x, position_y + 1, size_x, size_y)) { // check if use position_x or delta_x
         clean_projectile_old_position(position_x, position_y, size_x, size_y);
