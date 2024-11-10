@@ -2,6 +2,7 @@
 #include "common/constants.h"
 
 #include <random>
+#include <utility>
 
 //TODO: Tamanio del mapa hardcodeado
 Game::Game(uint16_t match_id, GameQueueMonitor& monitor):
@@ -11,12 +12,39 @@ Queue<std::shared_ptr<Executable>>& Game::get_game_queue(){
         return game_queue;
 }
 
+
+
 void Game::simulate_round() {
         for (Duck& duck : ducks) {
                 duck.update_position();
                 
         }
+    
+        for (std::unique_ptr<Proyectil>& projectile : projectiles) {
+        projectile->simular(*this);  // Llama a la función simular específica de cada proyectil
+        }
 }
+
+void Game::add_projectile(std::unique_ptr<Proyectil> projectile) {
+    // Transfiere la propiedad del proyectil usando std::move
+    projectiles.push_back(std::move(projectile));
+
+}
+
+void Game::sendDuckPositionUpdate(const Duck& duck) {
+    std::cout << "Envío el mensaje con la posición x: " << duck.get_x() 
+              << " y: " << duck.get_y() << std::endl;
+
+    Message message;
+    message.player_id = static_cast<uint16_t>(duck.get_id() - '0'); // Convertimos el id a int
+    message.type = DUCK_POS_UPDATE;
+    message.duck_x = duck.get_x();
+    message.duck_y = duck.get_y();
+    message.looking = duck.looking;
+    message.is_moving = duck.is_moving;  // Indicamos si el pato está en movimiento o no
+    monitor.broadcast(message);
+}
+
 
 
 void Game::run() {
@@ -34,7 +62,6 @@ void Game::run() {
 
         monitor.broadcast(message);
 
-
         while (is_running) {
                 // saco de 5 comandos de la queue y los ejecuto
                 std::shared_ptr<Executable> command;
@@ -51,40 +78,46 @@ void Game::run() {
 
                 //mando la posicion de cada PATO
                 //NO ME GUSTA NADA ESTO PORQUE NO RESPETA QUIEN SE MOVIO PRIMERO
-                for (Duck& duck : ducks) {
-                        Message message;
-                        message.player_id = static_cast<uint16_t>(duck.get_id() - '0'); //lo convierto de nuevo a int xd
-                        message.type = DUCK_POS_UPDATE;
-                        message.duck_x = duck.get_x();
-                        message.duck_y = duck.get_y();
-                        message.looking = duck.looking;
-                        message.is_moving = duck.is_moving;
-                        monitor.broadcast(message);
-                        
+              for (Duck& duck : ducks) {
+
+                bool is_stationary = (duck.get_x() == duck.get_old_x()) && (duck.get_y() == duck.get_old_y());
+
+                if (is_stationary) {
+                        if (!duck.stop_notificated) {
+                        duck.is_moving = false;
+
+                        sendDuckPositionUpdate(duck);
+
+                        duck.stop_notificated = true;
+                        }
+                        continue;
+                } else {
+                        sendDuckPositionUpdate(duck);
+                        duck.stop_notificated = false;
+
                 }
 
+                duck.set_old_x(duck.get_x());
+                duck.set_old_y(duck.get_y());
+                }
 
 
                 // renew_iteration(); para resetear cosas que duren una ronda
 
-                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                std::this_thread::sleep_for(std::chrono::milliseconds(TIME_SLEEP));
+
         }
 
 }
 
 void Game::inicializate_map(){
-/*         for (const Duck& duck : ducks) {
-                int x = duck.get_x(); 
-                int y = duck.get_y();
-
-                char id = static_cast<char>(duck.get_id() + '0');
-
-                if (!map.placeDuck(x, y, id)) {
-                std::cout << "No se pudo colocar el pato en (" << x << ", " << y << ")\n";
-                } else {
-                std::cout << "Pato colocado en (" << x << ", " << y << ")\n";
-                }
-        }
+/*         
+                Things to initialize:
+                - Players
+                - Boxes
+                - Spawn places
+                - Stage grounds
+                - Map limit (if we model it)
  */
 }
 
@@ -128,205 +161,5 @@ Duck* Game::getDuckById(char id) {
 void Game::game_broadcast(Message message){
         monitor.broadcast(message);
 }
-
-
-/*
-
-void Game::initialize_map(Update update) {
-        
-                Things to initialize:
-                - Players
-                - Boxes
-                - Spawn places
-                - Stage grounds
-                - Map limit (if we model it)
-        
-}
-
-void Game::check_move_effects(Duck moving_duck){
-        // Check if after this movement, duck is hit by a projectile
-
-        // Maybe there should be a simulation round in which where make all this things instead of this
-}
-
-bool Game::check_valid_position(int duck_x_position, int duck_y_position) {
-        // Basically check if does not collisionates with a structure or a box
-        return true;
-}
-
-
-void Game::duck_move(int player_id) {
-        Duck selected_duck = get_duck();
-
-        if (selected_duck.direction == 0){
-                // Move left
-                selected_duck.x_position--;
-                if (!check_valid_position(selected_duck.x_position, selected_duck.y_position))
-                        selected_duck.x_position++;
-        } else {
-                // Move right
-                selected_duck.x_position++;
-                if (!check_valid_position(selected_duck.x_position, selected_duck.y_position))
-                        selected_duck.x_position--;
-        }
-        
-        check_move_effects();
-}
-
-bool Game::is_touching_floor(int duck_x_position, int duck_y_position) {
-        // Check if duck is touching floor with its feet
-        return true;
-}
-
-void Game::duck_jump(int player_id) {
-        Duck selected_duck = get_duck();
-
-        if (is_touching_floor(selected_duck.x_position, selected_duck.y_position)){
-                // Jump
-                duck.y_position++;
-                if (!check_valid_position(duck.x_position, duck.y_position))
-                        duck.y_position--;
-        } else {
-                // Flutter
-
-                // Here idk if use a fluttering bool attribute (and decrease falling speed) or just increment position in 1
-
-        }
-        
-        check_move_effects();
-}
-
-void Game::duck_shoot(int player_id) {
-        Duck selected_duck = get_duck();
-
-        // Make a big if-else chain depending on the gun equipped
-}
-
-void Game::duck_take_item(int player_id) {
-        Duck selected_duck = get_duck();
-
-        // Remember that ammo may be different between guns
-}
-
-void Game::duck_drop_gun(int player_id) {
-        Duck selected_duck = get_duck();
-
-        // Drop ammo?
-}
-
-void Game::duck_drop_armor(int player_id) {
-        Duck selected_duck = get_duck();
-
-        
-}
-
-void Game::duck_aim_up(int player_id) {
-        Duck selected_duck = get_duck();
-
-}
-
-void Game::duck_floor(int player_id) {
-        Duck selected_duck = get_duck();
-
-        // what happens when a duck floors in the air?
-
-}
-
-void Game::process_update(Update update) {
-        
-                Possible duck updates:
-                - Move (left or right)
-                - Jump or Flutter (slow the fall). Since it depends on if the duck is in ground or not it's better the server determine it
-                - Shoot (to looking direction)
-                - Take/leave a gun
-                - Take/leave a helmet/armor
-                - Aim up
-                - Floor (stay down)
-
-                Could make a function that simulates a movement, and returns a boolean 
-                if it has moved (to only broadcast changes)
-
-                If a change is done on the state we can put it on a list to broadcast
-
-                Remember that in this function when a duck is hit by an attack we update stats
-                The constants are going to be configurable by a yaml, but that could be a later refactor
-        
-
-        if (update.type == update_type::Move) {
-                move_duck_move(update.player_id);
-        } else if (update.type == update_type::Jump) {
-                duck_jump(update.player_id);
-        } else if (update.type == update_type::Shoot) {
-                duck_shoot(update.player_id);
-        } else if (update.type == update_type::TakeGunOrArmor) {
-                duck_take_item(update.player_id);
-        } else if (update.type == update_type::LeaveGun) {
-                duck_drop_gun(update.player_id);
-        } else if (update.type == update_type::LeaveArmor) {
-                duck_drop_armor(update.player_id);
-        } else if (update.type == update_type::AimUp) {
-                duck_aim_up(update.player_id);
-        } else if (update.type == update_type::Floor) {
-                duck_floor(update.player_id);
-        } else {
-                std::cout << "Command not supported" << std::endl
-        }
-        
-}
-
-void Game::broadcast_changes(Update update) {
-        // Broadcast the state changes of the list
-        // Maybe we could translate all the changes, with a protocol that specifies the changes ammount
-
-        // TODO: implement monitor
-        // monitor.broadcast(message);
-
-}
-
-void Game::renew_iteration(Update update) {
-        // Reset variables, calculate the sleep time and sleep
-}
-
-void Game::run() {
-        while (is_running) {
-                int current_round = game_round;
-                // Should make more things with the round setUp, but the round feature was not implemented yet
-
-                while (current_round == game_round && is_running) {
-                        std::vector<Update> updates;
-                        bool read_successful = true;
-
-                        // Receive updates
-                        while (read_successful) {
-                                Update read_update;
-                                read_successful = InputQueue::read_command(read_update); // To do: impl InputQueue
-                                if (read_successful) {
-                                        updates.push_back(read_update);
-                                }
-                        }
-
-                        // Process updates
-                        for (Update& update: updates) {
-                                process_update(update);
-                        }
-
-                        // Simulate one round???
-
-                        // Broadcast clients
-                        broadcast_changes();
-
-                        // Check end of the round conditions
-
-
-                        renew_iteration();
-
-                }
-
-                current_round++;
-        }
-}
-
-
-*/
 
 void Game::stop() { is_running = false; }

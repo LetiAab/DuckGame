@@ -5,6 +5,8 @@
 
 #include <vector>
 
+#include "duck.h"
+
 class GameMap {
 
 private:
@@ -17,6 +19,12 @@ public:
 
     bool placeDuck(int x, int y, char duck_id);
 
+    bool is_duck_touching_floor(int x, int y);
+
+    bool is_element_touching_floor(int x, int y, int size_x, int size_y);
+
+    char duck_in_position(int x, int y, int size_x, int size_y);
+
     void setEscenario();
 
     bool canMoveDuckTo(int x, int y, char duck_id);
@@ -26,6 +34,16 @@ public:
     void cleanDuckOldPosition(int x, int y);
 
     void setDuckNewPosition(int x, int y, char duck_id);
+
+    bool can_move_projectile(int x, int y, int size_x, int size_y);
+
+    int projectile_hits_duck(int x, int y);
+
+    void move_projectile(int position_x, int position_y, int speed_x, int speed_y, int size_x, int size_y);
+
+    void clean_projectile_old_position(int x, int y, int size_x, int size_y);
+
+    void set_projectile_new_position(int x, int y,  int size_x, int size_y);
 
     int get_height();
     int get_width();

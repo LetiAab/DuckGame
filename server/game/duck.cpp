@@ -2,14 +2,28 @@
 #include <iostream>
 
 Duck::Duck(char id, int x, int y, GameMap& map) :
-id_player(id), position_x(x), position_y(y), position(x, y), map(map),
-is_moving(false), speed_x(0), speed_y(0), looking(LOOKING_RIGHT), is_jumping(false),
-is_fluttering(false), updated(false) {}
+id_player(id),
+position_x(x),
+position_y(y),
+position(x, y),
+old_position(x, y),
+map(map),
+is_moving(false),
+speed_x(0),
+speed_y(0),
+gun(NULL),
+looking(LOOKING_RIGHT),
+is_jumping(false),
+is_fluttering(false),
+is_slippy(false),
+life_points(100),
+stop_notificated(false) {}
 
 bool Duck::is_in_air(){
     return map.canMoveDuckTo(position.x, position.y + 1, id_player);
 
 }
+
 
 void Duck::check_gravity(){
 
@@ -21,13 +35,23 @@ void Duck::check_gravity(){
 }
 
 void Duck::update_position_speed() {
-    //TODO: TENER EN CUENTA QUE TENGO QUE VER TODO LO QUE OCUPA EL PATO Y NO SOLO EL PUNTO QUE GUARDA
+    // Tener en cuenta el pato y no solo el punto
 
     // Gravity check. Can be modularized
     bool can_fall = map.canMoveDuckTo(position_x, position_y + 1, id_player);
     if(can_fall) {
         map.cleanDuckOldPosition(position_x, position_y);
-        speed_y +=2;
+
+        // TODO: acá agregar la verificación del is_fluttering, pero necesitaría aumentar la velocidad de la gravedad
+        
+        //ROMPE
+        /*position_y += 2;
+        if (is_fluttering) {
+            position_y -= 1;
+        }
+        */
+
+        position_y += 1;
 
         map.setDuckNewPosition(position_x, position_y, id_player);
     }
@@ -44,10 +68,13 @@ void Duck::update_position_speed() {
 
         map.setDuckNewPosition(delta_x, delta_y, id_player);
     }
-    map.printMap();
+    //map.printMap();
 
 }
 
+bool Duck::is_touching_floor() {
+    return map.is_duck_touching_floor(position_x, position_y);
+}
 
 void Duck::update_position() {
 
@@ -90,4 +117,20 @@ int Duck::get_x() const {
 
 int Duck::get_y() const {
     return position.y;
+}
+
+int Duck::get_old_x() const {
+    return old_position.x;
+}
+
+int Duck::get_old_y() const {
+    return old_position.y;
+}
+
+void Duck::set_old_x(int x)  {
+    old_position.x = x;
+}
+
+void Duck::set_old_y(int y)  {
+    old_position.y = y;
 }

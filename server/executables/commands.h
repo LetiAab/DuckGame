@@ -9,4 +9,8 @@
 #include "stop/stop_move_command.h"
 #include "stop/stop_move_up_command.h"
 
+#include "guns_commands/shoot_command.h"
+//#include "guns_commands/leave_gun_command.cpp"
+
+
 #endif  // EXECUTABLES_COMMANDS_H
