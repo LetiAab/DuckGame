@@ -18,7 +18,7 @@ public:
     int speed_y;
 
     Proyectil(const std::string& tipo, int alcance, int daño, int pos_x, int pos_y, int speed_x, int speed_y)
-        : tipo(tipo), alcance(alcance), daño(daño), speed_x(speed_x), speed_y(speed_y)  {}
+        : tipo(tipo), alcance(alcance), daño(daño), pos_x(pos_x), pos_y(pos_y), speed_x(speed_x), speed_y(speed_y)  {}
 
     virtual void simular(Game& game) = 0;  // Define el movimiento en cada tipo de proyectil
     virtual void impactar() = 0;  // Define el comportamiento al impactar

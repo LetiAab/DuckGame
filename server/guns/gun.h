@@ -14,10 +14,11 @@ protected:
     std::string nombre;
     int municiones;
     int alcance;
+    Duck& owner;
 
 public:
-    Arma(const std::string& nombre, int municiones, int alcance)
-        : nombre(nombre), municiones(municiones), alcance(alcance) {}
+    Arma(const std::string& nombre, int municiones, int alcance, Duck& owner)
+        : nombre(nombre), municiones(municiones), alcance(alcance), owner(owner) {}
 
     virtual Proyectil* disparar() = 0;
     virtual void recargar() {
@@ -32,7 +33,7 @@ class Granada : public Arma {
 public:
     int tiempo_explosion;
 
-    Granada() : Arma("Granada", 1, 5), seguro_removido(false), tiempo_explosion(4) {}
+    Granada(Duck& owner) : Arma("Granada", 1, 5, owner), seguro_removido(false), tiempo_explosion(4) {}
 
     Proyectil* sacarSeguro() {
         seguro_removido = true;
@@ -59,21 +60,12 @@ public:
 
 class Banana : public Arma {
 public:
-    Banana() : Arma("Banana", 1, 5) {}
-
-    Proyectil* lanzar() {
-        std::cout << "Lanzando " << nombre << " en el suelo. ¡Cuidado con el resbalón!\n";
-
-    }
-
-    Proyectil* disparar() override {
-        lanzar();
-    }
+    Banana(Duck& owner) : Arma("Banana", 1, 5, owner) {}
 };
 
 class PewPewLaser : public Arma {
 public:
-    PewPewLaser() : Arma("Pew-Pew Laser", 12, 37) {}
+    PewPewLaser(Duck& owner) : Arma("Pew-Pew Laser", 12, 37, owner) {}
 
     Proyectil* disparar() override {
         if (municiones > 0) {
@@ -82,12 +74,16 @@ public:
         } else {
             std::cout << "Sin municiones. Recarga necesaria.\n";
         }
+
+        // Raro, no me sirve usar punteros salvo para los casos NULL, capaz puedo hacer un objeto ProyectilNull, y listo
+        ProyectilLaser projectile(owner.get_x() + 1, owner.get_y() + 1, owner.speed_x + 1, owner.speed_y);
+        return &projectile;
     }
 };
 
 class LaserRifle : public Arma {
 public:
-    LaserRifle() : Arma("Laser Rifle", 10, 30) {}
+    LaserRifle(Duck& owner) : Arma("Laser Rifle", 10, 30, owner) {}
 
     Proyectil* disparar() override {
         if (municiones > 0) {
@@ -101,7 +97,7 @@ public:
 
 class AK47 : public Arma {
 public:
-    AK47() : Arma("AK-47", 30, 13) {}
+    AK47(Duck& owner) : Arma("AK-47", 30, 13, owner) {}
 
     Proyectil* disparar() override {
         if (municiones > 0) {
@@ -115,7 +111,7 @@ public:
 
 class PistolaDuelos : public Arma {
 public:
-    PistolaDuelos() : Arma("Pistola de Duelos", 1, 5) {}
+    PistolaDuelos(Duck& owner) : Arma("Pistola de Duelos", 1, 5, owner) {}
 
     Proyectil* disparar() override {
         if (municiones > 0) {
@@ -129,7 +125,7 @@ public:
 
 class PistolaCowboy : public Arma {
 public:
-    PistolaCowboy() : Arma("Pistola Cowboy", 6, 20) {}
+    PistolaCowboy(Duck& owner) : Arma("Pistola Cowboy", 6, 20, owner) {}
 
     Proyectil* disparar() override {
         if (municiones > 0) {
@@ -143,7 +139,7 @@ public:
 
 class Magnum : public Arma {
 public:
-    Magnum() : Arma("Magnum", 6, 20) {}
+    Magnum(Duck& owner) : Arma("Magnum", 6, 20, owner) {}
 
     Proyectil* disparar() override {
         if (municiones > 0) {
@@ -157,7 +153,7 @@ public:
 
 class Escopeta : public Arma {
 public:
-    Escopeta() : Arma("Escopeta", 2, 8) {}
+    Escopeta(Duck& owner) : Arma("Escopeta", 2, 8, owner) {}
 
     Proyectil* disparar() override {
         if (municiones > 0) {
@@ -171,7 +167,7 @@ public:
 
 class Sniper : public Arma {
 public:
-    Sniper() : Arma("Sniper", 3, 64) {}
+    Sniper(Duck& owner) : Arma("Sniper", 3, 64, owner) {}
 
     Proyectil* disparar() override {
         if (municiones > 0) {
