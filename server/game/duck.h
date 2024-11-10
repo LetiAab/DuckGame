@@ -14,8 +14,6 @@ class GameMap;
 class Duck {
 private:
     char id_player;  // ID del jugador
-    int position_x;      // Posición en el eje X
-    int position_y;      // Posición en el eje Y
     Position position;
     Position old_position;
     GameMap& map;   // Referencia al GameMap
@@ -35,14 +33,12 @@ public:
 
     Duck(char id, int x, int y, GameMap& map);
 
-//    void update_position(int delta_x, int delta_y);
 
-    void update_position_speed();
+    //void update_position_speed();
+
     void update_position();
     void check_gravity();
     bool is_in_air();
-
-    bool is_touching_floor();
 
     char get_id() const;
     int get_x() const;

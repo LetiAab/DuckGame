@@ -3,8 +3,6 @@
 
 Duck::Duck(char id, int x, int y, GameMap& map) :
 id_player(id),
-position_x(x),
-position_y(y),
 position(x, y),
 old_position(x, y),
 map(map),
@@ -24,7 +22,6 @@ bool Duck::is_in_air(){
 
 }
 
-
 void Duck::check_gravity(){
 
     if(is_in_air()) {
@@ -32,48 +29,6 @@ void Duck::check_gravity(){
         
     }
 
-}
-
-void Duck::update_position_speed() {
-    // Tener en cuenta el pato y no solo el punto
-
-    // Gravity check. Can be modularized
-    bool can_fall = map.canMoveDuckTo(position_x, position_y + 1, id_player);
-    if(can_fall) {
-        map.cleanDuckOldPosition(position_x, position_y);
-
-        // TODO: acá agregar la verificación del is_fluttering, pero necesitaría aumentar la velocidad de la gravedad
-        
-        //ROMPE
-        /*position_y += 2;
-        if (is_fluttering) {
-            position_y -= 1;
-        }
-        */
-
-        position_y += 1;
-
-        map.setDuckNewPosition(position_x, position_y, id_player);
-    }
-
-
-    int delta_x = position_x + speed_x;
-    int delta_y = position_y + speed_y;
-
-    if (map.canMoveDuckTo(delta_x, delta_y, id_player)) {
-        map.cleanDuckOldPosition(position_x, position_y);
-
-        position_x = delta_x;
-        position_y = delta_y;
-
-        map.setDuckNewPosition(delta_x, delta_y, id_player);
-    }
-    //map.printMap();
-
-}
-
-bool Duck::is_touching_floor() {
-    return map.is_duck_touching_floor(position_x, position_y);
 }
 
 void Duck::update_position() {
@@ -134,3 +89,37 @@ void Duck::set_old_x(int x)  {
 void Duck::set_old_y(int y)  {
     old_position.y = y;
 }
+
+
+
+
+/*
+void Duck::update_position_speed() {
+    // Tener en cuenta el pato y no solo el punto
+
+    // Gravity check. Can be modularized
+    bool can_fall = map.canMoveDuckTo(position.x, position.y + 1, id_player);
+    if(can_fall) {
+        map.cleanDuckOldPosition(position.x, position.y);
+
+        position.y += 1;
+
+        map.setDuckNewPosition(position.x, position.y, id_player);
+    }
+
+
+    int delta_x = position.x + speed_x;
+    int delta_y = position.y + speed_y;
+
+    if (map.canMoveDuckTo(delta_x, delta_y, id_player)) {
+        map.cleanDuckOldPosition(position.x, position.y);
+
+        position.x = delta_x;
+        position.y = delta_y;
+
+        map.setDuckNewPosition(delta_x, delta_y, id_player);
+    }
+    //map.printMap();
+
+}
+*/
