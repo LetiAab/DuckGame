@@ -74,6 +74,87 @@ bool GameMap::is_element_touching_floor(int x, int y, int size_x, int size_y) {
     return false;
 }
 
+// Falta usar el size, estás usando los del pato
+bool GameMap::can_move_projectile(int x, int y, int size_x, int size_y) {
+
+    // Verifica que las coordenadas estén dentro de los límites del mapa
+    if (x < 0 || x >= width || y < 0 || y >= height) {
+        return false; 
+    }
+
+    // Verifica que el movimiento no colisione con una plataforma
+    for (int i = x; i < x + size_x; ++i) {
+        for (int j = y; j < y + size_y; ++j) {
+            if (map[j][i] == PLATFORM) {
+                return false;
+            }
+        }
+    }
+    
+    return true;
+}
+
+// Falta usar el size, estás usando los del pato
+int GameMap::projectile_hits_duck(int x, int y) {
+    // Verifica si colisiona con un pato
+    for (int i = x; i < x + 2; ++i) {
+        for (int j = y; j < y + 3; ++j) {
+            for (int l = 1; l < 7; l++) {
+                char duck_number = static_cast<char>(l + '0');
+                if (map[j][i] == duck_number) {
+                    return duck_number;
+                }
+            }
+        }
+    }
+
+    return 0;
+}
+
+void GameMap::clean_projectile_old_position(int x, int y, int size_x, int size_y) {
+    for (int i = x; i < x + size_x; ++i) { 
+        for (int j = y; j < y + size_y; ++j) {
+            if (j >= 0 && j < height && i >= 0 && i < width) { // Verificar límites
+                map[j][i] = EMPTY; 
+            }
+        }
+    }
+}
+
+void GameMap::set_projectile_new_position(int x, int y,  int size_x, int size_y) {
+    for (int i = x; i < x + size_x; ++i) {
+        for (int j = y; j < y + size_y; ++j) {
+            if (j >= 0 && j < height && i >= 0 && i < width) {
+                map[j][i] = 'P'; // Cambiar, deberías recibir la letra asignada al proyectil
+            }
+        }
+    }
+}
+
+bool GameMap::move_projectile(int position_x, int position_y, int speed_x, int speed_y, int size_x, int size_y) {
+    // Gravity check. Can be modularized
+    if (can_move_projectile(position_x, position_y + 1, size_x, size_y)) { // check if use position_x or delta_x
+        clean_projectile_old_position(position_x, position_y, size_x, size_y);
+
+        position_y += 1;
+
+        set_projectile_new_position(position_x, position_y, size_x, size_y);
+    }
+
+    int delta_x = position_x + speed_x;
+    int delta_y = position_y + speed_y;
+
+    if (can_move_projectile(delta_x, delta_y, size_x, size_y)) {
+        clean_projectile_old_position(position_x, position_y, size_x, size_y);
+
+        position_x = delta_x;
+        position_y = delta_y;
+
+        set_projectile_new_position(delta_x, delta_y, size_x, size_y);
+    }
+    printMap();
+}
+
 char GameMap::duck_in_position(int x, int y, int size_x, int size_y) {
     // Verifica que haya un pato, si no hay devuelve 0
     for (int i = x; i < x + size_x; ++i) {

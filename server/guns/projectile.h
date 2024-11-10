@@ -5,6 +5,8 @@
 
 #define TIME_SLEEP 20
 
+class Game;
+
 class Proyectil {
 protected:
     std::string tipo;
@@ -35,7 +37,8 @@ public:
     }
 
     void simular(Game& game) override {
-        // Falta mover el proyectil
+        // Mover el proyectil
+        game.map.move_projectile(pos_x, pos_y, speed_x, speed_y, 1, 1);
 
         tiempo_explosion += TIME_SLEEP;
 
@@ -56,6 +59,9 @@ public:
     ProyectilLaser(int pos_x, int pos_y, int speed_x, int speed_y) : Proyectil("Rayo Láser", 38, 15, pos_x, pos_y, speed_x, speed_y) {}
 
     void simular(Game& game) override {
+        // Mover el proyectil
+        game.map.move_projectile(pos_x, pos_y, speed_x, speed_y, 1, 1);
+
         std::cout << "El rayo láser avanza en línea recta con alcance de " << alcance << " tiles.\n";
     }
 
@@ -70,6 +76,8 @@ public:
 
     void simular(Game& game) override {
         // Mover hasta que toque el piso, entonces queda esperando que alguno la pise
+        game.map.move_projectile(pos_x, pos_y, speed_x, speed_y, 1, 1);
+
         
         // Chequear si tocó el piso. Si es así cambiar las velocidades por 0
         if (game.map.is_element_touching_floor(pos_x, pos_y, 1, 1)) {
