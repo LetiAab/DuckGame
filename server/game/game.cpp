@@ -15,14 +15,37 @@ Queue<std::shared_ptr<Executable>>& Game::get_game_queue(){
 
 
 void Game::simulate_round() {
-        for (Duck& duck : ducks) {
-                duck.update_position();
-                
+
+       //map.printMap();
+
+    for (Duck& duck : ducks) {  
+        duck.update_position();
+        
+        if(duck.weapon != nullptr){
+                for (auto it = duck.weapon->bullets.begin(); it != duck.weapon->bullets.end(); ) {
+                        it->update_position();
+                        
+                        if (it->hubo_impacto()) {
+                                //cuando la bala impacta la saco de la lista de lanzadas por el pato
+                                //de esta forma libero y encima me ahorro mandar el mensaje de la pos de la bala una vez que no existe mas. Porque el mensaje se crea viendo la lista de balas. Cosa que no me gusta demasiado pero bueno
+                                std::cout << "HUBO IMPACTO! en" << it->get_x() << std::endl;
+
+                                it->cleanPostImpacto();
+                                it = duck.weapon->bullets.erase(it);
+                        } else {
+                        ++it;
+                        }
+                }
         }
-    
-        for (std::unique_ptr<Proyectil>& projectile : projectiles) {
+
+        
+
+    }
+
+    for (std::unique_ptr<Proyectil>& projectile : projectiles) {
+
         projectile->simular(*this);  // Llama a la función simular específica de cada proyectil
-        }
+     }
 }
 
 void Game::add_projectile(std::unique_ptr<Proyectil> projectile) {
@@ -42,6 +65,16 @@ void Game::sendDuckPositionUpdate(const Duck& duck) {
     message.duck_y = duck.get_y();
     message.looking = duck.looking;
     message.is_moving = duck.is_moving;  // Indicamos si el pato está en movimiento o no
+    monitor.broadcast(message);
+}
+
+void Game::sendBulletPositionUpdate(const Bullet& bullet) {
+
+    Message message;
+    message.type = BULLET_POS_UPDATE;
+    message.player_id =static_cast<uint16_t>(bullet.getDuckId() - '0'); 
+    message.bullet_x = bullet.get_x();
+    message.bullet_y = bullet.get_y();
     monitor.broadcast(message);
 }
 
@@ -79,6 +112,13 @@ void Game::run() {
                 //mando la posicion de cada PATO
                 //NO ME GUSTA NADA ESTO PORQUE NO RESPETA QUIEN SE MOVIO PRIMERO
               for (Duck& duck : ducks) {
+                
+                if(duck.weapon != nullptr){
+                        for (Bullet& bullet : duck.weapon->bullets) {
+                                
+                                sendBulletPositionUpdate(bullet);
+                        }
+                }
 
                 bool is_stationary = (duck.get_x() == duck.get_old_x()) && (duck.get_y() == duck.get_old_y());
 
@@ -110,15 +150,14 @@ void Game::run() {
 
 }
 
-void Game::inicializate_map(){
-/*         
-                Things to initialize:
-                - Players
-                - Boxes
-                - Spawn places
-                - Stage grounds
-                - Map limit (if we model it)
- */
+void Game::inicializate_map() {
+    // Le doy armas a los patos para probar
+    for (Duck& duck : ducks) {
+
+        Weapon* weapon = new Weapon("Pistola Generica", 10, 5, 30);
+
+        duck.setWeapon(weapon);
+    }
 }
 
 //TODO: Esto solo sirve para dos patos y siempre tiene en cuenta que es el mismo distribucion de obstaculos

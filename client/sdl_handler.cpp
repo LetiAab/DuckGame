@@ -188,9 +188,15 @@ int SDLHandler::processEvents(SDL_Window* window, GameState* game, uint16_t id) 
 
 
 
+void render_bullet(SDL_Renderer* renderer, int x, int y, int size = 20) {
+    SDL_Rect bulletRect = { x * TILE_SIZE, y * TILE_SIZE, size, size };
 
+    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
 
-void SDLHandler::doRender(SDL_Renderer* renderer, GameState* game) {
+    SDL_RenderFillRect(renderer, &bulletRect);
+}
+
+void SDLHandler::doRender(SDL_Renderer* renderer, GameState* game, Message& message) {
     SDL_RenderCopy(renderer, game->background, NULL, NULL);
 
     for (int i = 0; i < game->ducks_quantity; i++) {
@@ -224,6 +230,10 @@ void SDLHandler::doRender(SDL_Renderer* renderer, GameState* game) {
         SDL_RenderCopy(renderer, game->crate, NULL, &crate_rect);
     }
 
+    if(message.type == BULLET_POS_UPDATE){
+        render_bullet(renderer, message.bullet_x, message.bullet_y);
+    }
+
     SDL_RenderPresent(renderer);
 }
 
@@ -254,21 +264,16 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
         message_queue.try_pop(message);
         //TODO: MODULARIZAR
         
+        if(message.type == BULLET_POS_UPDATE){
+
+            //renderizar la bala. NO se como ahcerlo aca y no dentro del DORender.
+            //capaz simplemente va ahi
+        }
         
         if (message.type == DUCK_POS_UPDATE){
 
-            //de el lado de el cliente no importa tanto la matriz. porque es para ver las coliciones
-            // y eso se hace en el server.
-            //si a mi me llega la posicion del pato simplemente tengo que mover al pato a donte tien que ir
-
-            //std::cout << "ME LLEGO NOTIFICACION PARA ACTUALIZAR LA POS DEL PATO" << "\n";
-
-            //std::cout << "x " << message.duck_x <<"\n";
-            //std::cout << "y " << message.duck_y <<"\n";
-
+            
             int pos_id = message.player_id - 1;
-
-            //std::cout << "POS_ID DEL PATO A MOVER: " << pos_id << "\n";
 
             game.ducks[pos_id].x = message.duck_x * TILE_SIZE;
             game.ducks[pos_id].y = message.duck_y * TILE_SIZE;
@@ -293,7 +298,8 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
 
         }
 
-        doRender(renderer, &game);
+        doRender(renderer, &game, message);
+
         SDL_Delay(DELAY_TIME);
     }
 

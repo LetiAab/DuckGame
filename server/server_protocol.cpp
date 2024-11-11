@@ -65,6 +65,23 @@ bool ServerProtocol::send_message(Message& message){
         }
 
         break;
+    case BULLET_POS_UPDATE:
+        std::cout << "MANDO LA BULLET" << "\n";
+
+        if (!skt.sendall(&message.player_id, sizeof(message.player_id), &was_closed) || was_closed) {
+            return false;
+        }
+
+        if (!skt.sendall(&message.bullet_x, sizeof(message.bullet_x), &was_closed) || was_closed) {
+            return false;
+        }
+
+        if (!skt.sendall(&message.bullet_y, sizeof(message.bullet_y), &was_closed) || was_closed) {
+            return false;
+        }
+        break;
+
+
     case DUCK_POS_UPDATE:
         if (!skt.sendall(&message.player_id, sizeof(message.player_id), &was_closed) || was_closed) {
             return false;
@@ -147,6 +164,7 @@ std::shared_ptr<Executable> ServerProtocol::receive_command(){
     case STOP_DOWN:
         return std::make_shared<StopMoveCommand>(player_id);
     case SHOOT:
+        std::cout << "RECIBO QUE TENGO QUE DISPARAR" << "\n";
         return std::make_shared<ShootCommand>(player_id);
     case EXIT_GAME:
         break;

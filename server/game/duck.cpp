@@ -20,6 +20,13 @@ stop_notificated(false) {}
 bool Duck::is_in_air(){
     return map.canMoveDuckTo(position.x, position.y + 1, id_player);
 
+Duck::Duck(char id, int x, int y, GameMap& map) : id_player(id), position_x(x), position_y(y), old_position_x(x), old_position_y(y), 
+    map(map),is_moving(false), speed_x(0), speed_y(0), is_fluttering(false), is_slippy(false), life_points(100), stop_notificated(false), weapon(nullptr) {}
+
+
+
+void Duck::update_position_speed() {
+    // Tener en cuenta el pato y no solo el punto
 }
 
 void Duck::check_gravity(){
@@ -122,4 +129,16 @@ void Duck::update_position_speed() {
     //map.printMap();
 
 }
-*/
+
+void Duck::setWeapon(Weapon* new_weapon) {
+    weapon = new_weapon;  // Asigna el arma al pato
+}
+
+
+void Duck::disparar() {
+
+   if (weapon != nullptr) {
+        weapon->disparar(position_x, position_y, looking, map, id_player);
+    }
+}
+
