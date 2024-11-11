@@ -8,8 +8,14 @@
 
 #include <string>
 
+#include "../guns/bullet.h"
+#include "../guns/weapon.h"
+
 class Arma;
 class GameMap;
+class Bullet;  // Declaración adelantada de Bullet
+class Weapon;  // Declaración adelantada de Weapon
+
 
 class Duck {
 private:
@@ -19,18 +25,23 @@ private:
     GameMap& map;   // Referencia al GameMap
 
 
+
+
+
 public:
     bool is_moving;
     int speed_x;
     int speed_y;
-    Arma* gun;
+    //Arma* gun;
     char looking;
     bool is_jumping;
     bool is_fluttering;
     bool is_slippy;
     int life_points;
     bool stop_notificated;
+    Weapon* weapon;
 
+    
     Duck(char id, int x, int y, GameMap& map);
 
 
@@ -49,6 +60,10 @@ public:
 
     void set_old_x(int x) ;
     void set_old_y(int y) ;
+
+    void setWeapon(Weapon* new_weapon);
+
+    void disparar();
 };
 
 #endif // DUCK_H

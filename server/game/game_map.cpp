@@ -11,11 +11,50 @@ const char DUCK_5 = '5';
 const char DUCK_6 = '6';
 const char PLATFORM = 'P';
 
+const char BULLET = '*';
+
 
 GameMap::GameMap(int width, int height) : width(width), height(height) {
     map.resize(height, std::vector<char>(width, EMPTY));
 }
 
+bool GameMap::canMoveBulletTo(int x, int y, char duck_id){
+    
+    printMap();
+
+    
+    if (x < 0 || x >= width || y < 0 || y >= height) {
+        return false; 
+    }
+    
+
+    if (map[y][x] == duck_id) {
+        std::cout << "CHOCO CONMIGO MISMO" << "\n";
+        return true;
+    }
+
+
+    if(map[y][x] != EMPTY){
+        
+        //bala choca con ALGO
+        return false;
+    }
+    
+
+    return true;
+
+}
+
+void GameMap::setBulletNewPosition(int x, int y){
+
+    map[y][x] = BULLET;
+}
+
+void GameMap::cleanBulletOldPosition(int x, int y){
+
+    map[y][x] = EMPTY;
+
+}
 
 Position GameMap::move_duck_to(Position old_position, Position new_position, char duck_id) {
     int final_x = old_position.x;
@@ -269,6 +308,8 @@ void GameMap::setDuckNewPosition(int x, int y, char duck_id) {
         }
     }
 }
+
+
 
 
 //Pone un pato en una posición (x, y) ocupando un rectángulo de 2x3

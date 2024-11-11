@@ -35,6 +35,13 @@ public:
 
     void setDuckNewPosition(int x, int y, char duck_id);
 
+
+    bool canMoveBulletTo(int x, int y, char duck_id);
+    void setBulletNewPosition(int x, int y);
+    void cleanBulletOldPosition(int x, int y);
+
+
+
     bool can_move_projectile(int x, int y, int size_x, int size_y);
 
     int projectile_hits_duck(int x, int y);

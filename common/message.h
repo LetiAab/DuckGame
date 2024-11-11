@@ -18,6 +18,11 @@ struct Message {
     char looking; //direccion en la que mira el pato
     bool is_moving;
 
+    int bullet_x;
+    int bullet_y;
+    int bullet_id;
+
+
 
 };
 
