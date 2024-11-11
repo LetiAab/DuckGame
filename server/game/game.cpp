@@ -16,10 +16,10 @@ Queue<std::shared_ptr<Executable>>& Game::get_game_queue(){
 
 void Game::simulate_round() {
 
-        //map.printMap();
+       //map.printMap();
 
     for (Duck& duck : ducks) {  
-        duck.update_position_speed();
+        duck.update_position();
         
         if(duck.weapon != nullptr){
                 for (auto it = duck.weapon->bullets.begin(); it != duck.weapon->bullets.end(); ) {
@@ -43,8 +43,9 @@ void Game::simulate_round() {
     }
 
     for (std::unique_ptr<Proyectil>& projectile : projectiles) {
+
         projectile->simular(*this);  // Llama a la función simular específica de cada proyectil
-    }
+     }
 }
 
 void Game::add_projectile(std::unique_ptr<Proyectil> projectile) {
@@ -104,8 +105,6 @@ void Game::run() {
 
                         i += 1;
                 }
-
-                
 
                 // Simulo una ronda de movimientos
                 simulate_round();
