@@ -1,7 +1,7 @@
 #include "bullet.h"
 
-Bullet::Bullet(int start_x, int start_y, int direction_x, int direction_y, GameMap* map, char duck_id) 
-    : position_x(start_x), position_y(start_y), direction_x(direction_x), direction_y(direction_y), map(map), impacto(false), duck_id(duck_id) {
+Bullet::Bullet(int start_x, int start_y, int direction_x, int direction_y, GameMap* map, char duck_id, int alcance) 
+    : position_x(start_x), position_y(start_y), direction_x(direction_x), direction_y(direction_y), map(map), impacto(false), duck_id(duck_id), alcance(alcance) {
     // La bala comienza en la posición dada con la dirección especificada
     speed_x = direction_x;
     speed_y = direction_y;
@@ -12,6 +12,11 @@ void Bullet::comenzar_trayectoria() {
 }
 
 void Bullet::update_position() {
+
+    if(alcance == 0){
+        //si recorrio su maximo tiene que frenar
+        impacto = true;
+    }
     std::cout << "Comienzo trayectoria desde x: " << position_x << "\n";
 
     //map->cleanBulletOldPosition(position_x, position_y);
@@ -28,6 +33,7 @@ void Bullet::update_position() {
         
         map->setBulletNewPosition(position_x, position_y);
         map->cleanBulletOldPosition(old_position_x, old_position_y); 
+        alcance--;
     } else {
         map->cleanBulletOldPosition(position_x, position_y);
         impacto = true;

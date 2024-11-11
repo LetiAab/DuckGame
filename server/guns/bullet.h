@@ -11,14 +11,17 @@ private:
     int speed_x;
     int speed_y;
     int direction_x; 
-    int direction_y; 
+    int direction_y;
+
     GameMap* map;   
     bool impacto;
     char duck_id; //tengo que saber de quien es la bala para que no se autopegue cuando sale
 
+    int alcance;
+
 
 public:
-    Bullet(int start_x, int start_y, int direction_x, int direction_y, GameMap* map, char duck_id);
+    Bullet(int start_x, int start_y, int direction_x, int direction_y, GameMap* map, char duck_id, int alcance);
     void comenzar_trayectoria();  
     void update_position();       
     int get_x() const;            
