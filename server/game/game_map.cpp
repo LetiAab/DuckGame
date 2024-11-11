@@ -86,6 +86,14 @@ Position GameMap::move_duck_to(Position old_position, Position new_position, cha
             if (!is_free) break;
         }
 
+        if (next_x == new_position.x){
+            dx = 0;
+        }
+
+        if (next_y == new_position.y){
+            dy = 0;
+        }
+
         //si el área está libre, actualizo la posición final
         if (is_free) {
             final_x = next_x;
