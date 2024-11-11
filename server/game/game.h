@@ -15,7 +15,7 @@
 #include <ctime>    // Para time
 
 
-#define TIME_SLEEP 20
+#define GAME_TIME_SLEEP 100
 // En gun.h tengo la misma variable, cambiar también ahí o mejorar el import
 
 typedef struct update

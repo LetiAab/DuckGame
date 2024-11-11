@@ -50,8 +50,8 @@ const int WINDOW_HEIGHT = 600;
 
 const int MAX_PLAYERS = 6;
 
-const int MATRIX_N = 18;
-const int MATRIX_M = 25;
+const int MATRIX_N = 36;
+const int MATRIX_M = 50;
 
 const int TILE_SIZE = 32;
 

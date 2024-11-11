@@ -7,7 +7,7 @@
 #define DUCK_SIZE_X 2 //EN CANTIDAD DE TILE_SIZE
 #define DUCK_SIZE_Y 3 //EN CANTIDAD DE TILE_SIZE
 
-#define TILE_SIZE 32
+#define TILE_SIZE 16
 
 //using namespace SDL2pp;
 
