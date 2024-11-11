@@ -6,6 +6,8 @@
 class GameMap;
 class Bullet {
 private:
+    int bullet_id; //para identificar las balas en los mensajes
+
     int position_x;
     int position_y;
     int speed_x;
@@ -21,7 +23,7 @@ private:
 
 
 public:
-    Bullet(int start_x, int start_y, int direction_x, int direction_y, GameMap* map, char duck_id, int alcance);
+    Bullet(int bullet_id, int start_x, int start_y, int direction_x, int direction_y, GameMap* map, char duck_id, int alcance);
     void comenzar_trayectoria();  
     void update_position();       
     int get_x() const;            
@@ -33,7 +35,10 @@ public:
 
     char getDuckId() const;
 
+    int getBulletId() const;
+
 
 };
 
 #endif // BULLET_H
+

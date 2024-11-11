@@ -268,6 +268,8 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
 
             //renderizar la bala. NO se como ahcerlo aca y no dentro del DORender.
             //capaz simplemente va ahi
+
+            //cada bala viene con su id para poder identificarla de alguna forma al momento de renderizar
         }
         
         if (message.type == DUCK_POS_UPDATE){

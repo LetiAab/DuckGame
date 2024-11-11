@@ -79,6 +79,10 @@ bool ServerProtocol::send_message(Message& message){
         if (!skt.sendall(&message.bullet_y, sizeof(message.bullet_y), &was_closed) || was_closed) {
             return false;
         }
+
+        if (!skt.sendall(&message.bullet_id, sizeof(message.bullet_id), &was_closed) || was_closed) {
+            return false;
+        }
         break;
 
 

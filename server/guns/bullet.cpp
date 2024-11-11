@@ -1,7 +1,7 @@
 #include "bullet.h"
 
-Bullet::Bullet(int start_x, int start_y, int direction_x, int direction_y, GameMap* map, char duck_id, int alcance) 
-    : position_x(start_x), position_y(start_y), direction_x(direction_x), direction_y(direction_y), map(map), impacto(false), duck_id(duck_id), alcance(alcance) {
+Bullet::Bullet(int bullet_id, int start_x, int start_y, int direction_x, int direction_y, GameMap* map, char duck_id, int alcance) 
+    : bullet_id(bullet_id), position_x(start_x), position_y(start_y), direction_x(direction_x), direction_y(direction_y), map(map), impacto(false), duck_id(duck_id), alcance(alcance) {
     // La bala comienza en la posición dada con la dirección especificada
     speed_x = direction_x;
     speed_y = direction_y;
@@ -64,4 +64,8 @@ bool Bullet::hubo_impacto(){
 
 char Bullet::getDuckId() const{
     return duck_id;
+}
+
+int Bullet::getBulletId() const{
+    return bullet_id;
 }

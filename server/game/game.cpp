@@ -75,6 +75,7 @@ void Game::sendBulletPositionUpdate(const Bullet& bullet) {
     message.player_id =static_cast<uint16_t>(bullet.getDuckId() - '0'); 
     message.bullet_x = bullet.get_x();
     message.bullet_y = bullet.get_y();
+    message.bullet_id = bullet.getBulletId();
     monitor.broadcast(message);
 }
 

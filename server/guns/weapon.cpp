@@ -12,7 +12,9 @@ void Weapon::disparar(int position_x, int position_y, char looking, GameMap& map
         int direccion_x = (looking == LOOKING_RIGHT) ? 1 : -1;  
         int direccion_y = 0;  // La bala se mueve horizonalmente
 
-        Bullet nueva_bala(position_x, position_y, direccion_x, direccion_y, &map, id_player, alcance);
+        int bullet_id = municiones; //el id es el numero de muncion. Inteligente verdad?
+
+        Bullet nueva_bala(bullet_id, position_x, position_y, direccion_x, direccion_y, &map, id_player, alcance);
         nueva_bala.comenzar_trayectoria();
         bullets.push_back(nueva_bala);
 
