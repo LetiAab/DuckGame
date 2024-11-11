@@ -21,21 +21,24 @@ void Game::simulate_round() {
     for (Duck& duck : ducks) {  
         duck.update_position_speed();
         
-        for (auto it = duck.bullets.begin(); it != duck.bullets.end(); ) {
-                it->update_position();
-                
-                if (it->hubo_impacto()) {
-                        //cuando la bala impacta la saco de la lista de lanzadas por el pato
-                        //de esta forma libero y encima me ahorro mandar el mensaje de la pos de la bala una vez que no existe mas. Porque el mensaje se crea viendo la lista de balas. Cosa que no me gusta demasiado pero bueno
-                        std::cout << "HUBO IMPACTO! en" << it->get_x() << std::endl;
+        if(duck.weapon != nullptr){
+                for (auto it = duck.weapon->bullets.begin(); it != duck.weapon->bullets.end(); ) {
+                        it->update_position();
+                        
+                        if (it->hubo_impacto()) {
+                                //cuando la bala impacta la saco de la lista de lanzadas por el pato
+                                //de esta forma libero y encima me ahorro mandar el mensaje de la pos de la bala una vez que no existe mas. Porque el mensaje se crea viendo la lista de balas. Cosa que no me gusta demasiado pero bueno
+                                std::cout << "HUBO IMPACTO! en" << it->get_x() << std::endl;
 
-                        it->cleanPostImpacto();
-                        it = duck.bullets.erase(it);
-                } else {
-                ++it;
+                                it->cleanPostImpacto();
+                                it = duck.weapon->bullets.erase(it);
+                        } else {
+                        ++it;
+                        }
                 }
         }
 
+        
 
     }
 
@@ -79,7 +82,7 @@ void Game::sendBulletPositionUpdate(const Bullet& bullet) {
 void Game::run() {
 
         //Creo el mapa con los objetos fijos (bloques) y la posicion inicial de los patos
-        //inicializate_map();
+        inicializate_map();
         //map.printMap();
 
 
@@ -111,10 +114,11 @@ void Game::run() {
                 //NO ME GUSTA NADA ESTO PORQUE NO RESPETA QUIEN SE MOVIO PRIMERO
               for (Duck& duck : ducks) {
                 
-                for (Bullet& bullet : duck.bullets) {
-                        
-                        sendBulletPositionUpdate(bullet);
-                        //bullet.update_position();
+                if(duck.weapon != nullptr){
+                        for (Bullet& bullet : duck.weapon->bullets) {
+                                
+                                sendBulletPositionUpdate(bullet);
+                        }
                 }
 
                 bool is_stationary = (duck.get_x() == duck.get_old_x()) && (duck.get_y() == duck.get_old_y());
@@ -147,15 +151,14 @@ void Game::run() {
 
 }
 
-void Game::inicializate_map(){
-/*         
-                Things to initialize:
-                - Players
-                - Boxes
-                - Spawn places
-                - Stage grounds
-                - Map limit (if we model it)
- */
+void Game::inicializate_map() {
+    // Le doy armas a los patos para probar
+    for (Duck& duck : ducks) {
+
+        Weapon* weapon = new Weapon("Pistola Generica", 10, 5, 30);
+
+        duck.setWeapon(weapon);
+    }
 }
 
 //TODO: Esto solo sirve para dos patos y siempre tiene en cuenta que es el mismo distribucion de obstaculos

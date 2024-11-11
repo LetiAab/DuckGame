@@ -8,10 +8,13 @@
 #include <string>
 
 #include "../guns/bullet.h"
+#include "../guns/weapon.h"
 
 class Arma;
 class GameMap;
 class Bullet;  // Declaración adelantada de Bullet
+class Weapon;  // Declaración adelantada de Weapon
+
 
 class Duck {
 private:
@@ -30,12 +33,16 @@ public:
     bool is_moving;
     int speed_x;
     int speed_y;
-    Arma* gun;
+    //Arma* gun;
     bool is_fluttering;
     bool is_slippy;
     int life_points;
     char looking;
     bool stop_notificated;
+    Weapon* weapon;
+
+    
+    
     std::vector<Bullet> bullets;  // Lista de balas disparadas
 
     Duck(char id, int x, int y, GameMap& map);
@@ -55,6 +62,8 @@ public:
 
     void set_old_x(int x) ;
     void set_old_y(int y) ;
+
+    void setWeapon(Weapon* new_weapon);
 
     void disparar();
 };

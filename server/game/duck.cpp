@@ -1,7 +1,7 @@
 #include "duck.h"
 
 Duck::Duck(char id, int x, int y, GameMap& map) : id_player(id), position_x(x), position_y(y), old_position_x(x), old_position_y(y), 
-    map(map),is_moving(false), speed_x(0), speed_y(0), gun(NULL), is_fluttering(false), is_slippy(false), life_points(100), stop_notificated(false) {}
+    map(map),is_moving(false), speed_x(0), speed_y(0), is_fluttering(false), is_slippy(false), life_points(100), stop_notificated(false), weapon(nullptr) {}
 
 
 
@@ -75,12 +75,14 @@ void Duck::set_old_y(int y)  {
     old_position_y = y;
 }
 
+void Duck::setWeapon(Weapon* new_weapon) {
+    weapon = new_weapon;  // Asigna el arma al pato
+}
+
+
 void Duck::disparar() {
-    int direccion_x = (looking == LOOKING_RIGHT) ? 1 : -1;  
-    int direccion_y = 0;  // La bala se mueve horizonalmente
 
-    Bullet nueva_bala(position_x, position_y, direccion_x, direccion_y, &map, id_player);
-    nueva_bala.comenzar_trayectoria();
-    bullets.push_back(nueva_bala);
-
+   if (weapon != nullptr) {
+        weapon->disparar(position_x, position_y, looking, map, id_player);
+    }
 }

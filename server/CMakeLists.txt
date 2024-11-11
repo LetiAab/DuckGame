@@ -17,6 +17,7 @@ target_sources(taller_server
     game/game_map.cpp
     game/duck.cpp
     guns/bullet.cpp
+    guns/weapon.cpp
     #guns/gun.cpp
     #guns/projectile.cpp
     executables/start/move_left_command.cpp
@@ -45,6 +46,7 @@ target_sources(taller_server
     game/game_map.h
     game/duck.h
     guns/bullet.h
+    guns/weapon.h
     #guns/gun.h
     #guns/projectile.h
     executables/executable.h
