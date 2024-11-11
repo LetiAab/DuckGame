@@ -27,6 +27,7 @@ private:
 
 
 
+
 public:
     bool is_moving;
     int speed_x;
@@ -41,9 +42,6 @@ public:
     Weapon* weapon;
 
     
-    
-    std::vector<Bullet> bullets;  // Lista de balas disparadas
-
     Duck(char id, int x, int y, GameMap& map);
 
 

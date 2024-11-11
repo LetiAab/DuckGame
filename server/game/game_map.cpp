@@ -54,6 +54,8 @@ void GameMap::cleanBulletOldPosition(int x, int y){
 
     map[y][x] = EMPTY;
 
+}
+
 Position GameMap::move_duck_to(Position old_position, Position new_position, char duck_id) {
     int final_x = old_position.x;
     int final_y = old_position.y;
