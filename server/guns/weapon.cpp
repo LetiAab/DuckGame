@@ -14,7 +14,7 @@ void Weapon::disparar(int position_x, int position_y, char looking, GameMap* map
 
         int bullet_id = municiones; //el id es el numero de muncion. Inteligente verdad?
 
-        Bullet nueva_bala(bullet_id, position_x, position_y, direccion_x, direccion_y, map, id_player, alcance);
+        Bullet nueva_bala(bullet_id, position_x, position_y + 1, direccion_x, direccion_y, map, id_player, alcance);
         nueva_bala.comenzar_trayectoria();
         bullets.push_back(nueva_bala);
 
