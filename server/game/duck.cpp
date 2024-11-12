@@ -72,6 +72,8 @@ void Duck::form_position_message(Message& msg){
     msg.duck_y = position.y;
     msg.looking = looking;
     msg.is_moving = is_moving;
+    msg.is_jumping = is_jumping;
+    msg.is_fluttering = is_fluttering;
 }
 
 bool Duck::get_duck_position_message(Message& msg){

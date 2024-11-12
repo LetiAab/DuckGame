@@ -17,6 +17,8 @@ struct Message {
     int duck_y;
     char looking; //direccion en la que mira el pato
     bool is_moving;
+    bool is_jumping;
+    bool is_fluttering;
 
     int bullet_x;
     int bullet_y;
