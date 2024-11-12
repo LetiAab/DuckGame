@@ -3,6 +3,8 @@
 #include "../guns/projectile.h"
 #include "common/constants.h"
 #include "common/position.h"
+#include "common/message.h"
+
 #ifndef DUCK_H
 #define DUCK_H
 
@@ -50,6 +52,7 @@ public:
     void update_position();
     void check_gravity();
     bool is_in_air();
+    bool get_duck_position_message(Message& msg);
 
     char get_id() const;
     int get_x() const;

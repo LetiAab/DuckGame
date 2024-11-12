@@ -44,6 +44,7 @@ void Duck::update_position() {
     std::cout << "Posición antes de mover: (" << position.x << ", " << position.y << ")" << std::endl;
 
     Position new_pos(delta_x, delta_y);
+    old_position = position;
     //mueve al pato a la nueva posicion si esta libre o a la que este libre inmediatamente antes
     position = map.move_duck_to(position, new_pos, id_player);
 
@@ -62,6 +63,25 @@ void Duck::update_position() {
         speed_y = 0;
     }
 
+}
+
+bool Duck::get_duck_position_message(Message& msg){
+    if (old_position.x == position.x && old_position.y == position.y){
+        if(stop_notificated){
+            return false;
+        } else {
+            stop_notificated = true;
+        }
+    }
+
+    msg.type = DUCK_POS_UPDATE;
+    msg.player_id = static_cast<uint16_t>(id_player - '0'); // Convertimos el id a int
+    msg.duck_x = position.x;
+    msg.duck_y = position.y;
+    msg.looking = looking;
+    msg.is_moving = is_moving;
+
+    return true;
 }
 
 
