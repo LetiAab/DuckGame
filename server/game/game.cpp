@@ -20,7 +20,7 @@ void Game::simulate_round() {
 
     for (Duck& duck : ducks) {  
         duck.update_position();
-        
+        //revisar: es raro que el chaequeo del impacto se haga aca, quizas deberia hacerlo el arma (?)
         if(duck.weapon != nullptr){
                 for (auto it = duck.weapon->bullets.begin(); it != duck.weapon->bullets.end(); ) {
                         it->update_position();
@@ -28,7 +28,7 @@ void Game::simulate_round() {
                         if (it->hubo_impacto()) {
                                 //cuando la bala impacta la saco de la lista de lanzadas por el pato
                                 //de esta forma libero y encima me ahorro mandar el mensaje de la pos de la bala una vez que no existe mas. Porque el mensaje se crea viendo la lista de balas. Cosa que no me gusta demasiado pero bueno
-                                std::cout << "HUBO IMPACTO! en" << it->get_x() << std::endl;
+                                std::cout << "HUBO IMPACTO! " << std::endl;
 
                                 it->cleanPostImpacto();
                                 it = duck.weapon->bullets.erase(it);
@@ -52,31 +52,6 @@ void Game::add_projectile(std::unique_ptr<Proyectil> projectile) {
     // Transfiere la propiedad del proyectil usando std::move
     projectiles.push_back(std::move(projectile));
 
-}
-
-void Game::sendDuckPositionUpdate(const Duck& duck) {
-    std::cout << "Envío el mensaje con la posición x: " << duck.get_x() 
-              << " y: " << duck.get_y() << std::endl;
-
-    Message message;
-    message.player_id = static_cast<uint16_t>(duck.get_id() - '0'); // Convertimos el id a int
-    message.type = DUCK_POS_UPDATE;
-    message.duck_x = duck.get_x();
-    message.duck_y = duck.get_y();
-    message.looking = duck.looking;
-    message.is_moving = duck.is_moving;  // Indicamos si el pato está en movimiento o no
-    monitor.broadcast(message);
-}
-
-void Game::sendBulletPositionUpdate(const Bullet& bullet) {
-
-    Message message;
-    message.type = BULLET_POS_UPDATE;
-    message.player_id =static_cast<uint16_t>(bullet.getDuckId() - '0'); 
-    message.bullet_x = bullet.get_x();
-    message.bullet_y = bullet.get_y();
-    message.bullet_id = bullet.getBulletId();
-    monitor.broadcast(message);
 }
 
 
@@ -112,34 +87,25 @@ void Game::run() {
 
                 //mando la posicion de cada PATO
                 //NO ME GUSTA NADA ESTO PORQUE NO RESPETA QUIEN SE MOVIO PRIMERO
-              for (Duck& duck : ducks) {
-                
-                if(duck.weapon != nullptr){
-                        for (Bullet& bullet : duck.weapon->bullets) {
-                                
-                                sendBulletPositionUpdate(bullet);
+                for (Duck& duck : ducks) {
+
+                        Message duck_message;
+                        if(duck.get_duck_position_message(duck_message)){
+                                monitor.broadcast(duck_message);
                         }
-                }
 
-                bool is_stationary = (duck.get_x() == duck.get_old_x()) && (duck.get_y() == duck.get_old_y());
-
-                if (is_stationary) {
-                        if (!duck.stop_notificated) {
-                        duck.is_moving = false;
-
-                        sendDuckPositionUpdate(duck);
-
-                        duck.stop_notificated = true;
+                        //quizas se pueda hacer un get_duck_bullet_position() en vez de esto
+                        //o sea mover la creacion del mensaje dentro del pato
+                        if(duck.weapon != nullptr){
+                                for (Bullet& bullet : duck.weapon->bullets) {
+                                        Message bullet_message;
+                                        //por ahora este if da siempre true, hay que agregar logica 
+                                        //en el get_bullet_message para que se envia el mensaje solo cuando ees necessario
+                                        if (bullet.get_bullet_message(bullet_message)){
+                                                monitor.broadcast(bullet_message);
+                                        }
+                                }
                         }
-                        continue;
-                } else {
-                        sendDuckPositionUpdate(duck);
-                        duck.stop_notificated = false;
-
-                }
-
-                duck.set_old_x(duck.get_x());
-                duck.set_old_y(duck.get_y());
                 }
 
 

@@ -106,6 +106,14 @@ bool ServerProtocol::send_message(Message& message){
         if (!skt.sendall(&message.is_moving, sizeof(message.is_moving), &was_closed) || was_closed) {
             return false;
         }
+
+        if (!skt.sendall(&message.is_jumping, sizeof(message.is_jumping), &was_closed) || was_closed) {
+            return false;
+        }
+
+        if (!skt.sendall(&message.is_fluttering, sizeof(message.is_fluttering), &was_closed) || was_closed) {
+            return false;
+        }
     
     default:
         break;
