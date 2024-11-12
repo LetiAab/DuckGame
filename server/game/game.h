@@ -58,6 +58,8 @@ void create_ducks(const std::vector<uint16_t>& ids);
 
 void refreshDuckPositions();
 
+Duck* getDuckByPosition(Position position);
+
 Duck* getDuckById(char id);
 
 void game_broadcast(Message message);

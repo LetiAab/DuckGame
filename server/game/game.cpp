@@ -4,6 +4,13 @@
 #include <random>
 #include <utility>
 
+const char DUCK_1 = '1';
+const char DUCK_2 = '2';
+const char DUCK_3 = '3';
+const char DUCK_4 = '4';
+const char DUCK_5 = '5';
+const char DUCK_6 = '6';
+
 //TODO: Tamanio del mapa hardcodeado
 Game::Game(uint16_t match_id, GameQueueMonitor& monitor):
 match_id(match_id), monitor(monitor), is_running(true), game_queue(), map(MATRIX_M, MATRIX_N){}
@@ -12,11 +19,20 @@ Queue<std::shared_ptr<Executable>>& Game::get_game_queue(){
         return game_queue;
 }
 
-
+Duck* Game::getDuckByPosition(Position position) {
+        char element = map.at(position);
+        std::cout << "En la posición x: " << position.x << ", y: " << position.y << ", hay un elemento" << static_cast<int>(element) << std::endl;
+        if ((element == DUCK_1) || (element == DUCK_2) || (element == DUCK_3)
+             || (element == DUCK_4) || (element == DUCK_5) || (element == DUCK_6)) {
+                return getDuckById(element);
+        } else {
+                return NULL;
+        }
+}
 
 void Game::simulate_round() {
 
-       //map.printMap();
+        map.printMap();
 
     for (Duck& duck : ducks) {  
         duck.update_position();
