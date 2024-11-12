@@ -47,8 +47,8 @@ const uint8_t BULLET_POS_UPDATE = 0x32;
 
 static const char QUIT_SERVER[] = "q";
 
-const int WINDOW_WIDTH = 800;
-const int WINDOW_HEIGHT = 600;
+/*const int WINDOW_WIDTH = 800;
+const int WINDOW_HEIGHT = 600;*/
 
 const int MAX_PLAYERS = 6;
 

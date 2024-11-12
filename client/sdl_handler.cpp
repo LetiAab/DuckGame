@@ -6,7 +6,6 @@
 #define DELAY_TIME 60
 #define DUCK_SIZE_X 2 //EN CANTIDAD DE TILE_SIZE
 #define DUCK_SIZE_Y 3 //EN CANTIDAD DE TILE_SIZE
-
 #define TILE_SIZE 16
 
 //using namespace SDL2pp;
@@ -25,6 +24,7 @@ void SDLHandler::loadGame(GameState* game) {
     SDL_Texture *background = handle_textures.loadSimpleTexture("backgrounds/forest");
     SDL_Texture *crate_t = handle_textures.loadSimpleTexture("crate");
     SDL_Texture *gun = handle_textures.loadSimpleTexture("guns/AK-47");
+    SDL_Texture *bullet = handle_textures.loadSimpleTexture("ammo/bullet");
 
     SpriteSheet sp = handle_textures.loadSpriteSheet("duck-walking");
     SDL_Texture *walk_duck = sp.texture;
@@ -37,6 +37,7 @@ void SDLHandler::loadGame(GameState* game) {
     handle_textures.saveTexture("duck-walking-wings", walk_wings);
     handle_textures.saveTexture("crate", crate_t);
     handle_textures.saveTexture("gun", gun);
+    handle_textures.saveTexture("bullet", bullet);
 
     // Inicializo los patos y los crates
     initializeDucks(game, frame_width, frame_height);
@@ -183,16 +184,31 @@ int SDLHandler::processEvents(SDL_Window* window, GameState* game, uint16_t id) 
 
 
 
-void render_bullet(SDL_Renderer* renderer, int x, int y, int size = 20) {
+void SDLHandler::render_bullet(SDL_Renderer* renderer, int x, int y, int size = 20) {
     SDL_Rect bulletRect = { x * TILE_SIZE, y * TILE_SIZE, size, size };
 
-    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+    /*SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
 
-    SDL_RenderFillRect(renderer, &bulletRect);
+    SDL_RenderFillRect(renderer, &bulletRect);*/
+
+    //SDL_Rect crate_rect = {game->crates[i].x, game->crates[i].y, TILE_SIZE, TILE_SIZE};
+    SDL_RenderCopy(renderer, handle_textures.getTexture("bullet"), NULL, &bulletRect);
 }
 
-void SDLHandler::doRender(SDL_Renderer* renderer, GameState* game, Message& message) {
+void SDLHandler::doRenderStatic(SDL_Renderer* renderer, GameState* game) {
+
     SDL_RenderCopy(renderer, handle_textures.getTexture("background"), NULL, NULL);
+
+    for (size_t i = 0; i < game->crates.size(); i++) {
+        SDL_Rect crate_rect = {game->crates[i].x, game->crates[i].y, TILE_SIZE, TILE_SIZE};
+        SDL_RenderCopy(renderer, handle_textures.getTexture("crate"), NULL, &crate_rect);
+    }
+
+    //SDL_RenderPresent(renderer);
+}
+
+void SDLHandler::doRenderDynamic(SDL_Renderer* renderer, GameState* game, Message& message) {
+    //SDL_RenderCopy(renderer, handle_textures.getTexture("background"), NULL, NULL);
 
     for (int i = 0; i < game->ducks_quantity; i++) {
         Duck& duck = game->ducks[i];
@@ -229,10 +245,10 @@ void SDLHandler::doRender(SDL_Renderer* renderer, GameState* game, Message& mess
         SDL_RenderCopyEx(renderer, handle_textures.getTexture("duck-walking-wings"), &src_rect, &duck_rect, 0, NULL, duck.flipType);
     }
 
-    for (size_t i = 0; i < game->crates.size(); i++) {
+    /*for (size_t i = 0; i < game->crates.size(); i++) {
         SDL_Rect crate_rect = {game->crates[i].x, game->crates[i].y, TILE_SIZE, TILE_SIZE};
         SDL_RenderCopy(renderer, handle_textures.getTexture("crate"), NULL, &crate_rect);
-    }
+    }*/
 
     if(message.type == BULLET_POS_UPDATE){
         render_bullet(renderer, message.bullet_x, message.bullet_y);
@@ -256,6 +272,11 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
     std::cout << "ID: " << id << "\n";
 
     loadGame(&game);
+
+    SDL_Texture* static_scene = handle_textures.createRenderTarget("static_scene", TILE_SIZE * MATRIX_M, TILE_SIZE * MATRIX_N);
+    SDL_SetRenderTarget(renderer, static_scene);
+    doRenderStatic(renderer, &game);
+    SDL_SetRenderTarget(renderer, NULL);
 
     // Event Loop: La ventana se abre => se entra al loop
     int done = SUCCESS;
@@ -304,7 +325,8 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
 
         }
 
-        doRender(renderer, &game, message);
+        SDL_RenderCopy(renderer, handle_textures.getTexture("static_scene"), NULL, NULL);
+        doRenderDynamic(renderer, &game, message);
 
         SDL_Delay(DELAY_TIME);
     }

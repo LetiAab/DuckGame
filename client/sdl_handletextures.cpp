@@ -41,6 +41,18 @@ SDL_Texture* SDLHandleTextures::getTexture(const std::string& name) const {
     return textures.at(name);
 }
 
+// Creo un render target para dibujar en él todos los objetos estaticos
+SDL_Texture* SDLHandleTextures::createRenderTarget(const std::string& name, int width, int height) {
+    SDL_Texture* texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, width, height);
+    if (!texture) {
+        std::cerr << "Error creating render target texture: " << SDL_GetError() << "\n";
+        SDL_Quit();
+        exit(ERROR);
+    }
+    saveTexture(name, texture);
+    return texture;
+}
+
 void SDLHandleTextures::destroyTextures() {
     for (auto& texture : textures) {
         SDL_DestroyTexture(texture.second);

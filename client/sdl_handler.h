@@ -61,7 +61,9 @@ private:
     void initializeDucks(GameState* game, int frame_width, int frame_height);
     void initializeCrates(GameState* game);
     int processEvents(SDL_Window* window, GameState* game, uint16_t id);
-    void doRender(SDL_Renderer* renderer, GameState* game, Message& message);
+    void doRenderDynamic(SDL_Renderer* renderer, GameState* game, Message& message);
+    void doRenderStatic(SDL_Renderer* renderer, GameState* game);
+    void render_bullet(SDL_Renderer* renderer, int x, int y, int size);
 };
 
 #endif //SDL_HANDLER_H

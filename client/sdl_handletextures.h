@@ -18,6 +18,7 @@ public:
     SpriteSheet loadSpriteSheet(const std::string& name_img);
     void saveTexture(const std::string&, SDL_Texture* texture);
     SDL_Texture* getTexture(const std::string& name) const;
+    SDL_Texture* createRenderTarget(const std::string& name, int width, int height);
     void destroyTextures();
 
 private:
