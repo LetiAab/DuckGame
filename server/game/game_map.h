@@ -40,7 +40,7 @@ public:
     void setBulletNewPosition(int x, int y);
     void cleanBulletOldPosition(int x, int y);
 
-
+    char at(Position position);
 
     bool can_move_projectile(int x, int y, int size_x, int size_y);
 

@@ -20,7 +20,7 @@ GameMap::GameMap(int width, int height) : width(width), height(height) {
 
 bool GameMap::canMoveBulletTo(int x, int y, char duck_id){
     
-    printMap();
+    //printMap();
 
     
     if (x < 0 || x >= width || y < 0 || y >= height) {
@@ -146,6 +146,11 @@ bool GameMap::canMoveDuckTo(int x, int y, char duck_id) {
     return true;
 }
 
+char GameMap::at(Position position) {
+    return map[position.y][position.x];
+}
+
+
 bool GameMap::is_duck_touching_floor(int x, int y) {
     // Verifica que el pato no tenga plataformas en el piso
     int j = y + 3;
@@ -248,7 +253,7 @@ void GameMap::move_projectile(int position_x, int position_y, int speed_x, int s
 
         set_projectile_new_position(delta_x, delta_y, size_x, size_y);
     }
-    printMap();
+    //printMap();
 }
 
 char GameMap::duck_in_position(int x, int y, int size_x, int size_y) {
