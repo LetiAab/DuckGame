@@ -41,6 +41,7 @@ public:
     bool is_slippy;
     int life_points;
     bool stop_notificated;
+    bool is_dead;
     Weapon* weapon;
 
     

@@ -14,7 +14,8 @@ Duck::Duck(char id, int x, int y, GameMap& map) :
     is_fluttering(false),
     is_slippy(false),
     life_points(100),
-    stop_notificated(false) {}
+    stop_notificated(false),
+    is_dead(false) {}
 
 bool Duck::is_in_air(){
     return map.canMoveDuckTo(position.x, position.y + 1, id_player);
