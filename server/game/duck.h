@@ -60,6 +60,8 @@ public:
     void setWeapon(Weapon* new_weapon);
 
     void disparar();
+
+    void get_hit_by_bullet(Bullet bullet);
 };
 
 #endif // DUCK_H
