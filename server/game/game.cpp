@@ -28,12 +28,24 @@ void Game::simulate_round() {
                         if (it->hubo_impacto()) {
                                 //cuando la bala impacta la saco de la lista de lanzadas por el pato
                                 //de esta forma libero y encima me ahorro mandar el mensaje de la pos de la bala una vez que no existe mas. Porque el mensaje se crea viendo la lista de balas. Cosa que no me gusta demasiado pero bueno
-                                std::cout << "HUBO IMPACTO! " << std::endl;
+                                Position bullet_pos = it->get_position();
+
+                                std::cout << "HUBO IMPACTO en x: " << bullet_pos.x << " y:" << bullet_pos.y << std::endl;
+                                std::cout << "La longitud del vector de bullets es " << duck.weapon->bullets.size() << std::endl;
+
+                                Duck* duck_hit = getDuckByPosition(bullet_pos);
+                                if (duck_hit == NULL) {
+                                        it->cleanPostImpacto();
+                                        it = duck.weapon->bullets.erase(it);
+                                        continue;
+                                }
+
+                                duck_hit->get_hit_by_bullet(*it);
 
                                 it->cleanPostImpacto();
                                 it = duck.weapon->bullets.erase(it);
                         } else {
-                        ++it;
+                                ++it;
                         }
                 }
         }
