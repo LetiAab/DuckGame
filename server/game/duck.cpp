@@ -65,21 +65,30 @@ void Duck::update_position() {
 
 }
 
-bool Duck::get_duck_position_message(Message& msg){
-    if (old_position.x == position.x && old_position.y == position.y){
-        if(stop_notificated){
-            return false;
-        } else {
-            stop_notificated = true;
-        }
-    }
-
+void Duck::form_position_message(Message& msg){
     msg.type = DUCK_POS_UPDATE;
     msg.player_id = static_cast<uint16_t>(id_player - '0'); // Convertimos el id a int
     msg.duck_x = position.x;
     msg.duck_y = position.y;
     msg.looking = looking;
     msg.is_moving = is_moving;
+}
+
+bool Duck::get_duck_position_message(Message& msg){
+    if (old_position.x == position.x && old_position.y == position.y){
+        if(stop_notificated){
+            return false;
+        } else {
+
+            form_position_message(msg);
+            stop_notificated = true;
+
+            return true;
+        }
+    }
+
+    form_position_message(msg);
+    stop_notificated = false;
 
     return true;
 }

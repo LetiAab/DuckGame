@@ -112,34 +112,19 @@ void Game::run() {
 
                 //mando la posicion de cada PATO
                 //NO ME GUSTA NADA ESTO PORQUE NO RESPETA QUIEN SE MOVIO PRIMERO
-              for (Duck& duck : ducks) {
+                for (Duck& duck : ducks) {
+
+                        Message message;
+                        if(duck.get_duck_position_message(message)){
+                                monitor.broadcast(message);
+                        }
                 
-                if(duck.weapon != nullptr){
-                        for (Bullet& bullet : duck.weapon->bullets) {
-                                
-                                sendBulletPositionUpdate(bullet);
+                        if(duck.weapon != nullptr){
+                                for (Bullet& bullet : duck.weapon->bullets) {
+                                        
+                                        sendBulletPositionUpdate(bullet);
+                                }
                         }
-                }
-
-                bool is_stationary = (duck.get_x() == duck.get_old_x()) && (duck.get_y() == duck.get_old_y());
-
-                if (is_stationary) {
-                        if (!duck.stop_notificated) {
-                        duck.is_moving = false;
-
-                        sendDuckPositionUpdate(duck);
-
-                        duck.stop_notificated = true;
-                        }
-                        continue;
-                } else {
-                        sendDuckPositionUpdate(duck);
-                        duck.stop_notificated = false;
-
-                }
-
-                duck.set_old_x(duck.get_x());
-                duck.set_old_y(duck.get_y());
                 }
 
 

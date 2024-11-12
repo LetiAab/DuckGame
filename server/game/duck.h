@@ -27,7 +27,7 @@ private:
     GameMap& map;   // Referencia al GameMap
 
 
-
+    void form_position_message(Message& msg);
 
 
 public:
