@@ -42,16 +42,20 @@ void Bullet::update_position() {
 
 }
 
+bool Bullet::get_bullet_message(Message& msg){
+    //TODO: Hacer el chequeo de si debo mandar mensaje o no, y devolver false sino
+    msg.type = BULLET_POS_UPDATE;
+    msg.player_id =static_cast<uint16_t>(duck_id - '0');
+    msg.bullet_x = position_x;
+    msg.bullet_y = position_y;
+    msg.bullet_id = bullet_id;
+
+    return true;
+
+}
+
 void Bullet::cleanPostImpacto(){
     map->cleanBulletOldPosition(position_x, position_y);
-}
-
-int Bullet::get_x() const {
-    return position_x;
-}
-
-int Bullet::get_y() const {
-    return position_y;
 }
 
 void Bullet::impactar(){
@@ -62,10 +66,3 @@ bool Bullet::hubo_impacto(){
     return impacto;
 }
 
-char Bullet::getDuckId() const{
-    return duck_id;
-}
-
-int Bullet::getBulletId() const{
-    return bullet_id;
-}

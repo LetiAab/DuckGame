@@ -66,8 +66,6 @@ void simulate_round();
 
 void add_projectile(std::unique_ptr<Proyectil> projectile);
 
-void sendBulletPositionUpdate(const Bullet& bullet); 
-
 void run() override;
 void stop() override;
 
