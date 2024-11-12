@@ -19,7 +19,7 @@ public:
     Weapon(const std::string& nombre, double alcance, double dispersion, int municiones);
 
     // Métodos
-    void disparar(int position_x, int position_y, char looking, GameMap& map, char id_player);
+    void disparar(int position_x, int position_y, char looking, GameMap* map, char id_player);
     void recargar(int cantidad);  
     void mostrarInformacion() const;  
 

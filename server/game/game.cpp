@@ -21,7 +21,7 @@ Queue<std::shared_ptr<Executable>>& Game::get_game_queue(){
 
 Duck* Game::getDuckByPosition(Position position) {
         char element = map.at(position);
-        std::cout << "En la posición x: " << position.x << ", y: " << position.y << ", hay un elemento" << static_cast<int>(element) << std::endl;
+
         if ((element == DUCK_1) || (element == DUCK_2) || (element == DUCK_3)
              || (element == DUCK_4) || (element == DUCK_5) || (element == DUCK_6)) {
                 return getDuckById(element);
@@ -34,18 +34,17 @@ void Game::simulate_round() {
 
         map.printMap();
 
-    for (Duck& duck : ducks) {  
-        duck.update_position();
-        //revisar: es raro que el chaequeo del impacto se haga aca, quizas deberia hacerlo el arma (?)
-        if(duck.weapon != nullptr){
-                for (auto it = duck.weapon->bullets.begin(); it != duck.weapon->bullets.end(); ) {
-                        it->update_position();
+        for (auto it = ducks.begin(); it != ducks.end(); ) {  
+                Duck& duck = *it;
+                duck.update_position();
+                
+                if (duck.weapon != nullptr) {
+                        for (auto bullet_it = duck.weapon->bullets.begin(); bullet_it != duck.weapon->bullets.end(); ) {
+                        bullet_it->update_position();
                         
-                        if (it->hubo_impacto()) {
-                                //cuando la bala impacta la saco de la lista de lanzadas por el pato
-                                //de esta forma libero y encima me ahorro mandar el mensaje de la pos de la bala una vez que no existe mas. Porque el mensaje se crea viendo la lista de balas. Cosa que no me gusta demasiado pero bueno
-                                Position bullet_pos = it->get_position();
-                                Position bullet_speed = it->get_speed();
+                        if (bullet_it->hubo_impacto()) {
+                                Position bullet_pos = bullet_it->get_position();
+                                Position bullet_speed = bullet_it->get_speed();
 
                                 bullet_pos.x += bullet_speed.x;
                                 bullet_pos.y += bullet_speed.y;
@@ -53,31 +52,36 @@ void Game::simulate_round() {
                                 std::cout << "HUBO IMPACTO en x: " << bullet_pos.x << " y:" << bullet_pos.y << std::endl;
 
                                 Duck* duck_hit = getDuckByPosition(bullet_pos);
-                                if (duck_hit == NULL) {
-                                        it->cleanPostImpacto();
-                                        it = duck.weapon->bullets.erase(it);
-                                        continue;
+                                if (duck_hit == nullptr) {
+                                bullet_it->cleanPostImpacto();
+                                bullet_it = duck.weapon->bullets.erase(bullet_it);
+                                continue;
                                 }
-                                // Cuidado que un pato muerto todavía puede disparar, no está patcheado eso
 
-                                duck_hit->get_hit_by_bullet(*it);
+                                duck_hit->get_hit_by_bullet(*bullet_it);
 
-                                it->cleanPostImpacto();
-                                it = duck.weapon->bullets.erase(it);
+                                bullet_it->cleanPostImpacto();
+                                bullet_it = duck.weapon->bullets.erase(bullet_it);
                         } else {
-                                ++it;
+                                ++bullet_it;
                         }
+                        }
+                }
+
+                // Si el pato está muerto, lo eliminamos de la lista y avisamos al cliente
+                if (duck.is_dead) {
+                        Message kill_duck_message;
+                        kill_duck_message.type = KILL_DUCK;
+                        kill_duck_message.player_id = static_cast<uint16_t>(duck.get_id() - '0');
+                        monitor.broadcast(kill_duck_message);
+                        it = ducks.erase(it);
+
+                        std::cout << "Pato eliminado. Tamaño actual de ducks: " << ducks.size() << std::endl;
+                } else {
+                        ++it;
                 }
         }
 
-        
-
-    }
-
-    for (std::unique_ptr<Proyectil>& projectile : projectiles) {
-
-        projectile->simular(*this);  // Llama a la función simular específica de cada proyectil
-     }
 }
 
 void Game::add_projectile(std::unique_ptr<Proyectil> projectile) {
@@ -181,7 +185,7 @@ void Game::create_ducks(const std::vector<uint16_t>& ids) {
                         has_place = map.placeDuck(random_x, random_y, char_id); 
                 }
 
-                ducks.emplace_back(char_id, random_x, random_y, map);
+                ducks.emplace_back(char_id, random_x, random_y, &map);
         }
 }
 

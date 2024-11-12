@@ -47,6 +47,10 @@ Message ClientProtocol::receive_message(){
 
         break;
 
+    case KILL_DUCK:
+        skt.recvall(&message.player_id, 2, &was_closed);
+        break;
+
     default:
         skt.recvall(&message.player_id, 2, &was_closed);
         skt.recvall(&message.len_matches, 2, &was_closed);

@@ -1,7 +1,7 @@
 #include "duck.h"
 #include <iostream>
 
-Duck::Duck(char id, int x, int y, GameMap& map) :
+Duck::Duck(char id, int x, int y, GameMap* map) :
     id_player(id),
     position(x, y),
     old_position(x, y),
@@ -18,7 +18,7 @@ Duck::Duck(char id, int x, int y, GameMap& map) :
     is_dead(false) {}
 
 bool Duck::is_in_air(){
-    return map.canMoveDuckTo(position.x, position.y + 1, id_player);
+    return map->canMoveDuckTo(position.x, position.y + 1, id_player);
 }
 
 
@@ -51,7 +51,7 @@ void Duck::update_position() {
     Position new_pos(delta_x, delta_y);
     old_position = position;
     //mueve al pato a la nueva posicion si esta libre o a la que este libre inmediatamente antes
-    position = map.move_duck_to(position, new_pos, id_player);
+    position = map->move_duck_to(position, new_pos, id_player);
 
     std::cout << "Speed X: " << speed_x << ", Speed Y: " << speed_y << std::endl;
     std::cout << "Posición despues de mover: (" << position.x << ", " << position.y << ")" << std::endl;
@@ -107,38 +107,6 @@ char Duck::get_id() const {
 
 
 
-
-/*
-void Duck::update_position_speed() {
-    // Tener en cuenta el pato y no solo el punto
-
-    // Gravity check. Can be modularized
-    bool can_fall = map.canMoveDuckTo(position.x, position.y + 1, id_player);
-    if(can_fall) {
-        map.cleanDuckOldPosition(position.x, position.y);
-
-        position.y += 1;
-
-        map.setDuckNewPosition(position.x, position.y, id_player);
-    }
-
-
-    int delta_x = position.x + speed_x;
-    int delta_y = position.y + speed_y;
-
-    if (map.canMoveDuckTo(delta_x, delta_y, id_player)) {
-        map.cleanDuckOldPosition(position.x, position.y);
-
-        position.x = delta_x;
-        position.y = delta_y;
-
-        map.setDuckNewPosition(delta_x, delta_y, id_player);
-    }
-    //map.printMap();
-
-}
-*/
-
 void Duck::setWeapon(Weapon* new_weapon) {
     weapon = new_weapon;  // Asigna el arma al pato
 }
@@ -161,6 +129,8 @@ void Duck::get_hit_by_bullet(Bullet bullet) {
     if (life_points <= 0) {
         is_dead = true;
         std::cout << "Ahora estoy muerto, me dio una bala :(" << std::endl;
+        map->cleanDuckOldPosition(position.x, position.y);
+        
     }
 }
 

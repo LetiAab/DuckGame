@@ -24,7 +24,7 @@ private:
     char id_player;  // ID del jugador
     Position position;
     Position old_position;
-    GameMap& map;   // Referencia al GameMap
+    GameMap* map;   // Referencia al GameMap
 
 
     void form_position_message(Message& msg);
@@ -45,7 +45,7 @@ public:
     Weapon* weapon;
 
     
-    Duck(char id, int x, int y, GameMap& map);
+    Duck(char id, int x, int y, GameMap* map);
 
     void update_position();
 
