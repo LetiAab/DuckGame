@@ -24,7 +24,11 @@ bool Duck::is_in_air(){
 void Duck::check_gravity(){
 
     if(is_in_air()) {
-        speed_y += 2;
+        if (is_fluttering){
+            speed_y += 1;
+        }else {
+            speed_y += 2;
+        }
         
     }
 

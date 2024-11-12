@@ -17,7 +17,7 @@ void MoveUpCommand::execute(Game& game) {
 
     if(duck->is_jumping){
         //si estaba saltando antes, significa que empieza a aletear
-        duck->speed_y -= 1;
+        //duck->speed_y -= 1;
         duck->is_fluttering = true;
     } else {
         //si empieza a saltar
