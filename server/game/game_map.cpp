@@ -366,10 +366,16 @@ void GameMap::setDuckNewPosition(int x, int y, char duck_id) {
 
 //Pone un pato en una posición (x, y) ocupando un rectángulo de 2x3
 bool GameMap::placeDuck(int x, int y, char duck_id) {
+
+
     if (x < 0 || y < 0 || (x + 2) > width || (y + 3) > height) {
         return false;
     }
     
+    if(duckIsOverVoid(x,y)){
+        return false;
+    }
+
     // veo que no haya obstaculos
     for (int i = x; i < x + 2; ++i) {
         for (int j = y; j < y + 3; ++j) {

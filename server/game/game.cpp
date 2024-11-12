@@ -168,8 +168,8 @@ void Game::create_ducks(const std::vector<uint16_t>& ids) {
         std::random_device rd;
         std::mt19937 gen(rd());
 
-        std::uniform_int_distribution<> distrib_x(1, map.get_width() - 2);
-        std::uniform_int_distribution<> distrib_y(1, map.get_width() - 3);
+        std::uniform_int_distribution<> distrib_x(6, map.get_width() - 6);
+        std::uniform_int_distribution<> distrib_y(1, map.get_width() - 6);
 
         for(uint16_t id: ids) {
                 char char_id = static_cast<char>(id + '0');
