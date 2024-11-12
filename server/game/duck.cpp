@@ -98,30 +98,6 @@ char Duck::get_id() const {
     return id_player;
 }
 
-int Duck::get_x() const {
-    return position.x;
-}
-
-int Duck::get_y() const {
-    return position.y;
-}
-
-int Duck::get_old_x() const {
-    return old_position.x;
-}
-
-int Duck::get_old_y() const {
-    return old_position.y;
-}
-
-void Duck::set_old_x(int x)  {
-    old_position.x = x;
-}
-
-void Duck::set_old_y(int y)  {
-    old_position.y = y;
-}
-
 
 
 

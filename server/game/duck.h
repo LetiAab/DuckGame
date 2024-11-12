@@ -46,23 +46,15 @@ public:
     
     Duck(char id, int x, int y, GameMap& map);
 
-
-    //void update_position_speed();
-
     void update_position();
+
     void check_gravity();
+
     bool is_in_air();
+
     bool get_duck_position_message(Message& msg);
 
     char get_id() const;
-    int get_x() const;
-    int get_y() const;
-
-    int get_old_x() const;
-    int get_old_y() const;
-
-    void set_old_x(int x) ;
-    void set_old_y(int y) ;
 
     void setWeapon(Weapon* new_weapon);
 
