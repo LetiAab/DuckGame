@@ -1,15 +1,13 @@
 #include "match.h"
-
+#include "common/constants.h"
 
 Match::Match(uint16_t match_id): 
-match_id(match_id), is_running(false), min_players(2), max_players(6), current_players(0), players(),
+match_id(match_id), is_running(false), min_players(MIN_PLAYERS), max_players(MAX_PLAYERS), current_players(0), players(),
 monitor(), game(match_id, monitor) {}
-
 
 bool Match::add_player(std::shared_ptr<Player> player) {
     players.push_back(player);
     return true;
-
 }
 
 bool Match::add_player() {
@@ -19,7 +17,6 @@ bool Match::add_player() {
     }
     return false;
 }
-
 
 bool Match::is_able_to_start(){
 	if ((current_players >= min_players) and !is_running) {
@@ -51,7 +48,7 @@ uint16_t Match::get_match_id() {
 }
 
 bool Match::is_match_available() {
-    if ((current_players < max_players) and !is_running) {
+    if ((current_players <= max_players) and !is_running) {
         return true;
     }
     return false;

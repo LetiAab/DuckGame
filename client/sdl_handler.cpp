@@ -182,8 +182,6 @@ int SDLHandler::processEvents(SDL_Window* window, GameState* game, uint16_t id) 
     return done;
 }
 
-
-
 void SDLHandler::render_bullet(SDL_Renderer* renderer, int x, int y, int size = 20) {
     SDL_Rect bulletRect = { x * TILE_SIZE, y * TILE_SIZE, size, size };
 
@@ -208,8 +206,6 @@ void SDLHandler::doRenderStatic(SDL_Renderer* renderer, GameState* game) {
 }
 
 void SDLHandler::doRenderDynamic(SDL_Renderer* renderer, GameState* game, Message& message) {
-    //SDL_RenderCopy(renderer, handle_textures.getTexture("background"), NULL, NULL);
-
     for (int i = 0; i < game->ducks_quantity; i++) {
         Duck& duck = game->ducks[i];
 
@@ -240,15 +236,18 @@ void SDLHandler::doRenderDynamic(SDL_Renderer* renderer, GameState* game, Messag
             TILE_SIZE * DUCK_SIZE_Y
         };
 
-        SDL_RenderCopyEx(renderer, handle_textures.getTexture("duck-walking"), &src_rect, &duck_rect, 0, NULL, duck.flipType);
-        SDL_RenderCopyEx(renderer, handle_textures.getTexture("gun"), NULL, &gun_rect, 0, NULL, duck.flipType);
-        SDL_RenderCopyEx(renderer, handle_textures.getTexture("duck-walking-wings"), &src_rect, &duck_rect, 0, NULL, duck.flipType);
-    }
+        SDL_Texture* duck_texture = handle_textures.getTexture("duck-walking");
+        SDL_SetTextureColorMod(duck_texture, colors[i][0], colors[i][1], colors[i][2]);
+        SDL_RenderCopyEx(renderer, duck_texture, &src_rect, &duck_rect, 0, NULL, duck.flipType);
+        SDL_SetTextureColorMod(duck_texture, 255, 255, 255); //reseteo el color
 
-    /*for (size_t i = 0; i < game->crates.size(); i++) {
-        SDL_Rect crate_rect = {game->crates[i].x, game->crates[i].y, TILE_SIZE, TILE_SIZE};
-        SDL_RenderCopy(renderer, handle_textures.getTexture("crate"), NULL, &crate_rect);
-    }*/
+        SDL_RenderCopyEx(renderer, handle_textures.getTexture("gun"), NULL, &gun_rect, 0, NULL, duck.flipType);
+
+        SDL_Texture* wings_texture = handle_textures.getTexture("duck-walking-wings");
+        SDL_SetTextureColorMod(wings_texture, colors[i][0], colors[i][1], colors[i][2]);
+        SDL_RenderCopyEx(renderer, wings_texture, &src_rect, &duck_rect, 0, NULL, duck.flipType);
+        SDL_SetTextureColorMod(wings_texture, 255, 255, 255); //reseteo el color
+    }
 
     if(message.type == BULLET_POS_UPDATE){
         render_bullet(renderer, message.bullet_x, message.bullet_y);
