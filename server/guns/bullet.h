@@ -11,8 +11,7 @@ private:
     int bullet_id; //para identificar las balas en los mensajes
 
     Position position;
-    int speed_x;
-    int speed_y;
+    Position speed;
     int direction_x; 
     int direction_y;
 
@@ -35,6 +34,8 @@ public:
     bool get_bullet_message(Message& msg);
 
     Position get_position();
+
+    Position get_speed();
 
 
 };

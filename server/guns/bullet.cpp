@@ -1,11 +1,8 @@
 #include "bullet.h"
 
 Bullet::Bullet(int bullet_id, int start_x, int start_y, int direction_x, int direction_y, GameMap* map, char duck_id, int alcance) 
-    : bullet_id(bullet_id), position(start_x, start_y), direction_x(direction_x), direction_y(direction_y), map(map), impacto(false), duck_id(duck_id), alcance(alcance) {
-    // La bala comienza en la posición dada con la dirección especificada
-    speed_x = direction_x;
-    speed_y = direction_y;
-}
+    : bullet_id(bullet_id), position(start_x, start_y), speed(direction_x, direction_y), direction_x(direction_x), direction_y(direction_y), 
+    map(map), impacto(false), duck_id(duck_id), alcance(alcance) {}
 
 void Bullet::comenzar_trayectoria() {
     update_position();
@@ -24,8 +21,8 @@ void Bullet::update_position() {
     int old_position_y = position.y;
 
 
-    int delta_x = position.x + speed_x;
-    int delta_y = position.y + speed_y;
+    int delta_x = position.x + speed.x;
+    int delta_y = position.y + speed.y;
 
     if (map->canMoveBulletTo(delta_x, delta_y, duck_id)) { 
         position.x = delta_x;
@@ -70,3 +67,6 @@ Position Bullet::get_position() {
     return position;
 }
 
+Position Bullet::get_speed() {
+    return speed;
+}
