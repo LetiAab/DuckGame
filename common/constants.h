@@ -46,6 +46,8 @@ const uint8_t DUCK_POS_UPDATE = 0x15;
 
 const uint8_t BULLET_POS_UPDATE = 0x32;
 
+const uint8_t KILL_DUCK = 0x33;
+
 
 static const char QUIT_SERVER[] = "q";
 

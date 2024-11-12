@@ -40,7 +40,7 @@ public:
     void setBulletNewPosition(int x, int y);
     void cleanBulletOldPosition(int x, int y);
 
-
+    char at(Position position);
 
     bool can_move_projectile(int x, int y, int size_x, int size_y);
 
@@ -58,6 +58,8 @@ public:
     std::vector<std::vector<char>> getMap();
 
     char get_position(int x, int y);
+
+    bool duckIsOverVoid(int x, int y);
 
     //METODO TEMPORAL: Imprime el mapa en la consola
     void printMap() const;

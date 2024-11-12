@@ -10,10 +10,8 @@ class Bullet {
 private:
     int bullet_id; //para identificar las balas en los mensajes
 
-    int position_x;
-    int position_y;
-    int speed_x;
-    int speed_y;
+    Position position;
+    Position speed;
     int direction_x; 
     int direction_y;
 
@@ -34,6 +32,10 @@ public:
     void impactar();
 
     bool get_bullet_message(Message& msg);
+
+    Position get_position();
+
+    Position get_speed();
 
 
 };

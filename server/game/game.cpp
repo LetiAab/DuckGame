@@ -4,6 +4,13 @@
 #include <random>
 #include <utility>
 
+const char DUCK_1 = '1';
+const char DUCK_2 = '2';
+const char DUCK_3 = '3';
+const char DUCK_4 = '4';
+const char DUCK_5 = '5';
+const char DUCK_6 = '6';
+
 //TODO: Tamanio del mapa hardcodeado
 Game::Game(uint16_t match_id, GameQueueMonitor& monitor):
 match_id(match_id), monitor(monitor), is_running(true), game_queue(), map(MATRIX_M, MATRIX_N){}
@@ -12,40 +19,69 @@ Queue<std::shared_ptr<Executable>>& Game::get_game_queue(){
         return game_queue;
 }
 
+Duck* Game::getDuckByPosition(Position position) {
+        char element = map.at(position);
 
+        if ((element == DUCK_1) || (element == DUCK_2) || (element == DUCK_3)
+             || (element == DUCK_4) || (element == DUCK_5) || (element == DUCK_6)) {
+                return getDuckById(element);
+        } else {
+                return NULL;
+        }
+}
 
 void Game::simulate_round() {
 
-       //map.printMap();
+        map.printMap();
 
-    for (Duck& duck : ducks) {  
-        duck.update_position();
-        //revisar: es raro que el chaequeo del impacto se haga aca, quizas deberia hacerlo el arma (?)
-        if(duck.weapon != nullptr){
-                for (auto it = duck.weapon->bullets.begin(); it != duck.weapon->bullets.end(); ) {
-                        it->update_position();
+        for (auto it = ducks.begin(); it != ducks.end(); ) {  
+                Duck& duck = *it;
+                duck.update_position();
+                
+                if (duck.weapon != nullptr) {
+                        for (auto bullet_it = duck.weapon->bullets.begin(); bullet_it != duck.weapon->bullets.end(); ) {
+                        bullet_it->update_position();
                         
-                        if (it->hubo_impacto()) {
-                                //cuando la bala impacta la saco de la lista de lanzadas por el pato
-                                //de esta forma libero y encima me ahorro mandar el mensaje de la pos de la bala una vez que no existe mas. Porque el mensaje se crea viendo la lista de balas. Cosa que no me gusta demasiado pero bueno
-                                std::cout << "HUBO IMPACTO! " << std::endl;
+                        if (bullet_it->hubo_impacto()) {
+                                Position bullet_pos = bullet_it->get_position();
+                                Position bullet_speed = bullet_it->get_speed();
 
-                                it->cleanPostImpacto();
-                                it = duck.weapon->bullets.erase(it);
+                                bullet_pos.x += bullet_speed.x;
+                                bullet_pos.y += bullet_speed.y;
+
+                                std::cout << "HUBO IMPACTO en x: " << bullet_pos.x << " y:" << bullet_pos.y << std::endl;
+
+                                Duck* duck_hit = getDuckByPosition(bullet_pos);
+                                if (duck_hit == nullptr) {
+                                bullet_it->cleanPostImpacto();
+                                bullet_it = duck.weapon->bullets.erase(bullet_it);
+                                continue;
+                                }
+
+                                duck_hit->get_hit_by_bullet(*bullet_it);
+
+                                bullet_it->cleanPostImpacto();
+                                bullet_it = duck.weapon->bullets.erase(bullet_it);
                         } else {
-                        ++it;
+                                ++bullet_it;
                         }
+                        }
+                }
+
+                // Si el pato está muerto, lo eliminamos de la lista y avisamos al cliente
+                if (duck.is_dead) {
+                        Message kill_duck_message;
+                        kill_duck_message.type = KILL_DUCK;
+                        kill_duck_message.player_id = static_cast<uint16_t>(duck.get_id() - '0');
+                        monitor.broadcast(kill_duck_message);
+                        it = ducks.erase(it);
+
+                        std::cout << "Pato eliminado. Tamaño actual de ducks: " << ducks.size() << std::endl;
+                } else {
+                        ++it;
                 }
         }
 
-        
-
-    }
-
-    for (std::unique_ptr<Proyectil>& projectile : projectiles) {
-
-        projectile->simular(*this);  // Llama a la función simular específica de cada proyectil
-     }
 }
 
 void Game::add_projectile(std::unique_ptr<Proyectil> projectile) {
@@ -132,8 +168,8 @@ void Game::create_ducks(const std::vector<uint16_t>& ids) {
         std::random_device rd;
         std::mt19937 gen(rd());
 
-        std::uniform_int_distribution<> distrib_x(1, map.get_width() - 2);
-        std::uniform_int_distribution<> distrib_y(1, map.get_width() - 3);
+        std::uniform_int_distribution<> distrib_x(6, map.get_width() - 6);
+        std::uniform_int_distribution<> distrib_y(1, map.get_width() - 6);
 
         for(uint16_t id: ids) {
                 char char_id = static_cast<char>(id + '0');
@@ -149,7 +185,7 @@ void Game::create_ducks(const std::vector<uint16_t>& ids) {
                         has_place = map.placeDuck(random_x, random_y, char_id); 
                 }
 
-                ducks.emplace_back(char_id, random_x, random_y, map);
+                ducks.emplace_back(char_id, random_x, random_y, &map);
         }
 }
 

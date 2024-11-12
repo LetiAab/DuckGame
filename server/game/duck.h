@@ -24,7 +24,7 @@ private:
     char id_player;  // ID del jugador
     Position position;
     Position old_position;
-    GameMap& map;   // Referencia al GameMap
+    GameMap* map;   // Referencia al GameMap
 
 
     void form_position_message(Message& msg);
@@ -41,10 +41,11 @@ public:
     bool is_slippy;
     int life_points;
     bool stop_notificated;
+    bool is_dead;
     Weapon* weapon;
 
     
-    Duck(char id, int x, int y, GameMap& map);
+    Duck(char id, int x, int y, GameMap* map);
 
     void update_position();
 
@@ -59,6 +60,8 @@ public:
     void setWeapon(Weapon* new_weapon);
 
     void disparar();
+
+    void get_hit_by_bullet(Bullet bullet);
 };
 
 #endif // DUCK_H

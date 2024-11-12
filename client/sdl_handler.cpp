@@ -296,6 +296,13 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
             //cada bala viene con su id para poder identificarla de alguna forma al momento de renderizar
         }
 
+        if(message.type == KILL_DUCK){
+            int pos_id = message.player_id - 1;
+            //NO LO ELIMINO DE LA LISTA PORQUE ALTO KILOMBO ASI QUE MUEVO EL DIBUJO AFUERA DE LA PANTALLA
+            game.ducks[pos_id].x = 400 * TILE_SIZE;
+            game.ducks[pos_id].y = 400 * TILE_SIZE;
+        }
+
         if (message.type == DUCK_POS_UPDATE){
 
 

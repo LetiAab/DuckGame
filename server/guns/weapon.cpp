@@ -4,7 +4,7 @@
 Weapon::Weapon(const std::string& nombre, double alcance, double dispersion, int municiones)
     : nombre(nombre), alcance(alcance), dispersion(dispersion), municiones(municiones) {}
 
-void Weapon::disparar(int position_x, int position_y, char looking, GameMap& map, char id_player) {
+void Weapon::disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) {
 
 
     if (municiones > 0) {
@@ -14,7 +14,7 @@ void Weapon::disparar(int position_x, int position_y, char looking, GameMap& map
 
         int bullet_id = municiones; //el id es el numero de muncion. Inteligente verdad?
 
-        Bullet nueva_bala(bullet_id, position_x, position_y, direccion_x, direccion_y, &map, id_player, alcance);
+        Bullet nueva_bala(bullet_id, position_x, position_y, direccion_x, direccion_y, map, id_player, alcance);
         nueva_bala.comenzar_trayectoria();
         bullets.push_back(nueva_bala);
 

@@ -83,6 +83,12 @@ bool ServerProtocol::send_message(Message& message){
         if (!skt.sendall(&message.bullet_id, sizeof(message.bullet_id), &was_closed) || was_closed) {
             return false;
         }
+        break; 
+
+    case KILL_DUCK:
+        if (!skt.sendall(&message.player_id, sizeof(message.player_id), &was_closed) || was_closed) {
+            return false;
+        }
         break;
 
 
