@@ -18,6 +18,7 @@ Duck::Duck(char id, int x, int y, GameMap* map) :
     is_dead(false) {}
 
 bool Duck::is_in_air(){
+    std::cout << "ME FIJO SI ESTYO EN EL AIRE" << "\n";
     return map->canMoveDuckTo(position.x, position.y + 1, id_player);
 }
 
@@ -37,8 +38,12 @@ void Duck::check_gravity(){
 
 void Duck::update_position() {
 
+    if(map->duckIsOverVoid(position.x, position.y)){
+        is_dead = true;
+    }
+
     if (is_dead) {
-        std::cout << "Estoy muerto, no me puedo mover :(" << std::endl;
+        map->cleanDuckOldPosition(position.x, position.y);
         return;
     }
     check_gravity();

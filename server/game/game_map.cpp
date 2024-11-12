@@ -11,6 +11,9 @@ const char DUCK_5 = '5';
 const char DUCK_6 = '6';
 const char PLATFORM = 'P';
 
+const char VOID = 'V'; //VACIO
+
+
 const char BULLET = '*';
 
 
@@ -111,12 +114,40 @@ Position GameMap::move_duck_to(Position old_position, Position new_position, cha
     return Position(final_x, final_y);
 }
 
+bool GameMap::duckIsOverVoid(int x, int y) {
+    std::cout << "REVISO SI ESTOY SOBRE EL VACIO" << "\n";
+
+    std::cout << "Valores: x = " << x << ", y = " << y 
+              << ", width = " << width << ", height = " << height << std::endl;
+    // Verifica que el movimiento no colisione con el vacio
+  
+    if (map[y + 3][x] == VOID) {
+        return true;
+    }
+
+
+    return false;
+
+}
+
 
 bool GameMap::canMoveDuckTo(int x, int y, char duck_id) {
+
+
+
 
     // Verifica que las coordenadas estén dentro de los límites del mapa
     if (x < 0 || x >= width || y < 0 || y >= height) {
         return false; 
+    }
+
+    // Verifica que el movimiento no colisione con el vacio
+    for (int i = x; i < x + 2; ++i) {
+        for (int j = y; j < y + 3; ++j) {
+            if (map[j][i] == VOID) {
+                return false;
+            }
+        }
     }
 
     // Verifica que el movimiento no colisione con una plataforma
@@ -272,8 +303,16 @@ char GameMap::duck_in_position(int x, int y, int size_x, int size_y) {
 }
 
 void GameMap::setEscenario() {
+    
+    
+    //SETEO EL VACIO. SI COLISIONO CON EL VACIO MUERO
     for (int x = 0; x < width; ++x) {
-        map[height - 1][x] = PLATFORM; // Piso
+        map[height - 1][x] = VOID; 
+    }
+    
+
+    for (int x = 6; x < width - 6; ++x) {
+        map[height - 4][x] = PLATFORM; // Piso
     }
     
     // Coloca obstáculos en los costados (x = 0 y x = width - 1)
@@ -283,21 +322,21 @@ void GameMap::setEscenario() {
     }
 
     // Debug platforms
-    map[height - 2][3] = PLATFORM;
-    map[height - 2][4] = PLATFORM;
+    map[height - 8][3] = PLATFORM;
+    map[height - 8][4] = PLATFORM;
 
-    map[height - 2][7] = PLATFORM;
-    map[height - 2][8] = PLATFORM;
-    map[height - 3][7] = PLATFORM;
-    map[height - 3][8] = PLATFORM;
+    map[height - 8][7] = PLATFORM;
+    map[height - 8][8] = PLATFORM;
+    map[height - 9][7] = PLATFORM;
+    map[height - 9][8] = PLATFORM;
 
-    map[height - 2][11] = PLATFORM;
-    map[height - 2][12] = PLATFORM;
+    map[height - 8][11] = PLATFORM;
+    map[height - 8][12] = PLATFORM;
 
     //plataforma en el aire
-    map[height - 6][16] = PLATFORM;
-    map[height - 6][17] = PLATFORM;
-    map[height - 6][18] = PLATFORM;
+    map[height - 12][16] = PLATFORM;
+    map[height - 12][17] = PLATFORM;
+    map[height - 12][18] = PLATFORM;
 
 }
 
