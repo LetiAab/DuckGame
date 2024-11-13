@@ -29,6 +29,12 @@ public:
 
     bool canMoveDuckTo(int x, int y, char duck_id);
 
+    void setBulletNewPosition(Position pos);
+
+    void cleanBulletOldPosition(Position pos);
+
+    Position move_bullet_to(Position old_position, Position new_position, char duck_id, bool& hit_something);
+
     Position move_duck_to(Position old_position, Position new_position, char duck_id);
 
     void cleanDuckOldPosition(int x, int y);

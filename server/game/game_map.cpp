@@ -59,6 +59,77 @@ void GameMap::cleanBulletOldPosition(int x, int y){
 
 }
 
+void GameMap::setBulletNewPosition(Position pos) {
+    for (int y = pos.y; y < pos.y + BULLET_SIZE_Y; ++y) {
+        for (int x = pos.x; x < pos.x + BULLET_SIZE_X; ++x) {
+            map[y][x] = BULLET;
+        }
+    }
+}
+
+void GameMap::cleanBulletOldPosition(Position pos) {
+    for (int y = pos.y; y < pos.y + BULLET_SIZE_Y; ++y) {
+        for (int x = pos.x; x < pos.x + BULLET_SIZE_X; ++x) {
+            map[y][x] = EMPTY;
+        }
+    }
+}
+
+Position GameMap::move_bullet_to(Position old_position, Position new_position, char duck_id, bool& hit_something){
+    int final_x = old_position.x;
+    int final_y = old_position.y;
+
+    //determino la direccion del movimiento
+    int dx = (new_position.x > old_position.x) ? 1 : (new_position.x < old_position.x ? -1 : 0);
+    int dy = (new_position.y > old_position.y) ? 1 : (new_position.y < old_position.y ? -1 : 0);
+
+    //itero hasta llegar a la posición final, encontrar un obstaculo o pegarle a un pato
+    while (final_x != new_position.x || final_y != new_position.y) {
+        int next_x = final_x + dx;
+        int next_y = final_y + dy;
+
+        //verifico si la nueva posición está dentro de los límites del mapa
+        if (next_x < 0 || next_x + BULLET_SIZE_X-1 >= width || next_y < 0 || next_y + BULLET_SIZE_Y-1 >= height) {
+            break;
+        }
+
+        
+        for (int y = next_y; y < next_y + BULLET_SIZE_Y; ++y) {
+            for (int x = next_x; x < next_x + BULLET_SIZE_X; ++x) {
+                if (map[y][x] == PLATFORM) {
+                    // Caso 1: choque con una plataforma
+                    hit_something = true;
+                    return Position(final_x, final_y);  // devuelvo la posición actual
+                }
+                else if (map[y][x] >= DUCK_1 && map[y][x] <= DUCK_6 && map[y][x] != duck_id) {
+                    // Caso 2: choque con otro pato
+                    hit_something = true;
+                    // avanzo una posición más para que la bala quede "dentro" del pato
+                    final_x = next_x;
+                    final_y = next_y;
+                    return Position(final_x, final_y);
+                }
+            }
+        }
+
+        if (next_x == new_position.x){
+            dx = 0;
+        }
+
+        if (next_y == new_position.y){
+            dy = 0;
+        }
+
+        //si el área está libre, actualizo la posición final
+        final_x = next_x;
+        final_y = next_y;
+        
+    }
+
+    return Position(final_x, final_y);
+
+}
+
 Position GameMap::move_duck_to(Position old_position, Position new_position, char duck_id) {
     int final_x = old_position.x;
     int final_y = old_position.y;
