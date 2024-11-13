@@ -8,8 +8,8 @@ void Weapon::disparar(int position_x, int position_y, char looking, GameMap* map
 
 
     if (municiones > 0) {
-
-        int direccion_x = (looking == LOOKING_RIGHT) ? 5 : -5;  
+        //la bala debe apareces fuera del pato, o sino se mata a si mismo 
+        int direccion_x = (looking == LOOKING_RIGHT) ? DUCK_SIZE_X : -DUCK_SIZE_X;
         int direccion_y = 0;  // La bala se mueve horizonalmente
 
         int bullet_id = municiones; //el id es el numero de muncion. Inteligente verdad?
