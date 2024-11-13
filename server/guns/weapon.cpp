@@ -9,7 +9,7 @@ void Weapon::disparar(int position_x, int position_y, char looking, GameMap* map
 
     if (municiones > 0) {
 
-        int direccion_x = (looking == LOOKING_RIGHT) ? 1 : -1;  
+        int direccion_x = (looking == LOOKING_RIGHT) ? 5 : -5;  
         int direccion_y = 0;  // La bala se mueve horizonalmente
 
         int bullet_id = municiones; //el id es el numero de muncion. Inteligente verdad?

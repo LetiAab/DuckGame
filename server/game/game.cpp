@@ -36,35 +36,20 @@ void Game::simulate_round() {
 
         for (auto it = ducks.begin(); it != ducks.end(); ) {  
                 Duck& duck = *it;
+                duck.update_life();
                 duck.update_position();
                 
                 if (duck.weapon != nullptr) {
                         for (auto bullet_it = duck.weapon->bullets.begin(); bullet_it != duck.weapon->bullets.end(); ) {
-                        bullet_it->update_position();
-                        
-                        if (bullet_it->hubo_impacto()) {
-                                Position bullet_pos = bullet_it->get_position();
-                                Position bullet_speed = bullet_it->get_speed();
-
-                                bullet_pos.x += bullet_speed.x;
-                                bullet_pos.y += bullet_speed.y;
-
-                                std::cout << "HUBO IMPACTO en x: " << bullet_pos.x << " y:" << bullet_pos.y << std::endl;
-
-                                Duck* duck_hit = getDuckByPosition(bullet_pos);
-                                if (duck_hit == nullptr) {
-                                bullet_it->cleanPostImpacto();
-                                bullet_it = duck.weapon->bullets.erase(bullet_it);
-                                continue;
+                                bullet_it->update_position();
+                                
+                                if (bullet_it->hubo_impacto()) {
+                                        bullet_it->cleanPostImpacto();
+                                        bullet_it = duck.weapon->bullets.erase(bullet_it);
+                                        
+                                } else {
+                                        ++bullet_it;
                                 }
-
-                                duck_hit->get_hit_by_bullet(*bullet_it);
-
-                                bullet_it->cleanPostImpacto();
-                                bullet_it = duck.weapon->bullets.erase(bullet_it);
-                        } else {
-                                ++bullet_it;
-                        }
                         }
                 }
 

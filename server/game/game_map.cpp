@@ -75,7 +75,7 @@ void GameMap::cleanBulletOldPosition(Position pos) {
     }
 }
 
-Position GameMap::move_bullet_to(Position old_position, Position new_position, char duck_id, bool& hit_something){
+Position GameMap::try_move_bullet_to(Position old_position, Position new_position, char duck_id, bool& hit_something){
     int final_x = old_position.x;
     int final_y = old_position.y;
 
