@@ -1,10 +1,9 @@
-#include "common/position.h"
 
 #ifndef GAMEMAP_H
 #define GAMEMAP_H
 
 #include <vector>
-
+#include "common/position.h"
 #include "duck.h"
 
 class GameMap {

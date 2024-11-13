@@ -5,23 +5,22 @@
 #include <vector>
 #include "bullet.h"
 #include "../game/game_map.h"
-
+#include "../game/item.h"  // Incluir Item
 
 class Bullet;  // Declaración anticipada de la clase Bullet
 class GameMap; // Declaración anticipada de la clase GameMap
 
-class Weapon {
+class Weapon : public Item {  // Herencia de Item
 public:
-
     std::vector<Bullet> bullets;
 
-    // Constructor
-    Weapon(const std::string& nombre, double alcance, double dispersion, int municiones);
+    // Constructor que inicializa la posición
+    Weapon(const std::string& nombre, double alcance, double dispersion, int municiones, int x = 0, int y = 0);
 
     // Métodos
     void disparar(int position_x, int position_y, char looking, GameMap* map, char id_player);
     void recargar(int cantidad);  
-    void mostrarInformacion() const;  
+    void mostrarInformacion() const;
 
     // Getters
     std::string getNombre() const;
@@ -29,13 +28,11 @@ public:
     double getDispersion() const;
     int getMuniciones() const;
 
-
-
 private:
-    std::string nombre;         
-    double alcance;             
-    double dispersion;         
-    int municiones;             
+    std::string nombre;
+    double alcance;
+    double dispersion;
+    int municiones;
 };
 
 #endif  // WEAPON_H

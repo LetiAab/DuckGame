@@ -15,13 +15,34 @@ Duck::Duck(char id, int x, int y, GameMap* map) :
     is_slippy(false),
     life_points(100),
     stop_notificated(false),
-    is_dead(false) {}
+    is_dead(false),
+    weapon(nullptr), 
+    armor(nullptr), 
+    helmet(nullptr), 
+    onHand(nullptr) {}
 
 bool Duck::is_in_air(){
     std::cout << "ME FIJO SI ESTYO EN EL AIRE" << "\n";
     return map->canMoveDuckTo(position.x, position.y + 1, id_player);
 }
 
+void Duck::pickUpItem(Item* item) {
+    onHand.reset(item);  
+}
+
+void Duck::useOnHand() {
+    if (!onHand) return;  // Verificamos si hay un item en la mano
+
+    if (Weapon* w = dynamic_cast<Weapon*>(onHand.get())) {
+        setWeapon(w);
+    } else if (Armor* a = dynamic_cast<Armor*>(onHand.get())) {
+        setArmor(a);
+    } else if (Helmet* h = dynamic_cast<Helmet*>(onHand.get())) {
+        setHelmet(h);
+    }
+
+    onHand.reset();  // Después de usar el item, lo quitamos de la mano
+}
 
 void Duck::check_gravity(){
 
@@ -124,6 +145,14 @@ char Duck::get_id() const {
 
 void Duck::setWeapon(Weapon* new_weapon) {
     weapon = new_weapon;  // Asigna el arma al pato
+}
+
+void Duck::setArmor(Armor* new_armor) {
+    armor = new_armor;  // Asigna el arma al pato
+}
+
+void Duck::setHelmet(Helmet* new_helmet) {
+    helmet = new_helmet;  // Asigna el arma al pato
 }
 
 

@@ -140,6 +140,9 @@ void Game::run() {
 
 void Game::inicializate_map() {
     // Le doy armas a los patos para probar
+    
+
+    
     for (Duck& duck : ducks) {
 
         Weapon* weapon = new Weapon("Pistola Generica", 35, 5, 30);
