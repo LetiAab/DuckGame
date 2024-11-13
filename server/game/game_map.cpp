@@ -119,7 +119,7 @@ bool GameMap::duckIsOverVoid(int x, int y) {
 
     std::cout << "Valores: x = " << x << ", y = " << y 
               << ", width = " << width << ", height = " << height << std::endl;
-              
+
     // Verifica si el pato esta sobre el vacio
     if (map[y + DUCK_SIZE_Y][x] == VOID) {
         std::cout << "ESTOY SOBRE EL VACIO" << "\n";
@@ -305,35 +305,41 @@ void GameMap::setEscenario() {
     }
 
     // Piso principal
-    for (int x = 10; x < width - 10; ++x) {
-        map[height - 10][x] = PLATFORM; 
+    for (int x = 15; x < width - 15; ++x) {
+        map[height - 10][x] = PLATFORM;
+        map[height - 11][x] = PLATFORM;
+        map[height - 12][x] = PLATFORM;
     }
 
     // Costados (barreras izquierda y derecha)
     for (int y = 0; y < height; ++y) {
-        map[y][0] = PLATFORM;          
+        map[y][0] = PLATFORM;
         map[y][width - 1] = PLATFORM;
     }
 
     // Plataformas adicionales de diferentes tamaños:
     
-    // Plataforma 2x2 en la parte superior izquierda
-    for (int y = height - 30; y < height - 18; ++y) {
-        for (int x = 5; x < 7; ++x) {
+    for (int y = height - 100; y < height - 120; ++y) {
+        for (int x = 20; x < 25; ++x) {
             map[y][x] = PLATFORM;
         }
     }
 
-    // Plataforma 3x3 en la mitad izquierda
-    for (int y = height - 20; y < height - 18; ++y) {
-        for (int x = 10; x < 13; ++x) {
+    for (int y = height - 100; y < height - 105; ++y) {
+        for (int x = 100; x < 130; ++x) {
             map[y][x] = PLATFORM;
         }
     }
 
-    // Plataforma 2x3 en la parte superior derecha
-    for (int y = height - 18; y < height - 16; ++y) {
-        for (int x = width - 30; x < width - 20; ++x) {
+
+    for (int y = height - 30; y < height - 25; ++y) {
+        for (int x = width - 60; x < width - 50; ++x) {
+            map[y][x] = PLATFORM;
+        }
+    }
+
+    for (int y = height - 60; y < height - 55; ++y) {
+        for (int x = width - 100; x < width - 80; ++x) {
             map[y][x] = PLATFORM;
         }
     }

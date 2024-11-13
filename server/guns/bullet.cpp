@@ -24,12 +24,12 @@ void Bullet::update_position() {
     int delta_x = position.x + speed.x;
     int delta_y = position.y + speed.y;
 
-    if (map->canMoveBulletTo(delta_x, delta_y, duck_id)) { 
+    if (map->canMoveBulletTo(delta_x, delta_y, duck_id)) {
         position.x = delta_x;
         position.y = delta_y;
         
         map->setBulletNewPosition(position.x, position.y);
-        map->cleanBulletOldPosition(old_position_x, old_position_y); 
+        map->cleanBulletOldPosition(old_position_x, old_position_y);
         alcance--;
     } else {
         map->cleanBulletOldPosition(position.x, position.y);

@@ -108,11 +108,11 @@ void Game::run() {
         monitor.broadcast(message);
 
         while (is_running) {
-                // saco de 5 comandos de la queue y los ejecuto
+                // saco de 10 comandos de la queue y los ejecuto
                 std::shared_ptr<Executable> command;
 
                 int i = 0;
-                while( i < 16 && game_queue.try_pop(command)){
+                while( i < 10 && game_queue.try_pop(command)){
                         command->execute(*this);
 
                         i += 1;
@@ -147,7 +147,7 @@ void Game::run() {
 
                 // renew_iteration(); para resetear cosas que duren una ronda
 
-                std::this_thread::sleep_for(std::chrono::milliseconds(75));
+                std::this_thread::sleep_for(std::chrono::milliseconds(60));
 
         }
 
@@ -157,7 +157,7 @@ void Game::inicializate_map() {
     // Le doy armas a los patos para probar
     for (Duck& duck : ducks) {
 
-        Weapon* weapon = new Weapon("Pistola Generica", 10, 5, 30);
+        Weapon* weapon = new Weapon("Pistola Generica", 35, 5, 30);
 
         duck.setWeapon(weapon);
     }
@@ -168,8 +168,8 @@ void Game::create_ducks(const std::vector<uint16_t>& ids) {
         std::random_device rd;
         std::mt19937 gen(rd());
 
-        std::uniform_int_distribution<> distrib_x(11, map.get_width() - 11);
-        std::uniform_int_distribution<> distrib_y(10, map.get_height() - 15);
+        std::uniform_int_distribution<> distrib_x(18, map.get_width() - 18);
+        std::uniform_int_distribution<> distrib_y(10, map.get_height() - 20);
 
         for(uint16_t id: ids) {
                 char char_id = static_cast<char>(id + '0');

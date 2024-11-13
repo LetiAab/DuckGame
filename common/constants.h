@@ -37,9 +37,9 @@ static const char LOOKING_RIGHT = 'd';
 static const char LOOKING_LEFT = 'a';
 
 //constantes para la gravedad
-const int DUCK_JUMP_POWER = 8;
-const int DUCK_WALK_POWER = 2;
-const int DUCK_FALL_POWER = 1;
+const int DUCK_JUMP_POWER = 12;
+const int DUCK_WALK_POWER = 3;
+const int DUCK_FALL_POWER = 2;
 
 //messages from game
 const uint8_t MAP_INICIALIZATION = 0x14;
@@ -65,9 +65,9 @@ const int MATRIX_M = 200;
 const int PLATFORM_SIZE_X = 2;
 const int PLATFORM_SIZE_Y = 2;
 
-const int DUCK_SIZE_X = 8;
-const int DUCK_SIZE_Y = 12;
-const int DUCK_TOTAL_SIZE = 96; //Cantidad total de cuadrados que ocupa el pato 8x12=96
+const int DUCK_SIZE_X = 10;
+const int DUCK_SIZE_Y = 14;
+const int DUCK_TOTAL_SIZE = 140; //Cantidad total de cuadrados que ocupa el pato 9X13
 
 const int TILE_SIZE = 4;
 
