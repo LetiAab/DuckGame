@@ -38,9 +38,12 @@ void Duck::check_gravity(){
 
 }
 
-void Duck::update_position() {
-
+void Duck::update_life(){
     if(map->duckIsOverVoid(position.x, position.y)){
+        is_dead = true;
+    }
+
+    if(map->duckIsOverBullet(position)){
         is_dead = true;
     }
 
@@ -48,6 +51,11 @@ void Duck::update_position() {
         map->cleanDuckOldPosition(position.x, position.y);
         return;
     }
+
+}
+
+void Duck::update_position() {
+
     check_gravity();
     
     int delta_x = position.x + speed_x;

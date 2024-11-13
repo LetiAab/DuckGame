@@ -129,6 +129,21 @@ bool GameMap::duckIsOverVoid(int x, int y) {
     return false;
 }
 
+bool GameMap::duckIsOverBullet(Position position) {
+    std::cout << "REVISO SI ME PEGO UNA BALA" << "\n";
+
+    // Verifica si el pato fue golpeado por una bala
+    for (int i = position.x; i < position.x + DUCK_SIZE_X; ++i) {
+        for (int j = position.y; j < position.y + DUCK_SIZE_Y; ++j) {
+            if (map[j][i] == BULLET) {
+                std::cout << "ME DIERON!" << "\n";
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
 
 bool GameMap::canMoveDuckTo(int x, int y, char duck_id) {
 

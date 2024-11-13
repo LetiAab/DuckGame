@@ -61,6 +61,8 @@ public:
 
     bool duckIsOverVoid(int x, int y);
 
+    bool duckIsOverBullet(Position position);
+
     //METODO TEMPORAL: Imprime el mapa en la consola
     void printMap() const;
 
