@@ -9,6 +9,7 @@ target_sources(taller_client
     client_protocol.cpp
     client_game_map.cpp
     sdl_handler.cpp
+        sdl_handletextures.cpp
     PUBLIC
     # .h files
     client.h
@@ -18,6 +19,7 @@ target_sources(taller_client
     client_protocol.h
     sdl_handler.h
     client_game_map.h
+        sdl_handletextures.h
     )
 
 # Path de imagenes

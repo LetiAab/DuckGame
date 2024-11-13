@@ -1,6 +1,8 @@
 #ifndef BULLET_H
 #define BULLET_H
 
+#include "common/message.h"
+#include "common/constants.h"
 #include "../game/game_map.h"
 
 class GameMap;
@@ -8,10 +10,8 @@ class Bullet {
 private:
     int bullet_id; //para identificar las balas en los mensajes
 
-    int position_x;
-    int position_y;
-    int speed_x;
-    int speed_y;
+    Position position;
+    Position speed;
     int direction_x; 
     int direction_y;
 
@@ -24,18 +24,18 @@ private:
 
 public:
     Bullet(int bullet_id, int start_x, int start_y, int direction_x, int direction_y, GameMap* map, char duck_id, int alcance);
-    void comenzar_trayectoria();  
-    void update_position();       
-    int get_x() const;            
-    int get_y() const;           
+    void comenzar_trayectoria();
+    void update_position();
 
     bool hubo_impacto();
     void cleanPostImpacto();
     void impactar();
 
-    char getDuckId() const;
+    bool get_bullet_message(Message& msg);
 
-    int getBulletId() const;
+    Position get_position();
+
+    Position get_speed();
 
 
 };

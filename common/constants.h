@@ -1,6 +1,8 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
+#include <vector>
+
 const int ERROR = 1;
 const int SUCCESS = 0;
 
@@ -44,17 +46,29 @@ const uint8_t DUCK_POS_UPDATE = 0x15;
 
 const uint8_t BULLET_POS_UPDATE = 0x32;
 
+const uint8_t KILL_DUCK = 0x33;
+
 
 static const char QUIT_SERVER[] = "q";
 
-const int WINDOW_WIDTH = 800;
-const int WINDOW_HEIGHT = 600;
+/*const int WINDOW_WIDTH = 800;
+const int WINDOW_HEIGHT = 600;*/
 
 const int MAX_PLAYERS = 6;
+const int MIN_PLAYERS = 2;
 
 const int MATRIX_N = 36;
 const int MATRIX_M = 50;
 
 const int TILE_SIZE = 32;
+
+const std::vector<std::vector<uint8_t>> colors = {
+    {255,255,255}, //blanco
+    {255,255,102}, //amarillo
+    {153,255,153}, //verde
+    {153,204,255}, //azul
+    {192,192,192}, //gris
+    {255,178,102} //naranja
+};
 
 #endif

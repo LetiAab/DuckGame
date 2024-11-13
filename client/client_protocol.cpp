@@ -42,7 +42,13 @@ Message ClientProtocol::receive_message(){
         skt.recvall(&message.duck_y, sizeof(int), &was_closed);
         skt.recvall(&message.looking, sizeof(char), &was_closed);
         skt.recvall(&message.is_moving, sizeof(bool), &was_closed);
+        skt.recvall(&message.is_jumping, sizeof(bool), &was_closed);
+        skt.recvall(&message.is_fluttering, sizeof(bool), &was_closed);
 
+        break;
+
+    case KILL_DUCK:
+        skt.recvall(&message.player_id, 2, &was_closed);
         break;
 
     default:

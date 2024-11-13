@@ -6,12 +6,11 @@
 #define DELAY_TIME 60
 #define DUCK_SIZE_X 2 //EN CANTIDAD DE TILE_SIZE
 #define DUCK_SIZE_Y 3 //EN CANTIDAD DE TILE_SIZE
-
 #define TILE_SIZE 16
 
 //using namespace SDL2pp;
 
-SDLHandler::SDLHandler() {
+SDLHandler::SDLHandler(): handle_textures(SDLHandleTextures(nullptr)) {
     SDL_Init(SDL_INIT_VIDEO);
 }
 
@@ -19,33 +18,34 @@ SDLHandler::~SDLHandler() {
     SDL_Quit();
 }
 
-SDL_Surface* SDLHandler::loadImage(const std::string& name_img) {
-    SDL_Surface* img = NULL;
-    const std::string path = std::string(IMAGE_PATH) + name_img + ".png";
-    img = IMG_Load(path.c_str());
-    if (img == NULL) {
-        std::cerr << "Error loading " << name_img << ".png: " << IMG_GetError() << "\n";
-        SDL_Quit();
-        exit(ERROR);
-    }
-    return img;
+void SDLHandler::loadGame(GameState* game) {
+    // Cargo las texturas
+    handle_textures = SDLHandleTextures(game->renderer);
+    SDL_Texture *background = handle_textures.loadSimpleTexture("backgrounds/forest");
+    SDL_Texture *crate_t = handle_textures.loadSimpleTexture("crate");
+    SDL_Texture *gun = handle_textures.loadSimpleTexture("guns/AK-47");
+    SDL_Texture *bullet = handle_textures.loadSimpleTexture("ammo/bullet");
+
+    SpriteSheet sp = handle_textures.loadSpriteSheet("duck-walking");
+    SDL_Texture *walk_duck = sp.texture;
+    int frame_width = sp.frame_width;
+    int frame_height = sp.frame_height;
+    SDL_Texture *walk_wings = handle_textures.loadSimpleTexture("duck-walking-wings");
+
+    handle_textures.saveTexture("background", background);
+    handle_textures.saveTexture("duck-walking", walk_duck);
+    handle_textures.saveTexture("duck-walking-wings", walk_wings);
+    handle_textures.saveTexture("crate", crate_t);
+    handle_textures.saveTexture("gun", gun);
+    handle_textures.saveTexture("bullet", bullet);
+
+    // Inicializo los patos y los crates
+    initializeDucks(game, frame_width, frame_height);
+    initializeCrates(game);
+
 }
 
-void SDLHandler::loadGame(GameState* game) {
-    SDL_Surface* background = loadImage("forest");
-    game->background = SDL_CreateTextureFromSurface(game->renderer, background);
-    SDL_FreeSurface(background);
-
-    SDL_Surface* duck_surface = loadImage("duck-walking");
-    game->duck_t = SDL_CreateTextureFromSurface(game->renderer, duck_surface);
-    SDL_FreeSurface(duck_surface);
-
-    // el sprite sheet tiene 6 fotogramas en una fila
-    int sprite_sheet_width, sprite_sheet_height;
-    SDL_QueryTexture(game->duck_t, NULL, NULL, &sprite_sheet_width, &sprite_sheet_height);
-    int frame_width = sprite_sheet_width / 6;  // 6 fotogramas en una fila
-    int frame_height = sprite_sheet_height;    // Solo una fila
-
+void SDLHandler::initializeDucks(GameState* game, const int frame_width, const int frame_height) {
     Duck duck{};
     int count = 0;
     game->ducks_quantity = 0;
@@ -73,13 +73,10 @@ void SDLHandler::loadGame(GameState* game) {
             }
         }
     }
-
     std::cout << "Cantidad de patos: " << game->ducks_quantity << "\n";
+}
 
-    SDL_Surface* crate_surface = loadImage("crate");
-    game->crate = SDL_CreateTextureFromSurface(game->renderer, crate_surface);
-    SDL_FreeSurface(crate_surface);
-
+void SDLHandler::initializeCrates(GameState* game) {
     for (size_t i = 0; i < game->client_game_map.map.size(); ++i) {
         for (size_t j = 0; j < (game->client_game_map.map)[i].size(); ++j) {
             if ((game->client_game_map.map)[i][j] == 'P') {
@@ -91,7 +88,6 @@ void SDLHandler::loadGame(GameState* game) {
         }
     }
 }
-
 
 int SDLHandler::processEvents(SDL_Window* window, GameState* game, uint16_t id) {
     int done = SUCCESS;
@@ -186,19 +182,30 @@ int SDLHandler::processEvents(SDL_Window* window, GameState* game, uint16_t id) 
     return done;
 }
 
-
-
-void render_bullet(SDL_Renderer* renderer, int x, int y, int size = 20) {
+void SDLHandler::render_bullet(SDL_Renderer* renderer, int x, int y, int size = 20) {
     SDL_Rect bulletRect = { x * TILE_SIZE, y * TILE_SIZE, size, size };
 
-    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+    /*SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
 
-    SDL_RenderFillRect(renderer, &bulletRect);
+    SDL_RenderFillRect(renderer, &bulletRect);*/
+
+    //SDL_Rect crate_rect = {game->crates[i].x, game->crates[i].y, TILE_SIZE, TILE_SIZE};
+    SDL_RenderCopy(renderer, handle_textures.getTexture("bullet"), NULL, &bulletRect);
 }
 
-void SDLHandler::doRender(SDL_Renderer* renderer, GameState* game, Message& message) {
-    SDL_RenderCopy(renderer, game->background, NULL, NULL);
+void SDLHandler::doRenderStatic(SDL_Renderer* renderer, GameState* game) {
 
+    SDL_RenderCopy(renderer, handle_textures.getTexture("background"), NULL, NULL);
+
+    for (size_t i = 0; i < game->crates.size(); i++) {
+        SDL_Rect crate_rect = {game->crates[i].x, game->crates[i].y, TILE_SIZE, TILE_SIZE};
+        SDL_RenderCopy(renderer, handle_textures.getTexture("crate"), NULL, &crate_rect);
+    }
+
+    //SDL_RenderPresent(renderer);
+}
+
+void SDLHandler::doRenderDynamic(SDL_Renderer* renderer, GameState* game, Message& message) {
     for (int i = 0; i < game->ducks_quantity; i++) {
         Duck& duck = game->ducks[i];
 
@@ -222,12 +229,24 @@ void SDLHandler::doRender(SDL_Renderer* renderer, GameState* game, Message& mess
             TILE_SIZE * DUCK_SIZE_Y
         };
 
-        SDL_RenderCopyEx(renderer, game->duck_t, &src_rect, &duck_rect, 0, NULL, duck.flipType);
-    }
+        SDL_Rect gun_rect = {
+            duck.x,
+            duck.y + TILE_SIZE/4,
+            TILE_SIZE * DUCK_SIZE_X,
+            TILE_SIZE * DUCK_SIZE_Y
+        };
 
-    for (size_t i = 0; i < game->crates.size(); i++) {
-        SDL_Rect crate_rect = {game->crates[i].x, game->crates[i].y, TILE_SIZE, TILE_SIZE};
-        SDL_RenderCopy(renderer, game->crate, NULL, &crate_rect);
+        SDL_Texture* duck_texture = handle_textures.getTexture("duck-walking");
+        SDL_SetTextureColorMod(duck_texture, colors[i][0], colors[i][1], colors[i][2]);
+        SDL_RenderCopyEx(renderer, duck_texture, &src_rect, &duck_rect, 0, NULL, duck.flipType);
+        SDL_SetTextureColorMod(duck_texture, 255, 255, 255); //reseteo el color
+
+        SDL_RenderCopyEx(renderer, handle_textures.getTexture("gun"), NULL, &gun_rect, 0, NULL, duck.flipType);
+
+        SDL_Texture* wings_texture = handle_textures.getTexture("duck-walking-wings");
+        SDL_SetTextureColorMod(wings_texture, colors[i][0], colors[i][1], colors[i][2]);
+        SDL_RenderCopyEx(renderer, wings_texture, &src_rect, &duck_rect, 0, NULL, duck.flipType);
+        SDL_SetTextureColorMod(wings_texture, 255, 255, 255); //reseteo el color
     }
 
     if(message.type == BULLET_POS_UPDATE){
@@ -253,6 +272,11 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
 
     loadGame(&game);
 
+    SDL_Texture* static_scene = handle_textures.createRenderTarget("static_scene", TILE_SIZE * MATRIX_M, TILE_SIZE * MATRIX_N);
+    SDL_SetRenderTarget(renderer, static_scene);
+    doRenderStatic(renderer, &game);
+    SDL_SetRenderTarget(renderer, NULL);
+
     // Event Loop: La ventana se abre => se entra al loop
     int done = SUCCESS;
     while (!done) {
@@ -271,10 +295,17 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
 
             //cada bala viene con su id para poder identificarla de alguna forma al momento de renderizar
         }
-        
+
+        if(message.type == KILL_DUCK){
+            int pos_id = message.player_id - 1;
+            //NO LO ELIMINO DE LA LISTA PORQUE ALTO KILOMBO ASI QUE MUEVO EL DIBUJO AFUERA DE LA PANTALLA
+            game.ducks[pos_id].x = 400 * TILE_SIZE;
+            game.ducks[pos_id].y = 400 * TILE_SIZE;
+        }
+
         if (message.type == DUCK_POS_UPDATE){
 
-            
+
             int pos_id = message.player_id - 1;
 
             game.ducks[pos_id].x = message.duck_x * TILE_SIZE;
@@ -300,15 +331,14 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
 
         }
 
-        doRender(renderer, &game, message);
+        SDL_RenderCopy(renderer, handle_textures.getTexture("static_scene"), NULL, NULL);
+        doRenderDynamic(renderer, &game, message);
 
         SDL_Delay(DELAY_TIME);
     }
 
     // Termino el juego => libero recursos
-    SDL_DestroyTexture(game.crate);
-    SDL_DestroyTexture(game.duck_t);
-    SDL_DestroyTexture(game.background);
+    handle_textures.destroyTextures();
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
 }
