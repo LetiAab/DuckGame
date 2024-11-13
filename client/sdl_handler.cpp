@@ -65,7 +65,7 @@ void SDLHandler::initializeDucks(GameState* game, const int frame_width, const i
                 duck.frame_height = frame_height;
 
                 count++;
-                if (count == 24) {
+                if (count == DUCK_TOTAL_SIZE) {
                     game->ducks[game->ducks_quantity] = duck;
                     game->ducks_quantity++;
                     count = 0;
