@@ -269,20 +269,23 @@ void SDLHandler::showLobbyScreen(SDL_Renderer *renderer, TTF_Font* font) {
     SDL_RenderCopy(renderer, start_background, NULL, NULL);
     //loadFont(renderer);
 
-
-
     // Crear superficie de texto
-    SDL_Surface* surfaceText = TTF_RenderText_Solid(font, "Duck Game!!!", {255, 255, 255, 255});
+    SDL_Surface* surfaceText = TTF_RenderText_Solid(font, "Let's play!", {255, 255, 255, 255});
 
     // Setup texture
     SDL_Texture* textureText = SDL_CreateTextureFromSurface(renderer, surfaceText);
-
     SDL_FreeSurface(surfaceText);
 
-    SDL_Rect textRect = {10, 10, 400, 100};
+    //TILE_SIZE*MATRIX_M/2-size.x/2
+    int size_x = 400;
+    int size_y = 100;
+    SDL_Rect textRect = {TILE_SIZE*MATRIX_M/2-size_x/2, 20, size_x, size_y};
 
     SDL_RenderCopy(renderer, textureText, NULL, &textRect);
 
+    SDL_Texture* start_button = handle_textures.loadSimpleTexture("start/start_init");
+    SDL_Rect start_button_rect = {TILE_SIZE*MATRIX_M/2-100, TILE_SIZE*MATRIX_N/2-50, 200, 100};
+    SDL_RenderCopy(renderer, start_button, NULL, &start_button_rect);
 
 
     SDL_RenderPresent(renderer);
@@ -347,12 +350,27 @@ int SDLHandler::waitForStartGame(SDL_Renderer* renderer, TTF_Font* font) {
     bool start_game = false;
     SDL_Event event;
 
+    int x, y;
+
     while (!start_game && !done) {
         showLobbyScreen(renderer, font);
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
                 case SDL_WINDOWEVENT_CLOSE:
                     done = ERROR;
+                    break;
+                case SDL_MOUSEBUTTONDOWN:
+                    std::cout << "Mouse PRESS\n";
+                    x = event.button.x;
+                    y = event.button.y;
+                    std::cout << "X: " << x << " Y: " << y << "\n";
+                    std::cout << "tamX: " << TILE_SIZE*MATRIX_M/2-100 << " tamY: " << TILE_SIZE*MATRIX_M/2-50 << "\n";
+                    //tamX: 300 tamY: 350
+                    //TILE_SIZE*MATRIX_M/2-100, TILE_SIZE*MATRIX_M/2-50, 200, 100
+                    if (x >= TILE_SIZE*MATRIX_M/2-100 && x <= TILE_SIZE*MATRIX_M/2+100 &&
+                        y >= TILE_SIZE*MATRIX_N/2-50 && y <= TILE_SIZE*MATRIX_N/2+50) {
+                        start_game = true;
+                    }
                     break;
                 case SDL_KEYDOWN:
                     switch (event.key.keysym.sym) {
@@ -393,7 +411,7 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
 
     // Cargar fuente
     const std::string path = std::string(FONT_PATH) + "8bitOperatorPlus8-Regular.ttf";
-    TTF_Font* font = TTF_OpenFont(path.c_str(), 32);
+    TTF_Font* font = TTF_OpenFont(path.c_str(), 16);
     if(font == nullptr) {
         std::cout << "Could not load font: " << TTF_GetError() << "\n";
     }
