@@ -57,10 +57,17 @@ const int WINDOW_HEIGHT = 600;*/
 const int MAX_PLAYERS = 6;
 const int MIN_PLAYERS = 2;
 
-const int MATRIX_N = 36;
-const int MATRIX_M = 50;
+const int MATRIX_N = 72;
+const int MATRIX_M = 100;
 
-const int TILE_SIZE = 32;
+const int PLATFORM_SIZE_X = 2;
+const int PLATFORM_SIZE_Y = 2;
+
+const int DUCK_SIZE_X = 4;
+const int DUCK_SIZE_Y = 6;
+const int DUCK_TOTAL_SIZE = 24; //Cantidad total de cuadrados que ocupa el pato 4x6=24
+
+const int TILE_SIZE = 8;
 
 const std::vector<std::vector<uint8_t>> colors = {
     {255,255,255}, //blanco

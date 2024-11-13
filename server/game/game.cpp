@@ -32,7 +32,7 @@ Duck* Game::getDuckByPosition(Position position) {
 
 void Game::simulate_round() {
 
-        map.printMap();
+        //map.printMap();
 
         for (auto it = ducks.begin(); it != ducks.end(); ) {  
                 Duck& duck = *it;
@@ -168,8 +168,8 @@ void Game::create_ducks(const std::vector<uint16_t>& ids) {
         std::random_device rd;
         std::mt19937 gen(rd());
 
-        std::uniform_int_distribution<> distrib_x(6, map.get_width() - 6);
-        std::uniform_int_distribution<> distrib_y(1, map.get_width() - 6);
+        std::uniform_int_distribution<> distrib_x(11, map.get_width() - 11);
+        std::uniform_int_distribution<> distrib_y(10, map.get_height() - 15);
 
         for(uint16_t id: ids) {
                 char char_id = static_cast<char>(id + '0');
@@ -182,7 +182,7 @@ void Game::create_ducks(const std::vector<uint16_t>& ids) {
                         random_x = distrib_x(gen);
                         random_y = distrib_y(gen);
 
-                        has_place = map.placeDuck(random_x, random_y, char_id); 
+                        has_place = map.placeDuck(random_x, random_y, char_id);
                 }
 
                 ducks.emplace_back(char_id, random_x, random_y, &map);

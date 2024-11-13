@@ -4,9 +4,9 @@
 #include <common/message.h>
 
 #define DELAY_TIME 60
-#define DUCK_SIZE_X 2 //EN CANTIDAD DE TILE_SIZE
-#define DUCK_SIZE_Y 3 //EN CANTIDAD DE TILE_SIZE
-#define TILE_SIZE 16
+//#define DUCK_SIZE_X 2 //EN CANTIDAD DE TILE_SIZE
+//#define DUCK_SIZE_Y 3 //EN CANTIDAD DE TILE_SIZE
+//#define TILE_SIZE 2
 
 //using namespace SDL2pp;
 
@@ -65,7 +65,7 @@ void SDLHandler::initializeDucks(GameState* game, const int frame_width, const i
                 duck.frame_height = frame_height;
 
                 count++;
-                if (count == 6) {
+                if (count == 24) {
                     game->ducks[game->ducks_quantity] = duck;
                     game->ducks_quantity++;
                     count = 0;
@@ -321,13 +321,7 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
                 game.ducks[pos_id].flipType = SDL_FLIP_NONE;
             }
 
-            if (message.is_moving){
-                game.ducks[pos_id].is_moving = true;
-
-            } else {
-                game.ducks[pos_id].is_moving =false;
-            }
-
+            game.ducks[pos_id].is_moving = message.is_moving;
 
         }
 
