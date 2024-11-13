@@ -5,7 +5,28 @@ Bullet::Bullet(int bullet_id, int start_x, int start_y, int direction_x, int dir
     map(map), impacto(false), duck_id(duck_id), alcance(alcance) {}
 
 void Bullet::comenzar_trayectoria() {
-    update_position();
+    if(alcance <= 0){
+        //si recorrio su maximo tiene que frenar
+        impacto = true;
+    }
+    std::cout << "Comienzo trayectoria desde x: " << position.x << "\n";
+
+
+    int delta_x = position.x + speed.x;
+    int delta_y = position.y + speed.y;
+    Position old_position = position;
+
+    position = map->try_move_bullet_to(position, Position(delta_x, delta_y), duck_id, impacto);
+
+    //impacte contra una pared, por eso estoy en un espacio vacio, asi que borro la bala
+    if(impacto && map->at(position) == ' '){
+        map->cleanBulletOldPosition(old_position);
+
+    } else {
+    //no impacte con nada o impacte con un pato
+        map->cleanBulletOldPosition(old_position);
+        map->setBulletNewPosition(position);
+    }
 }
 
 void Bullet::update_position() {
@@ -17,7 +38,7 @@ void Bullet::update_position() {
     std::cout << "Comienzo trayectoria desde x: " << position.x << "\n";
 
 
-    int delta_x = position.x + speed.x;
+    int delta_x = position.x + speed.x / 2;
     int delta_y = position.y + speed.y;
     Position old_position = position;
 

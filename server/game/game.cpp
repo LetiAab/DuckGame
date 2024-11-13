@@ -34,23 +34,13 @@ void Game::simulate_round() {
 
         //map.printMap();
 
-        for (auto it = ducks.begin(); it != ducks.end(); ) {  
+        for (auto it = ducks.begin(); it != ducks.end(); ) {
                 Duck& duck = *it;
                 duck.update_life();
                 duck.update_position();
                 
                 if (duck.weapon != nullptr) {
-                        for (auto bullet_it = duck.weapon->bullets.begin(); bullet_it != duck.weapon->bullets.end(); ) {
-                                bullet_it->update_position();
-                                
-                                if (bullet_it->hubo_impacto()) {
-                                        bullet_it->cleanPostImpacto();
-                                        bullet_it = duck.weapon->bullets.erase(bullet_it);
-                                        
-                                } else {
-                                        ++bullet_it;
-                                }
-                        }
+                        duck.weapon->update_weapon();
                 }
 
                 // Si el pato está muerto, lo eliminamos de la lista y avisamos al cliente

@@ -8,7 +8,7 @@ void Weapon::disparar(int position_x, int position_y, char looking, GameMap* map
 
 
     if (municiones > 0) {
-        //la bala debe apareces fuera del pato, o sino se mata a si mismo 
+        //la bala debe aparecer fuera del pato, o sino se mata a si mismo 
         int direccion_x = (looking == LOOKING_RIGHT) ? DUCK_SIZE_X : -DUCK_SIZE_X;
         int direccion_y = 0;  // La bala se mueve horizonalmente
 
@@ -51,4 +51,19 @@ double Weapon::getDispersion() const {
 
 int Weapon::getMuniciones() const {
     return municiones;
+}
+
+void Weapon::update_weapon(){
+
+    for(auto it = bullets.begin(); it != bullets.end(); ) {
+        it->update_position();
+
+        // Si hubo un impacto, eliminamos la bala de la lista y el mapa
+        if(it->hubo_impacto()) {
+            it = bullets.erase(it);
+        } else {
+            ++it;
+        }
+    }
+
 }
