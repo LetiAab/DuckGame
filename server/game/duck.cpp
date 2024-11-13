@@ -27,18 +27,23 @@ void Duck::check_gravity(){
 
     if(is_in_air()) {
         if (is_fluttering){
-            speed_y += 1;
+            //si esta aleteando cae a velocidad constante de 1
+            speed_y = DUCK_FALL_POWER;
         }else {
-            speed_y += 2;
+            //sino, cae con aceleracion
+            speed_y += DUCK_FALL_POWER;
         }
         
     }
 
 }
 
-void Duck::update_position() {
-
+void Duck::update_life(){
     if(map->duckIsOverVoid(position.x, position.y)){
+        is_dead = true;
+    }
+
+    if(map->duckIsOverBullet(position)){
         is_dead = true;
     }
 
@@ -46,6 +51,11 @@ void Duck::update_position() {
         map->cleanDuckOldPosition(position.x, position.y);
         return;
     }
+
+}
+
+void Duck::update_position() {
+
     check_gravity();
     
     int delta_x = position.x + speed_x;

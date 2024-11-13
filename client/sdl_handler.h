@@ -16,6 +16,9 @@ struct Duck {
     int x, y;
     SDL_RendererFlip flipType;
     bool is_moving;
+    bool is_jumping;
+    bool is_fluttering;
+    
     int animation_frame; // Contador para controlar la animación
     int current_frame_index; // Índice del fotograma actual en el *sprite sheet*
     int frame_width;

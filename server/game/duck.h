@@ -49,6 +49,8 @@ public:
 
     void update_position();
 
+    void update_life();
+
     void check_gravity();
 
     bool is_in_air();

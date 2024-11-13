@@ -4,9 +4,9 @@
 #include <common/message.h>
 
 #define DELAY_TIME 60
-#define DUCK_SIZE_X 2 //EN CANTIDAD DE TILE_SIZE
-#define DUCK_SIZE_Y 3 //EN CANTIDAD DE TILE_SIZE
-#define TILE_SIZE 16
+//#define DUCK_SIZE_X 2 //EN CANTIDAD DE TILE_SIZE
+//#define DUCK_SIZE_Y 3 //EN CANTIDAD DE TILE_SIZE
+//#define TILE_SIZE 2
 
 //using namespace SDL2pp;
 
@@ -32,8 +32,12 @@ void SDLHandler::loadGame(GameState* game) {
     int frame_height = sp.frame_height;
     SDL_Texture *walk_wings = handle_textures.loadSimpleTexture("duck-walking-wings");
 
+    SpriteSheet sp_jump = handle_textures.loadSpriteSheet("duck-jumping");
+    SDL_Texture *jump_duck = sp_jump.texture;
+
     handle_textures.saveTexture("background", background);
     handle_textures.saveTexture("duck-walking", walk_duck);
+    handle_textures.saveTexture("duck-jumping", jump_duck);
     handle_textures.saveTexture("duck-walking-wings", walk_wings);
     handle_textures.saveTexture("crate", crate_t);
     handle_textures.saveTexture("gun", gun);
@@ -65,7 +69,7 @@ void SDLHandler::initializeDucks(GameState* game, const int frame_width, const i
                 duck.frame_height = frame_height;
 
                 count++;
-                if (count == 6) {
+                if (count == DUCK_TOTAL_SIZE) {
                     game->ducks[game->ducks_quantity] = duck;
                     game->ducks_quantity++;
                     count = 0;
@@ -208,7 +212,7 @@ void SDLHandler::doRenderStatic(SDL_Renderer* renderer, GameState* game) {
 void SDLHandler::doRenderDynamic(SDL_Renderer* renderer, GameState* game, Message& message) {
     for (int i = 0; i < game->ducks_quantity; i++) {
         Duck& duck = game->ducks[i];
-
+        
         // Cambiar el fotograma de animación si el pato está en movimiento
         if (duck.is_moving) {
             duck.current_frame_index = (duck.current_frame_index + 1) % 6;  // Ciclar entre 6 fotogramas
@@ -247,6 +251,9 @@ void SDLHandler::doRenderDynamic(SDL_Renderer* renderer, GameState* game, Messag
         SDL_SetTextureColorMod(wings_texture, colors[i][0], colors[i][1], colors[i][2]);
         SDL_RenderCopyEx(renderer, wings_texture, &src_rect, &duck_rect, 0, NULL, duck.flipType);
         SDL_SetTextureColorMod(wings_texture, 255, 255, 255); //reseteo el color
+
+        
+        
     }
 
     if(message.type == BULLET_POS_UPDATE){
@@ -321,13 +328,11 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
                 game.ducks[pos_id].flipType = SDL_FLIP_NONE;
             }
 
-            if (message.is_moving){
-                game.ducks[pos_id].is_moving = true;
-
-            } else {
-                game.ducks[pos_id].is_moving =false;
-            }
-
+            game.ducks[pos_id].is_moving = message.is_moving;
+            
+            //intente hacer estas animaciones y fallé :(
+            game.ducks[pos_id].is_jumping = message.is_jumping;
+            game.ducks[pos_id].is_fluttering = message.is_fluttering;
 
         }
 

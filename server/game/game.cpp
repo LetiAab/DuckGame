@@ -32,39 +32,24 @@ Duck* Game::getDuckByPosition(Position position) {
 
 void Game::simulate_round() {
 
-        map.printMap();
+        //map.printMap();
 
         for (auto it = ducks.begin(); it != ducks.end(); ) {  
                 Duck& duck = *it;
+                duck.update_life();
                 duck.update_position();
                 
                 if (duck.weapon != nullptr) {
                         for (auto bullet_it = duck.weapon->bullets.begin(); bullet_it != duck.weapon->bullets.end(); ) {
-                        bullet_it->update_position();
-                        
-                        if (bullet_it->hubo_impacto()) {
-                                Position bullet_pos = bullet_it->get_position();
-                                Position bullet_speed = bullet_it->get_speed();
-
-                                bullet_pos.x += bullet_speed.x;
-                                bullet_pos.y += bullet_speed.y;
-
-                                std::cout << "HUBO IMPACTO en x: " << bullet_pos.x << " y:" << bullet_pos.y << std::endl;
-
-                                Duck* duck_hit = getDuckByPosition(bullet_pos);
-                                if (duck_hit == nullptr) {
-                                bullet_it->cleanPostImpacto();
-                                bullet_it = duck.weapon->bullets.erase(bullet_it);
-                                continue;
+                                bullet_it->update_position();
+                                
+                                if (bullet_it->hubo_impacto()) {
+                                        bullet_it->cleanPostImpacto();
+                                        bullet_it = duck.weapon->bullets.erase(bullet_it);
+                                        
+                                } else {
+                                        ++bullet_it;
                                 }
-
-                                duck_hit->get_hit_by_bullet(*bullet_it);
-
-                                bullet_it->cleanPostImpacto();
-                                bullet_it = duck.weapon->bullets.erase(bullet_it);
-                        } else {
-                                ++bullet_it;
-                        }
                         }
                 }
 
@@ -108,11 +93,11 @@ void Game::run() {
         monitor.broadcast(message);
 
         while (is_running) {
-                // saco de 5 comandos de la queue y los ejecuto
+                // saco de 10 comandos de la queue y los ejecuto
                 std::shared_ptr<Executable> command;
 
                 int i = 0;
-                while( i < 5 && game_queue.try_pop(command)){
+                while( i < 10 && game_queue.try_pop(command)){
                         command->execute(*this);
 
                         i += 1;
@@ -147,7 +132,7 @@ void Game::run() {
 
                 // renew_iteration(); para resetear cosas que duren una ronda
 
-                std::this_thread::sleep_for(std::chrono::milliseconds(GAME_TIME_SLEEP));
+                std::this_thread::sleep_for(std::chrono::milliseconds(60));
 
         }
 
@@ -157,7 +142,7 @@ void Game::inicializate_map() {
     // Le doy armas a los patos para probar
     for (Duck& duck : ducks) {
 
-        Weapon* weapon = new Weapon("Pistola Generica", 10, 5, 30);
+        Weapon* weapon = new Weapon("Pistola Generica", 35, 5, 30);
 
         duck.setWeapon(weapon);
     }
@@ -168,8 +153,8 @@ void Game::create_ducks(const std::vector<uint16_t>& ids) {
         std::random_device rd;
         std::mt19937 gen(rd());
 
-        std::uniform_int_distribution<> distrib_x(6, map.get_width() - 6);
-        std::uniform_int_distribution<> distrib_y(1, map.get_width() - 6);
+        std::uniform_int_distribution<> distrib_x(18, map.get_width() - 18);
+        std::uniform_int_distribution<> distrib_y(10, map.get_height() - 20);
 
         for(uint16_t id: ids) {
                 char char_id = static_cast<char>(id + '0');
@@ -182,7 +167,7 @@ void Game::create_ducks(const std::vector<uint16_t>& ids) {
                         random_x = distrib_x(gen);
                         random_y = distrib_y(gen);
 
-                        has_place = map.placeDuck(random_x, random_y, char_id); 
+                        has_place = map.placeDuck(random_x, random_y, char_id);
                 }
 
                 ducks.emplace_back(char_id, random_x, random_y, &map);

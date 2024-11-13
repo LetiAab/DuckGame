@@ -29,6 +29,12 @@ public:
 
     bool canMoveDuckTo(int x, int y, char duck_id);
 
+    void setBulletNewPosition(Position pos);
+
+    void cleanBulletOldPosition(Position pos);
+
+    Position try_move_bullet_to(Position old_position, Position new_position, char duck_id, bool& hit_something);
+
     Position move_duck_to(Position old_position, Position new_position, char duck_id);
 
     void cleanDuckOldPosition(int x, int y);
@@ -60,6 +66,8 @@ public:
     char get_position(int x, int y);
 
     bool duckIsOverVoid(int x, int y);
+
+    bool duckIsOverBullet(Position position);
 
     //METODO TEMPORAL: Imprime el mapa en la consola
     void printMap() const;

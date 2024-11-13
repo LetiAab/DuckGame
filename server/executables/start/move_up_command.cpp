@@ -21,7 +21,7 @@ void MoveUpCommand::execute(Game& game) {
         duck->is_fluttering = true;
     } else {
         //si empieza a saltar
-        duck->speed_y -= DUCK_JUMP_POWER; // Si queremos que salte N casillas cambiar por N
+        duck->speed_y = -DUCK_JUMP_POWER; // Si queremos que salte N casillas cambiar por N
         duck->is_jumping = true;
     }
 
