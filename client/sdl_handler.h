@@ -11,6 +11,7 @@
 
 #include "client_game_map.h" // Si esta es la ubicación del archivo que declara ClientGameMap
 #include "sdl_handletextures.h"
+#include "SDL2pp/Font.hh"
 
 struct Duck {
     int x, y;
@@ -67,6 +68,10 @@ private:
     void doRenderDynamic(SDL_Renderer* renderer, GameState* game, Message& message);
     void doRenderStatic(SDL_Renderer* renderer, GameState* game);
     void render_bullet(SDL_Renderer* renderer, int x, int y, int size);
+    int waitForStartGame(SDL_Renderer* renderer, TTF_Font* font);
+    void showStartScreen(SDL_Renderer* renderer);
+    void showLobbyScreen(SDL_Renderer* renderer, TTF_Font* font);
+    //void loadFont(SDL_Renderer *renderer);
 };
 
 #endif //SDL_HANDLER_H

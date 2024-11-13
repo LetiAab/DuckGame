@@ -2,6 +2,7 @@
 #include <iostream>
 #include <SDL2/SDL_image.h>
 #include <common/message.h>
+#include <SDL2/SDL_ttf.h>
 
 #define DELAY_TIME 60
 //#define DUCK_SIZE_X 2 //EN CANTIDAD DE TILE_SIZE
@@ -20,7 +21,7 @@ SDLHandler::~SDLHandler() {
 
 void SDLHandler::loadGame(GameState* game) {
     // Cargo las texturas
-    handle_textures = SDLHandleTextures(game->renderer);
+    //handle_textures = SDLHandleTextures(game->renderer);
     SDL_Texture *background = handle_textures.loadSimpleTexture("backgrounds/forest");
     SDL_Texture *crate_t = handle_textures.loadSimpleTexture("crate");
     SDL_Texture *gun = handle_textures.loadSimpleTexture("guns/AK-47");
@@ -263,16 +264,149 @@ void SDLHandler::doRenderDynamic(SDL_Renderer* renderer, GameState* game, Messag
     SDL_RenderPresent(renderer);
 }
 
+void SDLHandler::showLobbyScreen(SDL_Renderer *renderer, TTF_Font* font) {
+    SDL_Texture* start_background = handle_textures.loadSimpleTexture("start/galaxy");
+    SDL_RenderCopy(renderer, start_background, NULL, NULL);
+    //loadFont(renderer);
+
+
+
+    // Crear superficie de texto
+    SDL_Surface* surfaceText = TTF_RenderText_Solid(font, "Duck Game!!!", {255, 255, 255, 255});
+
+    // Setup texture
+    SDL_Texture* textureText = SDL_CreateTextureFromSurface(renderer, surfaceText);
+
+    SDL_FreeSurface(surfaceText);
+
+    SDL_Rect textRect = {10, 10, 400, 100};
+
+    SDL_RenderCopy(renderer, textureText, NULL, &textRect);
+
+
+
+    SDL_RenderPresent(renderer);
+    SDL_DestroyTexture(start_background);
+    SDL_DestroyTexture(textureText);
+}
+
+/*void SDLHandler::loadFont(SDL_Renderer *renderer) {
+    if(TTF_Init() == -1) {
+        std::cout << "Could not initialize SDL2 TTF: " << TTF_GetError() << "\n";
+    }
+
+
+    // Cargar fuente
+    TTF_Font* font = TTF_OpenFont("fonts/8bitOperatorPlus8-Regular.ttf", 32);
+    if(font == nullptr) {
+        std::cout << "Could not load font: " << TTF_GetError() << "\n";
+    }
+
+    // Crear superficie de texto
+    SDL_Surface* surfaceText = TTF_RenderText_Solid(font, "Duck  probando", {255, 255, 255});
+
+    // Setup texture
+    SDL_Texture* textureText = SDL_CreateTextureFromSurface(renderer, surfaceText);
+
+    SDL_FreeSurface(surfaceText);
+
+    SDL_Rect textRect = {10, 10, 400, 100};
+
+    SDL_RenderCopy(renderer, textureText, NULL, &textRect);
+
+}*/
+
+
+void SDLHandler::showStartScreen(SDL_Renderer* renderer) {
+    SDL_Texture* start_logo = handle_textures.loadSimpleTexture("start/duckgame_logo");
+    SDL_Point size;
+    SDL_QueryTexture(start_logo, NULL, NULL, &size.x, &size.y);
+    SDL_Rect start_logo_rect = {TILE_SIZE*MATRIX_M/2-size.x/2, TILE_SIZE*MATRIX_N/2-size.y/2, size.x, size.y};
+    SDL_RenderClear(renderer);
+    SDL_RenderCopy(renderer, start_logo, NULL, &start_logo_rect);
+    SDL_RenderPresent(renderer);
+
+    SDL_Delay(2000);
+    // Fade out effect
+    for (int alpha = 255; alpha >= 0; alpha -= 5) {
+        SDL_SetTextureAlphaMod(start_logo, alpha);
+        SDL_RenderClear(renderer);
+        SDL_RenderCopy(renderer, start_logo, NULL, &start_logo_rect);
+        SDL_RenderPresent(renderer);
+        SDL_Delay(30);
+    }
+
+    SDL_RenderClear(renderer);
+    SDL_RenderPresent(renderer);
+    SDL_DestroyTexture(start_logo);
+
+}
+
+int SDLHandler::waitForStartGame(SDL_Renderer* renderer, TTF_Font* font) {
+    int done = SUCCESS;
+    bool start_game = false;
+    SDL_Event event;
+
+    while (!start_game && !done) {
+        showLobbyScreen(renderer, font);
+        while (SDL_PollEvent(&event)) {
+            switch (event.type) {
+                case SDL_WINDOWEVENT_CLOSE:
+                    done = ERROR;
+                    break;
+                case SDL_KEYDOWN:
+                    switch (event.key.keysym.sym) {
+                        case SDLK_RETURN:
+                            start_game = true;
+                            break;
+                        case SDLK_ESCAPE:
+                            done = ERROR;
+                            break;
+                        default:
+                            break;
+                    }
+                break;
+                case SDL_QUIT:
+                    done = ERROR;
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+    return done;
+}
+
 void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& command_queue, uint16_t id, Queue<Message>& message_queue) {
-    GameState game{};
     SDL_Window* window = SDL_CreateWindow("Duck Game",
                                           SDL_WINDOWPOS_UNDEFINED,
                                           SDL_WINDOWPOS_UNDEFINED,
                                           TILE_SIZE*MATRIX_M, TILE_SIZE*MATRIX_N,
                                           0);
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-    game.renderer = renderer;
+    handle_textures = SDLHandleTextures(renderer);
 
+    if(TTF_Init() == -1) {
+        std::cout << "Could not initialize SDL2 TTF: " << TTF_GetError() << "\n";
+    }
+
+
+    // Cargar fuente
+    const std::string path = std::string(FONT_PATH) + "8bitOperatorPlus8-Regular.ttf";
+    TTF_Font* font = TTF_OpenFont(path.c_str(), 32);
+    if(font == nullptr) {
+        std::cout << "Could not load font: " << TTF_GetError() << "\n";
+    }
+
+    showStartScreen(renderer);
+    if(waitForStartGame(renderer, font) == ERROR){
+        SDL_DestroyWindow(window);
+        SDL_DestroyRenderer(renderer);
+        return;
+    }
+
+    GameState game{};
+    game.renderer = renderer;
     game.client_game_map.setMap(map);
     game.command_queue = &command_queue;
     std::cout << "ID: " << id << "\n";
@@ -346,4 +480,5 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
     handle_textures.destroyTextures();
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
+    TTF_CloseFont(font);
 }

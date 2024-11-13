@@ -24,3 +24,6 @@ target_sources(taller_client
 
 # Path de imagenes
 target_compile_definitions(taller_client PRIVATE IMAGE_PATH="${CMAKE_CURRENT_SOURCE_DIR}/imgs/")
+
+#Path de fuentes
+target_compile_definitions(taller_client PRIVATE FONT_PATH="${CMAKE_CURRENT_SOURCE_DIR}/fonts/")
