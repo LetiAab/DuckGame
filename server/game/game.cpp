@@ -112,7 +112,7 @@ void Game::run() {
                 std::shared_ptr<Executable> command;
 
                 int i = 0;
-                while( i < 5 && game_queue.try_pop(command)){
+                while( i < 10 && game_queue.try_pop(command)){
                         command->execute(*this);
 
                         i += 1;
@@ -147,7 +147,7 @@ void Game::run() {
 
                 // renew_iteration(); para resetear cosas que duren una ronda
 
-                std::this_thread::sleep_for(std::chrono::milliseconds(GAME_TIME_SLEEP));
+                std::this_thread::sleep_for(std::chrono::milliseconds(70));
 
         }
 

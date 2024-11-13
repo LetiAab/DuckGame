@@ -27,9 +27,11 @@ void Duck::check_gravity(){
 
     if(is_in_air()) {
         if (is_fluttering){
-            speed_y += 1;
+            //si esta aleteando cae a velocidad constante de 1
+            speed_y = DUCK_FALL_POWER;
         }else {
-            speed_y += 2;
+            //sino, cae con aceleracion
+            speed_y += DUCK_FALL_POWER;
         }
         
     }

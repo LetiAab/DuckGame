@@ -12,7 +12,7 @@ void MoveLeftCommand::execute(Game& game) {
     char char_id = static_cast<char>(player_id + '0');
 
     Duck* duck = game.getDuckById(char_id);
-    duck->speed_x --;
+    duck->speed_x = -DUCK_WALK_POWER;
     duck->is_moving = true;
     duck->looking = LOOKING_LEFT;
 }
