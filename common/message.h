@@ -24,6 +24,10 @@ struct Message {
     int bullet_y;
     int bullet_id;
 
+    int item_x;
+    int item_y;
+    uint8_t item_id;
+
 
 
 };

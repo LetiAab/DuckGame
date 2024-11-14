@@ -22,14 +22,19 @@ Duck::Duck(char id, int x, int y, GameMap* map) :
     onHand(nullptr) {}
 
 bool Duck::is_in_air(){
-    std::cout << "ME FIJO SI ESTYO EN EL AIRE" << "\n";
     return map->canMoveDuckTo(position.x, position.y + 1, id_player);
 }
 
 void Duck::pickUpItem(Item* item) {
+
+    
     if (item != nullptr){
         onHand.reset(item);  
+    } else {
+       std::cout << "No hay nada para agarrar aca!" << "\n";
     }
+
+
 }
 
 void Duck::useOnHand() {
@@ -84,15 +89,15 @@ void Duck::update_position() {
     int delta_x = position.x + speed_x;
     int delta_y = position.y + speed_y;
 
-    std::cout << "Posición antes de mover: (" << position.x << ", " << position.y << ")" << std::endl;
+    //std::cout << "Posición antes de mover: (" << position.x << ", " << position.y << ")" << std::endl;
 
     Position new_pos(delta_x, delta_y);
     old_position = position;
     //mueve al pato a la nueva posicion si esta libre o a la que este libre inmediatamente antes
     position = map->move_duck_to(position, new_pos, id_player);
 
-    std::cout << "Speed X: " << speed_x << ", Speed Y: " << speed_y << std::endl;
-    std::cout << "Posición despues de mover: (" << position.x << ", " << position.y << ")" << std::endl;
+    //std::cout << "Speed X: " << speed_x << ", Speed Y: " << speed_y << std::endl;
+    //std::cout << "Posición despues de mover: (" << position.x << ", " << position.y << ")" << std::endl;
     //map.printMap();
 
     if ((is_jumping || is_fluttering) && !is_in_air()){

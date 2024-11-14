@@ -26,6 +26,14 @@ Message ClientProtocol::receive_message(){
             skt.recvall(message.map[i].data(), MATRIX_M * sizeof(char), &was_closed); // Recibir cada fila
         }
     break;
+
+    case ITEM_POSITION:
+        skt.recvall(&message.item_id, sizeof(uint8_t), &was_closed);
+        skt.recvall(&message.item_x, sizeof(int), &was_closed);
+        skt.recvall(&message.item_y, sizeof(int), &was_closed);
+
+        break;
+
     case BULLET_POS_UPDATE:
         skt.recvall(&message.player_id, 2, &was_closed);
         skt.recvall(&message.bullet_x, sizeof(int), &was_closed);

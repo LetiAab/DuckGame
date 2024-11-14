@@ -94,6 +94,11 @@ void Game::run() {
 
         monitor.broadcast(message);
 
+
+        //creo los items y le mando al server
+        create_items();
+
+
         while (is_running) {
                 // saco de 10 comandos de la queue y los ejecuto
                 std::shared_ptr<Executable> command;
@@ -142,8 +147,6 @@ void Game::run() {
 
 void Game::inicializate_map() {
     // Le doy armas a los patos para probar
-
-    create_items();
     
     for (Duck& duck : ducks) {
 
@@ -180,11 +183,12 @@ void Game::create_ducks(const std::vector<uint16_t>& ids) {
 }
 
 void Game::create_items() {
+
     std::srand(static_cast<unsigned>(std::time(nullptr))); // Inicializar la semilla aleatoria
 
-    for (int i = 0; i < NUM_ITEMS; ++i) {
-        int x = std::rand() % map.get_width();  // Generar posición aleatoria en el mapa
-        int y = std::rand() % map.get_height();
+    for (int i = 0; i < 1; ++i) {
+        int x = 30;//std::rand() % map.get_width();  // Generar posición aleatoria en el mapa
+        int y = 125;//std::rand() % map.get_height();
 
         // Crear un tipo de ítem aleatorio
         int item_type = std::rand() % 3;
@@ -203,7 +207,22 @@ void Game::create_items() {
         //SI YO INTENTO AGARRAR UN ITEM CON "E" INTENTA AGARRAR EL PATO ALGO QUE ESTE EN SU POSICION
         //SI HAY ALGO LO AGARRA SI NO NO. PARA ESTO REVISA LA LISTA DE ITEMS Y BUSCA ALGUNO
         //QUE COINCIDA CON SU POSICION
+
+
+        //mando al cliente donde se creo el item para que lo renderice
+
+        std::cout << "MANDO MENSAJE" << "\n";    
+
+        Message item_position_message;
+        item->getItemPositionMessage(item_position_message);
+        monitor.broadcast(item_position_message);
+        
+        std::cout << "MANDO MENSAJE?" << "\n";    
+
+        //agrego al vector
         items.push_back(std::move(item));
+
+        
     }
 }
 
