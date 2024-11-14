@@ -10,7 +10,8 @@ Bullet::Bullet(int bullet_id, int start_x, int start_y, int direction_x, int dir
     map(map),
     impacto(false),
     duck_id(duck_id),
-    alcance(alcance) {}
+    alcance(alcance),
+    should_erase(false) {}
 
 
 
@@ -28,24 +29,17 @@ void Bullet::update_position() {
 
         std::cout << "Comienzo trayectoria desde x: " << position.x << "\n";
 
-
         int delta_x = position.x + speed.x;
         int delta_y = position.y + speed.y;
         old_position = position;
 
         position = map->try_move_bullet_to(position, Position(delta_x, delta_y), duck_id, impacto);
-        //por ahora, le resto la velocidad en x
+        
+        map->cleanBulletOldPosition(old_position);
+        map->setBulletNewPosition(position);
+        
+        //por ahora, le resto la velocidad en x ya que solo dispara en horizontal
         alcance -= speed.x;
-
-        //impacte contra una pared, por eso estoy en un espacio vacio, asi que borro la bala
-        if(impacto && map->at(position) == ' '){
-            map->cleanBulletOldPosition(old_position);
-
-        } else {
-        //no impacte con nada o impacte con un pato
-            map->cleanBulletOldPosition(old_position);
-            map->setBulletNewPosition(position);
-        }
     }
 
 }
@@ -82,12 +76,22 @@ void Bullet::update_position() {
 }*/
 
 bool Bullet::get_bullet_message(Message& msg){
-    //TODO: Hacer el chequeo de si debo mandar mensaje o no, y devolver false sino
+
+    if(impacto){
+        //si empacte con algo debo eliminar la bala luego de mandar el mensaje
+        should_erase = true;
+    }
+
+    if(position.is_same_position(old_position) ){
+        return false;
+    }
+
     msg.type = BULLET_POS_UPDATE;
     msg.player_id =static_cast<uint16_t>(duck_id - '0');
     msg.bullet_x = position.x;
     msg.bullet_y = position.y;
     msg.bullet_id = bullet_id;
+    //mandar flag del impacto (?)
 
     return true;
 

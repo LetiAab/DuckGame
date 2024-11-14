@@ -18,9 +18,9 @@ private:
 
     GameMap* map;   
     bool impacto;
-    char duck_id; //tengo que saber de quien es la bala para que no se autopegue cuando sale
-
+    char duck_id; //tengo que saber de quien es la bala para que no se autopegue
     int alcance;
+    bool should_erase;
 
 
 public:

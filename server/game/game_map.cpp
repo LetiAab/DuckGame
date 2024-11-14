@@ -75,8 +75,7 @@ void GameMap::cleanBulletOldPosition(Position pos) {
     }
 }
 
-bool GameMap::hit_other_duck(Position pos, char duck_shooting){
-    char e = map[pos.y][pos.x];
+bool GameMap::bullet_hit_other_duck(char e, char duck_shooting){
 
     return (((e == DUCK_1) || (e == DUCK_2) || (e == DUCK_3) || (e == DUCK_4) ||
     (e == DUCK_5) || (e == DUCK_6)) && (e != duck_shooting));
@@ -96,19 +95,20 @@ Position GameMap::try_move_bullet_to(Position old_position, Position new_positio
         int next_y = final_y + dy;
 
         //verifico si la nueva posición está dentro de los límites del mapa
-        if (next_x < 0 || next_x + BULLET_SIZE_X-1 >= width || next_y < 0 || next_y + BULLET_SIZE_Y-1 >= height) {
+        if (next_x < 0 || next_x + BULLET_SIZE_X > width || next_y < 0 || next_y + BULLET_SIZE_Y > height) {
             break;
         }
 
         
         for (int y = next_y; y < next_y + BULLET_SIZE_Y; ++y) {
             for (int x = next_x; x < next_x + BULLET_SIZE_X; ++x) {
+
                 if (map[y][x] == PLATFORM) {
                     // Caso 1: choque con una plataforma
                     hit_something = true;
                     return Position(final_x, final_y);  // devuelvo la posición actual
                 }
-                else if (map[y][x] >= DUCK_1 && map[y][x] <= DUCK_6 && map[y][x] != duck_id) {
+                else if (bullet_hit_other_duck(map[y][x], duck_id)) {
                     // Caso 2: choque con otro pato
                     hit_something = true;
                     // avanzo una posición más para que la bala quede "dentro" del pato

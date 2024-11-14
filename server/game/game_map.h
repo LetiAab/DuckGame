@@ -14,7 +14,6 @@ private:
     int height;
     std::vector<std::vector<char>> map;
 
-    bool hit_other_duck(Position pos, char duck_shooting);
 
 public:
     GameMap(int width, int height);
@@ -22,6 +21,8 @@ public:
     bool placeDuck(int x, int y, char duck_id);
 
     bool is_duck_touching_floor(int x, int y);
+
+    bool bullet_hit_other_duck(char e, char duck_shooting);
 
     bool is_element_touching_floor(int x, int y, int size_x, int size_y);
 
