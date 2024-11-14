@@ -315,8 +315,8 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
         //LUEGO RECIBO DEL SERVER Y HAGO EL RENDER
         Message message;
         message_queue.try_pop(message);
-        //TODO: MODULARIZAR
-        
+
+        //TODO: MODULARIZAr
         if(message.type == ITEM_POSITION){
 
             //RENDERIZAR LOS ITEMS bien 
@@ -325,6 +325,24 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
             item.y = message.item_y * TILE_SIZE;
             game.items.push_back(item);
         }
+
+        if(message.type == DUCK_PICKUP_ITEM){
+            
+            std::cout << "ME PONGO EL ITEM EN LA MANO" << "\n";
+            //aca te fijas en el mensaje el DUCK ID y el ITEM ID.
+            //cuando recibis esto tenes que renderizarle al pato con DUCK ID el ITEM ID 
+            //EN LA MANO. OSEA TODABIA NO LO TIENE PUESTO. con las armas es lo mismo
+            //LA DIFERENCIA ES CUANDO AGARRO UNA ARMADURA O CASCO
+        }
+
+        if(message.type == DUCK_EQUIP_ITEM){
+
+            std::cout << "ME EQUIPO EL ITEM QUE TENGO EN LA MANO" << "\n";
+
+            //SI RECIBO ESTO AHORA SI ME TENGO QUE PONER LA ARMADURA O EMPUÑAR EL ARMA
+        }
+
+
 
         if(message.type == BULLET_POS_UPDATE){
 
@@ -340,6 +358,8 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
             game.ducks[pos_id].x = 400 * TILE_SIZE;
             game.ducks[pos_id].y = 400 * TILE_SIZE;
         }
+
+
 
         if (message.type == DUCK_POS_UPDATE){
 

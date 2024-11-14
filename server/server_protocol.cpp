@@ -66,6 +66,28 @@ bool ServerProtocol::send_message(Message& message){
 
         break;
 
+    case DUCK_PICKUP_ITEM:
+        if (!skt.sendall(&message.player_id, sizeof(message.player_id), &was_closed) || was_closed) {
+            return false;
+        }
+
+        if (!skt.sendall(&message.item_id, sizeof(message.item_id), &was_closed) || was_closed) {
+            return false;
+        }
+        break;
+
+    case DUCK_EQUIP_ITEM:
+        if (!skt.sendall(&message.player_id, sizeof(message.player_id), &was_closed) || was_closed) {
+            return false;
+        }
+
+        if (!skt.sendall(&message.item_id, sizeof(message.item_id), &was_closed) || was_closed) {
+            return false;
+        }
+        break;
+
+
+
     case ITEM_POSITION:
         if (!skt.sendall(&message.item_id, sizeof(message.item_id), &was_closed) || was_closed) {
             return false;

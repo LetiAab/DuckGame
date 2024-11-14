@@ -1,7 +1,8 @@
 #include "item.h"
 
-Item::Item(int x, int y) : position(x, y) {}
-
+Item::Item(uint16_t item_id, int x, int y) 
+    : item_id(item_id), position(x, y) {}
+    
 Position Item::getPosition() const {
     return position;
 }

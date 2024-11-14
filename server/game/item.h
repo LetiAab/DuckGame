@@ -6,19 +6,19 @@
 #include "common/constants.h"
 #include "common/message.h"
 
-
 class Item {
 protected:
-    Position position;  // Cada item tendrá una posición
+    uint16_t item_id;  
+    Position position; 
 
 public:
-    Item(int x = 0, int y = 0);  // Constructor con posición por defecto
+    Item(uint16_t item_id, int x = 0, int y = 0); 
     virtual ~Item() = default;
 
-    Position getPosition() const;  // Método para obtener la posición del item
-    void setPosition(int x, int y);  // Método para cambiar la posición del item
-    bool getItemPositionMessage(Message& msg);
-
+    uint16_t getItemId() const { return item_id; } 
+    Position getPosition() const;                  
+    void setPosition(int x, int y);                
+    bool getItemPositionMessage(Message& msg);      
 };
 
 #endif // ITEM_H

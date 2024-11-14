@@ -54,12 +54,16 @@ const uint8_t TAKE_ITEM = 0x34;
 
 const uint8_t ITEM_POSITION = 0x35;
 
+const uint8_t DUCK_PICKUP_ITEM = 0x36;
+const uint8_t DUCK_EQUIP_ITEM = 0x37;
+
+
 
 
 //VOY A NECESITAR IDS PARA QUE SEPAN QUE ITEM RENDERERIZAR 
-const uint8_t ARMOR_ID = 0x36;
-const uint8_t HELMET_ID = 0x37;
-const uint8_t WEAPON_1_ID = 0x38;
+const uint8_t ARMOR_ID = 0x38;
+const uint8_t HELMET_ID = 0x39;
+const uint8_t WEAPON_1_ID = 0x40;
 // ...
 
 

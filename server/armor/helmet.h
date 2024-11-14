@@ -2,6 +2,8 @@
 #define HELMET_H
 
 #include "../game/item.h"
+#include "common/constants.h"
+
 
 class Helmet : public Item {
 public:

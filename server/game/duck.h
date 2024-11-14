@@ -73,8 +73,9 @@ public:
     void setArmor(Armor* new_armor);
     void setHelmet(Helmet* new_helmet);
 
-    void pickUpItem(Item* item);
+    bool pickUpItem(Item* item);
     void useOnHand();
+    Item* getItemOnHand() const;
 
     void disparar();
     void get_hit_by_bullet(Bullet bullet);

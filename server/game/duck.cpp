@@ -25,16 +25,17 @@ bool Duck::is_in_air(){
     return map->canMoveDuckTo(position.x, position.y + 1, id_player);
 }
 
-void Duck::pickUpItem(Item* item) {
+bool Duck::pickUpItem(Item* item) {
 
     
     if (item != nullptr){
         std::cout << "Agarro el item" << "\n";
         onHand.reset(item);  
-    } else {
-       std::cout << "No hay nada para agarrar aca!" << "\n";
-    }
-
+        return true;
+    } 
+    
+    std::cout << "No hay nada para agarrar aca!" << "\n";
+    return false;
 
 }
 
@@ -192,4 +193,8 @@ void Duck::get_hit_by_bullet(Bullet bullet) {
 
 Position Duck::getPosition(){
     return position;
+}
+
+Item* Duck::getItemOnHand() const {
+    return onHand ? onHand.get() : nullptr;
 }

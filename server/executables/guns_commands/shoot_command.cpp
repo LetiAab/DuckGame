@@ -15,8 +15,18 @@ void ShootCommand::execute(Game& game) {
     Duck* duck = game.getDuckById(char_id);
 
     if (duck->onHand) {
-        std::cout << "Jugador " << player_id << " usa el item en mano\n";
+        std::cout << "Jugador " << player_id << " se equipa el item en mano\n";
+        Message msg;
+        msg.type = DUCK_EQUIP_ITEM;
+        msg.item_id = duck->getItemOnHand()->getItemId();
+        msg.player_id = player_id;
+        
         duck->useOnHand(); 
+
+        //aviso que el mato se equipo un item
+        game.game_broadcast(msg);
+
+
     } else {
         std::cout << "Jugador " << player_id << " dispara con su arma\n";
         duck->disparar(); 
