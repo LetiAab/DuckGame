@@ -28,6 +28,7 @@ private:
 
 
     void form_position_message(Message& msg);
+    void check_gravity();
 
 
 public:
@@ -53,8 +54,6 @@ public:
 
     void update_weapon();
 
-    void check_gravity();
-
     bool is_in_air();
 
     bool get_duck_position_message(Message& msg);
@@ -67,7 +66,6 @@ public:
 
     void disparar();
 
-    void get_hit_by_bullet(Bullet bullet);
 };
 
 #endif // DUCK_H

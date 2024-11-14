@@ -98,7 +98,7 @@ bool Bullet::get_bullet_message(Message& msg){
 }
 
 void Bullet::cleanPostImpacto(){
-    map->cleanBulletOldPosition(position.x, position.y);
+    map->cleanBulletOldPosition(position);
 }
 
 void Bullet::impactar(){

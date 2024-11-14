@@ -18,7 +18,6 @@ Duck::Duck(char id, int x, int y, GameMap* map) :
     is_dead(false) {}
 
 bool Duck::is_in_air(){
-    std::cout << "ME FIJO SI ESTYO EN EL AIRE" << "\n";
     return map->canMoveDuckTo(position.x, position.y + 1, id_player);
 }
 
@@ -49,6 +48,7 @@ void Duck::update_life(){
 
     if (is_dead) {
         map->cleanDuckOldPosition(position.x, position.y);
+        std::cout << "soy el pato muerto, me borre del mapa" << "\n";
         return;
     }
 
@@ -61,16 +61,11 @@ void Duck::update_position() {
     int delta_x = position.x + speed_x;
     int delta_y = position.y + speed_y;
 
-    std::cout << "Posición antes de mover: (" << position.x << ", " << position.y << ")" << std::endl;
 
     Position new_pos(delta_x, delta_y);
     old_position = position;
     //mueve al pato a la nueva posicion si esta libre o a la que este libre inmediatamente antes
     position = map->move_duck_to(position, new_pos, id_player);
-
-    std::cout << "Speed X: " << speed_x << ", Speed Y: " << speed_y << std::endl;
-    std::cout << "Posición despues de mover: (" << position.x << ", " << position.y << ")" << std::endl;
-    //map.printMap();
 
     if ((is_jumping || is_fluttering) && !is_in_air()){
         //si esta saltando o aleteando pero no esta en el aire, significa que aterrizo
@@ -146,21 +141,6 @@ void Duck::disparar() {
 
    if (weapon != nullptr) {
         weapon->disparar(position.x, position.y, looking, map, id_player);
-    }
-}
-
-void Duck::get_hit_by_bullet(Bullet bullet) {
-    // Nota: recibo bullet para en un futuro preguntar por cuanto daño hace o algo del estilo, ahora no se usa
-
-    std::cout << "Me dio una bala, -20, x=" << bullet.get_position().x << std::endl;
-
-
-    life_points -= 20;
-    if (life_points <= 0) {
-        is_dead = true;
-        std::cout << "Ahora estoy muerto, me dio una bala :(" << std::endl;
-        map->cleanDuckOldPosition(position.x, position.y);
-        
     }
 }
 
