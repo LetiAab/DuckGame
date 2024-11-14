@@ -148,12 +148,12 @@ void Game::run() {
 void Game::inicializate_map() {
     // Le doy armas a los patos para probar
     
-    for (Duck& duck : ducks) {
+    /*for (Duck& duck : ducks) {
 
         Weapon* weapon = new Weapon("Pistola Generica", 35, 5, 30);
 
         duck.setWeapon(weapon);
-    }
+    }*/
 }
 
 //TODO: Esto solo sirve para dos patos y siempre tiene en cuenta que es el mismo distribucion de obstaculos
@@ -191,7 +191,7 @@ void Game::create_items() {
         int y = 125;//std::rand() % map.get_height();
 
         // Crear un tipo de ítem aleatorio
-        int item_type = std::rand() % 3;
+        int item_type = 0;//std::rand() % 3;
         std::unique_ptr<Item> item;
 
         if (item_type == 0) {
@@ -236,14 +236,27 @@ Duck* Game::getDuckById(char id) {
 }
 
 Item* Game::getItemByPosition(Position position) {
+    // Coordenadas del área del pato
+    int area_x_min = position.x;
+    int area_x_max = position.x + DUCK_SIZE_X;
+    int area_y_min = position.y;
+    int area_y_max = position.y + DUCK_SIZE_Y;
+
+    std::cout << "Buscando item en el área del pato desde X: " << area_x_min << " hasta X: " << area_x_max
+              << ", y desde Y: " << area_y_min << " hasta Y: " << area_y_max << "\n";
+
     for (auto& item_ptr : items) {
-        if (item_ptr->getPosition().x == position.x && item_ptr->getPosition().y == position.y) {
-            return item_ptr.get(); // Retorna el puntero al item encontrado
+        Position itemPos = item_ptr->getPosition();
+
+
+        if (itemPos.x >= area_x_min && itemPos.x < area_x_max &&
+            itemPos.y >= area_y_min && itemPos.y < area_y_max) {
+            return item_ptr.get(); 
         }
     }
-    return nullptr; // Retorna nullptr si no se encuentra el item
-}
 
+    return nullptr; 
+}
 void Game::game_broadcast(Message message){
         monitor.broadcast(message);
 }

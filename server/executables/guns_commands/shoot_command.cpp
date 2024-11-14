@@ -14,14 +14,13 @@ void ShootCommand::execute(Game& game) {
 
     Duck* duck = game.getDuckById(char_id);
 
-    // Ejecutar el disparo: veo si hay balas, resto las balas, pongo la bala en el mapa y le doy un movimiento
-    //Arma* gun = duck->gun;
-    //if (!gun)
-    //    return;
-    
-    //Proyectil* projectile = gun->disparar();
-
-    duck->disparar();
+    if (duck->onHand) {
+        std::cout << "Jugador " << player_id << " usa el item en mano\n";
+        duck->useOnHand(); 
+    } else {
+        std::cout << "Jugador " << player_id << " dispara con su arma\n";
+        duck->disparar(); 
+    }
 
 
 

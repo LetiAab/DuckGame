@@ -29,6 +29,7 @@ void Duck::pickUpItem(Item* item) {
 
     
     if (item != nullptr){
+        std::cout << "Agarro el item" << "\n";
         onHand.reset(item);  
     } else {
        std::cout << "No hay nada para agarrar aca!" << "\n";
@@ -151,14 +152,17 @@ char Duck::get_id() const {
 
 
 void Duck::setWeapon(Weapon* new_weapon) {
+    std::cout << "ASIGNO NUEVA ARMA" << "\n";
     weapon = new_weapon;  // Asigna el arma al pato
 }
 
 void Duck::setArmor(Armor* new_armor) {
+    std::cout << "ASIGNO NUEVA ARMADURA" << "\n";
     armor = new_armor;  // Asigna el arma al pato
 }
 
 void Duck::setHelmet(Helmet* new_helmet) {
+    std::cout << "ASIGNO NUEVO CASCO" << "\n";
     helmet = new_helmet;  // Asigna el arma al pato
 }
 
