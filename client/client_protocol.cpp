@@ -88,6 +88,7 @@ bool ClientProtocol::send_command(Command command){
     case STOP_UP:
     case STOP_DOWN:
     case SHOOT:
+    case TAKE_ITEM:
 
         if (!skt.sendall(&command.type, sizeof(command.type), &was_closed) || was_closed) {
             return false;

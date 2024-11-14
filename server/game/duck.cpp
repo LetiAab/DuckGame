@@ -27,7 +27,9 @@ bool Duck::is_in_air(){
 }
 
 void Duck::pickUpItem(Item* item) {
-    onHand.reset(item);  
+    if (item != nullptr){
+        onHand.reset(item);  
+    }
 }
 
 void Duck::useOnHand() {
@@ -178,3 +180,7 @@ void Duck::get_hit_by_bullet(Bullet bullet) {
     }
 }
 
+
+Position Duck::getPosition(){
+    return position;
+}

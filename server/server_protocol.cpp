@@ -182,8 +182,9 @@ std::shared_ptr<Executable> ServerProtocol::receive_command(){
     case STOP_DOWN:
         return std::make_shared<StopMoveCommand>(player_id);
     case SHOOT:
-        std::cout << "RECIBO QUE TENGO QUE DISPARAR" << "\n";
         return std::make_shared<ShootCommand>(player_id);
+    case TAKE_ITEM:
+        return std::make_shared<TakeItemCommand>(player_id);
     case EXIT_GAME:
         break;
     default:

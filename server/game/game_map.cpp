@@ -10,6 +10,7 @@ const char DUCK_4 = '4';
 const char DUCK_5 = '5';
 const char DUCK_6 = '6';
 const char PLATFORM = 'P';
+const char ITEM = 'I';
 
 const char VOID = 'V'; //VACIO
 
@@ -186,14 +187,9 @@ Position GameMap::move_duck_to(Position old_position, Position new_position, cha
 }
 
 bool GameMap::duckIsOverVoid(int x, int y) {
-    std::cout << "REVISO SI ESTOY SOBRE EL VACIO" << "\n";
-
-    std::cout << "Valores: x = " << x << ", y = " << y 
-              << ", width = " << width << ", height = " << height << std::endl;
 
     // Verifica si el pato esta sobre el vacio
     if (map[y + DUCK_SIZE_Y][x] == VOID) {
-        std::cout << "ESTOY SOBRE EL VACIO" << "\n";
         return true;
     }
 
@@ -201,7 +197,6 @@ bool GameMap::duckIsOverVoid(int x, int y) {
 }
 
 bool GameMap::duckIsOverBullet(Position position) {
-    std::cout << "REVISO SI ME PEGO UNA BALA" << "\n";
 
     // Verifica si el pato fue golpeado por una bala
     for (int i = position.x; i < position.x + DUCK_SIZE_X; ++i) {
@@ -452,6 +447,7 @@ void GameMap::setDuckNewPosition(int x, int y, char duck_id) {
         }
     }
 }
+
 
 
 

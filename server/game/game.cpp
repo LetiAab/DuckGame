@@ -11,6 +11,8 @@ const char DUCK_4 = '4';
 const char DUCK_5 = '5';
 const char DUCK_6 = '6';
 
+const int NUM_ITEMS = 10;
+
 //TODO: Tamanio del mapa hardcodeado
 Game::Game(uint16_t match_id, GameQueueMonitor& monitor):
 match_id(match_id), monitor(monitor), is_running(true), game_queue(), map(MATRIX_M, MATRIX_N){}
@@ -140,8 +142,8 @@ void Game::run() {
 
 void Game::inicializate_map() {
     // Le doy armas a los patos para probar
-    
 
+    create_items();
     
     for (Duck& duck : ducks) {
 
@@ -177,6 +179,33 @@ void Game::create_ducks(const std::vector<uint16_t>& ids) {
         }
 }
 
+void Game::create_items() {
+    std::srand(static_cast<unsigned>(std::time(nullptr))); // Inicializar la semilla aleatoria
+
+    for (int i = 0; i < NUM_ITEMS; ++i) {
+        int x = std::rand() % map.get_width();  // Generar posición aleatoria en el mapa
+        int y = std::rand() % map.get_height();
+
+        // Crear un tipo de ítem aleatorio
+        int item_type = std::rand() % 3;
+        std::unique_ptr<Item> item;
+
+        if (item_type == 0) {
+            item = std::make_unique<Weapon>("Nombre", 100.0, 1.5, 30, x, y);
+        } else if (item_type == 1) {
+            item = std::make_unique<Armor>(x, y);
+        } else {
+            item = std::make_unique<Helmet>(x, y);
+        }
+
+        // Agregar el ítem al vector de ítems 
+        //NO NECESITO A LOS ITEMS EN LA MATRIZ DE COLICIONES PORQUE NO COLICIONAN
+        //SI YO INTENTO AGARRAR UN ITEM CON "E" INTENTA AGARRAR EL PATO ALGO QUE ESTE EN SU POSICION
+        //SI HAY ALGO LO AGARRA SI NO NO. PARA ESTO REVISA LA LISTA DE ITEMS Y BUSCA ALGUNO
+        //QUE COINCIDA CON SU POSICION
+        items.push_back(std::move(item));
+    }
+}
 
 Duck* Game::getDuckById(char id) {
         for (auto& duck : ducks) {
@@ -187,6 +216,14 @@ Duck* Game::getDuckById(char id) {
         return nullptr; // Retorna nullptr si no se encuentra el pato
 }
 
+Item* Game::getItemByPosition(Position position) {
+    for (auto& item_ptr : items) {
+        if (item_ptr->getPosition().x == position.x && item_ptr->getPosition().y == position.y) {
+            return item_ptr.get(); // Retorna el puntero al item encontrado
+        }
+    }
+    return nullptr; // Retorna nullptr si no se encuentra el item
+}
 
 void Game::game_broadcast(Message message){
         monitor.broadcast(message);

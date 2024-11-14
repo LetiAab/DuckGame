@@ -78,6 +78,8 @@ public:
 
     void disparar();
     void get_hit_by_bullet(Bullet bullet);
+
+    Position getPosition();
 };
 
 #endif // DUCK_H

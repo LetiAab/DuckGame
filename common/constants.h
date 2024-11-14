@@ -50,6 +50,13 @@ const uint8_t BULLET_POS_UPDATE = 0x32;
 
 const uint8_t KILL_DUCK = 0x33;
 
+const uint8_t TAKE_ITEM = 0x34;
+
+const uint8_t ITEM_POSITION = 0x35;
+
+
+
+
 
 static const char QUIT_SERVER[] = "q";
 

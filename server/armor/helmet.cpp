@@ -1,3 +1,3 @@
-#include "Helmet.h"
+#include "helmet.h"
 
 Helmet::Helmet(int x, int y) : Item(x, y) {}

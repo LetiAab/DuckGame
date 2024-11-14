@@ -135,6 +135,11 @@ int SDLHandler::processEvents(SDL_Window* window, GameState* game, uint16_t id) 
                         case SDLK_f:
                             move = SHOOT;
                             positionUpdated = true;
+                            break;
+                        case SDLK_e:
+                            move = TAKE_ITEM;
+                            positionUpdated = true;
+                            break;
                         default:
                             break;
                     }

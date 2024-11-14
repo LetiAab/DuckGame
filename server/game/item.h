@@ -2,6 +2,7 @@
 #define ITEM_H
 
 #include "common/position.h"
+#include <memory>
 
 class Item {
 protected:
