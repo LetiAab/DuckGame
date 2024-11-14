@@ -84,7 +84,22 @@ void Duck::update_position() {
     }
 
 }
+void Duck::update_weapon(){
+    if (weapon != nullptr) {
+        weapon->update_weapon();
+    }
+}
 
+bool Duck::get_duck_dead_message(Message& msg){
+    if (!is_dead){
+        return false;
+    }
+
+    msg.type = KILL_DUCK;
+    msg.player_id = static_cast<uint16_t>(id_player - '0');
+    return true;
+    
+}
 void Duck::form_position_message(Message& msg){
     msg.type = DUCK_POS_UPDATE;
     msg.player_id = static_cast<uint16_t>(id_player - '0'); // Convertimos el id a int

@@ -51,11 +51,15 @@ public:
 
     void update_life();
 
+    void update_weapon();
+
     void check_gravity();
 
     bool is_in_air();
 
     bool get_duck_position_message(Message& msg);
+
+    bool get_duck_dead_message(Message& msg);
 
     char get_id() const;
 
