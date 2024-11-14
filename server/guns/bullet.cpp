@@ -79,6 +79,7 @@ bool Bullet::get_bullet_message(Message& msg){
 
     if(impacto){
         //si empacte con algo debo eliminar la bala luego de mandar el mensaje
+        cleanPostImpacto();
         should_erase = true;
     }
 

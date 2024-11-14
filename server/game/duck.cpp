@@ -56,6 +56,8 @@ void Duck::update_life(){
 
 void Duck::update_position() {
 
+    if(is_dead){return;}
+
     check_gravity();
     
     int delta_x = position.x + speed_x;
@@ -77,9 +79,12 @@ void Duck::update_position() {
     if(!is_in_air()){
         speed_y = 0;
     }
+    
 
 }
 void Duck::update_weapon(){
+    if(is_dead){return;}
+    
     if (weapon != nullptr) {
         weapon->update_weapon();
     }
