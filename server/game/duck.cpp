@@ -198,3 +198,15 @@ Position Duck::getPosition(){
 Item* Duck::getItemOnHand() const {
     return onHand ? onHand.get() : nullptr;
 }
+
+bool Duck::dropWeapon() {
+    if (weapon) {
+        std::cout << "El jugador " << id_player << " deja caer su arma: " << std::endl;
+        //SE ELIMINA LA REFERENCIA SOLAMENTE
+        weapon = nullptr;
+        return true;
+        
+    } 
+
+    return false;
+}

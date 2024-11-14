@@ -44,6 +44,9 @@ Message ClientProtocol::receive_message(){
         skt.recvall(&message.item_id, sizeof(uint8_t), &was_closed);
         break;
 
+    case DROP_WEAPON:
+        skt.recvall(&message.player_id, 2, &was_closed);
+        break;
 
     case BULLET_POS_UPDATE:
         skt.recvall(&message.player_id, 2, &was_closed);
@@ -108,6 +111,7 @@ bool ClientProtocol::send_command(Command command){
     case STOP_DOWN:
     case SHOOT:
     case TAKE_ITEM:
+    case DROP_WEAPON:
 
         if (!skt.sendall(&command.type, sizeof(command.type), &was_closed) || was_closed) {
             return false;

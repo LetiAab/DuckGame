@@ -140,6 +140,11 @@ int SDLHandler::processEvents(SDL_Window* window, GameState* game, uint16_t id) 
                             move = TAKE_ITEM;
                             positionUpdated = true;
                             break;
+
+                        case SDLK_q:
+                            move = DROP_WEAPON;
+                            positionUpdated = true;
+                            break;
                         default:
                             break;
                     }
@@ -340,6 +345,10 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
             std::cout << "ME EQUIPO EL ITEM QUE TENGO EN LA MANO" << "\n";
 
             //SI RECIBO ESTO AHORA SI ME TENGO QUE PONER LA ARMADURA O EMPUÑAR EL ARMA
+        }
+
+        if(message.type == DROP_WEAPON){
+            std::cout << "SUELTO EL ARMA" << "\n";
         }
 
 

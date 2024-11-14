@@ -73,6 +73,8 @@ public:
     void setArmor(Armor* new_armor);
     void setHelmet(Helmet* new_helmet);
 
+    bool dropWeapon();
+
     bool pickUpItem(Item* item);
     void useOnHand();
     Item* getItemOnHand() const;

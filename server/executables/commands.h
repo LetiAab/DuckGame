@@ -10,6 +10,8 @@
 
 #include "guns_commands/shoot_command.h"
 #include "guns_commands/take_item_command.h"
+#include "guns_commands/drop_weapon_command.h"
+
 
 
 #endif  // EXECUTABLES_COMMANDS_H
