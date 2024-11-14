@@ -400,7 +400,7 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
         doRenderDynamic(renderer, &game, message);
 
         //REVISAR ESTO NO CREO QUE ESTÉ BIEN RENDERIZARLO EN CADA LOOP
-        renderItems(renderer, &game);
+        //renderItems(renderer, &game);
 
         SDL_Delay(DELAY_TIME);
     }
