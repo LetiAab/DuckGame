@@ -28,7 +28,7 @@ public:
     void comenzar_trayectoria();
     void update_position();
 
-    bool hubo_impacto();
+    bool should_erase_bullet();
     void cleanPostImpacto();
     void impactar();
 

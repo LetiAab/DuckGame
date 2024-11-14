@@ -1,4 +1,5 @@
 #include "bullet.h"
+#include <cmath> 
 
 Bullet::Bullet(int bullet_id, int start_x, int start_y, int direction_x, int direction_y, GameMap* map, char duck_id, int alcance) 
     : bullet_id(bullet_id),
@@ -16,7 +17,10 @@ Bullet::Bullet(int bullet_id, int start_x, int start_y, int direction_x, int dir
 
 
 void Bullet::comenzar_trayectoria() {
+    //al principio la bala tiene una velocidad de DUCK_SIZE_X
+    //para que aparezca fuera del pato que la disparo
     update_position();
+    //despues la velocidad deberia ser la correcta, por ahora solo la divido por 2 (o sea 5)
     speed.x = speed.x / 2;
 }
 
@@ -39,7 +43,7 @@ void Bullet::update_position() {
         map->setBulletNewPosition(position);
         
         //por ahora, le resto la velocidad en x ya que solo dispara en horizontal
-        alcance -= speed.x;
+        alcance -= std::abs(speed.x);
     }
 
 }
@@ -106,8 +110,9 @@ void Bullet::impactar(){
     impacto = true;
 }
 
-bool Bullet::hubo_impacto(){
-    return impacto;
+
+bool Bullet::should_erase_bullet(){
+    return should_erase;
 }
 
 Position Bullet::get_position() {
