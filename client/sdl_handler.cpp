@@ -5,13 +5,10 @@
 #include <SDL2/SDL_ttf.h>
 
 #define DELAY_TIME 60
-//#define DUCK_SIZE_X 2 //EN CANTIDAD DE TILE_SIZE
-//#define DUCK_SIZE_Y 3 //EN CANTIDAD DE TILE_SIZE
-//#define TILE_SIZE 2
 
 //using namespace SDL2pp;
 
-SDLHandler::SDLHandler(): handle_textures(SDLHandleTextures(nullptr)) {
+SDLHandler::SDLHandler(): handle_textures(TextureHandler(nullptr)), eventProcessor() {
     SDL_Init(SDL_INIT_VIDEO);
 }
 
@@ -21,7 +18,7 @@ SDLHandler::~SDLHandler() {
 
 void SDLHandler::loadGame(GameState* game) {
     // Cargo las texturas
-    //handle_textures = SDLHandleTextures(game->renderer);
+    //handle_textures = TextureHandler(game->renderer);
     SDL_Texture *background = handle_textures.loadSimpleTexture("backgrounds/forest");
     SDL_Texture *crate_t = handle_textures.loadSimpleTexture("crate");
     SDL_Texture *gun = handle_textures.loadSimpleTexture("guns/AK-47");
@@ -92,99 +89,6 @@ void SDLHandler::initializeCrates(GameState* game) {
             }
         }
     }
-}
-
-int SDLHandler::processEvents(SDL_Window* window, GameState* game, uint16_t id) {
-    int done = SUCCESS;
-    bool positionUpdated = false;
-    SDL_Event event;
-    uint8_t move = 0;
-
-    while (SDL_PollEvent(&event)) {
-        switch (event.type) {
-            case SDL_WINDOWEVENT_CLOSE:
-                if (window) {
-                    SDL_DestroyWindow(window);
-                    window = NULL;
-                    done = ERROR;
-                }
-                break;
-
-            case SDL_KEYDOWN:
-                if (!keyState[event.key.keysym.sym]) {// solo si la tecla no estaba ya presionada
-                    keyState[event.key.keysym.sym] = true;
-                    switch (event.key.keysym.sym) {
-                        case SDLK_ESCAPE:
-                            done = ERROR;
-                            break;
-                        case SDLK_a:
-                            move = MOVE_LEFT;
-                            positionUpdated = true;
-                            break;
-                        case SDLK_d:
-                            move = MOVE_RIGHT;
-                            positionUpdated = true;
-                            break;
-                        case SDLK_w:
-                            move = MOVE_UP;
-                            positionUpdated = true;
-                            break;
-                        case SDLK_s:
-                            move = MOVE_DOWN;
-                            positionUpdated = true;
-                            break;
-                        case SDLK_f:
-                            move = SHOOT;
-                            positionUpdated = true;
-                        default:
-                            break;
-                    }
-                }
-                break;
-
-            case SDL_KEYUP:
-                if (keyState[event.key.keysym.sym]) {//solo si la tecla estaba presionada
-                    keyState[event.key.keysym.sym] = false;
-                    switch (event.key.keysym.sym) {
-                        case SDLK_a:
-                            move = STOP_LEFT;
-                            positionUpdated = true;
-                            break;
-                        case SDLK_d:
-                            move = STOP_RIGHT;
-                            positionUpdated = true;
-                            break;
-                        case SDLK_w:
-                            move = STOP_UP;
-                            positionUpdated = true;
-                            break;
-                        case SDLK_s:
-                            move = STOP_DOWN;
-                            positionUpdated = true;
-                            break;
-
-                        //stop shoot?
-                        default:
-                            break;
-                    }
-                }
-                break;
-
-            case SDL_QUIT:
-                done = ERROR;
-                break;
-
-            default:
-                break;
-        }
-    }
-
-    if (positionUpdated) {
-        auto cmd = Command(id, move);
-        game->command_queue->push(cmd);
-    }
-
-    return done;
 }
 
 void SDLHandler::render_bullet(SDL_Renderer* renderer, int x, int y, int size = 20) {
@@ -399,10 +303,10 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
     SDL_Window* window = SDL_CreateWindow("Duck Game",
                                           SDL_WINDOWPOS_UNDEFINED,
                                           SDL_WINDOWPOS_UNDEFINED,
-                                          TILE_SIZE*MATRIX_M, TILE_SIZE*MATRIX_N,
+                                          WINDOW_WIDTH, WINDOW_HEIGHT,
                                           0);
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-    handle_textures = SDLHandleTextures(renderer);
+    handle_textures = TextureHandler(renderer);
 
     if(TTF_Init() == -1) {
         std::cout << "Could not initialize SDL2 TTF: " << TTF_GetError() << "\n";
@@ -440,7 +344,7 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
     int done = SUCCESS;
     while (!done) {
         //PRIMERO MANDO AL SERVER
-        done = processEvents(window, &game, id);
+        done = eventProcessor.processGameEvents(window, &game, id);
 
         //LUEGO RECIBO DEL SERVER Y HAGO EL RENDER
         Message message;

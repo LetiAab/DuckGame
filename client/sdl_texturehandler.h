@@ -1,5 +1,5 @@
-#ifndef SDL_HANDLETEXTURES_H
-#define SDL_HANDLETEXTURES_H
+#ifndef SDL_TEXTUREHANDLER_H
+#define SDL_TEXTUREHANDLER_H
 #include <string>
 #include <SDL2/SDL.h>
 #include <iostream>
@@ -11,9 +11,9 @@ struct SpriteSheet {
     int frame_height;
 };
 
-class SDLHandleTextures {
+class TextureHandler {
 public:
-    explicit SDLHandleTextures(SDL_Renderer* renderer);
+    explicit TextureHandler(SDL_Renderer* renderer);
     SDL_Texture* loadSimpleTexture(const std::string& name_img);
     SpriteSheet loadSpriteSheet(const std::string& name_img);
     void saveTexture(const std::string&, SDL_Texture* texture);
@@ -28,4 +28,4 @@ private:
 };
 
 
-#endif //SDL_HANDLETEXTURES_H
+#endif //SDL_TEXTUREHANDLER_H

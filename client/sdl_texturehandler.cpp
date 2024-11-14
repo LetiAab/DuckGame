@@ -1,10 +1,10 @@
-#include "sdl_handletextures.h"
+#include "sdl_texturehandler.h"
 #include <SDL2/SDL_image.h>
 #include "common/constants.h"
 
-SDLHandleTextures::SDLHandleTextures(SDL_Renderer* renderer): renderer(renderer) {}
+TextureHandler::TextureHandler(SDL_Renderer* renderer): renderer(renderer) {}
 
-SDL_Surface* SDLHandleTextures::loadImage(const std::string& name_img) {
+SDL_Surface* TextureHandler::loadImage(const std::string& name_img) {
     SDL_Surface* img = NULL;
     const std::string path = std::string(IMAGE_PATH) + name_img + ".png";
     img = IMG_Load(path.c_str());
@@ -16,14 +16,14 @@ SDL_Surface* SDLHandleTextures::loadImage(const std::string& name_img) {
     return img;
 }
 
-SDL_Texture* SDLHandleTextures::loadSimpleTexture(const std::string& name_img) {
+SDL_Texture* TextureHandler::loadSimpleTexture(const std::string& name_img) {
     SDL_Surface* img = loadImage(name_img);
     SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, img);
     SDL_FreeSurface(img);
     return texture;
 }
 
-SpriteSheet SDLHandleTextures::loadSpriteSheet(const std::string& name_img) {
+SpriteSheet TextureHandler::loadSpriteSheet(const std::string& name_img) {
     SDL_Texture* texture = loadSimpleTexture(name_img);
     int sprite_sheet_width, sprite_sheet_height;
     SDL_QueryTexture(texture, NULL, NULL, &sprite_sheet_width, &sprite_sheet_height);
@@ -33,16 +33,16 @@ SpriteSheet SDLHandleTextures::loadSpriteSheet(const std::string& name_img) {
     return {texture, frame_width, frame_height};
 }
 
-void SDLHandleTextures::saveTexture(const std::string& name, SDL_Texture* texture) {
+void TextureHandler::saveTexture(const std::string& name, SDL_Texture* texture) {
     textures.insert({name, texture});
 }
 
-SDL_Texture* SDLHandleTextures::getTexture(const std::string& name) const {
+SDL_Texture* TextureHandler::getTexture(const std::string& name) const {
     return textures.at(name);
 }
 
 // Creo un render target para dibujar en él todos los objetos estaticos
-SDL_Texture* SDLHandleTextures::createRenderTarget(const std::string& name, int width, int height) {
+SDL_Texture* TextureHandler::createRenderTarget(const std::string& name, int width, int height) {
     if (!renderer) {
         std::cerr << "Renderer is not initialized!\n";
         return nullptr;
@@ -57,7 +57,7 @@ SDL_Texture* SDLHandleTextures::createRenderTarget(const std::string& name, int 
     return texture;
 }
 
-void SDLHandleTextures::destroyTextures() {
+void TextureHandler::destroyTextures() {
     for (auto& texture : textures) {
         SDL_DestroyTexture(texture.second);
     }
