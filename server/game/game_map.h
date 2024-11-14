@@ -14,6 +14,8 @@ private:
     int height;
     std::vector<std::vector<char>> map;
 
+    bool hit_other_duck(Position pos, char duck_shooting);
+
 public:
     GameMap(int width, int height);
 

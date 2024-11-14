@@ -75,6 +75,13 @@ void GameMap::cleanBulletOldPosition(Position pos) {
     }
 }
 
+bool GameMap::hit_other_duck(Position pos, char duck_shooting){
+    char e = map[pos.y][pos.x];
+
+    return (((e == DUCK_1) || (e == DUCK_2) || (e == DUCK_3) || (e == DUCK_4) ||
+    (e == DUCK_5) || (e == DUCK_6)) && (e != duck_shooting));
+}
+
 Position GameMap::try_move_bullet_to(Position old_position, Position new_position, char duck_id, bool& hit_something){
     int final_x = old_position.x;
     int final_y = old_position.y;
