@@ -11,6 +11,7 @@ private:
     int bullet_id; //para identificar las balas en los mensajes
 
     Position position;
+    Position old_position;
     Position speed;
     int direction_x; 
     int direction_y;
