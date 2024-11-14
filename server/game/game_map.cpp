@@ -10,6 +10,7 @@ const char DUCK_4 = '4';
 const char DUCK_5 = '5';
 const char DUCK_6 = '6';
 const char PLATFORM = 'P';
+const char ITEM = 'I';
 
 const char VOID = 'V'; //VACIO
 
@@ -159,7 +160,6 @@ bool GameMap::duckIsOverVoid(int x, int y) {
 
     // Verifica si el pato esta sobre el vacio
     if (map[y + DUCK_SIZE_Y][x] == VOID) {
-        std::cout << "ESTOY SOBRE EL VACIO" << "\n";
         return true;
     }
 
@@ -417,6 +417,7 @@ void GameMap::setDuckNewPosition(int x, int y, char duck_id) {
         }
     }
 }
+
 
 
 
