@@ -22,6 +22,7 @@ public:
     void disparar(int position_x, int position_y, char looking, GameMap* map, char id_player);
     void recargar(int cantidad);  
     void mostrarInformacion() const;  
+    void update_weapon();
 
     // Getters
     std::string getNombre() const;
