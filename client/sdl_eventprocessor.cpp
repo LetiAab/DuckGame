@@ -1,5 +1,7 @@
 #include "sdl_eventprocessor.h"
 
+#include <iostream>
+
 int EventProcessor::processGameEvents(SDL_Window* window, GameState* game, uint16_t id) {
     int done = SUCCESS;
     bool positionUpdated = false;
@@ -101,4 +103,41 @@ uint8_t EventProcessor::handleKeyUp(SDL_Keycode key) {
         }
     }
     return move;
+}
+
+int EventProcessor::processLobbyEvents(bool& start_game) {
+    int done = SUCCESS;
+    SDL_Event event;
+    int x, y;
+    while (SDL_PollEvent(&event)) {
+        switch (event.type) {
+            case SDL_WINDOWEVENT_CLOSE:
+                done = ERROR;
+                break;
+            case SDL_MOUSEBUTTONDOWN:
+                std::cout << "Mouse PRESSED\n";
+                x = event.button.x;
+                y = event.button.y;
+                std::cout << "X: " << x << " Y: " << y << "\n";
+                std::cout << "tamX: " << WINDOW_WIDTH/2-100 << " tamY: " << WINDOW_HEIGHT/2-50 << "\n";
+                //tamX: 300 tamY: 350
+                //TILE_SIZE*MATRIX_M/2-100, TILE_SIZE*MATRIX_M/2-50, 200, 100
+                if (x >= WINDOW_WIDTH/2-100 && x <= WINDOW_WIDTH/2+100 &&
+                    y >= WINDOW_HEIGHT/2-50 && y <= WINDOW_HEIGHT/2+50) {
+                    start_game = true;
+                    }
+                break;
+            case SDL_KEYDOWN:
+                if (event.key.keysym.sym == SDLK_ESCAPE) {
+                    done = ERROR;
+                }
+                break;
+            case SDL_QUIT:
+                done = ERROR;
+                break;
+            default:
+                break;
+        }
+    }
+    return done;
 }

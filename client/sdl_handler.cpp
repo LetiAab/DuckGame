@@ -252,49 +252,10 @@ void SDLHandler::showStartScreen(SDL_Renderer* renderer) {
 int SDLHandler::waitForStartGame(SDL_Renderer* renderer, TTF_Font* font) {
     int done = SUCCESS;
     bool start_game = false;
-    SDL_Event event;
-
-    int x, y;
 
     while (!start_game && !done) {
         showLobbyScreen(renderer, font);
-        while (SDL_PollEvent(&event)) {
-            switch (event.type) {
-                case SDL_WINDOWEVENT_CLOSE:
-                    done = ERROR;
-                    break;
-                case SDL_MOUSEBUTTONDOWN:
-                    std::cout << "Mouse PRESS\n";
-                    x = event.button.x;
-                    y = event.button.y;
-                    std::cout << "X: " << x << " Y: " << y << "\n";
-                    std::cout << "tamX: " << TILE_SIZE*MATRIX_M/2-100 << " tamY: " << TILE_SIZE*MATRIX_M/2-50 << "\n";
-                    //tamX: 300 tamY: 350
-                    //TILE_SIZE*MATRIX_M/2-100, TILE_SIZE*MATRIX_M/2-50, 200, 100
-                    if (x >= TILE_SIZE*MATRIX_M/2-100 && x <= TILE_SIZE*MATRIX_M/2+100 &&
-                        y >= TILE_SIZE*MATRIX_N/2-50 && y <= TILE_SIZE*MATRIX_N/2+50) {
-                        start_game = true;
-                    }
-                    break;
-                case SDL_KEYDOWN:
-                    switch (event.key.keysym.sym) {
-                        case SDLK_RETURN:
-                            start_game = true;
-                            break;
-                        case SDLK_ESCAPE:
-                            done = ERROR;
-                            break;
-                        default:
-                            break;
-                    }
-                break;
-                case SDL_QUIT:
-                    done = ERROR;
-                    break;
-                default:
-                    break;
-            }
-        }
+        done = eventProcessor.processLobbyEvents(start_game);
     }
     return done;
 }
