@@ -36,34 +36,22 @@ void Game::simulate_round() {
 
         //map.printMap();
 
-        for (auto it = ducks.begin(); it != ducks.end(); ) {  
+        for (auto it = ducks.begin(); it != ducks.end(); ) {
                 Duck& duck = *it;
+
                 duck.update_life();
                 duck.update_position();
+                duck.update_weapon();
                 
-                if (duck.weapon != nullptr) {
-                        for (auto bullet_it = duck.weapon->bullets.begin(); bullet_it != duck.weapon->bullets.end(); ) {
-                                bullet_it->update_position();
-                                
-                                if (bullet_it->hubo_impacto()) {
-                                        bullet_it->cleanPostImpacto();
-                                        bullet_it = duck.weapon->bullets.erase(bullet_it);
-                                        
-                                } else {
-                                        ++bullet_it;
-                                }
-                        }
-                }
 
                 // Si el pato está muerto, lo eliminamos de la lista y avisamos al cliente
-                if (duck.is_dead) {
-                        Message kill_duck_message;
-                        kill_duck_message.type = KILL_DUCK;
-                        kill_duck_message.player_id = static_cast<uint16_t>(duck.get_id() - '0');
+                Message kill_duck_message;
+                if(duck.get_duck_dead_message(kill_duck_message)){
                         monitor.broadcast(kill_duck_message);
                         it = ducks.erase(it);
-
+                        
                         std::cout << "Pato eliminado. Tamaño actual de ducks: " << ducks.size() << std::endl;
+                
                 } else {
                         ++it;
                 }
@@ -127,8 +115,6 @@ void Game::run() {
                         if(duck.weapon != nullptr){
                                 for (Bullet& bullet : duck.weapon->bullets) {
                                         Message bullet_message;
-                                        //por ahora este if da siempre true, hay que agregar logica 
-                                        //en el get_bullet_message para que se envia el mensaje solo cuando ees necessario
                                         if (bullet.get_bullet_message(bullet_message)){
                                                 monitor.broadcast(bullet_message);
                                         }

@@ -6,12 +6,14 @@ Weapon::Weapon(const std::string& nombre, double alcance, double dispersion, int
 
 void Weapon::disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) {
     if (municiones > 0) {
-        int direccion_x = (looking == LOOKING_RIGHT) ? 5 : -5;
-        int direccion_y = 0;
 
-        int bullet_id = municiones;
+        //la bala debe aparecer fuera del pato, o sino se mata a si mismo 
+        int direccion_x = (looking == LOOKING_RIGHT) ? DUCK_SIZE_X : -DUCK_SIZE_X;
+        int direccion_y = 0;  // La bala se mueve horizonalmente
 
-        Bullet nueva_bala(bullet_id, position_x, position_y + 1, direccion_x, direccion_y, map, id_player, alcance);
+        int bullet_id = municiones; //el id es el numero de muncion. Inteligente verdad?
+
+        Bullet nueva_bala(bullet_id, position_x, position_y, direccion_x, direccion_y, map, id_player, alcance);
         nueva_bala.comenzar_trayectoria();
         bullets.push_back(nueva_bala);
 
@@ -48,4 +50,18 @@ double Weapon::getDispersion() const {
 
 int Weapon::getMuniciones() const {
     return municiones;
+}
+
+void Weapon::update_weapon(){
+
+    for(auto it = bullets.begin(); it != bullets.end(); ) {
+        it->update_position();
+
+        if(it->should_erase_bullet()) {
+            it = bullets.erase(it);
+        } else {
+            ++it;
+        }
+    }
+
 }

@@ -79,6 +79,7 @@ void Duck::update_life(){
 
     if (is_dead) {
         map->cleanDuckOldPosition(position.x, position.y);
+        std::cout << "soy el pato muerto, me borre del mapa" << "\n";
         return;
     }
 
@@ -86,21 +87,20 @@ void Duck::update_life(){
 
 void Duck::update_position() {
 
+    if(is_dead){return;}
+
     check_gravity();
     
     int delta_x = position.x + speed_x;
     int delta_y = position.y + speed_y;
 
-    //std::cout << "Posición antes de mover: (" << position.x << ", " << position.y << ")" << std::endl;
+
 
     Position new_pos(delta_x, delta_y);
     old_position = position;
     //mueve al pato a la nueva posicion si esta libre o a la que este libre inmediatamente antes
     position = map->move_duck_to(position, new_pos, id_player);
 
-    //std::cout << "Speed X: " << speed_x << ", Speed Y: " << speed_y << std::endl;
-    //std::cout << "Posición despues de mover: (" << position.x << ", " << position.y << ")" << std::endl;
-    //map.printMap();
 
     if ((is_jumping || is_fluttering) && !is_in_air()){
         //si esta saltando o aleteando pero no esta en el aire, significa que aterrizo
@@ -112,9 +112,27 @@ void Duck::update_position() {
     if(!is_in_air()){
         speed_y = 0;
     }
+    
 
 }
+void Duck::update_weapon(){
+    if(is_dead){return;}
+    
+    if (weapon != nullptr) {
+        weapon->update_weapon();
+    }
+}
 
+bool Duck::get_duck_dead_message(Message& msg){
+    if (!is_dead){
+        return false;
+    }
+
+    msg.type = KILL_DUCK;
+    msg.player_id = static_cast<uint16_t>(id_player - '0');
+    return true;
+    
+}
 void Duck::form_position_message(Message& msg){
     msg.type = DUCK_POS_UPDATE;
     msg.player_id = static_cast<uint16_t>(id_player - '0'); // Convertimos el id a int
@@ -175,21 +193,6 @@ void Duck::disparar() {
     }
 }
 
-void Duck::get_hit_by_bullet(Bullet bullet) {
-    // Nota: recibo bullet para en un futuro preguntar por cuanto daño hace o algo del estilo, ahora no se usa
-
-    std::cout << "Me dio una bala, -20, x=" << bullet.get_position().x << std::endl;
-
-
-    life_points -= 20;
-    if (life_points <= 0) {
-        is_dead = true;
-        std::cout << "Ahora estoy muerto, me dio una bala :(" << std::endl;
-        map->cleanDuckOldPosition(position.x, position.y);
-        
-    }
-}
-
 
 Position Duck::getPosition(){
     return position;
@@ -210,3 +213,4 @@ bool Duck::dropWeapon() {
 
     return false;
 }
+
