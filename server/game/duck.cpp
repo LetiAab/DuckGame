@@ -13,12 +13,12 @@ Duck::Duck(char id, int x, int y, GameMap* map) :
     is_jumping(false),
     is_fluttering(false),
     is_slippy(false),
-    life_points(100),
+    life_points(1),
     stop_notificated(false),
     is_dead(false),
-    weapon(nullptr), 
-    armor(nullptr), 
-    helmet(nullptr), 
+    weapon(nullptr),
+    armor(nullptr), //suma 1 a lifepoint
+    helmet(nullptr), //suma 1 a lifepoint
     onHand(nullptr) {}
 
 bool Duck::is_in_air(){
@@ -69,12 +69,16 @@ void Duck::check_gravity(){
 }
 
 void Duck::update_life(){
+
     if(map->duckIsOverVoid(position.x, position.y)){
         is_dead = true;
     }
 
     if(map->duckIsOverBullet(position)){
-        is_dead = true;
+        life_points -= 1;
+        if (life_points == 0){
+            is_dead = true;
+        }
     }
 
     if (is_dead) {
@@ -145,6 +149,8 @@ void Duck::form_position_message(Message& msg){
 }
 
 bool Duck::get_duck_position_message(Message& msg){
+    if(is_dead){return false;}
+
     if (old_position.x == position.x && old_position.y == position.y){
         if(stop_notificated){
             return false;
@@ -187,8 +193,9 @@ void Duck::setHelmet(Helmet* new_helmet) {
 
 
 void Duck::disparar() {
+    if(is_dead){return;}
 
-   if (weapon != nullptr) {
+    if (weapon != nullptr) {
         weapon->disparar(position.x, position.y, looking, map, id_player);
     }
 }
@@ -209,7 +216,7 @@ bool Duck::dropWeapon() {
         weapon = nullptr;
         return true;
         
-    } 
+    }
 
     return false;
 }

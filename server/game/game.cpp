@@ -34,26 +34,22 @@ Duck* Game::getDuckByPosition(Position position) {
 
 void Game::simulate_round() {
 
-        //map.printMap();
-
-        for (auto it = ducks.begin(); it != ducks.end(); ) {
-                Duck& duck = *it;
+        for (Duck& duck : ducks) {
+                if (duck.is_dead) {
+                        // Si el pato murio en la ronda anterior, lo saltamos y continuamos con el siguiente
+                        continue;
+                }
 
                 duck.update_life();
                 duck.update_position();
                 duck.update_weapon();
-                
 
-                // Si el pato está muerto, lo eliminamos de la lista y avisamos al cliente
+                // Si el pato murio, avisamos al cliente
+                //estaria bueno mover esto 
                 Message kill_duck_message;
-                if(duck.get_duck_dead_message(kill_duck_message)){
+                if (duck.get_duck_dead_message(kill_duck_message)) {
                         monitor.broadcast(kill_duck_message);
-                        it = ducks.erase(it);
-                        
-                        std::cout << "Pato eliminado. Tamaño actual de ducks: " << ducks.size() << std::endl;
-                
-                } else {
-                        ++it;
+                        std::cout << "Pato muerto. Tamaño actual de ducks: " << ducks.size() << std::endl;
                 }
         }
 
