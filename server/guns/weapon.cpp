@@ -8,13 +8,23 @@ void Weapon::disparar(int position_x, int position_y, char looking, GameMap* map
 
 
     if (municiones > 0) {
-        //la bala debe aparecer fuera del pato, o sino se mata a si mismo 
-        int direccion_x = (looking == LOOKING_RIGHT) ? DUCK_SIZE_X : -DUCK_SIZE_X;
+        //la bala debe aparecer fuera del pato, o sino se mata a si mismo
+        int bullet_position_x = (looking == LOOKING_RIGHT) ? position_x + DUCK_SIZE_X : position_x -1;
+        int bullet_position_y = position_y;
+
+        Position bullet_pos(bullet_position_x, bullet_position_y);
+        //si donde debe salir la bala hay una pared, no puedo disparar
+        if(map->at(bullet_pos)== 'P') {
+            std::cout << "No puedo disparar, hay una pared inmediatamente al lado" << std::endl;
+            return;
+        }
+
+        int direccion_x = (looking == LOOKING_RIGHT) ? 6 : -6; //personalizar la velocidad
         int direccion_y = 0;  // La bala se mueve horizonalmente
 
         int bullet_id = municiones; //el id es el numero de muncion. Inteligente verdad?
 
-        Bullet nueva_bala(bullet_id, position_x, position_y, direccion_x, direccion_y, map, id_player, alcance);
+        Bullet nueva_bala(bullet_id, bullet_pos, direccion_x, direccion_y, map, id_player, alcance);
         nueva_bala.comenzar_trayectoria();
         bullets.push_back(nueva_bala);
 

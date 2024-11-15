@@ -24,7 +24,7 @@ private:
 
 
 public:
-    Bullet(int bullet_id, int start_x, int start_y, int direction_x, int direction_y, GameMap* map, char duck_id, int alcance);
+    Bullet(int bullet_id, Position position, int direction_x, int direction_y, GameMap* map, char duck_id, int alcance);
     void comenzar_trayectoria();
     void update_position();
 
