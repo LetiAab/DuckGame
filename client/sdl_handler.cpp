@@ -16,35 +16,27 @@ SDLHandler::~SDLHandler() {
     SDL_Quit();
 }
 
+//** Juego **//
 void SDLHandler::loadGame(GameState* game) {
+    std::vector<TextureInfo> textures_to_load = {
+        {"forest", "backgrounds/forest", 1},
+        {"crate", "crate", 1},
+        {"gun", "guns/AK-47", 1},
+        {"bullet", "ammo/bullet", 1},
+        {"duck-walking", "duck-walking", 6},
+        {"duck-walking-wings", "duck-walking-wings", 1},
+        {"duck-jumping", "duck-jumping", 6}
+    };
+
     // Cargo las texturas
-    //handle_textures = TextureHandler(game->renderer);
-    SDL_Texture *background = handle_textures.loadSimpleTexture("backgrounds/forest");
-    SDL_Texture *crate_t = handle_textures.loadSimpleTexture("crate");
-    SDL_Texture *gun = handle_textures.loadSimpleTexture("guns/AK-47");
-    SDL_Texture *bullet = handle_textures.loadSimpleTexture("ammo/bullet");
-
-    SpriteSheet sp = handle_textures.loadSpriteSheet("duck-walking");
-    SDL_Texture *walk_duck = sp.texture;
-    int frame_width = sp.frame_width;
-    int frame_height = sp.frame_height;
-    SDL_Texture *walk_wings = handle_textures.loadSimpleTexture("duck-walking-wings");
-
-    SpriteSheet sp_jump = handle_textures.loadSpriteSheet("duck-jumping");
-    SDL_Texture *jump_duck = sp_jump.texture;
-
-    handle_textures.saveTexture("background", background);
-    handle_textures.saveTexture("duck-walking", walk_duck);
-    handle_textures.saveTexture("duck-jumping", jump_duck);
-    handle_textures.saveTexture("duck-walking-wings", walk_wings);
-    handle_textures.saveTexture("crate", crate_t);
-    handle_textures.saveTexture("gun", gun);
-    handle_textures.saveTexture("bullet", bullet);
+    int frame_width = 0, frame_height = 0;
+    for (const TextureInfo& texture_info : textures_to_load) {
+        handle_textures.loadTexture(texture_info, &frame_width, &frame_height);
+    }
 
     // Inicializo los patos y los crates
     gameInitializer.initializeDucks(game, frame_width, frame_height);
     gameInitializer.initializeCrates(game);
-
 }
 
 void SDLHandler::render_bullet(SDL_Renderer* renderer, int x, int y, int size = 20) {
@@ -60,7 +52,7 @@ void SDLHandler::render_bullet(SDL_Renderer* renderer, int x, int y, int size = 
 
 void SDLHandler::doRenderStatic(SDL_Renderer* renderer, GameState* game) {
 
-    SDL_RenderCopy(renderer, handle_textures.getTexture("background"), NULL, NULL);
+    SDL_RenderCopy(renderer, handle_textures.getTexture("forest"), NULL, NULL);
 
     for (size_t i = 0; i < game->crates.size(); i++) {
         SDL_Rect crate_rect = {game->crates[i].x, game->crates[i].y, TILE_SIZE, TILE_SIZE};
@@ -124,13 +116,40 @@ void SDLHandler::doRenderDynamic(SDL_Renderer* renderer, GameState* game, Messag
     SDL_RenderPresent(renderer);
 }
 
+
+//** Lobby **//
+void SDLHandler::showStartScreen(SDL_Renderer* renderer) {
+    SDL_Delay(1000);
+    SDL_Texture* start_logo = handle_textures.loadSimpleTexture("start/duckgame_logo");
+    SDL_Point size;
+    SDL_QueryTexture(start_logo, NULL, NULL, &size.x, &size.y);
+    SDL_Rect start_logo_rect = {WINDOW_WIDTH/2-size.x/2, WINDOW_HEIGHT/2-size.y/2, size.x, size.y};
+    SDL_RenderClear(renderer);
+    SDL_RenderCopy(renderer, start_logo, NULL, &start_logo_rect);
+    SDL_RenderPresent(renderer);
+
+    SDL_Delay(2000);
+    // Fade out effect
+    for (int alpha = 255; alpha >= 0; alpha -= 5) {
+        SDL_SetTextureAlphaMod(start_logo, alpha);
+        SDL_RenderClear(renderer);
+        SDL_RenderCopy(renderer, start_logo, NULL, &start_logo_rect);
+        SDL_RenderPresent(renderer);
+        SDL_Delay(30);
+    }
+
+    SDL_RenderClear(renderer);
+    SDL_RenderPresent(renderer);
+    SDL_DestroyTexture(start_logo);
+}
+
 void SDLHandler::showLobbyScreen(SDL_Renderer *renderer, TTF_Font* font) {
     SDL_Texture* start_background = handle_textures.loadSimpleTexture("start/galaxy");
     SDL_RenderCopy(renderer, start_background, NULL, NULL);
     //loadFont(renderer);
 
     // Crear superficie de texto
-    SDL_Surface* surfaceText = TTF_RenderText_Solid(font, "Let's play!", {255, 255, 255, 255});
+    SDL_Surface* surfaceText = TTF_RenderText_Solid(font, "Lobby", {255, 255, 255, 255});
 
     // Setup texture
     SDL_Texture* textureText = SDL_CreateTextureFromSurface(renderer, surfaceText);
@@ -180,31 +199,6 @@ void SDLHandler::showLobbyScreen(SDL_Renderer *renderer, TTF_Font* font) {
 }*/
 
 
-void SDLHandler::showStartScreen(SDL_Renderer* renderer) {
-    SDL_Texture* start_logo = handle_textures.loadSimpleTexture("start/duckgame_logo");
-    SDL_Point size;
-    SDL_QueryTexture(start_logo, NULL, NULL, &size.x, &size.y);
-    SDL_Rect start_logo_rect = {TILE_SIZE*MATRIX_M/2-size.x/2, TILE_SIZE*MATRIX_N/2-size.y/2, size.x, size.y};
-    SDL_RenderClear(renderer);
-    SDL_RenderCopy(renderer, start_logo, NULL, &start_logo_rect);
-    SDL_RenderPresent(renderer);
-
-    SDL_Delay(2000);
-    // Fade out effect
-    for (int alpha = 255; alpha >= 0; alpha -= 5) {
-        SDL_SetTextureAlphaMod(start_logo, alpha);
-        SDL_RenderClear(renderer);
-        SDL_RenderCopy(renderer, start_logo, NULL, &start_logo_rect);
-        SDL_RenderPresent(renderer);
-        SDL_Delay(30);
-    }
-
-    SDL_RenderClear(renderer);
-    SDL_RenderPresent(renderer);
-    SDL_DestroyTexture(start_logo);
-
-}
-
 int SDLHandler::waitForStartGame(SDL_Renderer* renderer, TTF_Font* font) {
     int done = SUCCESS;
     bool start_game = false;
@@ -225,7 +219,8 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     handle_textures = TextureHandler(renderer);
 
-    if(TTF_Init() == -1) {
+    showStartScreen(renderer);
+    /*if(TTF_Init() == -1) {
         std::cout << "Could not initialize SDL2 TTF: " << TTF_GetError() << "\n";
     }
 
@@ -237,12 +232,12 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
         std::cout << "Could not load font: " << TTF_GetError() << "\n";
     }
 
-    showStartScreen(renderer);
+
     if(waitForStartGame(renderer, font) == ERROR){
         SDL_DestroyWindow(window);
         SDL_DestroyRenderer(renderer);
         return;
-    }
+    }*/
 
     GameState game{};
     game.renderer = renderer;
@@ -319,5 +314,5 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
     handle_textures.destroyTextures();
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
-    TTF_CloseFont(font);
+    //TTF_CloseFont(font);
 }
