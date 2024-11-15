@@ -4,6 +4,7 @@
 #include <SDL2/SDL.h>
 #include <unordered_map>
 
+#include "game_initializer.h"
 #include "common/message.h"
 #include "sdl_texturehandler.h"
 #include "SDL2pp/Font.hh"
@@ -19,13 +20,16 @@ public:
 private:
     TextureHandler handle_textures;
     EventProcessor eventProcessor;
-    std::unordered_map<SDL_Keycode, bool> keyState; //necesito esto para que se mande un solo comando
+    GameInitializer gameInitializer;
+
     void loadGame(GameState* game);
-    void initializeDucks(GameState* game, int frame_width, int frame_height);
-    void initializeCrates(GameState* game);
+    //void initializeDucks(GameState* game, int frame_width, int frame_height);
+    //void initializeCrates(GameState* game);
+
     void doRenderDynamic(SDL_Renderer* renderer, GameState* game, Message& message);
     void doRenderStatic(SDL_Renderer* renderer, GameState* game);
     void render_bullet(SDL_Renderer* renderer, int x, int y, int size);
+
     int waitForStartGame(SDL_Renderer* renderer, TTF_Font* font);
     void showStartScreen(SDL_Renderer* renderer);
     void showLobbyScreen(SDL_Renderer* renderer, TTF_Font* font);
