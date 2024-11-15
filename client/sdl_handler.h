@@ -2,16 +2,11 @@
 #define SDL_HANDLER_H
 
 #include <SDL2/SDL.h>
-#include <unordered_map>
-
 #include "game_initializer.h"
 #include "common/message.h"
 #include "sdl_texturehandler.h"
-#include "SDL2pp/Font.hh"
 #include "game_state.h"
 #include "sdl_eventprocessor.h"
-
-
 
 class SDLHandler {
 public:
@@ -23,17 +18,13 @@ private:
     TextureHandler handle_textures;
     EventProcessor eventProcessor;
     GameInitializer gameInitializer;
-
     void loadGame(GameState* game);
-
     void doRenderDynamic(SDL_Renderer* renderer, GameState* game, Message& message);
     void doRenderStatic(SDL_Renderer* renderer, GameState* game);
     void render_bullet(SDL_Renderer* renderer, int x, int y, int size);
-
     void showStartScreen(SDL_Renderer* renderer);
-    int waitForStartGame(SDL_Renderer* renderer, TTF_Font* font);
-    void showLobbyScreen(SDL_Renderer* renderer, TTF_Font* font);
-    //void loadFont(SDL_Renderer *renderer);
+    int waitForStartGame(SDL_Renderer* renderer);
+    void showLobbyScreen(SDL_Renderer* renderer);
 };
 
 #endif //SDL_HANDLER_H

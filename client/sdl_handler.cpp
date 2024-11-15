@@ -2,7 +2,6 @@
 #include <iostream>
 #include <SDL2/SDL_image.h>
 #include <common/message.h>
-#include <SDL2/SDL_ttf.h>
 
 #define DELAY_TIME 60
 
@@ -41,25 +40,16 @@ void SDLHandler::loadGame(GameState* game) {
 
 void SDLHandler::render_bullet(SDL_Renderer* renderer, int x, int y, int size = 20) {
     SDL_Rect bulletRect = { x * TILE_SIZE, y * TILE_SIZE, size, size };
-
-    /*SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-
-    SDL_RenderFillRect(renderer, &bulletRect);*/
-
-    //SDL_Rect crate_rect = {game->crates[i].x, game->crates[i].y, TILE_SIZE, TILE_SIZE};
     SDL_RenderCopy(renderer, handle_textures.getTexture("bullet"), NULL, &bulletRect);
 }
 
 void SDLHandler::doRenderStatic(SDL_Renderer* renderer, GameState* game) {
-
     SDL_RenderCopy(renderer, handle_textures.getTexture("forest"), NULL, NULL);
 
     for (size_t i = 0; i < game->crates.size(); i++) {
         SDL_Rect crate_rect = {game->crates[i].x, game->crates[i].y, TILE_SIZE, TILE_SIZE};
         SDL_RenderCopy(renderer, handle_textures.getTexture("crate"), NULL, &crate_rect);
     }
-
-    //SDL_RenderPresent(renderer);
 }
 
 void SDLHandler::doRenderDynamic(SDL_Renderer* renderer, GameState* game, Message& message) {
@@ -105,8 +95,6 @@ void SDLHandler::doRenderDynamic(SDL_Renderer* renderer, GameState* game, Messag
         SDL_RenderCopyEx(renderer, wings_texture, &src_rect, &duck_rect, 0, NULL, duck.flipType);
         SDL_SetTextureColorMod(wings_texture, 255, 255, 255); //reseteo el color
 
-        
-        
     }
 
     if(message.type == BULLET_POS_UPDATE){
@@ -115,7 +103,6 @@ void SDLHandler::doRenderDynamic(SDL_Renderer* renderer, GameState* game, Messag
 
     SDL_RenderPresent(renderer);
 }
-
 
 //** Lobby **//
 void SDLHandler::showStartScreen(SDL_Renderer* renderer) {
@@ -143,68 +130,31 @@ void SDLHandler::showStartScreen(SDL_Renderer* renderer) {
     SDL_DestroyTexture(start_logo);
 }
 
-void SDLHandler::showLobbyScreen(SDL_Renderer *renderer, TTF_Font* font) {
+void SDLHandler::showLobbyScreen(SDL_Renderer *renderer) {
     SDL_Texture* start_background = handle_textures.loadSimpleTexture("start/galaxy");
     SDL_RenderCopy(renderer, start_background, NULL, NULL);
-    //loadFont(renderer);
 
-    // Crear superficie de texto
-    SDL_Surface* surfaceText = TTF_RenderText_Solid(font, "Lobby", {255, 255, 255, 255});
+    SDL_Texture* textureText = handle_textures.getText("Lobby", {255, 255, 255, 255});
 
-    // Setup texture
-    SDL_Texture* textureText = SDL_CreateTextureFromSurface(renderer, surfaceText);
-    SDL_FreeSurface(surfaceText);
-
-    //TILE_SIZE*MATRIX_M/2-size.x/2
-    int size_x = 400;
-    int size_y = 100;
-    SDL_Rect textRect = {TILE_SIZE*MATRIX_M/2-size_x/2, 20, size_x, size_y};
-
+    int size_x = 400, size_y = 100;
+    SDL_Rect textRect = {WINDOW_WIDTH/2-size_x/2, 20, size_x, size_y};
     SDL_RenderCopy(renderer, textureText, NULL, &textRect);
 
-    SDL_Texture* start_button = handle_textures.loadSimpleTexture("start/start_init");
-    SDL_Rect start_button_rect = {TILE_SIZE*MATRIX_M/2-100, TILE_SIZE*MATRIX_N/2-50, 200, 100};
+    SDL_Texture* start_button = handle_textures.loadSimpleTexture("start/play");
+    SDL_Rect start_button_rect = {WINDOW_WIDTH/2-100, WINDOW_HEIGHT/2-50, 200, 100};
     SDL_RenderCopy(renderer, start_button, NULL, &start_button_rect);
-
 
     SDL_RenderPresent(renderer);
     SDL_DestroyTexture(start_background);
     SDL_DestroyTexture(textureText);
 }
 
-/*void SDLHandler::loadFont(SDL_Renderer *renderer) {
-    if(TTF_Init() == -1) {
-        std::cout << "Could not initialize SDL2 TTF: " << TTF_GetError() << "\n";
-    }
-
-
-    // Cargar fuente
-    TTF_Font* font = TTF_OpenFont("fonts/8bitOperatorPlus8-Regular.ttf", 32);
-    if(font == nullptr) {
-        std::cout << "Could not load font: " << TTF_GetError() << "\n";
-    }
-
-    // Crear superficie de texto
-    SDL_Surface* surfaceText = TTF_RenderText_Solid(font, "Duck  probando", {255, 255, 255});
-
-    // Setup texture
-    SDL_Texture* textureText = SDL_CreateTextureFromSurface(renderer, surfaceText);
-
-    SDL_FreeSurface(surfaceText);
-
-    SDL_Rect textRect = {10, 10, 400, 100};
-
-    SDL_RenderCopy(renderer, textureText, NULL, &textRect);
-
-}*/
-
-
-int SDLHandler::waitForStartGame(SDL_Renderer* renderer, TTF_Font* font) {
+int SDLHandler::waitForStartGame(SDL_Renderer* renderer) {
     int done = SUCCESS;
     bool start_game = false;
 
     while (!start_game && !done) {
-        showLobbyScreen(renderer, font);
+        showLobbyScreen(renderer);
         done = eventProcessor.processLobbyEvents(start_game);
     }
     return done;
@@ -220,24 +170,12 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
     handle_textures = TextureHandler(renderer);
 
     showStartScreen(renderer);
-    /*if(TTF_Init() == -1) {
-        std::cout << "Could not initialize SDL2 TTF: " << TTF_GetError() << "\n";
-    }
 
-
-    // Cargar fuente
-    const std::string path = std::string(FONT_PATH) + "8bitOperatorPlus8-Regular.ttf";
-    TTF_Font* font = TTF_OpenFont(path.c_str(), 16);
-    if(font == nullptr) {
-        std::cout << "Could not load font: " << TTF_GetError() << "\n";
-    }
-
-
-    if(waitForStartGame(renderer, font) == ERROR){
+    if(waitForStartGame(renderer) == ERROR) {
         SDL_DestroyWindow(window);
         SDL_DestroyRenderer(renderer);
         return;
-    }*/
+    }
 
     GameState game{};
     game.renderer = renderer;
@@ -311,8 +249,6 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
     }
 
     // Termino el juego => libero recursos
-    handle_textures.destroyTextures();
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
-    //TTF_CloseFont(font);
 }
