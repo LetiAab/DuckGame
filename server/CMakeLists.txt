@@ -25,6 +25,9 @@ target_sources(taller_server
     executables/start/move_down_command.cpp
     executables/start/move_up_command.cpp
     executables/stop/stop_move_command.cpp
+    executables/stop/stop_move_right_command.cpp
+    executables/stop/stop_move_left_command.cpp
+    executables/stop/stop_jump_command.cpp
     executables/guns_commands/shoot_command.cpp
     executables/guns_commands/leave_gun_command.cpp
 
@@ -56,6 +59,9 @@ target_sources(taller_server
     executables/start/move_down_command.h
     executables/start/move_up_command.h
     executables/stop/stop_move_command.h
+    executables/stop/stop_move_right_command.h
+    executables/stop/stop_move_left_command.h
+    executables/stop/stop_jump_command.h
     executables/guns_commands/shoot_command.h
     executables/guns_commands/leave_gun_command.h
 
