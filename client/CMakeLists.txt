@@ -13,6 +13,7 @@ target_sources(taller_client
         sdl_button.cpp
         sdl_eventprocessor.cpp
         game_initializer.cpp
+        sdl_renderermanager.cpp
     PUBLIC
     # .h files
     client.h
@@ -27,6 +28,7 @@ target_sources(taller_client
         sdl_eventprocessor.h
         game_state.h
         game_initializer.h
+        sdl_renderermanager.h
     )
 
 # Path de imagenes

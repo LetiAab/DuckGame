@@ -27,7 +27,6 @@ public:
     SDL_Texture* loadSimpleTexture(const std::string& path);
     SDL_Texture* getTexture(const std::string& name) const;
     SDL_Texture* createRenderTarget(const std::string& name, int width, int height);
-    //TTF_Font* getFont() const { return font; }
     SDL_Texture* getText(const std::string &text, SDL_Color color);
 
 private:
