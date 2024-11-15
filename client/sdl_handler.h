@@ -7,6 +7,7 @@
 #include "game_state.h"
 #include "sdl_eventprocessor.h"
 #include "sdl_renderermanager.h"
+#include "sdl_screenmanager.h"
 
 class SDLHandler {
 public:
@@ -18,11 +19,10 @@ private:
     TextureHandler handle_textures;
     EventProcessor eventProcessor;
     GameInitializer gameInitializer;
+    std::unique_ptr<ScreenManager> screenManager;
     std::unique_ptr<RendererManager> rendererManager;
     void loadGame(GameState* game);
-    void showStartScreen(SDL_Renderer* renderer);
-    int waitForStartGame(SDL_Renderer* renderer);
-    void showLobbyScreen(SDL_Renderer* renderer);
+    int waitForStartGame();
 };
 
 #endif //SDL_HANDLER_H
