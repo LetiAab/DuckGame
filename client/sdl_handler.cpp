@@ -135,6 +135,16 @@ int SDLHandler::processEvents(SDL_Window* window, GameState* game, uint16_t id) 
                         case SDLK_f:
                             move = SHOOT;
                             positionUpdated = true;
+                            break;
+                        case SDLK_e:
+                            move = TAKE_ITEM;
+                            positionUpdated = true;
+                            break;
+
+                        case SDLK_q:
+                            move = DROP_WEAPON;
+                            positionUpdated = true;
+                            break;
                         default:
                             break;
                     }
@@ -202,6 +212,7 @@ void SDLHandler::doRenderStatic(SDL_Renderer* renderer, GameState* game) {
     SDL_RenderCopy(renderer, handle_textures.getTexture("background"), NULL, NULL);
 
     for (size_t i = 0; i < game->crates.size(); i++) {
+
         SDL_Rect crate_rect = {game->crates[i].x, game->crates[i].y, TILE_SIZE, TILE_SIZE};
         SDL_RenderCopy(renderer, handle_textures.getTexture("crate"), NULL, &crate_rect);
     }
@@ -209,6 +220,21 @@ void SDLHandler::doRenderStatic(SDL_Renderer* renderer, GameState* game) {
     //SDL_RenderPresent(renderer);
 }
 
+// ESTO LO PUSE (MATEO) DE FORMA AUXILIAR PARA VER LOS ITEMS PERO SE ESTAN RENDERIZANDO
+// UNA VEZ POR LOOP Y SON ESTATICOS EN REALIDAD
+void SDLHandler::renderItems(SDL_Renderer* renderer, GameState* game) {
+
+    for (size_t i = 0; i < game->items.size(); i++) {
+
+        SDL_Rect item_rect = {game->items[i].x, game->items[i].y, TILE_SIZE * 4, TILE_SIZE * 4};
+
+        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255); // RGB: rojo, opacidad completa
+
+        SDL_RenderFillRect(renderer, &item_rect);
+    }
+
+    SDL_RenderPresent(renderer);
+}
 void SDLHandler::doRenderDynamic(SDL_Renderer* renderer, GameState* game, Message& message) {
     for (int i = 0; i < game->ducks_quantity; i++) {
         Duck& duck = game->ducks[i];
@@ -260,6 +286,7 @@ void SDLHandler::doRenderDynamic(SDL_Renderer* renderer, GameState* game, Messag
         render_bullet(renderer, message.bullet_x, message.bullet_y);
     }
 
+
     SDL_RenderPresent(renderer);
 }
 
@@ -293,8 +320,39 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
         //LUEGO RECIBO DEL SERVER Y HAGO EL RENDER
         Message message;
         message_queue.try_pop(message);
-        //TODO: MODULARIZAR
-        
+
+        //TODO: MODULARIZAr
+        if(message.type == ITEM_POSITION){
+
+            //RENDERIZAR LOS ITEMS bien 
+            Item item;
+            item.x = message.item_x * TILE_SIZE;
+            item.y = message.item_y * TILE_SIZE;
+            game.items.push_back(item);
+        }
+
+        if(message.type == DUCK_PICKUP_ITEM){
+            
+            std::cout << "ME PONGO EL ITEM EN LA MANO" << "\n";
+            //aca te fijas en el mensaje el DUCK ID y el ITEM ID.
+            //cuando recibis esto tenes que renderizarle al pato con DUCK ID el ITEM ID 
+            //EN LA MANO. OSEA TODABIA NO LO TIENE PUESTO. con las armas es lo mismo
+            //LA DIFERENCIA ES CUANDO AGARRO UNA ARMADURA O CASCO
+        }
+
+        if(message.type == DUCK_EQUIP_ITEM){
+
+            std::cout << "ME EQUIPO EL ITEM QUE TENGO EN LA MANO" << "\n";
+
+            //SI RECIBO ESTO AHORA SI ME TENGO QUE PONER LA ARMADURA O EMPUÑAR EL ARMA
+        }
+
+        if(message.type == DROP_WEAPON){
+            std::cout << "SUELTO EL ARMA" << "\n";
+        }
+
+
+
         if(message.type == BULLET_POS_UPDATE){
 
             //renderizar la bala. NO se como ahcerlo aca y no dentro del DORender.
@@ -309,6 +367,8 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
             game.ducks[pos_id].x = 400 * TILE_SIZE;
             game.ducks[pos_id].y = 400 * TILE_SIZE;
         }
+
+
 
         if (message.type == DUCK_POS_UPDATE){
 
@@ -338,6 +398,9 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
 
         SDL_RenderCopy(renderer, handle_textures.getTexture("static_scene"), NULL, NULL);
         doRenderDynamic(renderer, &game, message);
+
+        //REVISAR ESTO NO CREO QUE ESTÉ BIEN RENDERIZARLO EN CADA LOOP
+        //renderItems(renderer, &game);
 
         SDL_Delay(DELAY_TIME);
     }

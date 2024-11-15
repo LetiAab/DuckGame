@@ -11,6 +11,8 @@ const char DUCK_4 = '4';
 const char DUCK_5 = '5';
 const char DUCK_6 = '6';
 
+const int NUM_ITEMS = 10;
+
 //TODO: Tamanio del mapa hardcodeado
 Game::Game(uint16_t match_id, GameQueueMonitor& monitor):
 match_id(match_id), monitor(monitor), is_running(true), game_queue(), map(MATRIX_M, MATRIX_N){}
@@ -80,6 +82,11 @@ void Game::run() {
 
         monitor.broadcast(message);
 
+
+        //creo los items y le mando al server
+        create_items();
+
+
         while (is_running) {
                 // saco de 10 comandos de la queue y los ejecuto
                 std::shared_ptr<Executable> command;
@@ -126,12 +133,13 @@ void Game::run() {
 
 void Game::inicializate_map() {
     // Le doy armas a los patos para probar
-    for (Duck& duck : ducks) {
+    
+    /*for (Duck& duck : ducks) {
 
         Weapon* weapon = new Weapon("Pistola Generica", 35, 5, 30);
 
         duck.setWeapon(weapon);
-    }
+    }*/
 }
 
 //TODO: Esto solo sirve para dos patos y siempre tiene en cuenta que es el mismo distribucion de obstaculos
@@ -160,6 +168,49 @@ void Game::create_ducks(const std::vector<uint16_t>& ids) {
         }
 }
 
+void Game::create_items() {
+
+    std::srand(static_cast<unsigned>(std::time(nullptr))); // Inicializar la semilla aleatoria
+
+    for (int i = 0; i < 1; ++i) {
+        int x = 30;//std::rand() % map.get_width();  // Generar posición aleatoria en el mapa
+        int y = 125;//std::rand() % map.get_height();
+
+        // Crear un tipo de ítem aleatorio
+        int item_type = 0;//std::rand() % 3;
+        std::unique_ptr<Item> item;
+
+        if (item_type == 0) {
+            item = std::make_unique<Weapon>("Nombre", 100.0, 1.5, 30, x, y);
+        } else if (item_type == 1) {
+            item = std::make_unique<Armor>(x, y);
+        } else {
+            item = std::make_unique<Helmet>(x, y);
+        }
+
+        // Agregar el ítem al vector de ítems 
+        //NO NECESITO A LOS ITEMS EN LA MATRIZ DE COLICIONES PORQUE NO COLICIONAN
+        //SI YO INTENTO AGARRAR UN ITEM CON "E" INTENTA AGARRAR EL PATO ALGO QUE ESTE EN SU POSICION
+        //SI HAY ALGO LO AGARRA SI NO NO. PARA ESTO REVISA LA LISTA DE ITEMS Y BUSCA ALGUNO
+        //QUE COINCIDA CON SU POSICION
+
+
+        //mando al cliente donde se creo el item para que lo renderice
+
+        std::cout << "MANDO MENSAJE" << "\n";    
+
+        Message item_position_message;
+        item->getItemPositionMessage(item_position_message);
+        monitor.broadcast(item_position_message);
+        
+        std::cout << "MANDO MENSAJE?" << "\n";    
+
+        //agrego al vector
+        items.push_back(std::move(item));
+
+        
+    }
+}
 
 Duck* Game::getDuckById(char id) {
         for (auto& duck : ducks) {
@@ -170,7 +221,28 @@ Duck* Game::getDuckById(char id) {
         return nullptr; // Retorna nullptr si no se encuentra el pato
 }
 
+Item* Game::getItemByPosition(Position position) {
+    // Coordenadas del área del pato
+    int area_x_min = position.x;
+    int area_x_max = position.x + DUCK_SIZE_X;
+    int area_y_min = position.y;
+    int area_y_max = position.y + DUCK_SIZE_Y;
 
+    std::cout << "Buscando item en el área del pato desde X: " << area_x_min << " hasta X: " << area_x_max
+              << ", y desde Y: " << area_y_min << " hasta Y: " << area_y_max << "\n";
+
+    for (auto& item_ptr : items) {
+        Position itemPos = item_ptr->getPosition();
+
+
+        if (itemPos.x >= area_x_min && itemPos.x < area_x_max &&
+            itemPos.y >= area_y_min && itemPos.y < area_y_max) {
+            return item_ptr.get(); 
+        }
+    }
+
+    return nullptr; 
+}
 void Game::game_broadcast(Message message){
         monitor.broadcast(message);
 }

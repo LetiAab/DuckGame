@@ -1,12 +1,10 @@
 #include "weapon.h"
 #include <iostream>
 
-Weapon::Weapon(const std::string& nombre, double alcance, double dispersion, int municiones)
-    : nombre(nombre), alcance(alcance), dispersion(dispersion), municiones(municiones) {}
+Weapon::Weapon(const std::string& nombre, double alcance, double dispersion, int municiones, int x, int y)
+    : Item(WEAPON_1_ID,x, y), nombre(nombre), alcance(alcance), dispersion(dispersion), municiones(municiones) {}  // Inicializar posición
 
 void Weapon::disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) {
-
-
     if (municiones > 0) {
         //la bala debe aparecer fuera del pato, o sino se mata a si mismo
         int bullet_position_x = (looking == LOOKING_RIGHT) ? position_x + DUCK_SIZE_X : position_x -1;
@@ -28,7 +26,7 @@ void Weapon::disparar(int position_x, int position_y, char looking, GameMap* map
         nueva_bala.comenzar_trayectoria();
         bullets.push_back(nueva_bala);
 
-        municiones--;  // Disminuir el número de municiones
+        municiones--;
         std::cout << "Disparo realizado. Quedan " << municiones << " municiones." << std::endl;
     } else {
         std::cout << "No hay municiones disponibles." << std::endl;

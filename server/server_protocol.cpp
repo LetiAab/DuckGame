@@ -65,6 +65,48 @@ bool ServerProtocol::send_message(Message& message){
         }
 
         break;
+
+    case DUCK_PICKUP_ITEM:
+        if (!skt.sendall(&message.player_id, sizeof(message.player_id), &was_closed) || was_closed) {
+            return false;
+        }
+
+        if (!skt.sendall(&message.item_id, sizeof(message.item_id), &was_closed) || was_closed) {
+            return false;
+        }
+        break;
+
+    case DUCK_EQUIP_ITEM:
+        if (!skt.sendall(&message.player_id, sizeof(message.player_id), &was_closed) || was_closed) {
+            return false;
+        }
+
+        if (!skt.sendall(&message.item_id, sizeof(message.item_id), &was_closed) || was_closed) {
+            return false;
+        }
+        break;
+    
+    case DROP_WEAPON:
+        if (!skt.sendall(&message.player_id, sizeof(message.player_id), &was_closed) || was_closed) {
+            return false;
+        }
+        break;
+
+    case ITEM_POSITION:
+        if (!skt.sendall(&message.item_id, sizeof(message.item_id), &was_closed) || was_closed) {
+            return false;
+        }
+
+        if (!skt.sendall(&message.item_x, sizeof(message.item_x), &was_closed) || was_closed) {
+            return false;
+        }
+
+        if (!skt.sendall(&message.item_y, sizeof(message.item_y), &was_closed) || was_closed) {
+            return false;
+        }
+
+        break;
+
     case BULLET_POS_UPDATE:
         std::cout << "MANDO LA BULLET" << "\n";
 
@@ -182,8 +224,11 @@ std::shared_ptr<Executable> ServerProtocol::receive_command(){
     case STOP_DOWN:
         return std::make_shared<StopJumpCommand>(player_id);
     case SHOOT:
-        std::cout << "RECIBO QUE TENGO QUE DISPARAR" << "\n";
         return std::make_shared<ShootCommand>(player_id);
+    case TAKE_ITEM:
+        return std::make_shared<TakeItemCommand>(player_id);
+    case DROP_WEAPON:
+        return std::make_shared<DropWeaponCommand>(player_id);
     case EXIT_GAME:
         break;
     default:

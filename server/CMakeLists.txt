@@ -16,8 +16,11 @@ target_sources(taller_server
     game/game_queue_monitor.cpp
     game/game_map.cpp
     game/duck.cpp
+    game/item.cpp
     guns/bullet.cpp
     guns/weapon.cpp
+    armor/armor.cpp
+    armor/helmet.cpp
     #guns/gun.cpp
     #guns/projectile.cpp
     executables/start/move_left_command.cpp
@@ -29,7 +32,8 @@ target_sources(taller_server
     executables/stop/stop_move_left_command.cpp
     executables/stop/stop_jump_command.cpp
     executables/guns_commands/shoot_command.cpp
-    executables/guns_commands/leave_gun_command.cpp
+    executables/guns_commands/take_item_command.cpp
+    executables/guns_commands/drop_weapon_command.cpp
 
     
     PUBLIC
@@ -48,8 +52,11 @@ target_sources(taller_server
     game/game_queue_monitor.h
     game/game_map.h
     game/duck.h
+    game/item.h
     guns/bullet.h
     guns/weapon.h
+    armor/armor.h
+    armor/helmet.h
     #guns/gun.h
     #guns/projectile.h
     executables/executable.h
@@ -63,6 +70,9 @@ target_sources(taller_server
     executables/stop/stop_move_left_command.h
     executables/stop/stop_jump_command.h
     executables/guns_commands/shoot_command.h
-    executables/guns_commands/leave_gun_command.h
+    executables/guns_commands/take_item_command.h
+    executables/guns_commands/drop_weapon_command.h
+
+
 
     )

@@ -15,12 +15,43 @@ Duck::Duck(char id, int x, int y, GameMap* map) :
     is_slippy(false),
     life_points(100),
     stop_notificated(false),
-    is_dead(false) {}
+    is_dead(false),
+    weapon(nullptr), 
+    armor(nullptr), 
+    helmet(nullptr), 
+    onHand(nullptr) {}
 
 bool Duck::is_in_air(){
     return map->canMoveDuckTo(position.x, position.y + 1, id_player);
 }
 
+bool Duck::pickUpItem(Item* item) {
+
+    
+    if (item != nullptr){
+        std::cout << "Agarro el item" << "\n";
+        onHand.reset(item);  
+        return true;
+    } 
+    
+    std::cout << "No hay nada para agarrar aca!" << "\n";
+    return false;
+
+}
+
+void Duck::useOnHand() {
+    if (!onHand) return;  // Verificamos si hay un item en la mano
+
+    if (Weapon* w = dynamic_cast<Weapon*>(onHand.get())) {
+        setWeapon(w);
+    } else if (Armor* a = dynamic_cast<Armor*>(onHand.get())) {
+        setArmor(a);
+    } else if (Helmet* h = dynamic_cast<Helmet*>(onHand.get())) {
+        setHelmet(h);
+    }
+
+    onHand.reset();  // Después de usar el item, lo quitamos de la mano
+}
 
 void Duck::check_gravity(){
 
@@ -64,10 +95,12 @@ void Duck::update_position() {
     int delta_y = position.y + speed_y;
 
 
+
     Position new_pos(delta_x, delta_y);
     old_position = position;
     //mueve al pato a la nueva posicion si esta libre o a la que este libre inmediatamente antes
     position = map->move_duck_to(position, new_pos, id_player);
+
 
     if ((is_jumping || is_fluttering) && !is_in_air()){
         //si esta saltando o aleteando pero no esta en el aire, significa que aterrizo
@@ -138,7 +171,18 @@ char Duck::get_id() const {
 
 
 void Duck::setWeapon(Weapon* new_weapon) {
+    std::cout << "ASIGNO NUEVA ARMA" << "\n";
     weapon = new_weapon;  // Asigna el arma al pato
+}
+
+void Duck::setArmor(Armor* new_armor) {
+    std::cout << "ASIGNO NUEVA ARMADURA" << "\n";
+    armor = new_armor;  // Asigna el arma al pato
+}
+
+void Duck::setHelmet(Helmet* new_helmet) {
+    std::cout << "ASIGNO NUEVO CASCO" << "\n";
+    helmet = new_helmet;  // Asigna el arma al pato
 }
 
 
@@ -147,5 +191,26 @@ void Duck::disparar() {
    if (weapon != nullptr) {
         weapon->disparar(position.x, position.y, looking, map, id_player);
     }
+}
+
+
+Position Duck::getPosition(){
+    return position;
+}
+
+Item* Duck::getItemOnHand() const {
+    return onHand ? onHand.get() : nullptr;
+}
+
+bool Duck::dropWeapon() {
+    if (weapon) {
+        std::cout << "El jugador " << id_player << " deja caer su arma: " << std::endl;
+        //SE ELIMINA LA REFERENCIA SOLAMENTE
+        weapon = nullptr;
+        return true;
+        
+    } 
+
+    return false;
 }
 

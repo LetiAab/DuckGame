@@ -39,10 +39,17 @@ struct Crate {
     int x, y;
 };
 
+struct Item {
+    int x, y;
+};
+
+
 struct GameState {
     Duck ducks[MAX_PLAYERS];
     int ducks_quantity;
     std::vector<Crate> crates;
+    std::vector<Item> items;
+
     SDL_Renderer* renderer;
     ClientGameMap client_game_map;
     Queue<Command>* command_queue;
@@ -67,6 +74,9 @@ private:
     void doRenderDynamic(SDL_Renderer* renderer, GameState* game, Message& message);
     void doRenderStatic(SDL_Renderer* renderer, GameState* game);
     void render_bullet(SDL_Renderer* renderer, int x, int y, int size);
+
+
+    void renderItems(SDL_Renderer* renderer, GameState* game);
 };
 
 #endif //SDL_HANDLER_H
