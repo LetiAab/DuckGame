@@ -351,6 +351,15 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
             std::cout << "SUELTO EL ARMA" << "\n";
         }
 
+        if(message.type == ARMOR_BROKEN){
+            std::cout << "SE ME ROMPIO EL ARMOR" << "\n";
+        }
+
+        if(message.type == HELMET_BROKEN){
+            std::cout << "SE ME ROMPIO EL HELMET" << "\n";
+        }
+
+
 
 
         if(message.type == BULLET_POS_UPDATE){
@@ -400,7 +409,7 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
         doRenderDynamic(renderer, &game, message);
 
         //REVISAR ESTO NO CREO QUE ESTÉ BIEN RENDERIZARLO EN CADA LOOP
-        //renderItems(renderer, &game);
+        renderItems(renderer, &game);
 
         SDL_Delay(DELAY_TIME);
     }

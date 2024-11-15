@@ -60,7 +60,7 @@ public:
 
     void update_position();
 
-    void update_life();
+    int update_life();
 
     void update_weapon();
 
@@ -69,6 +69,10 @@ public:
     bool get_duck_position_message(Message& msg);
 
     bool get_duck_dead_message(Message& msg);
+
+    bool get_duck_broke_helmet_message(Message& msg);
+
+    bool get_duck_broke_armor_message(Message& msg);
 
     char get_id() const;
 

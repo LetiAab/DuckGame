@@ -40,12 +40,26 @@ void Game::simulate_round() {
                         continue;
                 }
 
-                duck.update_life();
+                int notification = duck.update_life();
                 duck.update_position();
                 duck.update_weapon();
 
                 // Si el pato murio, avisamos al cliente
                 //estaria bueno mover esto 
+
+                if(notification == 0){
+                        //HELMET BROKE
+                        Message broken_helmet_message;
+                        duck.get_duck_broke_helmet_message(broken_helmet_message);
+                        monitor.broadcast(broken_helmet_message);
+                }
+                if(notification == 1){
+                        //ARMOR BROKE
+                        Message broken_armor_message;
+                        duck.get_duck_broke_armor_message(broken_armor_message);
+                        monitor.broadcast(broken_armor_message);
+                }
+
                 Message kill_duck_message;
                 if (duck.get_duck_dead_message(kill_duck_message)) {
                         monitor.broadcast(kill_duck_message);
@@ -84,6 +98,7 @@ void Game::run() {
 
 
         while (is_running) {
+
                 // saco de 10 comandos de la queue y los ejecuto
                 std::shared_ptr<Executable> command;
 
@@ -97,8 +112,6 @@ void Game::run() {
                 // Simulo una ronda de movimientos
                 simulate_round();
 
-                //mando la posicion de cada PATO
-                //NO ME GUSTA NADA ESTO PORQUE NO RESPETA QUIEN SE MOVIO PRIMERO
                 for (Duck& duck : ducks) {
 
                         Message duck_message;
@@ -130,12 +143,12 @@ void Game::run() {
 void Game::inicializate_map() {
     // Le doy armas a los patos para probar
     
-    /*for (Duck& duck : ducks) {
+    for (Duck& duck : ducks) {
 
-        Weapon* weapon = new Weapon("Pistola Generica", 35, 5, 30);
+        Helmet* helmet = new Helmet(5,5); //le pongo posicion pero no importa porque se la asigno al pato
 
-        duck.setWeapon(weapon);
-    }*/
+        duck.setHelmet(helmet);
+    }
 }
 
 //TODO: Esto solo sirve para dos patos y siempre tiene en cuenta que es el mismo distribucion de obstaculos
