@@ -69,6 +69,8 @@ public:
     //METODO TEMPORAL: Imprime el mapa en la consola
     void printMap() const;
 
+    void tellMap() const;
+
 };
 
 #endif

@@ -478,7 +478,34 @@ void GameMap::printMap() const {
     std::cout << "\n";
 }
 
+// METODO TEMPORAL: Imprime el mapa en la consola
+void GameMap::tellMap() const {
+    std:: cout << "Imprimo el mapa: \n";
 
+    bool pato1 = false;
+    bool pato2 = false;
+
+    // veo que no haya obstaculos
+    for (int i = 0; i < width; ++i) {
+        for (int j = 0; j < height; ++j) {
+            if (!pato1 && map[j][i] == '1') {
+                pato1 = true;
+                std:: cout << "pato 1 desde x: " << i << "y: " << j << "\n";
+            }
+            if (!pato2 && map[j][i] == '2') {
+                pato2 = true;
+                std:: cout << "pato 2 desde x: " << i << "y: " << j << "\n";
+            }
+
+            if (map[j][i] == '*') {
+                std:: cout << "Bala encontrada en el x: " << i << "y: " << j << "\n";
+            }
+        }
+    }
+
+    std:: cout << "\n" << "\n";
+
+}
 
 std::vector<std::vector<char>> GameMap::getMap(){
     return map;

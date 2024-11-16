@@ -137,7 +137,7 @@ void Game::run() {
 
                 std::this_thread::sleep_for(std::chrono::milliseconds(60));
 
-                map.printMap();
+                map.tellMap();
 
         }
 
