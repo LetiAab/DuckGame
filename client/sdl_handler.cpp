@@ -91,18 +91,16 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
         Message message;
         message_queue.try_pop(message);
 
-        //TODO: MODULARIZAr
+        //TODO: MODULARIZAR
         if(message.type == ITEM_POSITION){
-
             //RENDERIZAR LOS ITEMS bien 
-            Item item;
+            /*Item item;
             item.x = message.item_x * TILE_SIZE;
             item.y = message.item_y * TILE_SIZE;
-            game.items.push_back(item);
+            game.items.push_back(item);*/
         }
 
         if(message.type == DUCK_PICKUP_ITEM){
-            
             std::cout << "ME PONGO EL ITEM EN LA MANO" << "\n";
             //aca te fijas en el mensaje el DUCK ID y el ITEM ID.
             //cuando recibis esto tenes que renderizarle al pato con DUCK ID el ITEM ID 
@@ -111,9 +109,7 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
         }
 
         if(message.type == DUCK_EQUIP_ITEM){
-
             std::cout << "ME EQUIPO EL ITEM QUE TENGO EN LA MANO" << "\n";
-
             //SI RECIBO ESTO AHORA SI ME TENGO QUE PONER LA ARMADURA O EMPUÑAR EL ARMA
         }
 
@@ -129,14 +125,9 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
             std::cout << "SE ME ROMPIO EL HELMET" << "\n";
         }
 
-
-
-
         if(message.type == BULLET_POS_UPDATE){
-
             //renderizar la bala. NO se como ahcerlo aca y no dentro del DORender.
             //capaz simplemente va ahi
-
             //cada bala viene con su id para poder identificarla de alguna forma al momento de renderizar
         }
 
@@ -147,11 +138,7 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
             game.ducks[pos_id].y = 400 * TILE_SIZE;
         }
 
-
-
         if (message.type == DUCK_POS_UPDATE){
-
-
             int pos_id = message.player_id - 1;
 
             game.ducks[pos_id].x = message.duck_x * TILE_SIZE;
@@ -176,9 +163,7 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
         }
 
         rendererManager->doRenderDynamic(&game, message);
-
-        //REVISAR ESTO NO CREO QUE ESTÉ BIEN RENDERIZARLO EN CADA LOOP
-        renderItems(renderer, &game);
+        //renderItems(renderer, &game);
 
         SDL_Delay(DELAY_TIME);
     }
