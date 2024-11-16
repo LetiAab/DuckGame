@@ -36,6 +36,8 @@ public:
 
     Position try_move_bullet_to(Position old_position, Position new_position, char duck_id, bool& hit_something);
 
+    Position try_move_bouncing_laser_to(Position old_position, Position new_position, char duck_id, bool& hit_something, bool& hit_platform, bool& hit_x);
+
     Position move_duck_to(Position old_position, Position new_position, char duck_id);
 
     void cleanDuckOldPosition(int x, int y);

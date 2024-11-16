@@ -101,6 +101,85 @@ Position GameMap::try_move_bullet_to(Position old_position, Position new_positio
 
 }
 
+Position GameMap::try_move_bouncing_laser_to(Position old_position, Position new_position, char duck_id, bool& hit_something, bool& hit_platform, bool& hit_x){
+    int final_x = old_position.x;
+    int final_y = old_position.y;
+
+    //determino la direccion del movimiento
+    int dx = (new_position.x > old_position.x) ? 1 : (new_position.x < old_position.x ? -1 : 0);
+    int dy = (new_position.y > old_position.y) ? 1 : (new_position.y < old_position.y ? -1 : 0);
+
+    //itero hasta llegar a la posición final, encontrar un obstaculo o pegarle a un pato
+    while (final_x != new_position.x || final_y != new_position.y) {
+        int next_x = final_x + dx;
+        int next_y = final_y + dy;
+
+        //verifico si la nueva posición está dentro de los límites del mapa
+        if (next_x < 0 || next_x + BULLET_SIZE_X > width || next_y < 0 || next_y + BULLET_SIZE_Y > height) {
+            break;
+        }
+
+        
+        for (int y = next_y; y < next_y + BULLET_SIZE_Y; ++y) {
+            for (int x = next_x; x < next_x + BULLET_SIZE_X; ++x) {
+
+                if (map[y][x] == PLATFORM) {
+                    // Nota: El proximo upgrade que debería tener esto es que el movimiento no se termine cuando
+                    // choca con una pared, sino que recalcule el esperado
+                    hit_platform = true;
+
+                    // Si el choque fue en una coordenada, espejo la velocidad en esa coordenada y la otra la mantengo igual
+                    // Si cae en un zócalo morimos todos (?, o espejo las dos
+
+                    // Notar que tengo que recalcular la posición esperada. Supongo que puedo hacer una diff 
+                    // con new_position y poner esa diff pero invertida
+
+                    // El choque es en x
+                    if (map[y][x-dx] != PLATFORM) {
+                        hit_x = true;                        
+                        // Aumento la coordenada no espejada (decisión de diseño)
+                        //y += dy;
+
+                        // invierto la coordenada espejada
+                        //dx = 0 - dx;
+
+                        // recalculo la nueva posición
+
+                        //return Position(final_x, final_y);  // devuelvo la posición actual
+                    } else {
+                        hit_x = false;
+                    }
+                    return Position(final_x, final_y);  // devuelvo la posición actual
+                }
+                else if (bullet_hit_other_duck(map[y][x], duck_id)) {
+                    // Caso 2: choque con otro pato
+                    hit_something = true;
+                    // avanzo una posición más para que la bala quede "dentro" del pato
+                    final_x = next_x;
+                    final_y = next_y;
+                    return Position(final_x, final_y);
+                }
+            }
+        }
+
+        if (next_x == new_position.x){
+            dx = 0;
+        }
+
+        if (next_y == new_position.y){
+            dy = 0;
+        }
+
+        //si el área está libre, actualizo la posición final
+        final_x = next_x;
+        final_y = next_y;
+        
+    }
+
+    return Position(final_x, final_y);
+
+}
+
 Position GameMap::move_duck_to(Position old_position, Position new_position, char duck_id) {
     int final_x = old_position.x;
     int final_y = old_position.y;
