@@ -1,7 +1,7 @@
 #include "ak_47.h"
 #include <iostream>
 
-// 12 rafagas, Alcance: 35 a 38 tiles
+// 30 rafagas, Alcance: 13 tiles
 Ak47::Ak47(const std::string& nombre, double alcance, double dispersion, int municiones, int x, int y)
     : Item(WEAPON_1_ID,x, y), nombre(nombre), alcance(alcance), dispersion(dispersion), municiones(municiones) {}  // Inicializar posición
 
