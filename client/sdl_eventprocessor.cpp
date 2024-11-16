@@ -73,6 +73,12 @@ uint8_t EventProcessor::handleKeyDown(SDL_Keycode key) {
             case SDLK_f:
                 move =  SHOOT;
                 break;
+            case SDLK_e:
+                move = TAKE_ITEM;
+                break;
+            case SDLK_q:
+                move = DROP_WEAPON;
+                break;
             default:
                 break;
         }

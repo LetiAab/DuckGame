@@ -77,6 +77,8 @@ bool ServerProtocol::send_message(Message& message){
         break;
 
     case DUCK_EQUIP_ITEM:
+        std::cout << "EQUIPO ITEM ME LLEGA POR PROTOCOL" << "\n";
+
         if (!skt.sendall(&message.player_id, sizeof(message.player_id), &was_closed) || was_closed) {
             return false;
         }

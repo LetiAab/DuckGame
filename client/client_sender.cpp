@@ -11,7 +11,7 @@ ClientSender::ClientSender(ClientProtocol& protocol): protocol(protocol), is_ali
 void ClientSender::run() {
     try {
         while (is_alive) {
-            auto cmd = command_queue.pop();
+            auto cmd = command_queue.pop();            
             protocol.send_command(cmd);
         }
 
