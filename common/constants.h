@@ -78,9 +78,6 @@ const uint8_t WEAPON_1_ID = 0x41;
 
 static const char QUIT_SERVER[] = "q";
 
-/*const int WINDOW_WIDTH = 800;
-const int WINDOW_HEIGHT = 600;*/
-
 const int MAX_PLAYERS = 6;
 const int MIN_PLAYERS = 2;
 
@@ -94,11 +91,13 @@ const int DUCK_SIZE_X = 10;
 const int DUCK_SIZE_Y = 14;
 const int DUCK_TOTAL_SIZE = 140; //Cantidad total de cuadrados que ocupa el pato 9X13
 
-
 const int BULLET_SIZE_Y = 1;
 const int BULLET_SIZE_X = 2;
 
 const int TILE_SIZE = 4;
+
+const int WINDOW_WIDTH = TILE_SIZE * MATRIX_M;
+const int WINDOW_HEIGHT = TILE_SIZE * MATRIX_N;
 
 const std::vector<std::vector<uint8_t>> colors = {
     {255,255,255}, //blanco

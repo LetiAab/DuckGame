@@ -9,7 +9,12 @@ target_sources(taller_client
     client_protocol.cpp
     client_game_map.cpp
     sdl_handler.cpp
-        sdl_handletextures.cpp
+        sdl_texturehandler.cpp
+        sdl_button.cpp
+        sdl_eventprocessor.cpp
+        game_initializer.cpp
+        sdl_renderermanager.cpp
+        sdl_screenmanager.cpp
     PUBLIC
     # .h files
     client.h
@@ -19,8 +24,17 @@ target_sources(taller_client
     client_protocol.h
     sdl_handler.h
     client_game_map.h
-        sdl_handletextures.h
+        sdl_texturehandler.h
+        sdl_button.h
+        sdl_eventprocessor.h
+        game_state.h
+        game_initializer.h
+        sdl_renderermanager.h
+        sdl_screenmanager.h
     )
 
 # Path de imagenes
 target_compile_definitions(taller_client PRIVATE IMAGE_PATH="${CMAKE_CURRENT_SOURCE_DIR}/imgs/")
+
+#Path de fuentes
+target_compile_definitions(taller_client PRIVATE FONT_PATH="${CMAKE_CURRENT_SOURCE_DIR}/fonts/")
