@@ -61,7 +61,9 @@ void RendererManager::renderDucks(GameState* game) {
         SDL_RenderCopyEx(renderer, duck_texture, &src_rect, &duck_rect, 0, NULL, duck.flipType);
         SDL_SetTextureColorMod(duck_texture, 255, 255, 255); //reseteo el color
 
-        SDL_RenderCopyEx(renderer, texture_handler.getTexture("gun"), NULL, &gun_rect, 0, NULL, duck.flipType);
+        if(duck.weapon_equiped != 0){
+            SDL_RenderCopyEx(renderer, texture_handler.getTexture("gun"), NULL, &gun_rect, 0, NULL, duck.flipType);
+        }
 
         SDL_Texture* wings_texture = texture_handler.getTexture("duck-walking-wings");
         SDL_SetTextureColorMod(wings_texture, colors[i][0], colors[i][1], colors[i][2]);
@@ -73,6 +75,13 @@ void RendererManager::renderDucks(GameState* game) {
 
 void RendererManager::doRenderDynamic(GameState* game, Message& message) {
     SDL_RenderCopy(renderer, texture_handler.getTexture("static_scene"), NULL, NULL);
+
+    if(message.type == DUCK_PICKUP_ITEM){
+        int pos_id = message.player_id - 1;
+
+        game->ducks[pos_id].weapon_equiped = message.item_id;
+    }
+
     renderDucks(game);
     if(message.type == BULLET_POS_UPDATE){
         renderBullet(message.bullet_x, message.bullet_y);

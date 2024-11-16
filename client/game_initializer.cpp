@@ -16,6 +16,12 @@ void GameInitializer::initializeDucks(GameState* game, const int frame_width, co
                 duck.is_moving = false;
                 duck.animation_frame = 0;
                 duck.current_frame_index = 0;
+                
+                //Items
+                duck.armor_equiped = 0;
+                duck.weapon_equiped = 0;
+                duck.helmet_equiped = 0;
+                duck.item_on_hand = 0;
 
                 // Configuro el tamaño de los fotogramas del pato
                 duck.frame_width = frame_width;
