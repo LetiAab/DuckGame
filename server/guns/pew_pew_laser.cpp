@@ -7,15 +7,24 @@ PewPewLaser::PewPewLaser(const std::string& nombre, double alcance, double dispe
 
 void PewPewLaser::disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) {
     if (municiones > 0) {
+        //la bala debe aparecer fuera del pato, o sino se mata a si mismo
+        int laser_position_x = (looking == LOOKING_RIGHT) ? position_x + DUCK_SIZE_X : position_x -1;
+        int laser_position_y = position_y;
 
-        //la bala debe aparecer fuera del pato, o sino se mata a si mismo 
-        int direccion_x = (looking == LOOKING_RIGHT) ? DUCK_SIZE_X : -DUCK_SIZE_X;
+        Position laser_pos(laser_position_x, laser_position_y);
+        //si donde debe salir la bala hay una pared, no puedo disparar
+        if(map->at(laser_pos)== 'P') {
+            std::cout << "No puedo disparar, hay una pared inmediatamente al lado" << std::endl;
+            return;
+        }
+
+        int direccion_x = (looking == LOOKING_RIGHT) ? 6 : -6;
         int direccion_y = 0;  // La bala se mueve horizonalmente
 
-        int bullet_id = municiones; //el id es el numero de muncion. Inteligente verdad?
+        int laser_id = municiones; //el id es el numero de muncion. Inteligente verdad?
 
         for (int i = -1; i < 2; i++){
-                Laser new_laser(bullet_id, position_x, position_y, direccion_x, direccion_y + i, map, id_player, alcance);
+                Laser new_laser(laser_id, laser_pos, direccion_x, direccion_y + i, map, id_player, alcance);
                 new_laser.comenzar_trayectoria();
                 lasers.push_back(new_laser);
         }

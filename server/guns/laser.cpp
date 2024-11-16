@@ -1,10 +1,10 @@
 #include "laser.h"
 #include <cmath> 
 
-Laser::Laser(int laser_id, int start_x, int start_y, int direction_x, int direction_y, GameMap* map, char duck_id, int alcance) 
+Laser::Laser(int laser_id, Position position, int direction_x, int direction_y, GameMap* map, char duck_id, int alcance) 
     : laser_id(laser_id),
-    position(start_x, start_y),
-    old_position(start_x, start_y),
+    position(position),
+    old_position(position),
     speed(direction_x, direction_y),
     direction_x(direction_x),
     direction_y(direction_y),
@@ -17,11 +17,7 @@ Laser::Laser(int laser_id, int start_x, int start_y, int direction_x, int direct
 
 
 void Laser::comenzar_trayectoria() {
-    //al principio la bala tiene una velocidad de DUCK_SIZE_X
-    //para que aparezca fuera del pato que la disparo
     update_position();
-    //despues la velocidad deberia ser la correcta, por ahora solo la divido por 2 (o sea 5)
-    speed.x = speed.x / 2;
 }
 
 void Laser::update_position() {
@@ -37,7 +33,6 @@ void Laser::update_position() {
         int delta_y = position.y + speed.y;
         old_position = position;
 
-        // De momento no modifico esto porque no hay cambios entre los dos
         position = map->try_move_bullet_to(position, Position(delta_x, delta_y), duck_id, impacto);
         
         map->cleanBulletOldPosition(old_position);
@@ -73,7 +68,7 @@ bool Laser::get_laser_message(Message& msg){
 }
 
 void Laser::cleanPostImpacto(){
-//    map->cleanBulletOldPosition(position);
+    map->cleanBulletOldPosition(position);
 }
 
 void Laser::impactar(){
