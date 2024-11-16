@@ -21,6 +21,8 @@ void SDLHandler::loadGame(GameState* game) {
         {"forest", "backgrounds/forest", 1},
         {"crate", "crate", 1},
         {"gun", "guns/AK-47", 1},
+        {"helmet", "armor/helmet", 1},
+        {"armor", "armor/armor", 1},
         {"bullet", "ammo/bullet", 1},
         {"duck-walking", "duck-walking", 6},
         {"duck-walking-wings", "duck-walking-wings", 1},

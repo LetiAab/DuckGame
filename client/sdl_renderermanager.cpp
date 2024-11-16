@@ -62,7 +62,37 @@ void RendererManager::renderDucks(GameState* game) {
         SDL_SetTextureColorMod(duck_texture, 255, 255, 255); //reseteo el color
 
         if(duck.weapon_equiped != 0){
+            //por ahora siempre renderiza el mismo arma. Hay que valdiar contra los diferentes ids de armas que no existen aun;
             SDL_RenderCopyEx(renderer, texture_handler.getTexture("gun"), NULL, &gun_rect, 0, NULL, duck.flipType);
+        }
+
+        if(duck.item_on_hand != 0){
+
+            if (duck.item_on_hand == HELMET_ID){
+                SDL_Rect helmet_rect = {
+                    duck.x + TILE_SIZE * 6,
+                    (duck.y + TILE_SIZE * 2),
+                    (TILE_SIZE * DUCK_SIZE_X / 2) + TILE_SIZE,
+                    (TILE_SIZE * DUCK_SIZE_Y / 2) + TILE_SIZE
+                      };
+
+                SDL_RenderCopyEx(renderer, texture_handler.getTexture("helmet"), NULL, &helmet_rect, 0, NULL, duck.flipType);
+
+            }
+
+        }
+
+        if(duck.helmet_equiped != 0){
+            
+            SDL_Rect helmet_rect = {
+                duck.x + TILE_SIZE * 2,
+                (duck.y - TILE_SIZE/4) - TILE_SIZE,
+                (TILE_SIZE * DUCK_SIZE_X / 2) + TILE_SIZE,
+                (TILE_SIZE * DUCK_SIZE_Y / 2) + TILE_SIZE
+            };
+
+            SDL_RenderCopyEx(renderer, texture_handler.getTexture("helmet"), NULL, &helmet_rect, 0, NULL, duck.flipType);
+
         }
 
         SDL_Texture* wings_texture = texture_handler.getTexture("duck-walking-wings");
@@ -77,9 +107,59 @@ void RendererManager::doRenderDynamic(GameState* game, Message& message) {
     SDL_RenderCopy(renderer, texture_handler.getTexture("static_scene"), NULL, NULL);
 
     if(message.type == DUCK_PICKUP_ITEM){
-        int pos_id = message.player_id - 1;
 
-        game->ducks[pos_id].weapon_equiped = message.item_id;
+        if(message.item_id == WEAPON_1_ID){
+            int pos_id = message.player_id - 1;
+            game->ducks[pos_id].item_on_hand = message.item_id;
+        }
+
+        if(message.item_id == HELMET_ID){
+            int pos_id = message.player_id - 1;
+            game->ducks[pos_id].item_on_hand = message.item_id;
+        }
+
+        // si es un ARMOR 
+
+        if(message.item_id == ARMOR_ID){
+            int pos_id = message.player_id - 1;
+            game->ducks[pos_id].item_on_hand = message.item_id;
+        }
+    }
+
+
+    if(message.type == DUCK_EQUIP_ITEM){
+
+        int pos_id = message.player_id - 1;
+        game->ducks[pos_id].item_on_hand = 0;
+
+
+
+        //si agarro un arma tengo recibir directo esto
+        std::cout << "RECIBO QUE TENGO EQUIPADA EL ARMA" << "\n";
+
+        
+        // si es un arma la equipo como arma
+        if(message.item_id == WEAPON_1_ID){
+            game->ducks[pos_id].weapon_equiped = message.item_id;
+        }
+
+        // si es un helmet 
+
+        if(message.item_id == HELMET_ID){
+            game->ducks[pos_id].helmet_equiped = message.item_id;
+        }
+
+        // si es un ARMOR 
+
+        if(message.item_id == ARMOR_ID){
+            game->ducks[pos_id].armor_equiped = message.item_id;
+        }
+
+    }
+
+    if(message.type == DROP_WEAPON){
+        int pos_id = message.player_id - 1;
+        game->ducks[pos_id].weapon_equiped = 0;
     }
 
     renderDucks(game);
