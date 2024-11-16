@@ -1,6 +1,11 @@
 #include "duck.h"
 #include <iostream>
 
+const int HELMET_BROKE = 0;
+const int ARMOR_BROKE = 1;
+const int DEAD = 2;
+
+
 Duck::Duck(char id, int x, int y, GameMap* map) :
     id_player(id),
     position(x, y),
@@ -13,12 +18,12 @@ Duck::Duck(char id, int x, int y, GameMap* map) :
     is_jumping(false),
     is_fluttering(false),
     is_slippy(false),
-    life_points(100),
+    life_points(1),
     stop_notificated(false),
     is_dead(false),
-    weapon(nullptr), 
-    armor(nullptr), 
-    helmet(nullptr), 
+    weapon(nullptr),
+    armor(nullptr), //suma 1 a lifepoint
+    helmet(nullptr), //suma 1 a lifepoint
     onHand(nullptr) {}
 
 bool Duck::is_in_air(){
@@ -68,20 +73,41 @@ void Duck::check_gravity(){
 
 }
 
-void Duck::update_life(){
+int Duck::update_life(){
+//Esta funcion tiene que avisar que le sacaron el casco, le sacaron el armor, o que murio
+
     if(map->duckIsOverVoid(position.x, position.y)){
         is_dead = true;
     }
 
     if(map->duckIsOverBullet(position)){
-        is_dead = true;
+
+        if (helmet != nullptr){ //si tengo helmet me saca el helmet (TENGO QUE AVISAR)
+            helmet = nullptr;
+            life_points -= 1;
+            return HELMET_BROKE;
+        }
+
+        if (armor != nullptr){ //si tengo armor me saca el armor (TENGO QUE AVISAR)
+            armor = nullptr;
+            life_points -= 1;
+            return ARMOR_BROKE;
+
+        }
+
+
+        life_points -= 1;
+        if (life_points == 0){
+            is_dead = true;
+        }
     }
 
     if (is_dead) {
         map->cleanDuckOldPosition(position.x, position.y);
         std::cout << "soy el pato muerto, me borre del mapa" << "\n";
-        return;
     }
+
+    return DEAD;
 
 }
 
@@ -131,8 +157,22 @@ bool Duck::get_duck_dead_message(Message& msg){
     msg.type = KILL_DUCK;
     msg.player_id = static_cast<uint16_t>(id_player - '0');
     return true;
-    
 }
+
+bool Duck::get_duck_broke_helmet_message(Message& msg){
+
+    msg.type = HELMET_BROKEN;
+    msg.player_id = static_cast<uint16_t>(id_player - '0');
+    return true;
+}
+
+bool Duck::get_duck_broke_armor_message(Message& msg){
+
+    msg.type = ARMOR_BROKEN;
+    msg.player_id = static_cast<uint16_t>(id_player - '0');
+    return true;
+}
+
 void Duck::form_position_message(Message& msg){
     msg.type = DUCK_POS_UPDATE;
     msg.player_id = static_cast<uint16_t>(id_player - '0'); // Convertimos el id a int
@@ -145,6 +185,8 @@ void Duck::form_position_message(Message& msg){
 }
 
 bool Duck::get_duck_position_message(Message& msg){
+    if(is_dead){return false;}
+
     if (old_position.x == position.x && old_position.y == position.y){
         if(stop_notificated){
             return false;
@@ -177,18 +219,26 @@ void Duck::setWeapon(PewPewLaser* new_weapon) {
 
 void Duck::setArmor(Armor* new_armor) {
     std::cout << "ASIGNO NUEVA ARMADURA" << "\n";
-    armor = new_armor;  // Asigna el arma al pato
+    if(armor == nullptr){
+        armor = new_armor;  // Asigna el arma al pato
+        life_points += 1;
+    }
 }
 
 void Duck::setHelmet(Helmet* new_helmet) {
-    std::cout << "ASIGNO NUEVO CASCO" << "\n";
-    helmet = new_helmet;  // Asigna el arma al pato
+    if(helmet == nullptr){
+        std::cout << "ASIGNO NUEVO CASCO" << "\n";
+        helmet = new_helmet;  // Asigna el arma al pato
+        life_points += 1;
+    }
+
 }
 
 
 void Duck::disparar() {
+    if(is_dead){return;}
 
-   if (weapon != nullptr) {
+    if (weapon != nullptr) {
         weapon->disparar(position.x, position.y, looking, map, id_player);
     }
 }
@@ -209,7 +259,7 @@ bool Duck::dropWeapon() {
         weapon = nullptr;
         return true;
         
-    } 
+    }
 
     return false;
 }

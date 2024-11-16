@@ -91,7 +91,18 @@ bool ServerProtocol::send_message(Message& message){
             return false;
         }
         break;
+    
+    case ARMOR_BROKEN:
+        if (!skt.sendall(&message.player_id, sizeof(message.player_id), &was_closed) || was_closed) {
+            return false;
+        }
+        break;
 
+    case HELMET_BROKEN:
+        if (!skt.sendall(&message.player_id, sizeof(message.player_id), &was_closed) || was_closed) {
+            return false;
+        }
+        break;
     case ITEM_POSITION:
         if (!skt.sendall(&message.item_id, sizeof(message.item_id), &was_closed) || was_closed) {
             return false;
@@ -216,13 +227,13 @@ std::shared_ptr<Executable> ServerProtocol::receive_command(){
         return std::make_shared<MoveDownCommand>(player_id);
 
     case STOP_LEFT:
-        return std::make_shared<StopMoveCommand>(player_id);
+        return std::make_shared<StopMoveLeftCommand>(player_id);
     case STOP_RIGHT:
-        return std::make_shared<StopMoveCommand>(player_id);
+        return std::make_shared<StopMoveRightCommand>(player_id);
     case STOP_UP:
-        return std::make_shared<StopMoveCommand>(player_id);
+        return std::make_shared<StopJumpCommand>(player_id);
     case STOP_DOWN:
-        return std::make_shared<StopMoveCommand>(player_id);
+        return std::make_shared<StopJumpCommand>(player_id);
     case SHOOT:
         return std::make_shared<ShootCommand>(player_id);
     case TAKE_ITEM:

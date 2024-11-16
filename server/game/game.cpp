@@ -35,26 +35,36 @@ Duck* Game::getDuckByPosition(Position position) {
 
 void Game::simulate_round() {
 
-        //map.printMap();
+        for (Duck& duck : ducks) {
+                if (duck.is_dead) {
+                        // Si el pato murio en la ronda anterior, lo saltamos y continuamos con el siguiente
+                        continue;
+                }
 
-        for (auto it = ducks.begin(); it != ducks.end(); ) {
-                Duck& duck = *it;
-
-                duck.update_life();
+                int notification = duck.update_life();
                 duck.update_position();
                 duck.update_weapon();
-                
 
-                // Si el pato está muerto, lo eliminamos de la lista y avisamos al cliente
+                // Si el pato murio, avisamos al cliente
+                //estaria bueno mover esto 
+
+                if(notification == 0){
+                        //HELMET BROKE
+                        Message broken_helmet_message;
+                        duck.get_duck_broke_helmet_message(broken_helmet_message);
+                        monitor.broadcast(broken_helmet_message);
+                }
+                if(notification == 1){
+                        //ARMOR BROKE
+                        Message broken_armor_message;
+                        duck.get_duck_broke_armor_message(broken_armor_message);
+                        monitor.broadcast(broken_armor_message);
+                }
+
                 Message kill_duck_message;
-                if(duck.get_duck_dead_message(kill_duck_message)){
+                if (duck.get_duck_dead_message(kill_duck_message)) {
                         monitor.broadcast(kill_duck_message);
-                        it = ducks.erase(it);
-                        
-                        std::cout << "Pato eliminado. Tamaño actual de ducks: " << ducks.size() << std::endl;
-                
-                } else {
-                        ++it;
+                        std::cout << "Pato muerto. Tamaño actual de ducks: " << ducks.size() << std::endl;
                 }
         }
 
@@ -89,6 +99,7 @@ void Game::run() {
 
 
         while (is_running) {
+
                 // saco de 10 comandos de la queue y los ejecuto
                 std::shared_ptr<Executable> command;
 
@@ -102,8 +113,6 @@ void Game::run() {
                 // Simulo una ronda de movimientos
                 simulate_round();
 
-                //mando la posicion de cada PATO
-                //NO ME GUSTA NADA ESTO PORQUE NO RESPETA QUIEN SE MOVIO PRIMERO
                 for (Duck& duck : ducks) {
 
                         Message duck_message;
@@ -142,6 +151,9 @@ void Game::inicializate_map() {
         PewPewLaser* weapon = new PewPewLaser("Pistola no genérica", 35, 1, 12);
 
         duck.setWeapon(weapon);
+        Helmet* helmet = new Helmet(5,5); //le pongo posicion pero no importa porque se la asigno al pato
+
+        duck.setHelmet(helmet);
     }
 }
 
