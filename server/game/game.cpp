@@ -181,17 +181,31 @@ void Game::create_ducks(const std::vector<uint16_t>& ids) {
         }
 }
 
-
+//REFACTOR!!!!
 void Game::create_spawn_places() {
+
+    //CREO ITEMS PARA METER EN LOS SPAWN PLACES
+    std::cout << "CREO LOS ITEMS" << "\n";
+
+
+    std::unique_ptr<Item> item1 = std::make_unique<Weapon>("Nombre", 100.0, 1.5, 30, 30, 125);
+    std::unique_ptr<Item> item2 = std::make_unique<Armor>(100, 125);
+    std::unique_ptr<Item> item3 = std::make_unique<Weapon>("Nombre", 100.0, 1.5, 30, 30, 75);
+    std::unique_ptr<Item> item4 = std::make_unique<Helmet>(100, 75);
+
+    items.push_back(std::move(item1));
+    items.push_back(std::move(item2));
+    items.push_back(std::move(item3));
+    items.push_back(std::move(item4));
+
 
     //seteo N spawn places (4)
     std::cout << "CREO LOS SPAWN PLACES" << "\n";
 
-    spawn_places.emplace_back(std::make_unique<SpawnPlace>(Position(30, 125), 0, nullptr));  
-    spawn_places.emplace_back(std::make_unique<SpawnPlace>(Position(300, 125), 1, nullptr));  
-    spawn_places.emplace_back(std::make_unique<SpawnPlace>(Position(500, 125), 2, nullptr));  
-    spawn_places.emplace_back(std::make_unique<SpawnPlace>(Position(500, 500), 3, nullptr));  
-
+    spawn_places.emplace_back(std::make_unique<SpawnPlace>(Position(30, 125), 0, item1.get()));  
+    spawn_places.emplace_back(std::make_unique<SpawnPlace>(Position(100, 125), 1, item2.get()));  
+    spawn_places.emplace_back(std::make_unique<SpawnPlace>(Position(30, 75), 2, item3.get()));  
+    spawn_places.emplace_back(std::make_unique<SpawnPlace>(Position(100, 75), 3, item4.get()));
 
     for (int i = 0; i < N_SPAWN_PLACES; i++){
         Message spawn_place_position_message;
