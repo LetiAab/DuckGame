@@ -23,6 +23,7 @@ private:
     std::unique_ptr<ScreenManager> screenManager;
     std::unique_ptr<RendererManager> rendererManager;
     void loadGame(GameState* game);
+    Message handleMessages(GameState* game, Queue<Message>& message_queue);
     int waitForStartGame();
 
 };

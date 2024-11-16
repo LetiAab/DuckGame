@@ -24,7 +24,9 @@ void SDLHandler::loadGame(GameState* game) {
         {"bullet", "ammo/bullet", 1},
         {"duck-walking", "duck-walking", 6},
         {"duck-walking-wings", "duck-walking-wings", 1},
-        {"duck-jumping", "duck-jumping", 6}
+        {"duck-jumping", "duck-jumping", 1},
+        {"duck-jumping-wings", "duck-jumping-wings", 1},
+        {"duck-fluttering", "duck-fluttering", 6}
     };
 
     // Cargo las texturas
@@ -41,11 +43,84 @@ void SDLHandler::loadGame(GameState* game) {
     rendererManager = std::make_unique<RendererManager>(game->renderer, handle_textures);
 }
 
+Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queue) {
+    Message message;
+    while (message_queue.try_pop(message)) {
+        if(message.type == ITEM_POSITION){
+            //RENDERIZAR LOS ITEMS bien
+            /*Item item;
+            item.x = message.item_x * TILE_SIZE;
+            item.y = message.item_y * TILE_SIZE;
+            game.items.push_back(item);*/
+        }
+
+        if(message.type == DUCK_PICKUP_ITEM){
+            std::cout << "ME PONGO EL ITEM EN LA MANO" << "\n";
+            //aca te fijas en el mensaje el DUCK ID y el ITEM ID.
+            //cuando recibis esto tenes que renderizarle al pato con DUCK ID el ITEM ID
+            //EN LA MANO. OSEA TODABIA NO LO TIENE PUESTO. con las armas es lo mismo
+            //LA DIFERENCIA ES CUANDO AGARRO UNA ARMADURA O CASCO
+        }
+
+        if(message.type == DUCK_EQUIP_ITEM){
+            std::cout << "ME EQUIPO EL ITEM QUE TENGO EN LA MANO" << "\n";
+            //SI RECIBO ESTO AHORA SI ME TENGO QUE PONER LA ARMADURA O EMPUÑAR EL ARMA
+        }
+
+        if(message.type == DROP_WEAPON){
+            std::cout << "SUELTO EL ARMA" << "\n";
+        }
+
+        if(message.type == ARMOR_BROKEN){
+            std::cout << "SE ME ROMPIO EL ARMOR" << "\n";
+        }
+
+        if(message.type == HELMET_BROKEN){
+            std::cout << "SE ME ROMPIO EL HELMET" << "\n";
+        }
+
+        if(message.type == BULLET_POS_UPDATE){
+            //renderizar la bala. NO se como ahcerlo aca y no dentro del DORender.
+            //capaz simplemente va ahi
+            //cada bala viene con su id para poder identificarla de alguna forma al momento de renderizar
+        }
+
+        if(message.type == KILL_DUCK){
+            int pos_id = message.player_id - 1;
+            //NO LO ELIMINO DE LA LISTA PORQUE ALTO KILOMBO ASI QUE MUEVO EL DIBUJO AFUERA DE LA PANTALLA
+            game->ducks[pos_id].x = 400 * TILE_SIZE;
+            game->ducks[pos_id].y = 400 * TILE_SIZE;
+        }
+
+        if (message.type == DUCK_POS_UPDATE){
+            int pos_id = message.player_id - 1;
+
+            game->ducks[pos_id].x = message.duck_x * TILE_SIZE;
+            game->ducks[pos_id].y = message.duck_y * TILE_SIZE;
+
+            //con looking podemos hacer que el pato mire para arriba o aletee tambien (creo)
+            if(message.looking == LOOKING_LEFT){
+                //pato esta mirando a la izquierda
+                game->ducks[pos_id].flipType = SDL_FLIP_HORIZONTAL;
+
+            } else {
+                //pato esta mirando a la derecha
+                game->ducks[pos_id].flipType = SDL_FLIP_NONE;
+            }
+
+            game->ducks[pos_id].is_moving = message.is_moving;
+            game->ducks[pos_id].is_jumping = message.is_jumping;
+            game->ducks[pos_id].is_fluttering = message.is_fluttering;
+        }
+    }
+    return message;
+}
+
+
 //** Lobby **//
 int SDLHandler::waitForStartGame() {
     int done = SUCCESS;
     bool start_game = false;
-
 
     while (!start_game && !done) {
         screenManager->showLobbyScreen();
@@ -88,79 +163,7 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
         done = eventProcessor.processGameEvents(window, &game, id);
 
         //LUEGO RECIBO DEL SERVER Y HAGO EL RENDER
-        Message message;
-        message_queue.try_pop(message);
-
-        //TODO: MODULARIZAR
-        if(message.type == ITEM_POSITION){
-            //RENDERIZAR LOS ITEMS bien 
-            /*Item item;
-            item.x = message.item_x * TILE_SIZE;
-            item.y = message.item_y * TILE_SIZE;
-            game.items.push_back(item);*/
-        }
-
-        if(message.type == DUCK_PICKUP_ITEM){
-            std::cout << "ME PONGO EL ITEM EN LA MANO" << "\n";
-            //aca te fijas en el mensaje el DUCK ID y el ITEM ID.
-            //cuando recibis esto tenes que renderizarle al pato con DUCK ID el ITEM ID 
-            //EN LA MANO. OSEA TODABIA NO LO TIENE PUESTO. con las armas es lo mismo
-            //LA DIFERENCIA ES CUANDO AGARRO UNA ARMADURA O CASCO
-        }
-
-        if(message.type == DUCK_EQUIP_ITEM){
-            std::cout << "ME EQUIPO EL ITEM QUE TENGO EN LA MANO" << "\n";
-            //SI RECIBO ESTO AHORA SI ME TENGO QUE PONER LA ARMADURA O EMPUÑAR EL ARMA
-        }
-
-        if(message.type == DROP_WEAPON){
-            std::cout << "SUELTO EL ARMA" << "\n";
-        }
-
-        if(message.type == ARMOR_BROKEN){
-            std::cout << "SE ME ROMPIO EL ARMOR" << "\n";
-        }
-
-        if(message.type == HELMET_BROKEN){
-            std::cout << "SE ME ROMPIO EL HELMET" << "\n";
-        }
-
-        if(message.type == BULLET_POS_UPDATE){
-            //renderizar la bala. NO se como ahcerlo aca y no dentro del DORender.
-            //capaz simplemente va ahi
-            //cada bala viene con su id para poder identificarla de alguna forma al momento de renderizar
-        }
-
-        if(message.type == KILL_DUCK){
-            int pos_id = message.player_id - 1;
-            //NO LO ELIMINO DE LA LISTA PORQUE ALTO KILOMBO ASI QUE MUEVO EL DIBUJO AFUERA DE LA PANTALLA
-            game.ducks[pos_id].x = 400 * TILE_SIZE;
-            game.ducks[pos_id].y = 400 * TILE_SIZE;
-        }
-
-        if (message.type == DUCK_POS_UPDATE){
-            int pos_id = message.player_id - 1;
-
-            game.ducks[pos_id].x = message.duck_x * TILE_SIZE;
-            game.ducks[pos_id].y = message.duck_y * TILE_SIZE;
-
-            //con looking podemos hacer que el pato mire para arriba o aletee tambien (creo)
-            if(message.looking == LOOKING_LEFT){
-                //pato esta mirando a la izquierda
-                game.ducks[pos_id].flipType = SDL_FLIP_HORIZONTAL;
-                
-            } else {
-                //pato esta mirando a la derecha
-                game.ducks[pos_id].flipType = SDL_FLIP_NONE;
-            }
-
-            game.ducks[pos_id].is_moving = message.is_moving;
-            
-            //intente hacer estas animaciones y fallé :(
-            game.ducks[pos_id].is_jumping = message.is_jumping;
-            game.ducks[pos_id].is_fluttering = message.is_fluttering;
-
-        }
+        Message message = handleMessages(&game, message_queue);
 
         rendererManager->doRenderDynamic(&game, message);
         //renderItems(renderer, &game);
