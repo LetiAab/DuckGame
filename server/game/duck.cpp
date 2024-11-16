@@ -42,7 +42,7 @@ bool Duck::pickUpItem(Item* item) {
 void Duck::useOnHand() {
     if (!onHand) return;  // Verificamos si hay un item en la mano
 
-    if (Weapon* w = dynamic_cast<Weapon*>(onHand.get())) {
+    if (PewPewLaser* w = dynamic_cast<PewPewLaser*>(onHand.get())) {
         setWeapon(w);
     } else if (Armor* a = dynamic_cast<Armor*>(onHand.get())) {
         setArmor(a);
@@ -170,7 +170,7 @@ char Duck::get_id() const {
 
 
 
-void Duck::setWeapon(Weapon* new_weapon) {
+void Duck::setWeapon(PewPewLaser* new_weapon) {
     std::cout << "ASIGNO NUEVA ARMA" << "\n";
     weapon = new_weapon;  // Asigna el arma al pato
 }

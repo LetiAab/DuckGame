@@ -19,6 +19,8 @@ target_sources(taller_server
     game/item.cpp
     guns/bullet.cpp
     guns/weapon.cpp
+    guns/pew_pew_laser.cpp
+    guns/laser.cpp
     armor/armor.cpp
     armor/helmet.cpp
     #guns/gun.cpp
@@ -52,6 +54,8 @@ target_sources(taller_server
     game/item.h
     guns/bullet.h
     guns/weapon.h
+    guns/pew_pew_laser.h
+    guns/laser.h
     armor/armor.h
     armor/helmet.h
     #guns/gun.h

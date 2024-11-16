@@ -1,5 +1,6 @@
 #include "game.h"
 #include "common/constants.h"
+#include "../guns/pew_pew_laser.h"
 
 #include <random>
 #include <utility>
@@ -113,10 +114,10 @@ void Game::run() {
                         //quizas se pueda hacer un get_duck_bullet_position() en vez de esto
                         //o sea mover la creacion del mensaje dentro del pato
                         if(duck.weapon != nullptr){
-                                for (Bullet& bullet : duck.weapon->bullets) {
-                                        Message bullet_message;
-                                        if (bullet.get_bullet_message(bullet_message)){
-                                                monitor.broadcast(bullet_message);
+                                for (Laser& laser : duck.weapon->lasers) {
+                                        Message laser_message;
+                                        if (laser.get_laser_message(laser_message)){
+                                                monitor.broadcast(laser_message);
                                         }
                                 }
                         }
@@ -127,6 +128,8 @@ void Game::run() {
 
                 std::this_thread::sleep_for(std::chrono::milliseconds(60));
 
+                map.printMap();
+
         }
 
 }
@@ -134,12 +137,12 @@ void Game::run() {
 void Game::inicializate_map() {
     // Le doy armas a los patos para probar
     
-    /*for (Duck& duck : ducks) {
+    for (Duck& duck : ducks) {
 
-        Weapon* weapon = new Weapon("Pistola Generica", 35, 5, 30);
+        PewPewLaser* weapon = new PewPewLaser("Pistola no genérica", 35, 1, 12);
 
         duck.setWeapon(weapon);
-    }*/
+    }
 }
 
 //TODO: Esto solo sirve para dos patos y siempre tiene en cuenta que es el mismo distribucion de obstaculos

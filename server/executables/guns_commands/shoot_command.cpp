@@ -2,9 +2,6 @@
 #include <iostream>
 #include "common/constants.h"
 
-#include "../../guns/gun.h"
-#include "../../guns/projectile.h"
-
 ShootCommand::ShootCommand(uint16_t player_id) : player_id(player_id) {}
 
 void ShootCommand::execute(Game& game) {
