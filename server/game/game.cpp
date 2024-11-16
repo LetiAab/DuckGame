@@ -186,7 +186,7 @@ void Game::create_items() {
         int y = 125;//std::rand() % map.get_height();
 
         // Crear un tipo de ítem aleatorio
-        int item_type = 3;//std::rand() % 3;
+        int item_type = 1;//std::rand() % 3;
         std::unique_ptr<Item> item;
 
         if (item_type == 0) {

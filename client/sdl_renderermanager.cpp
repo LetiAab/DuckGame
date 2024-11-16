@@ -77,8 +77,22 @@ void RendererManager::renderDucks(GameState* game) {
                       };
 
                 SDL_RenderCopyEx(renderer, texture_handler.getTexture("helmet"), NULL, &helmet_rect, 0, NULL, duck.flipType);
-
             }
+            
+            if (duck.item_on_hand == ARMOR_ID){
+                SDL_Rect armor_rect = {
+                    duck.x + TILE_SIZE * 6 + TILE_SIZE * 3,
+                    (duck.y + TILE_SIZE * 2),
+                    (TILE_SIZE * DUCK_SIZE_X / 2) + TILE_SIZE,
+                    (TILE_SIZE * DUCK_SIZE_Y / 2)
+                      };
+
+                SDL_RenderCopyEx(renderer, texture_handler.getTexture("armor"), NULL, &armor_rect, 0, NULL, duck.flipType);
+            }
+
+
+
+            
 
         }
 
@@ -94,6 +108,18 @@ void RendererManager::renderDucks(GameState* game) {
             SDL_RenderCopyEx(renderer, texture_handler.getTexture("helmet"), NULL, &helmet_rect, 0, NULL, duck.flipType);
 
         }
+        if(duck.armor_equiped != 0){
+
+            SDL_Rect armor_rect = {
+                duck.x + TILE_SIZE * 2,
+                (duck.y  + TILE_SIZE * 6),
+                (TILE_SIZE * DUCK_SIZE_X / 2) + TILE_SIZE,
+                (TILE_SIZE * DUCK_SIZE_Y / 2)
+            };
+
+            SDL_RenderCopyEx(renderer, texture_handler.getTexture("armor"), NULL, &armor_rect, 0, NULL, duck.flipType);
+        }
+
 
         SDL_Texture* wings_texture = texture_handler.getTexture("duck-walking-wings");
         SDL_SetTextureColorMod(wings_texture, colors[i][0], colors[i][1], colors[i][2]);
@@ -110,7 +136,7 @@ void RendererManager::doRenderDynamic(GameState* game, Message& message) {
 
         if(message.item_id == WEAPON_1_ID){
             int pos_id = message.player_id - 1;
-            game->ducks[pos_id].item_on_hand = message.item_id;
+            game->ducks[pos_id].weapon_equiped = message.item_id;
         }
 
         if(message.item_id == HELMET_ID){
