@@ -1,6 +1,6 @@
 #include "game.h"
 #include "common/constants.h"
-#include "../guns/laser_rifle.h"
+#include "../guns/ak_47.h"
 
 #include <random>
 #include <utility>
@@ -123,10 +123,10 @@ void Game::run() {
                         //quizas se pueda hacer un get_duck_bullet_position() en vez de esto
                         //o sea mover la creacion del mensaje dentro del pato
                         if(duck.weapon != nullptr){
-                                for (BouncingLaser& laser : duck.weapon->lasers) {
-                                        Message laser_message;
-                                        if (laser.get_laser_message(laser_message)){
-                                                monitor.broadcast(laser_message);
+                                for (Bullet& bullet : duck.weapon->bullets) {
+                                        Message bullet_message;
+                                        if (bullet.get_bullet_message(bullet_message)){
+                                                monitor.broadcast(bullet_message);
                                         }
                                 }
                         }
@@ -148,7 +148,7 @@ void Game::inicializate_map() {
     
     for (Duck& duck : ducks) {
 
-        LaserRifle* weapon = new LaserRifle("Pistola no genérica", 100, 1, 120);
+        Ak47* weapon = new Ak47("Pistola no genérica", 100, 1, 120);
 
         duck.setWeapon(weapon);
         Helmet* helmet = new Helmet(5,5); //le pongo posicion pero no importa porque se la asigno al pato
