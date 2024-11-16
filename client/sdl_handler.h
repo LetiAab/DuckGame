@@ -9,6 +9,7 @@
 #include "sdl_renderermanager.h"
 #include "sdl_screenmanager.h"
 
+
 class SDLHandler {
 public:
     SDLHandler();
@@ -23,6 +24,7 @@ private:
     std::unique_ptr<RendererManager> rendererManager;
     void loadGame(GameState* game);
     int waitForStartGame();
+
 };
 
 #endif //SDL_HANDLER_H

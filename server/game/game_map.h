@@ -1,10 +1,9 @@
-#include "common/position.h"
 
 #ifndef GAMEMAP_H
 #define GAMEMAP_H
 
 #include <vector>
-
+#include "common/position.h"
 #include "duck.h"
 
 class GameMap {
@@ -14,6 +13,7 @@ private:
     int height;
     std::vector<std::vector<char>> map;
 
+
 public:
     GameMap(int width, int height);
 
@@ -21,6 +21,7 @@ public:
 
     bool is_duck_touching_floor(int x, int y);
 
+    bool bullet_hit_other_duck(char e, char duck_shooting);
     bool is_element_touching_floor(int x, int y, int size_x, int size_y);
 
     char duck_in_position(int x, int y, int size_x, int size_y);
@@ -41,8 +42,6 @@ public:
 
     void setDuckNewPosition(int x, int y, char duck_id);
 
-
-    bool canMoveBulletTo(int x, int y, char duck_id);
     void setBulletNewPosition(int x, int y);
     void cleanBulletOldPosition(int x, int y);
 
@@ -62,8 +61,6 @@ public:
     int get_width();
 
     std::vector<std::vector<char>> getMap();
-
-    char get_position(int x, int y);
 
     bool duckIsOverVoid(int x, int y);
 

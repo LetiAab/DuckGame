@@ -10,6 +10,7 @@ const char DUCK_4 = '4';
 const char DUCK_5 = '5';
 const char DUCK_6 = '6';
 const char PLATFORM = 'P';
+const char ITEM = 'I';
 
 const char VOID = 'V'; //VACIO
 
@@ -21,43 +22,6 @@ GameMap::GameMap(int width, int height) : width(width), height(height) {
     map.resize(height, std::vector<char>(width, EMPTY));
 }
 
-bool GameMap::canMoveBulletTo(int x, int y, char duck_id){
-    
-    //printMap();
-
-    
-    if (x < 0 || x >= width || y < 0 || y >= height) {
-        return false; 
-    }
-    
-
-    if (map[y][x] == duck_id) {
-        std::cout << "CHOCO CONMIGO MISMO" << "\n";
-        return true;
-    }
-
-
-    if(map[y][x] != EMPTY){
-        
-        //bala choca con ALGO
-        return false;
-    }
-    
-
-    return true;
-
-}
-
-void GameMap::setBulletNewPosition(int x, int y){
-
-    map[y][x] = BULLET;
-}
-
-void GameMap::cleanBulletOldPosition(int x, int y){
-
-    map[y][x] = EMPTY;
-
-}
 
 void GameMap::setBulletNewPosition(Position pos) {
     for (int y = pos.y; y < pos.y + BULLET_SIZE_Y; ++y) {
@@ -75,6 +39,12 @@ void GameMap::cleanBulletOldPosition(Position pos) {
     }
 }
 
+bool GameMap::bullet_hit_other_duck(char e, char duck_shooting){
+
+    return (((e == DUCK_1) || (e == DUCK_2) || (e == DUCK_3) || (e == DUCK_4) ||
+    (e == DUCK_5) || (e == DUCK_6)) && (e != duck_shooting));
+}
+
 Position GameMap::try_move_bullet_to(Position old_position, Position new_position, char duck_id, bool& hit_something){
     int final_x = old_position.x;
     int final_y = old_position.y;
@@ -89,19 +59,20 @@ Position GameMap::try_move_bullet_to(Position old_position, Position new_positio
         int next_y = final_y + dy;
 
         //verifico si la nueva posición está dentro de los límites del mapa
-        if (next_x < 0 || next_x + BULLET_SIZE_X-1 >= width || next_y < 0 || next_y + BULLET_SIZE_Y-1 >= height) {
+        if (next_x < 0 || next_x + BULLET_SIZE_X > width || next_y < 0 || next_y + BULLET_SIZE_Y > height) {
             break;
         }
 
         
         for (int y = next_y; y < next_y + BULLET_SIZE_Y; ++y) {
             for (int x = next_x; x < next_x + BULLET_SIZE_X; ++x) {
+
                 if (map[y][x] == PLATFORM) {
                     // Caso 1: choque con una plataforma
                     hit_something = true;
                     return Position(final_x, final_y);  // devuelvo la posición actual
                 }
-                else if (map[y][x] >= DUCK_1 && map[y][x] <= DUCK_6 && map[y][x] != duck_id) {
+                else if (bullet_hit_other_duck(map[y][x], duck_id)) {
                     // Caso 2: choque con otro pato
                     hit_something = true;
                     // avanzo una posición más para que la bala quede "dentro" del pato
@@ -186,14 +157,9 @@ Position GameMap::move_duck_to(Position old_position, Position new_position, cha
 }
 
 bool GameMap::duckIsOverVoid(int x, int y) {
-    std::cout << "REVISO SI ESTOY SOBRE EL VACIO" << "\n";
-
-    std::cout << "Valores: x = " << x << ", y = " << y 
-              << ", width = " << width << ", height = " << height << std::endl;
 
     // Verifica si el pato esta sobre el vacio
     if (map[y + DUCK_SIZE_Y][x] == VOID) {
-        std::cout << "ESTOY SOBRE EL VACIO" << "\n";
         return true;
     }
 
@@ -201,7 +167,6 @@ bool GameMap::duckIsOverVoid(int x, int y) {
 }
 
 bool GameMap::duckIsOverBullet(Position position) {
-    std::cout << "REVISO SI ME PEGO UNA BALA" << "\n";
 
     // Verifica si el pato fue golpeado por una bala
     for (int i = position.x; i < position.x + DUCK_SIZE_X; ++i) {
@@ -456,6 +421,7 @@ void GameMap::setDuckNewPosition(int x, int y, char duck_id) {
 
 
 
+
 //Pone un pato en una posición (x, y) ocupando un rectángulo de DUCK_SIZE_X x DUCK_SIZE_Y
 bool GameMap::placeDuck(int x, int y, char duck_id) {
 
@@ -518,7 +484,3 @@ std::vector<std::vector<char>> GameMap::getMap(){
     return map;
 }
 
-char GameMap::get_position(int x, int y) {
-    char pos =  map[y][x];
-    return pos;
-}

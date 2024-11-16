@@ -11,23 +11,24 @@ private:
     int bullet_id; //para identificar las balas en los mensajes
 
     Position position;
+    Position old_position;
     Position speed;
     int direction_x; 
     int direction_y;
 
     GameMap* map;   
     bool impacto;
-    char duck_id; //tengo que saber de quien es la bala para que no se autopegue cuando sale
-
+    char duck_id; //tengo que saber de quien es la bala para que no se autopegue
     int alcance;
+    bool should_erase;
 
 
 public:
-    Bullet(int bullet_id, int start_x, int start_y, int direction_x, int direction_y, GameMap* map, char duck_id, int alcance);
+    Bullet(int bullet_id, Position position, int direction_x, int direction_y, GameMap* map, char duck_id, int alcance);
     void comenzar_trayectoria();
     void update_position();
 
-    bool hubo_impacto();
+    bool should_erase_bullet();
     void cleanPostImpacto();
     void impactar();
 

@@ -1,24 +1,32 @@
 #include "weapon.h"
 #include <iostream>
 
-Weapon::Weapon(const std::string& nombre, double alcance, double dispersion, int municiones)
-    : nombre(nombre), alcance(alcance), dispersion(dispersion), municiones(municiones) {}
+Weapon::Weapon(const std::string& nombre, double alcance, double dispersion, int municiones, int x, int y)
+    : Item(WEAPON_1_ID,x, y), nombre(nombre), alcance(alcance), dispersion(dispersion), municiones(municiones) {}  // Inicializar posición
 
 void Weapon::disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) {
-
-
     if (municiones > 0) {
+        //la bala debe aparecer fuera del pato, o sino se mata a si mismo
+        int bullet_position_x = (looking == LOOKING_RIGHT) ? position_x + DUCK_SIZE_X : position_x -1;
+        int bullet_position_y = position_y;
 
-        int direccion_x = (looking == LOOKING_RIGHT) ? 5 : -5;  
+        Position bullet_pos(bullet_position_x, bullet_position_y);
+        //si donde debe salir la bala hay una pared, no puedo disparar
+        if(map->at(bullet_pos)== 'P') {
+            std::cout << "No puedo disparar, hay una pared inmediatamente al lado" << std::endl;
+            return;
+        }
+
+        int direccion_x = (looking == LOOKING_RIGHT) ? 6 : -6; //personalizar la velocidad
         int direccion_y = 0;  // La bala se mueve horizonalmente
 
         int bullet_id = municiones; //el id es el numero de muncion. Inteligente verdad?
 
-        Bullet nueva_bala(bullet_id, position_x, position_y + 1, direccion_x, direccion_y, map, id_player, alcance);
+        Bullet nueva_bala(bullet_id, bullet_pos, direccion_x, direccion_y, map, id_player, alcance);
         nueva_bala.comenzar_trayectoria();
         bullets.push_back(nueva_bala);
 
-        municiones--;  // Disminuir el número de municiones
+        municiones--;
         std::cout << "Disparo realizado. Quedan " << municiones << " municiones." << std::endl;
     } else {
         std::cout << "No hay municiones disponibles." << std::endl;
@@ -51,4 +59,18 @@ double Weapon::getDispersion() const {
 
 int Weapon::getMuniciones() const {
     return municiones;
+}
+
+void Weapon::update_weapon(){
+
+    for(auto it = bullets.begin(); it != bullets.end(); ) {
+        it->update_position();
+
+        if(it->should_erase_bullet()) {
+            it = bullets.erase(it);
+        } else {
+            ++it;
+        }
+    }
+
 }
