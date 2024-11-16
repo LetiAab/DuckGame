@@ -51,3 +51,4 @@ void GameInitializer::initializeCrates(GameState* game) {
         }
     }
 }
+

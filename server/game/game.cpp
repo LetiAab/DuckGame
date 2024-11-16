@@ -80,7 +80,7 @@ void Game::add_projectile(std::unique_ptr<Proyectil> projectile) {
 void Game::run() {
 
         //Creo el mapa con los objetos fijos (bloques) y la posicion inicial de los patos
-        inicializate_map();
+        //inicializate_map();
         //map.printMap();
 
 
@@ -92,9 +92,13 @@ void Game::run() {
 
         monitor.broadcast(message);
 
+        //MANDO LOS MENSAJES CON LA POSICION DE LOS SPAWN PLACES
+        create_spawn_places();
+
+
 
         //creo los items y le mando al server
-        create_items();
+        //create_items();
 
 
         while (is_running) {
@@ -175,6 +179,25 @@ void Game::create_ducks(const std::vector<uint16_t>& ids) {
 
                 ducks.emplace_back(char_id, random_x, random_y, &map);
         }
+}
+
+
+void Game::create_spawn_places() {
+
+    //seteo N spawn places (4)
+    std::cout << "CREO LOS SPAWN PLACES" << "\n";
+
+    spawn_places.emplace_back(std::make_unique<SpawnPlace>(Position(30, 125), 0, nullptr));  
+    spawn_places.emplace_back(std::make_unique<SpawnPlace>(Position(300, 125), 1, nullptr));  
+    spawn_places.emplace_back(std::make_unique<SpawnPlace>(Position(500, 125), 2, nullptr));  
+    spawn_places.emplace_back(std::make_unique<SpawnPlace>(Position(500, 500), 3, nullptr));  
+
+
+    for (int i = 0; i < N_SPAWN_PLACES; i++){
+        Message spawn_place_position_message;
+        spawn_places[i]->getSpawnPlacePositionMessage(spawn_place_position_message);
+        monitor.broadcast(spawn_place_position_message);
+    }
 }
 
 void Game::create_items() {

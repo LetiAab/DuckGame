@@ -18,7 +18,7 @@ struct Duck {
     uint8_t weapon_equiped;
     uint8_t helmet_equiped;
     uint8_t armor_equiped;
-    
+
     uint8_t item_on_hand;
 
 
@@ -43,10 +43,16 @@ struct Crate {
     int x, y;
 };
 
+struct SpawnPlace {
+    int x, y;
+    uint8_t item_id;
+};
+
 struct GameState {
     Duck ducks[MAX_PLAYERS];
     int ducks_quantity;
     std::vector<Crate> crates;
+    std::vector<SpawnPlace> spawn_places;
     SDL_Renderer* renderer;
     ClientGameMap client_game_map;
     Queue<Command>* command_queue;

@@ -16,6 +16,16 @@ void RendererManager::doRenderStatic(GameState* game) {
         SDL_RenderCopy(renderer, texture_handler.getTexture("crate"), NULL, &crate_rect);
     }
 
+    //RENDERIZO LOS SPAWN PLACES. CAMBIAR EL SPRITE
+    std::cout << "Tamaño del vector spawn_places: " << game->spawn_places.size() << std::endl;
+    
+    for (auto & spawn_place : game->spawn_places) {
+        std::cout << "renderizo spawn con x: " << spawn_place.x << " y:" << spawn_place.y << "\n";
+
+        SDL_Rect spawn_rect = {spawn_place.x, spawn_place.y, TILE_SIZE * 4, TILE_SIZE * 4};
+        SDL_RenderCopy(renderer, texture_handler.getTexture("spawn"), NULL, &spawn_rect);
+    }
+
     SDL_SetRenderTarget(renderer, NULL);
 }
 

@@ -21,6 +21,7 @@ void SDLHandler::loadGame(GameState* game) {
         {"forest", "backgrounds/forest", 1},
         {"crate", "crate", 1},
         {"gun", "guns/AK-47", 1},
+        {"spawn", "crate", 1},
         {"helmet", "armor/helmet", 1},
         {"armor", "armor/armor", 1},
         {"bullet", "ammo/bullet", 1},
@@ -38,6 +39,7 @@ void SDLHandler::loadGame(GameState* game) {
     // Inicializo los patos y los crates
     gameInitializer.initializeDucks(game, frame_width, frame_height);
     gameInitializer.initializeCrates(game);
+    
 
     // Inicializo el render manager
     rendererManager = std::make_unique<RendererManager>(game->renderer, handle_textures);
@@ -81,6 +83,20 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
     std::cout << "ID: " << id << "\n";
 
     loadGame(&game);
+
+    //recibo la posicion de los N spawn places
+    std::cout << "HORA DE RECIBIR SPAWNS" << "\n";
+    for (int i = 0; i < N_SPAWN_PLACES; i++){
+        // lo hago bloqueante asi no avanza hasta recibir los spawnplaces
+
+        Message message = message_queue.pop();
+
+        if(message.type == SPAWN_PLACE_POSITION){
+            game.spawn_places.emplace_back(message.spaw_place_x * TILE_SIZE, message.spaw_place_y * TILE_SIZE, message.item_id);
+        }
+    }
+
+
     rendererManager->doRenderStatic(&game);
 
     // Event Loop: La ventana se abre => se entra al loop
