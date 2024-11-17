@@ -147,7 +147,7 @@ void Game::inicializate_map() {
     
     for (Duck& duck : ducks) {
 
-        Magnum* weapon = new Magnum("Pistola no genérica", 100, 1, 120);
+        Shotgun* weapon = new Shotgun("Pistola no genérica", 20, 1, 120);
 
         duck.setWeapon(weapon);
         Helmet* helmet = new Helmet(5,5); //le pongo posicion pero no importa porque se la asigno al pato
