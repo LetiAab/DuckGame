@@ -182,30 +182,36 @@ void Game::create_ducks(const std::vector<uint16_t>& ids) {
 }
 
 //REFACTOR!!!!
+//Mi duda existencial es si spawn place vale la pena como clase o simplemente deberias ser
+//Unas posiciones x e y constantes donde hago aparecer a los items
 void Game::create_spawn_places() {
-
     //CREO ITEMS PARA METER EN LOS SPAWN PLACES
     std::cout << "CREO LOS ITEMS" << "\n";
 
 
-    std::unique_ptr<Item> item1 = std::make_unique<Weapon>("Nombre", 100.0, 1.5, 30, 30, 125);
-    std::unique_ptr<Item> item2 = std::make_unique<Armor>(100, 125);
+    std::unique_ptr<Item> item1 = std::make_unique<Weapon>("Nombre", 100.0, 1.5, 30, 30, 130);
+    std::unique_ptr<Item> item2 = std::make_unique<Armor>(100, 130);
     std::unique_ptr<Item> item3 = std::make_unique<Weapon>("Nombre", 100.0, 1.5, 30, 30, 75);
     std::unique_ptr<Item> item4 = std::make_unique<Helmet>(100, 75);
 
-    items.push_back(std::move(item1));
-    items.push_back(std::move(item2));
-    items.push_back(std::move(item3));
-    items.push_back(std::move(item4));
+
 
 
     //seteo N spawn places (4)
     std::cout << "CREO LOS SPAWN PLACES" << "\n";
 
-    spawn_places.emplace_back(std::make_unique<SpawnPlace>(Position(30, 125), 0, item1.get()));  
-    spawn_places.emplace_back(std::make_unique<SpawnPlace>(Position(100, 125), 1, item2.get()));  
-    spawn_places.emplace_back(std::make_unique<SpawnPlace>(Position(30, 75), 2, item3.get()));  
-    spawn_places.emplace_back(std::make_unique<SpawnPlace>(Position(100, 75), 3, item4.get()));
+    spawn_places.emplace_back(std::make_unique<SpawnPlace>(Position(30, 130), 0, item1->getItemId()));  
+    spawn_places.emplace_back(std::make_unique<SpawnPlace>(Position(100, 130), 1, item2->getItemId()));  
+    spawn_places.emplace_back(std::make_unique<SpawnPlace>(Position(30, 75), 2, item3->getItemId()));  
+    spawn_places.emplace_back(std::make_unique<SpawnPlace>(Position(100, 75), 3, item4->getItemId()));
+
+
+    //guardo los items en el vector de items despues de acceder a su item id, porque sino ya no tengo la refe
+    items.push_back(std::move(item1));
+    items.push_back(std::move(item2));
+    items.push_back(std::move(item3));
+    items.push_back(std::move(item4));
+
 
     for (int i = 0; i < N_SPAWN_PLACES; i++){
         Message spawn_place_position_message;

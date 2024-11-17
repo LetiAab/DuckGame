@@ -120,7 +120,6 @@ bool ServerProtocol::send_message(Message& message){
         break;
     
     case SPAWN_PLACE_POSITION:
-        std::cout << "MANDO EL SPAWN PLACE POSITION " << "\n";
 
         if (!skt.sendall(&message.spawn_place_id, sizeof(message.spawn_place_id), &was_closed) || was_closed) {
             return false;

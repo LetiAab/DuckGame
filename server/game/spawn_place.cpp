@@ -2,8 +2,8 @@
 #include <iostream>
 
 // Constructor
-SpawnPlace::SpawnPlace(const Position& position, int id, Item* item)
-    : position(position), id(id), item(item) {}
+SpawnPlace::SpawnPlace(const Position& position, int id, uint16_t item_id)
+    : position(position), id(id), item_id(item_id) {}
 
 // Getters y setters
 const Position& SpawnPlace::getPosition() const {
@@ -12,14 +12,6 @@ const Position& SpawnPlace::getPosition() const {
 
 void SpawnPlace::setPosition(const Position& newPosition) {
     position = newPosition;
-}
-
-Item* SpawnPlace::getItem() const {
-    return item;
-}
-
-void SpawnPlace::setItem(Item* newItem) {
-    item = newItem;
 }
 
 int SpawnPlace::getId() const {
@@ -37,7 +29,7 @@ bool SpawnPlace::getSpawnPlacePositionMessage(Message& msg){
     msg.type = SPAWN_PLACE_POSITION;
     msg.spaw_place_x = position.x;
     msg.spaw_place_y = position.y;
-    msg.item_id = item != nullptr ? item->getItemId() : 0;
+    msg.item_id = item_id;
     msg.spawn_place_id = id;
 
     return true;

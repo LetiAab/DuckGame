@@ -16,18 +16,43 @@ void RendererManager::doRenderStatic(GameState* game) {
         SDL_RenderCopy(renderer, texture_handler.getTexture("crate"), NULL, &crate_rect);
     }
 
-    //RENDERIZO LOS SPAWN PLACES. CAMBIAR EL SPRITE
-    std::cout << "Tamaño del vector spawn_places: " << game->spawn_places.size() << std::endl;
-    
+    //RENDERIZO LOS SPAWN PLACES.    
     for (auto & spawn_place : game->spawn_places) {
-        std::cout << "renderizo spawn con x: " << spawn_place.x << " y:" << spawn_place.y << "\n";
 
-        SDL_Rect spawn_rect = {spawn_place.x, spawn_place.y, TILE_SIZE * 4, TILE_SIZE * 4};
+        SDL_Rect spawn_rect = {spawn_place.x, spawn_place.y, TILE_SIZE * 6, TILE_SIZE * 4};
         SDL_RenderCopy(renderer, texture_handler.getTexture("spawn"), NULL, &spawn_rect);
-    }
+
+        std::cout << "ITEM ID DEL SPAWN: " << static_cast<unsigned int>(spawn_place.item_id) << "\n";
+
+        if(spawn_place.item_id == WEAPON_1_ID){
+            SDL_Rect gun_rect = { spawn_place.x ,spawn_place.y - TILE_SIZE * 11, TILE_SIZE * DUCK_SIZE_X, TILE_SIZE * DUCK_SIZE_Y};
+            SDL_RenderCopyEx(renderer, texture_handler.getTexture("gun"), NULL, &gun_rect, 0, NULL, SDL_FLIP_NONE);
+        }
+        if(spawn_place.item_id == HELMET_ID){
+            SDL_Rect helmet_rect = {
+                spawn_place.x,
+                (spawn_place.y - TILE_SIZE*9),
+                (TILE_SIZE * DUCK_SIZE_X / 2) + TILE_SIZE,
+                (TILE_SIZE * DUCK_SIZE_Y / 2) + TILE_SIZE
+            };
+            
+            SDL_RenderCopyEx(renderer, texture_handler.getTexture("helmet"), NULL, &helmet_rect, 0, NULL, SDL_FLIP_NONE);
+        }
+        if(spawn_place.item_id == ARMOR_ID){
+            SDL_Rect armor_rect = {
+                spawn_place.x - TILE_SIZE,
+                (spawn_place.y  -  TILE_SIZE * 8),
+                (TILE_SIZE * DUCK_SIZE_X / 2) + TILE_SIZE,
+                (TILE_SIZE * DUCK_SIZE_Y / 2)
+            };            
+            
+            SDL_RenderCopyEx(renderer, texture_handler.getTexture("armor"), NULL, &armor_rect, 0, NULL, SDL_FLIP_NONE);
+        }
+  }
 
     SDL_SetRenderTarget(renderer, NULL);
 }
+
 
 //** Dinamico **//
 void RendererManager::renderBullet(const int x, const int y, const int size) {

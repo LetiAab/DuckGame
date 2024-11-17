@@ -21,7 +21,7 @@ void SDLHandler::loadGame(GameState* game) {
         {"forest", "backgrounds/forest", 1},
         {"crate", "crate", 1},
         {"gun", "guns/AK-47", 1},
-        {"spawn", "crate", 1},
+        {"spawn", "spawn-place", 1},
         {"helmet", "armor/helmet", 1},
         {"armor", "armor/armor", 1},
         {"bullet", "ammo/bullet", 1},

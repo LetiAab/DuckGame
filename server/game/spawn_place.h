@@ -8,16 +8,13 @@ class SpawnPlace {
 private:
     Position position;    
     int id;          
-    Item* item;
+    uint16_t item_id;  
 
 public:
-    SpawnPlace(const Position& position, int id, Item* item = nullptr);
+    SpawnPlace(const Position& position, int id, uint16_t item_id = 0);
 
     const Position& getPosition() const; 
     void setPosition(const Position& newPosition); 
-
-    Item* getItem() const;
-    void setItem(Item* newItem);
 
     int getId() const;
     void setId(int newId); 
