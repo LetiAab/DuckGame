@@ -45,6 +45,9 @@ void Game::simulate_round() {
                 duck.update_position();
                 duck.update_weapon();
 
+                std::cout << "Vuelvo a imprimir el mapa después de actualizar las balas \n";
+                map.tellMap();
+
                 // Si el pato murio, avisamos al cliente
                 //estaria bueno mover esto 
 

@@ -146,6 +146,8 @@ void Duck::update_weapon(){
     
     if (weapon != nullptr) {
         weapon->update_weapon();
+        std::cout << "Despues de eliminar la bala, en duck, el tellMap es:" << std::endl;
+        map->tellMap();    
     }
 }
 
@@ -240,6 +242,18 @@ void Duck::disparar() {
 
     if (weapon != nullptr) {
         weapon->disparar(position.x, position.y, looking, map, id_player);
+
+        if (typeid(weapon) == typeid(Ak47)) {
+            int shoot_speed = (looking == LOOKING_RIGHT) ? -1 : 1;
+            int delta_x = position.x + shoot_speed;
+            int delta_y = position.y;
+
+            Position new_pos(delta_x, delta_y);
+            old_position = position;
+            //mueve al pato a la nueva posicion si esta libre o a la que este libre inmediatamente antes
+            position = map->move_duck_to(position, new_pos, id_player);
+
+        }
     }
 }
 

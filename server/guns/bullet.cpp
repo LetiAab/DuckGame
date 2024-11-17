@@ -28,59 +28,34 @@ void Bullet::update_position() {
     } else {
 
         std::cout << "Comienzo trayectoria desde x: " << position.x << "\n";
+        std::cout << "Speed x: " << speed.x << " y: " << speed.y << "\n";
+
 
         int delta_x = position.x + speed.x;
         int delta_y = position.y + speed.y;
         old_position = position;
 
         position = map->try_move_bullet_to(position, Position(delta_x, delta_y), duck_id, impacto);
+
+        std::cout << "La posicion despues de intentar mov trayectoria desde x: " << position.x << " y: " << position.y << "\n";
+
         
         map->cleanBulletOldPosition(old_position);
         map->setBulletNewPosition(position);
         
         //por ahora, le resto la velocidad en x ya que solo dispara en horizontal
-        alcance -= std::abs(speed.x);
+        alcance -= (std::abs(speed.x) + std::abs(speed.y));
     }
 
 }
 
-/*
-void Bullet::update_position() {
-
-    if(alcance == 0){
-        //si recorrio su maximo tiene que frenar
-        impacto = true;
-    }
-    std::cout << "Comienzo trayectoria desde x: " << position.x << "\n";
-
-    //map->cleanBulletOldPosition(position_x, position_y);
-    int old_position_x = position.x;
-    int old_position_y = position.y;
-
-
-    int delta_x = position.x + speed.x;
-    int delta_y = position.y + speed.y;
-
-    if (map->canMoveBulletTo(delta_x, delta_y, duck_id)) {
-        position.x = delta_x;
-        position.y = delta_y;
-        
-        map->setBulletNewPosition(position.x, position.y);
-        map->cleanBulletOldPosition(old_position_x, old_position_y);
-        alcance--;
-    } else {
-        map->cleanBulletOldPosition(position.x, position.y);
-        impacto = true;
-    }
-
-
-}*/
-
 bool Bullet::get_bullet_message(Message& msg){
 
     if(impacto){
-        //si empacte con algo debo eliminar la bala luego de mandar el mensaje
+        //si impacte con algo debo eliminar la bala luego de mandar el mensaje
+        std::cout << "Llamo a cleanPostImpacto, la bullet se 'borra' en x" << position.x << " y: " << position.y << std:: endl;
         cleanPostImpacto();
+        std::cout << "Las dos posiciones de la bala 'borradas' son " << map->at(position) << " y " << map->at(Position {position.x + 1, position.y});
         should_erase = true;
     }
 
@@ -100,6 +75,7 @@ bool Bullet::get_bullet_message(Message& msg){
 }
 
 void Bullet::cleanPostImpacto(){
+    std::cout << "En el cleanPostImpacto de bullet, la posición es x" << position.x << " y: " << position.y << std:: endl;
     map->cleanBulletOldPosition(position);
 }
 

@@ -2,7 +2,7 @@
 #include <iostream>
 
 // 30 rafagas, Alcance: 13 tiles
-Ak47::Ak47(const std::string& nombre, double alcance, double dispersion, int municiones, int x, int y)
+Ak47::Ak47(const std::string& nombre, double alcance, int dispersion, int municiones, int x, int y)
     : Item(WEAPON_1_ID,x, y), nombre(nombre), alcance(alcance), dispersion(dispersion), municiones(municiones) {}  // Inicializar posición
 
 void Ak47::disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) {
@@ -23,13 +23,15 @@ void Ak47::disparar(int position_x, int position_y, char looking, GameMap* map, 
 
         int bullet_id = municiones; //el id es el numero de muncion. Inteligente verdad?
 
-        for (int i = -1; i < 2; i++){
-                Bullet new_bullet(bullet_id, bullet_pos, direccion_x, direccion_y + i, map, id_player, alcance);
-                new_bullet.comenzar_trayectoria();
-                bullets.push_back(new_bullet);
-        }
+        // Esto no diferencia si los disparos son sequidos o no
+        int dispersion_disparo = (dispersion % 2 == 0) ? dispersion : (0-dispersion);
+
+        Bullet new_bullet(bullet_id, bullet_pos, direccion_x, direccion_y + dispersion_disparo, map, id_player, alcance);
+        new_bullet.comenzar_trayectoria();
+        bullets.push_back(new_bullet);
         
         municiones--;
+        dispersion ++;
         std::cout << "Disparo realizado. Quedan " << municiones << " municiones." << std::endl;
     } else {
         std::cout << "No hay municiones disponibles." << std::endl;
@@ -70,7 +72,8 @@ void Ak47::update_weapon(){
         it->update_position();
 
         if(it->should_erase_bullet()) {
-            it = bullets.erase(it);
+                std::cout << "Eliminando bala en posición: (" << it->get_position().x << ", " << it->get_position().y << ")" << std::endl;
+              it = bullets.erase(it);
         } else {
             ++it;
         }

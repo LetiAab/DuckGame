@@ -16,7 +16,7 @@ public:
     std::vector<Bullet> bullets;
 
     // Constructor que inicializa la posición
-    Ak47(const std::string& nombre, double alcance, double dispersion, int municiones, int x = 0, int y = 0);
+    Ak47(const std::string& nombre, double alcance, int dispersion, int municiones, int x = 0, int y = 0);
 
     // Métodos
     void disparar(int position_x, int position_y, char looking, GameMap* map, char id_player);
@@ -34,7 +34,7 @@ public:
 private:
     std::string nombre;
     double alcance;
-    double dispersion;
+    int dispersion;
     int municiones;
 };
 
