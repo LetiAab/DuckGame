@@ -31,6 +31,7 @@ const uint8_t STOP_UP = 0x16;
 const uint8_t STOP_DOWN = 0x17;
 
 const uint8_t SHOOT = 0x18;
+const uint8_t END_GAME = 0x19;
 
 
 //flags que indican la direccion en la que mira el patos

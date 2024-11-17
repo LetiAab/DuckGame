@@ -84,6 +84,8 @@ void run() override;
 
 void stop() override;
 
+void notify_players_end_game();
+
 Game(const Game&) = delete;
 Game& operator=(const Game&) = delete;
 };

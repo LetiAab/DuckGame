@@ -133,7 +133,9 @@ void Game::run() {
                 }
 
                 if (check_end_game()){
-                        stop();
+                        notify_players_end_game();
+                        is_running = false;
+                        is_over = true;
                         break;
                 }
 
@@ -142,6 +144,13 @@ void Game::run() {
         }
         std::cout << "Termino el juego!"  << std::endl;
 
+}
+
+void Game::notify_players_end_game(){
+        Message msg;
+        msg.type = END_GAME;
+        monitor.broadcast(msg);
+        std::cout << "Le aviso a los jugadores que el juego termino"  << std::endl;
 }
 
 bool Game::check_end_game(){
@@ -158,12 +167,14 @@ bool Game::check_end_game(){
 }
 
 void Game::stop() {
+        std::cout << "Comienzo el stop"  << std::endl;
         game_queue.close();
         monitor.remove_all_queues();
         items.clear();
         ducks.clear();
         is_running = false;
         is_over = true;
+        std::cout << "termino el stop"  << std::endl;
 }
 
 void Game::inicializate_map() {

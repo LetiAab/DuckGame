@@ -42,8 +42,8 @@ void Lobby::clean_finished_matches() {
 
     for (const auto& match : matches) {
         if (match->is_over()) {
+            std::cout << "Lobby: detecto que termino el partido: " << match->get_match_id() <<" Voy a eliminarlo"  << std::endl;
             match->stop_match();
-            std::cout << "Lobby: termino un partido. Voy a eliminarlo"  << std::endl;
         }
     }
 

@@ -52,19 +52,18 @@ void Match::start_match() {
     game.create_ducks(players.size());
     game.start();
 
-    //game.join();
-    std::cout << "Match:Continuo la ejecucion luego de lanzar game"  << std::endl;
-
-    
 }
 
 void Match::stop_match(){
+    game.stop();
     game.join();
+    std::cout << "Match: joinie game"  << std::endl;
     for(auto& player: players){
         player->stop_playing();
     }
     
     players.clear();
+    std::cout << "Match: elimine a los players de mi partida"  << std::endl;
 }
 
 bool Match::is_over(){

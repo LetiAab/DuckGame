@@ -46,7 +46,10 @@ void SDLHandler::loadGame(GameState* game) {
 Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queue) {
     Message message;
     while (message_queue.try_pop(message)) {
-        std::cout << "SAQUE UN MENSAJE DE TIPO: "<< message.type << "\n";
+
+        if(message.type == END_GAME){
+            std::cout << "SE TERMINO LA PARTIDA "<< "\n";
+        }
         if(message.type == ITEM_POSITION){
             //RENDERIZAR LOS ITEMS bien
             /*Item item;
@@ -95,7 +98,6 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
 
         if (message.type == DUCK_POS_UPDATE){
             int pos_id = message.player_id - 1;
-            std::cout << "POS ID: "<< pos_id << "\n";
 
             game->ducks[pos_id].x = message.duck_x * TILE_SIZE;
             game->ducks[pos_id].y = message.duck_y * TILE_SIZE;
@@ -167,6 +169,10 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
 
             //LUEGO RECIBO DEL SERVER Y HAGO EL RENDER
             Message message = handleMessages(&game, message_queue);
+            if(message.type == END_GAME){
+                done = ERROR;
+                break;
+            }
 
             rendererManager->doRenderDynamic(&game, message);
             //renderItems(renderer, &game);

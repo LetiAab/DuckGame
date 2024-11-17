@@ -10,14 +10,11 @@ ClientProtocol::ClientProtocol(Socket&& skt): skt(std::move(skt)) {}
 
 Message ClientProtocol::receive_message(){
 
-    
-    
     bool was_closed = false;
     Message message;
 
     skt.recvall(&message.type, 1, &was_closed);
-    std::cout << "Client Protocol: lo recibí, tipo: " << static_cast<int>(message.type) << "\n";
-
+    
     //ARMAR TODOS LOS CASOS
     switch (message.type)
 
@@ -87,6 +84,9 @@ Message ClientProtocol::receive_message(){
 
     case KILL_DUCK:
         skt.recvall(&message.player_id, 2, &was_closed);
+        break;
+    
+    case END_GAME:
         break;
 
     default:

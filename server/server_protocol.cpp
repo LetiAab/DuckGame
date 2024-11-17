@@ -181,7 +181,7 @@ bool ServerProtocol::send_message(Message& message){
         if (!skt.sendall(&message.is_fluttering, sizeof(message.is_fluttering), &was_closed) || was_closed) {
             return false;
         }
-    
+
     default:
         break;
     }
