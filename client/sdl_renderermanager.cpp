@@ -152,6 +152,8 @@ void RendererManager::renderDucks(GameState* game, Message& message) {
 }
 
 void RendererManager::renderItems(GameState* game) {
+
+
     for (auto& spawn_place : game->spawn_places) {
 
         if (spawn_place.item_id == WEAPON_1_ID) {
@@ -186,68 +188,12 @@ void RendererManager::renderItems(GameState* game) {
 void RendererManager::doRenderDynamic(GameState* game, Message& message) {
     SDL_RenderCopy(renderer, texture_handler.getTexture("static_scene"), NULL, NULL);
 
-    if(message.type == SPAWN_PLACE_ITEM_UPDATE){
-        std::cout << "el nuevo item del spawn tiene que ser: " << static_cast<unsigned int>(message.item_id) << "\n";
-
-        int pos_spaw_id = message.spawn_place_id;
-        game->spawn_places[pos_spaw_id].item_id = message.item_id; 
-    }
-    
-
-    if(message.type == DUCK_PICKUP_ITEM){
-        int pos_id = message.player_id - 1;
-
-
-        if(message.item_id == WEAPON_1_ID){
-            game->ducks[pos_id].weapon_equiped = message.item_id;
-        }
-
-        if(message.item_id == HELMET_ID){
-            game->ducks[pos_id].item_on_hand = message.item_id;
-        }
-
-        if(message.item_id == ARMOR_ID){
-            game->ducks[pos_id].item_on_hand = message.item_id;
-        }
-    }
-
-
-    if(message.type == DUCK_EQUIP_ITEM){
-
-        int pos_id = message.player_id - 1;
-        game->ducks[pos_id].item_on_hand = 0;
 
 
 
-        //si agarro un arma tengo recibir directo esto
-        std::cout << "RECIBO QUE TENGO EQUIPADA EL ARMA" << "\n";
 
-        
-        // si es un arma la equipo como arma
-        if(message.item_id == WEAPON_1_ID){
-            game->ducks[pos_id].weapon_equiped = message.item_id;
-        }
 
-        // si es un helmet 
-
-        if(message.item_id == HELMET_ID){
-            game->ducks[pos_id].helmet_equiped = message.item_id;
-        }
-
-        // si es un ARMOR 
-
-        if(message.item_id == ARMOR_ID){
-            game->ducks[pos_id].armor_equiped = message.item_id;
-        }
-
-    }
-
-    if(message.type == DROP_WEAPON){
-        int pos_id = message.player_id - 1;
-        game->ducks[pos_id].weapon_equiped = 0;
-    }
-
-    renderDucks(game);
+    renderDucks(game, message);
     renderItems(game);
 
     if(message.type == BULLET_POS_UPDATE){
