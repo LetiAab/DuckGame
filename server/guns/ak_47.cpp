@@ -7,6 +7,9 @@ Ak47::Ak47(const std::string& nombre, double alcance, int dispersion, int munici
 
 void Ak47::disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) {
     if (municiones > 0) {
+        if (dispersion > 5) {
+            dispersion = 0;
+        }
         //la bala debe aparecer fuera del pato, o sino se mata a si mismo
         int bullet_position_x = (looking == LOOKING_RIGHT) ? position_x + DUCK_SIZE_X : position_x -1;
         int bullet_position_y = position_y;
