@@ -1,6 +1,7 @@
 #include "game.h"
 #include "common/constants.h"
 #include "../guns/ak_47.h"
+#include "../guns/duel_pistol.h"
 
 #include <random>
 #include <utility>
@@ -146,7 +147,7 @@ void Game::inicializate_map() {
     
     for (Duck& duck : ducks) {
 
-        Ak47* weapon = new Ak47("Pistola no genérica", 100, 1, 120);
+        DuelPistol* weapon = new DuelPistol("Pistola no genérica", 100, 1, 120);
 
         duck.setWeapon(weapon);
         Helmet* helmet = new Helmet(5,5); //le pongo posicion pero no importa porque se la asigno al pato

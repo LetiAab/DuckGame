@@ -17,6 +17,7 @@
 #include "../guns/pew_pew_laser.h"
 #include "../guns/laser_rifle.h"
 #include "../guns/ak_47.h"
+#include "../guns/duel_pistol.h"
 #include "../armor/armor.h"
 #include "../armor/helmet.h"
 
@@ -28,6 +29,7 @@ class Weapon;  // Declaración adelantada de Weapon
 class Armor;  // Declaración adelantada de Weapon
 class Helmet;  // Declaración adelantada de Weapon
 class Ak47;
+class DuelPistol;
 
 
 class Duck {
@@ -53,7 +55,7 @@ public:
     int life_points;
     bool stop_notificated;
     bool is_dead;
-    Ak47* weapon;
+    DuelPistol* weapon;
     Armor* armor;
     Helmet* helmet;
     
@@ -79,7 +81,7 @@ public:
 
     char get_id() const;
 
-    void setWeapon(Ak47* new_weapon);
+    void setWeapon(DuelPistol* new_weapon);
     void setArmor(Armor* new_armor);
     void setHelmet(Helmet* new_helmet);
 
