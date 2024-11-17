@@ -2,6 +2,8 @@
 #include <iostream>
 #include <typeinfo>
 
+#include "../guns/cowboy_pistol.h"
+
 const int HELMET_BROKE = 0;
 const int ARMOR_BROKE = 1;
 const int DEAD = 2;
@@ -48,7 +50,7 @@ bool Duck::pickUpItem(Item* item) {
 void Duck::useOnHand() {
     if (!onHand) return;  // Verificamos si hay un item en la mano
 
-    if (DuelPistol* w = dynamic_cast<DuelPistol*>(onHand.get())) {
+    if (CowboyPistol* w = dynamic_cast<CowboyPistol*>(onHand.get())) {
         setWeapon(w);
     } else if (Armor* a = dynamic_cast<Armor*>(onHand.get())) {
         setArmor(a);
@@ -213,7 +215,7 @@ char Duck::get_id() const {
 
 
 
-void Duck::setWeapon(DuelPistol* new_weapon) {
+void Duck::setWeapon(CowboyPistol* new_weapon) {
     std::cout << "ASIGNO NUEVA ARMA" << "\n";
     weapon = new_weapon;  // Asigna el arma al pato
 }

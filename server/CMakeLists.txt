@@ -25,6 +25,7 @@ target_sources(taller_server
     guns/bouncing_laser.cpp
     guns/ak_47.cpp
     guns/duel_pistol.cpp
+    guns/cowboy_pistol.cpp
     armor/armor.cpp
     armor/helmet.cpp
     #guns/gun.cpp
@@ -67,6 +68,7 @@ target_sources(taller_server
     guns/bouncing_laser.h
     guns/ak_47.h
     guns/duel_pistol.h
+    guns/cowboy_pistol.h
     armor/armor.h
     armor/helmet.h
     #guns/gun.h
