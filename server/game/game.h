@@ -33,6 +33,10 @@ typedef struct update
 //se me genera una dependencia circular entre game y executable
 class Executable;
 
+struct EndGame: public std::runtime_error {
+    EndGame(): std::runtime_error("END GAME!") {}
+};
+
 class Game: public Thread {
 
 private:
@@ -72,6 +76,8 @@ void game_broadcast(Message message);
 void simulate_round();
 
 void add_projectile(std::unique_ptr<Proyectil> projectile);
+
+void check_end_game();
 
 void run() override;
 void stop() override;

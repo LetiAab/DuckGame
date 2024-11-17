@@ -26,21 +26,28 @@ bool Match::is_able_to_start(){
 }
 
 void Match::start_match() {
-    is_running = true;
+    try {
+        is_running = true;
 
-    std::vector<uint16_t> player_ids; //este auxiliar para mandarle al inicializador de patos
-    
-    for(auto& player: players){
-        player_ids.push_back(player->get_player_id());
-        monitor.add_queue(&player->get_message_queue());
-        player->start_playing();
+        std::vector<uint16_t> player_ids; //este auxiliar para mandarle al inicializador de patos
+        
+        for(auto& player: players){
+            player_ids.push_back(player->get_player_id());
+            monitor.add_queue(&player->get_message_queue());
+            player->start_playing();
+        }
+
+        //cuando inicio el match tengo que crear a los patos dentro de la lista de patos del game
+        
+        game.map.setEscenario();
+        game.create_ducks(player_ids);
+        game.start();
+
+    } catch (const EndGame& e){
+        std::cout << "Se recibio: " << e.what() << std::endl;
+        game.stop();
+        game.join();
     }
-
-    //cuando inicio el match tengo que crear a los patos dentro de la lista de patos del game
-    
-    game.map.setEscenario();
-    game.create_ducks(player_ids);
-    game.start();
 }
 
 uint16_t Match::get_match_id() {

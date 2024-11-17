@@ -13,6 +13,7 @@ const char DUCK_6 = '6';
 
 const int NUM_ITEMS = 10;
 
+
 //TODO: Tamanio del mapa hardcodeado
 Game::Game(uint16_t match_id, GameQueueMonitor& monitor):
 match_id(match_id), monitor(monitor), is_running(true), game_queue(), map(MATRIX_M, MATRIX_N){}
@@ -131,12 +132,24 @@ void Game::run() {
                         }
                 }
 
-
-                // renew_iteration(); para resetear cosas que duren una ronda
+                check_end_game();
 
                 std::this_thread::sleep_for(std::chrono::milliseconds(60));
 
         }
+
+}
+
+void Game::check_end_game(){
+        //checkear las condiciones necesarias para que termine un juego
+        bool end = true;
+        for (Duck& duck : ducks) {
+                if (!duck.is_dead) {
+                        end = false;
+                }
+        }
+
+        if (end){  throw EndGame(); }
 
 }
 
