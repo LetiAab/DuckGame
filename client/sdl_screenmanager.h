@@ -13,11 +13,12 @@ public:
     ScreenManager(SDL_Renderer *renderer, TextureHandler &texture_handler);
     ~ScreenManager();
     void showStartScreen();
-    void showLobbyScreen();
     void loadLobbyScreen();
+    void renderStaticLobby();
+    void showLobbyScreen();
     SDL_Texture* getTexture(const std::string& name) const;
-    void renderNewMatchText();
-    void renderAvailableMatches();
+    void renderNewMatchText(int id_match);
+    void renderAvailableMatches(int id_match);
     Button* getButton(uint8_t id);
 private:
     SDL_Renderer* renderer;

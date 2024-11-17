@@ -46,14 +46,16 @@ void ScreenManager::loadLobbyScreen() {
     texture_handler.loadFont("8bit", "8bitOperatorPlus8-Regular.ttf", 25);
 
     texture_handler.saveText("04B_16", "Lobby", {255, 255, 255, 255});
-    texture_handler.saveText("8bit", "Match 1 Created", {255, 255, 255, 255});
 }
 
 SDL_Texture* ScreenManager::getTexture(const std::string& name) const {
     return lobby_textures.at(name);
 }
 
-void ScreenManager::showLobbyScreen() {
+void ScreenManager::renderStaticLobby() {
+    SDL_Texture* static_scene = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, WINDOW_WIDTH, WINDOW_HEIGHT);
+    SDL_SetRenderTarget(renderer, static_scene);
+
     SDL_RenderCopy(renderer, getTexture("background"), NULL, NULL);
 
     // Titulo Lobby
@@ -78,7 +80,8 @@ void ScreenManager::showLobbyScreen() {
     SDL_Rect join_button_rect = {join.x, join.y, join.w, join.h};
     SDL_RenderCopy(renderer, getTexture("join-button"), NULL, &join_button_rect);
 
-    SDL_RenderPresent(renderer);
+    SDL_SetRenderTarget(renderer, NULL);
+    lobby_textures["static_scene"] = static_scene;
 }
 
 Button* ScreenManager::getButton(const uint8_t id) {
@@ -90,19 +93,45 @@ Button* ScreenManager::getButton(const uint8_t id) {
     throw std::runtime_error("Button not found");
 }
 
-void ScreenManager::renderNewMatchText() {
-    SDL_Point size;
-    SDL_QueryTexture(texture_handler.getText("Match 1 Created"), NULL, NULL, &size.x, &size.y);
-    SDL_Rect newRect = {90, 280, size.x, size.y};
-    SDL_RenderCopy(renderer, texture_handler.getText("Match 1 Created"), NULL, &newRect);
+void ScreenManager::showLobbyScreen() {
+    //SDL_RenderClear(renderer);
+    SDL_RenderCopy(renderer, lobby_textures["static_scene"], NULL, NULL);
     SDL_RenderPresent(renderer);
 }
 
-void ScreenManager::renderAvailableMatches() {
+void ScreenManager::renderNewMatchText(int id_match) {
+    std::string text = "Match " + std::to_string(id_match) + " Created";
+    texture_handler.saveText("8bit", text, {255, 255, 255, 255});
+
+    SDL_Point size;
+    SDL_QueryTexture(texture_handler.getText(text), NULL, NULL, &size.x, &size.y);
+    SDL_Rect newRect = {90, 280, size.x, size.y};
+
+    SDL_RenderCopy(renderer, lobby_textures["static_scene"], NULL, NULL);
+
+    SDL_RenderCopy(renderer, texture_handler.getText(text), NULL, &newRect);
+    SDL_RenderPresent(renderer);
+}
+
+void ScreenManager::renderAvailableMatches(int id_match) {
+    SDL_RenderCopy(renderer, lobby_textures["static_scene"], NULL, NULL);
     Button* join = getButton(LIST_MATCH_AVAILABLE);
-    SDL_Rect rect = {join->x+30, join->y+join->h+30, 30, 30};
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-    SDL_RenderDrawRect(renderer, &rect);
+    int rect_x = join->x+30;
+    int rect_y = join->y+join->h+30;
+    for (int i=1; i<id_match; i++) {
+        if(rect_x+50 >= WINDOW_WIDTH) {
+            rect_x = join->x+30;
+            rect_y += 50;
+        }
+        SDL_Rect rect = {rect_x, rect_y, 40, 40};
+        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+        SDL_RenderDrawRect(renderer, &rect);
+
+        texture_handler.saveText("8bit", std::to_string(i), {255, 255, 255, 255});
+        SDL_RenderCopy(renderer, texture_handler.getText(std::to_string(i)), NULL, &rect);
+        rect_x += 50;
+    }
+
     SDL_RenderPresent(renderer);
 }
 

@@ -121,9 +121,10 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
 int SDLHandler::waitForStartGame() {
     int done = SUCCESS;
     bool start_game = false;
+    int id_match = 1;
 
     while (!start_game && !done) {
-        done = eventProcessor.processLobbyEvents(screenManager.get(), start_game);
+        done = eventProcessor.processLobbyEvents(screenManager.get(), start_game, id_match);
     }
     return done;
 }
@@ -140,6 +141,7 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
     screenManager->showStartScreen();
 
     screenManager->loadLobbyScreen();
+    screenManager->renderStaticLobby();
     screenManager->showLobbyScreen();
     if(waitForStartGame() == ERROR) {
         SDL_DestroyWindow(window);
