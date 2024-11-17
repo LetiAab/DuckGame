@@ -115,4 +115,7 @@ const std::vector<std::vector<uint8_t>> colors = {
     {255,178,102} //naranja
 };
 
+const int BUTTON_W = 239;
+const int BUTTON_H = 77;
+
 #endif

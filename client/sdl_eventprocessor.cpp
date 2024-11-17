@@ -111,10 +111,11 @@ uint8_t EventProcessor::handleKeyUp(SDL_Keycode key) {
     return move;
 }
 
-int EventProcessor::processLobbyEvents(bool& start_game) {
+int EventProcessor::processLobbyEvents(ScreenManager* screenManager, bool& start_game) {
     int done = SUCCESS;
     SDL_Event event;
-    int x, y;
+    int x, y, x_button, y_button;
+
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
             case SDL_WINDOWEVENT_CLOSE:
@@ -124,14 +125,22 @@ int EventProcessor::processLobbyEvents(bool& start_game) {
                 std::cout << "Mouse PRESSED\n";
                 x = event.button.x;
                 y = event.button.y;
+                x_button = WINDOW_WIDTH/2-BUTTON_W/2;
+                y_button = WINDOW_HEIGHT-120;
                 std::cout << "X: " << x << " Y: " << y << "\n";
-                std::cout << "tamX: " << WINDOW_WIDTH/2-100 << " tamY: " << WINDOW_HEIGHT/2-50 << "\n";
-                //tamX: 300 tamY: 350
-                //TILE_SIZE*MATRIX_M/2-100, TILE_SIZE*MATRIX_M/2-50, 200, 100
-                if (x >= WINDOW_WIDTH/2-100 && x <= WINDOW_WIDTH/2+100 &&
-                    y >= WINDOW_HEIGHT/2-50 && y <= WINDOW_HEIGHT/2+50) {
+                if (x >= x_button && x <= x_button+BUTTON_W &&
+                    y >= y_button && y <= y_button+BUTTON_H) {
                     start_game = true;
+                    std::cout << "Empezo el juego!\n";
                     }
+                // new match
+                // si se presiona se crea una nueva partida => se escribe el id de la partida nueva
+                // empieza con 1 y se incrementa en 1 cada vez que se crea una nueva partida
+
+                // join match
+                // si se presiona se une a una partida existente
+                // aparece un menu con las partidas disponibles
+                std::cout << screenManager->getTexture("background") << "\n";
                 break;
             case SDL_KEYDOWN:
                 if (event.key.keysym.sym == SDLK_ESCAPE) {

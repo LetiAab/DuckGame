@@ -10,7 +10,6 @@ target_sources(taller_client
     client_game_map.cpp
     sdl_handler.cpp
         sdl_texturehandler.cpp
-        sdl_button.cpp
         sdl_eventprocessor.cpp
         game_initializer.cpp
         sdl_renderermanager.cpp
@@ -25,7 +24,6 @@ target_sources(taller_client
     sdl_handler.h
     client_game_map.h
         sdl_texturehandler.h
-        sdl_button.h
         sdl_eventprocessor.h
         game_state.h
         game_initializer.h

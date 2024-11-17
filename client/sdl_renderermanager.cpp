@@ -34,12 +34,12 @@ void RendererManager::renderBullet(const int x, const int y, const int size) {
     SDL_RenderCopy(renderer, texture_handler.getTexture("bullet"), NULL, &bulletRect);
 }
 
-void RendererManager::renderDucks(GameState* game) {
+void RendererManager::renderDucks(GameState* game, Message& message) {
     for (int i = 0; i < game->ducks_quantity; i++) {
         Duck& duck = game->ducks[i];
 
         // Cambiar el fotograma de animación si el pato está en movimiento
-        if (duck.is_moving) {
+        if ((duck.is_moving && !duck.is_jumping) || duck.is_fluttering) {
             duck.current_frame_index = (duck.current_frame_index + 1) % 6;  // Ciclar entre 6 fotogramas
         } else {
             duck.current_frame_index = 0;  // Si no se mueve, detener la animación
@@ -65,7 +65,19 @@ void RendererManager::renderDucks(GameState* game) {
             TILE_SIZE * DUCK_SIZE_Y
         };
 
-        SDL_Texture* duck_texture = texture_handler.getTexture("duck-walking");
+        SDL_Texture* duck_texture = nullptr;
+        SDL_Texture* wings_texture = nullptr;
+        if (message.is_jumping && !message.is_fluttering) {
+            duck_texture = texture_handler.getTexture("duck-jumping");
+            wings_texture = texture_handler.getTexture("duck-jumping-wings");
+        } else if (message.is_fluttering) {
+            duck_texture = texture_handler.getTexture("duck-fluttering");
+            //wings_texture = texture_handler.getTexture("duck-fluttering-wings");
+        } else {
+            duck_texture = texture_handler.getTexture("duck-walking");
+            wings_texture = texture_handler.getTexture("duck-walking-wings");
+        }
+
         SDL_SetTextureColorMod(duck_texture, colors[i][0], colors[i][1], colors[i][2]);
         SDL_RenderCopyEx(renderer, duck_texture, &src_rect, &duck_rect, 0, NULL, duck.flipType);
         SDL_SetTextureColorMod(duck_texture, 255, 255, 255); //reseteo el color
@@ -130,10 +142,11 @@ void RendererManager::renderDucks(GameState* game) {
         }
 
 
-        SDL_Texture* wings_texture = texture_handler.getTexture("duck-walking-wings");
-        SDL_SetTextureColorMod(wings_texture, colors[i][0], colors[i][1], colors[i][2]);
-        SDL_RenderCopyEx(renderer, wings_texture, &src_rect, &duck_rect, 0, NULL, duck.flipType);
-        SDL_SetTextureColorMod(wings_texture, 255, 255, 255); //reseteo el color
+        if (wings_texture != nullptr) {
+            SDL_SetTextureColorMod(wings_texture, colors[i][0], colors[i][1], colors[i][2]);
+            SDL_RenderCopyEx(renderer, wings_texture, &src_rect, &duck_rect, 0, NULL, duck.flipType);
+            SDL_SetTextureColorMod(wings_texture, 255, 255, 255); //reseteo el color
+        }
 
     }
 }
@@ -236,9 +249,11 @@ void RendererManager::doRenderDynamic(GameState* game, Message& message) {
 
     renderDucks(game);
     renderItems(game);
+
     if(message.type == BULLET_POS_UPDATE){
         renderBullet(message.bullet_x, message.bullet_y);
     }
 
     SDL_RenderPresent(renderer);
+    SDL_RenderClear(renderer);
 }

@@ -9,13 +9,6 @@ TextureHandler::TextureHandler(SDL_Renderer* renderer): renderer(renderer) {
         SDL_Quit();
         exit(ERROR);
     }
-    const std::string path = std::string(FONT_PATH) + "04B_30__.TTF";
-    font = TTF_OpenFont(path.c_str(), 16);
-    if(!font) {
-        std::cout << "Could not load font: " << TTF_GetError() << "\n";
-        SDL_Quit();
-        exit(ERROR);
-    }
 }
 
 //** TEXTURES IMAGES **//
@@ -74,11 +67,26 @@ SDL_Texture* TextureHandler::createRenderTarget(const std::string& name, int wid
 }
 
 //** FONTS **//
-SDL_Texture* TextureHandler::getText(const std::string& text, const SDL_Color color) {
-    SDL_Surface* surfaceText = TTF_RenderText_Solid(font, text.c_str(), color);
+void TextureHandler::loadFont(const std::string& name, const std::string& font_file, int font_size) {
+    const std::string path = std::string(FONT_PATH) + font_file;
+    TTF_Font* font = TTF_OpenFont(path.c_str(), font_size);
+    if (!font) {
+        std::cerr << "Could not load font " << font_file << ": " << TTF_GetError() << "\n";
+        SDL_Quit();
+        exit(ERROR);
+    }
+    fonts[name] = font;
+}
+
+void TextureHandler::saveText(const std::string& fname, const std::string& text, const SDL_Color color) {
+    SDL_Surface* surfaceText = TTF_RenderText_Solid(fonts[fname], text.c_str(), color);
     SDL_Texture* textureText = SDL_CreateTextureFromSurface(renderer, surfaceText);
     SDL_FreeSurface(surfaceText);
-    return textureText;
+    textures[text] = textureText;
+}
+
+SDL_Texture* TextureHandler::getText(const std::string& text) const {
+    return textures.at(text);
 }
 
 //** DESTRUCTOR **//
@@ -87,5 +95,9 @@ TextureHandler::~TextureHandler() {
         SDL_DestroyTexture(texture.second);
     }
     textures.clear();
+
+    for (auto& font : fonts) {
+        TTF_CloseFont(font.second);
+    }
     TTF_Quit();
 }
