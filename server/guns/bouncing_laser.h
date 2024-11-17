@@ -3,9 +3,12 @@
 
 #include "common/message.h"
 #include "common/constants.h"
+#include "common/position.h"
 #include "../game/game_map.h"
 
-class GameMap;
+#include <cmath> 
+#include <iostream>
+
 class BouncingLaser {
 private:
     int laser_id; //para identificar las balas en los mensajes

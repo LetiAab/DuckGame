@@ -1,5 +1,4 @@
 #include "bouncing_laser.h"
-#include <cmath> 
 
 BouncingLaser::BouncingLaser(int laser_id, Position position, int direction_x, int direction_y, GameMap* map, char duck_id, int alcance) 
     : laser_id(laser_id),
@@ -97,54 +96,3 @@ Position BouncingLaser::get_position() {
 Position BouncingLaser::get_speed() {
     return speed;
 }
-
-
-
-
-
-
-
-
-/* #include "bouncing_laser.h"
-#include <cmath>
-#include <iostream>
-
-BouncingLaser::BouncingLaser(int laser_id, Position position, int direction_x, int direction_y, GameMap* map, char duck_id, int alcance, int max_rebotes)
-    : Laser(laser_id, position, direction_x, direction_y, map, duck_id, alcance),
-      max_rebotes(max_rebotes),
-      rebotes_realizados(0) {}
-
-void BouncingLaser::update_position() {
-    if (alcance <= 0 || rebotes_realizados >= max_rebotes) {
-        impacto = true;  // Si alcanza el límite de rebotes o el alcance, se detiene
-        should_erase = true;
-        return;
-    }
-
-    int delta_x = position.x + speed.x;
-    int delta_y = position.y + speed.y;
-    old_position = position;
-
-    Position new_position(delta_x, delta_y);
-
-    // Chequear si hay colisión en el mapa
-    char collision = map->at(new_position);
-    if (collision == 'P') {
-        // Rebote en la pared: invertir la dirección según el eje
-        if (map->is_vertical_wall(new_position)) {
-            speed.x = -speed.x;  // Rebote en eje X
-        } else if (map->is_horizontal_wall(new_position)) {
-            speed.y = -speed.y;  // Rebote en eje Y
-        }
-        rebotes_realizados++;
-    } else {
-        // Si no hay colisión, mover normalmente
-        position = map->try_move_bullet_to(position, new_position, duck_id, impacto);
-    }
-
-    // Actualizar alcance y limpiar posición anterior
-    alcance -= std::abs(speed.x) + std::abs(speed.y);
-    map->cleanBulletOldPosition(old_position);
-    map->setBulletNewPosition(position);
-}
- */

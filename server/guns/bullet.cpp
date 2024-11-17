@@ -1,5 +1,4 @@
 #include "bullet.h"
-#include <cmath> 
 
 Bullet::Bullet(int bullet_id, Position position, int direction_x, int direction_y, GameMap* map, char duck_id, int alcance) 
     : bullet_id(bullet_id),

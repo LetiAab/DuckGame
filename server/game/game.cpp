@@ -1,10 +1,12 @@
 #include "game.h"
+
 #include "common/constants.h"
-#include "../guns/ak_47.h"
-#include "../guns/magnum.h"
+#include "../guns/sniper.h"
 
 #include <random>
 #include <utility>
+
+
 
 const char DUCK_1 = '1';
 const char DUCK_2 = '2';
@@ -68,12 +70,12 @@ void Game::simulate_round() {
                 }
         }
 }
-
+/* 
 void Game::add_projectile(std::unique_ptr<Proyectil> projectile) {
     // Transfiere la propiedad del proyectil usando std::move
     projectiles.push_back(std::move(projectile));
 
-}
+} */
 
 
 
@@ -147,7 +149,7 @@ void Game::inicializate_map() {
     
     for (Duck& duck : ducks) {
 
-        Sniper* weapon = new Sniper("Pistola no genérica", 120, 1, 6);
+        Sniper* weapon = new Sniper();
 
         duck.setWeapon(weapon);
         Helmet* helmet = new Helmet(5,5); //le pongo posicion pero no importa porque se la asigno al pato
@@ -195,7 +197,7 @@ void Game::create_items() {
         std::unique_ptr<Item> item;
 
         if (item_type == 0) {
-            item = std::make_unique<Weapon>("Nombre", 100.0, 1.5, 30, x, y);
+            item = std::make_unique<Weapon>(0, "Nombre", 100.0, 1.5, 30, x, y);
         } else if (item_type == 1) {
             item = std::make_unique<Armor>(x, y);
         } else {

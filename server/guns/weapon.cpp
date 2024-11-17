@@ -1,8 +1,8 @@
 #include "weapon.h"
 #include <iostream>
 
-Weapon::Weapon(const std::string& nombre, double alcance, double dispersion, int municiones, int x, int y)
-    : Item(WEAPON_1_ID,x, y), nombre(nombre), alcance(alcance), dispersion(dispersion), municiones(municiones) {}  // Inicializar posición
+Weapon::Weapon(uint16_t item_id, const std::string& nombre, double alcance, int dispersion, int municiones, int x, int y)
+    : Item(item_id,x, y), nombre(nombre), alcance(alcance), dispersion(dispersion), municiones(municiones) {}  // Inicializar posición
 
 void Weapon::disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) {
     if (municiones > 0) {

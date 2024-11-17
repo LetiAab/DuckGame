@@ -3,6 +3,8 @@
 
 #include <vector>
 
+#include <cstdint>
+
 const int ERROR = 1;
 const int SUCCESS = 0;
 

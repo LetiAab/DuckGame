@@ -2,8 +2,8 @@
 #include <iostream>
 
 // 12 rafagas, Alcance: 35 a 38 tiles
-PewPewLaser::PewPewLaser(const std::string& nombre, double alcance, double dispersion, int municiones, int x, int y)
-    : Item(WEAPON_1_ID,x, y), nombre(nombre), alcance(alcance), dispersion(dispersion), municiones(municiones) {}  // Inicializar posición
+PewPewLaser::PewPewLaser(int x, int y)
+    : Weapon(WEAPON_1_ID, "Pew Pew Laser", 35, 1, 12, x, y) {}
 
 void PewPewLaser::disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) {
     if (municiones > 0) {
@@ -34,11 +34,6 @@ void PewPewLaser::disparar(int position_x, int position_y, char looking, GameMap
     } else {
         std::cout << "No hay municiones disponibles." << std::endl;
     }
-}
-
-void PewPewLaser::recargar(int cantidad) {
-    municiones += cantidad;
-    std::cout << "Se han recargado " << cantidad << " municiones. Ahora tienes " << municiones << " municiones." << std::endl;
 }
 
 void PewPewLaser::mostrarInformacion() const {

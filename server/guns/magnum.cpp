@@ -1,11 +1,9 @@
 #include "magnum.h"
-#include <iostream>
-#include <random>
 
 
-// 6 bala, Alcance: 20 tiles
-Magnum::Magnum(const std::string& nombre, double alcance, int dispersion, int municiones, int x, int y)
-    : Item(WEAPON_1_ID,x, y), nombre(nombre), alcance(alcance), dispersion(dispersion), municiones(municiones) {}  // Inicializar posición
+// 6 balas, Alcance: 20 tiles
+Magnum::Magnum(int x, int y)
+    : Weapon(WEAPON_1_ID, "Magnum", 20, 0, 6, x, y) {}
 
 void Magnum::disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) {
     if (municiones > 0) {
@@ -41,11 +39,6 @@ void Magnum::disparar(int position_x, int position_y, char looking, GameMap* map
     } else {
         std::cout << "No hay municiones disponibles." << std::endl;
     }
-}
-
-void Magnum::recargar(int cantidad) {
-    municiones += cantidad;
-    std::cout << "Se han recargado " << cantidad << " municiones. Ahora tienes " << municiones << " municiones." << std::endl;
 }
 
 void Magnum::mostrarInformacion() const {

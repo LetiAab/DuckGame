@@ -1,5 +1,4 @@
 #include "laser.h"
-#include <cmath> 
 
 Laser::Laser(int laser_id, Position position, int direction_x, int direction_y, GameMap* map, char duck_id, int alcance) 
     : laser_id(laser_id),

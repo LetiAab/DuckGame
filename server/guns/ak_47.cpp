@@ -1,9 +1,9 @@
 #include "ak_47.h"
 #include <iostream>
 
-// 30 rafagas, Alcance: 13 tiles
-Ak47::Ak47(const std::string& nombre, double alcance, int dispersion, int municiones, int x, int y)
-    : Item(WEAPON_1_ID,x, y), nombre(nombre), alcance(alcance), dispersion(dispersion), municiones(municiones) {}  // Inicializar posición
+// 30 balas, Alcance: 13 tiles
+Ak47::Ak47(int x, int y)
+    : Weapon(WEAPON_1_ID, "Ak 47", 13, 0, 30, x, y) {}
 
 void Ak47::disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) {
     if (municiones > 0) {
@@ -39,11 +39,6 @@ void Ak47::disparar(int position_x, int position_y, char looking, GameMap* map, 
     } else {
         std::cout << "No hay municiones disponibles." << std::endl;
     }
-}
-
-void Ak47::recargar(int cantidad) {
-    municiones += cantidad;
-    std::cout << "Se han recargado " << cantidad << " municiones. Ahora tienes " << municiones << " municiones." << std::endl;
 }
 
 void Ak47::mostrarInformacion() const {

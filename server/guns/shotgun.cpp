@@ -2,8 +2,8 @@
 #include <iostream>
 
 // 2 disparos, Alcance: 7 a 9 tiles
-Shotgun::Shotgun(const std::string& nombre, double alcance, double dispersion, int municiones, int x, int y)
-    : Item(WEAPON_1_ID,x, y), nombre(nombre), alcance(alcance), dispersion(dispersion), municiones(municiones), recargando(false) {}  // Inicializar posición
+Shotgun::Shotgun(int x, int y)
+    : Weapon(WEAPON_1_ID, "Shotgun", 7, 0, 2, x, y) {}
 
 void Shotgun::disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) {
     if (municiones > 0) {
@@ -41,11 +41,6 @@ void Shotgun::disparar(int position_x, int position_y, char looking, GameMap* ma
     } else {
         std::cout << "No hay municiones disponibles." << std::endl;
     }
-}
-
-void Shotgun::recargar(int cantidad) {
-    municiones += cantidad;
-    std::cout << "Se han recargado " << cantidad << " municiones. Ahora tienes " << municiones << " municiones." << std::endl;
 }
 
 void Shotgun::mostrarInformacion() const {

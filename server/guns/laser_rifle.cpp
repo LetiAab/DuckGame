@@ -1,15 +1,9 @@
 #include "laser_rifle.h"
 #include <iostream>
 
-#define LASER_RIFLE_NAME "Laser Rifle"
-#define LASER_RIFLE_RANGE 30
-#define LASER_RIFLE_DISPERSION 5  // Variación del ángulo en disparos consecutivos
-#define LASER_RIFLE_INITIAL_AMMO 10
-#define LASER_RIFLE_REBOUND_LIMIT 5
-
 // 10 rayos, Alcance: 30 tiles
-LaserRifle::LaserRifle(const std::string& nombre, double alcance, double dispersion, int municiones, int x, int y)
-    : Item(WEAPON_1_ID,x, y), nombre(nombre), alcance(alcance), dispersion(dispersion), municiones(municiones) {}  // Inicializar posición
+LaserRifle::LaserRifle(int x, int y)
+    : Weapon(WEAPON_1_ID, "Laser Rifle", 30, 0, 10, x, y) {}
 
 void LaserRifle::disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) {
     if (municiones > 0) {
@@ -38,11 +32,6 @@ void LaserRifle::disparar(int position_x, int position_y, char looking, GameMap*
     } else {
         std::cout << "No hay municiones disponibles." << std::endl;
     }
-}
-
-void LaserRifle::recargar(int cantidad) {
-    municiones += cantidad;
-    std::cout << "Se han recargado " << cantidad << " municiones. Ahora tienes " << municiones << " municiones." << std::endl;
 }
 
 void LaserRifle::mostrarInformacion() const {

@@ -4,7 +4,8 @@
 
 #include <vector>
 #include "common/position.h"
-#include "duck.h"
+#include "common/constants.h"
+
 
 class GameMap {
 

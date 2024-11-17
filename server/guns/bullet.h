@@ -5,6 +5,9 @@
 #include "common/constants.h"
 #include "../game/game_map.h"
 
+#include <iostream>
+#include <cmath> 
+
 class GameMap;
 class Bullet {
 private:

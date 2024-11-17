@@ -4,8 +4,8 @@
 
 
 // 3 balas, Alcance: 64 tiles
-Sniper::Sniper(const std::string& nombre, double alcance, int dispersion, int municiones, int x, int y)
-    : Item(WEAPON_1_ID,x, y), nombre(nombre), alcance(alcance), dispersion(dispersion), municiones(municiones) {}  // Inicializar posición
+Sniper::Sniper(int x, int y)
+    : Weapon(WEAPON_1_ID, "Sniper", 64, 0, 3, x, y) {}  // Inicializar posición
 
 void Sniper::disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) {
     if (municiones > 0) {
@@ -34,11 +34,6 @@ void Sniper::disparar(int position_x, int position_y, char looking, GameMap* map
     } else {
         std::cout << "No hay municiones disponibles." << std::endl;
     }
-}
-
-void Sniper::recargar(int cantidad) {
-    municiones += cantidad;
-    std::cout << "Se han recargado " << cantidad << " municiones. Ahora tienes " << municiones << " municiones." << std::endl;
 }
 
 void Sniper::mostrarInformacion() const {

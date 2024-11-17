@@ -4,8 +4,8 @@
 
 
 // 1 bala, Alcance: 5 tiles
-DuelPistol::DuelPistol(const std::string& nombre, double alcance, int dispersion, int municiones, int x, int y)
-    : Item(WEAPON_1_ID,x, y), nombre(nombre), alcance(alcance), dispersion(dispersion), municiones(municiones) {}  // Inicializar posición
+DuelPistol::DuelPistol(int x, int y)
+    : Weapon(WEAPON_1_ID, "Duel Pistol", 5, 0, 1, x, y) {}
 
 void DuelPistol::disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) {
     if (municiones > 0) {
@@ -41,11 +41,6 @@ void DuelPistol::disparar(int position_x, int position_y, char looking, GameMap*
     } else {
         std::cout << "No hay municiones disponibles." << std::endl;
     }
-}
-
-void DuelPistol::recargar(int cantidad) {
-    municiones += cantidad;
-    std::cout << "Se han recargado " << cantidad << " municiones. Ahora tienes " << municiones << " municiones." << std::endl;
 }
 
 void DuelPistol::mostrarInformacion() const {
