@@ -123,12 +123,10 @@ int SDLHandler::waitForStartGame() {
     bool start_game = false;
 
     while (!start_game && !done) {
-        screenManager->showLobbyScreen();
-        done = eventProcessor.processLobbyEvents(start_game);
+        done = eventProcessor.processLobbyEvents(screenManager.get(), start_game);
     }
     return done;
 }
-
 
 void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& command_queue, uint16_t id, Queue<Message>& message_queue) {
     SDL_Window* window = SDL_CreateWindow("Duck Game",
@@ -141,6 +139,8 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
     screenManager = std::make_unique<ScreenManager>(renderer, handle_textures);
     screenManager->showStartScreen();
 
+    screenManager->loadLobbyScreen();
+    screenManager->showLobbyScreen();
     if(waitForStartGame() == ERROR) {
         SDL_DestroyWindow(window);
         SDL_DestroyRenderer(renderer);
