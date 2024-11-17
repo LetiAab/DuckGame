@@ -1,7 +1,7 @@
 #include "game.h"
 #include "common/constants.h"
 #include "../guns/ak_47.h"
-#include "../guns/cowboy_pistol.h"
+#include "../guns/magnum.h"
 
 #include <random>
 #include <utility>
@@ -147,7 +147,7 @@ void Game::inicializate_map() {
     
     for (Duck& duck : ducks) {
 
-        CowboyPistol* weapon = new CowboyPistol("Pistola no genérica", 100, 1, 120);
+        Magnum* weapon = new Magnum("Pistola no genérica", 100, 1, 120);
 
         duck.setWeapon(weapon);
         Helmet* helmet = new Helmet(5,5); //le pongo posicion pero no importa porque se la asigno al pato

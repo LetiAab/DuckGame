@@ -1,5 +1,5 @@
-#ifndef COWBOY_PISTOL_H
-#define COWBOY_PISTOL_H
+#ifndef MAGNUM_H
+#define MAGNUM_H
 
 #include <string>
 #include <vector>
@@ -11,13 +11,13 @@
 class Bullet;  // Declaración anticipada de la clase Bullet
 class GameMap; // Declaración anticipada de la clase GameMap
 
-class CowboyPistol : public Item {  // Herencia de Item
+class Magnum : public Item {  // Herencia de Item
 public:
     // Could be just an object
     std::vector<Bullet> bullets;
 
     // Constructor que inicializa la posición
-    CowboyPistol(const std::string& nombre, double alcance, int dispersion, int municiones, int x = 0, int y = 0);
+    Magnum(const std::string& nombre, double alcance, int dispersion, int municiones, int x = 0, int y = 0);
 
     // Métodos
     void disparar(int position_x, int position_y, char looking, GameMap* map, char id_player);
@@ -39,4 +39,4 @@ private:
     int municiones;
 };
 
-#endif  // COWBOY_PISTOL_H
+#endif  // MAGNUM_H
