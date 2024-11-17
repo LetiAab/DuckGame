@@ -29,18 +29,27 @@ void Match::start_match() {
 
     is_running = true;
 
-    std::vector<uint16_t> player_ids; //este auxiliar para mandarle al inicializador de patos
-    
+    //envio a cada jugador el id de su pato, el cual se usara en la partida
+    uint16_t duck_id = 1;
     for(auto& player: players){
-        player_ids.push_back(player->get_player_id());
+        Message msg;
+        msg.type = FIRST_GAME_MESSAGE;
+        msg.player_id = duck_id;
+        player->get_message_queue().push(msg);
+        player->set_player_id(duck_id);
+        duck_id += 1;
+    }
+
+
+    for(auto& player: players){
         monitor.add_queue(&player->get_message_queue());
         player->start_playing();
     }
 
     //cuando inicio el match tengo que crear a los patos dentro de la lista de patos del game
-    
+
     game.map.setEscenario();
-    game.create_ducks(player_ids);
+    game.create_ducks(players.size());
     game.start();
 
     //game.join();

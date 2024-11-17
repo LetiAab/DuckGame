@@ -17,7 +17,7 @@ class Player {
     
 private:
     ServerProtocol protocol;
-    const uint16_t player_id;
+    uint16_t player_id;
     Sender sender;
     Receiver receiver;
     bool connected;
@@ -25,7 +25,7 @@ private:
 
 
 public:
-    Player(ServerProtocol&& protocol, const uint16_t id, Queue<std::shared_ptr<Executable>>& game_queue);
+    Player(ServerProtocol&& protocol, uint16_t id, Queue<std::shared_ptr<Executable>>& game_queue);
 
     void start_playing();
 
@@ -34,6 +34,8 @@ public:
     void stop_playing();
 
     uint16_t get_player_id();
+
+    void set_player_id(uint16_t id);
 
     Queue<Message>& get_message_queue();
 };

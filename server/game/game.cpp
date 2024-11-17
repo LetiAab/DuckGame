@@ -176,14 +176,14 @@ void Game::inicializate_map() {
 }
 
 //TODO: Esto solo sirve para dos patos y siempre tiene en cuenta que es el mismo distribucion de obstaculos
-void Game::create_ducks(const std::vector<uint16_t>& ids) {
+void Game::create_ducks(int size) {
         std::random_device rd;
         std::mt19937 gen(rd());
 
         std::uniform_int_distribution<> distrib_x(18, map.get_width() - 18);
         std::uniform_int_distribution<> distrib_y(10, map.get_height() - 20);
 
-        for(uint16_t id: ids) {
+        for(uint16_t id= 1; id <= size; ++id) {
                 char char_id = static_cast<char>(id + '0');
 
                 int random_x = distrib_x(gen);

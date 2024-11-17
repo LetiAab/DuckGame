@@ -44,6 +44,7 @@ struct GameState {
 
     // Constructor para inicializar client_game_map
     GameState() : client_game_map(MATRIX_M, MATRIX_N) {}
+
 };
 
 #endif //GAME_STATE_H

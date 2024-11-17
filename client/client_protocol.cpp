@@ -14,20 +14,26 @@ Message ClientProtocol::receive_message(){
     
     bool was_closed = false;
     Message message;
-    std::cout << "Client Protocol: recibo tipo de mensaje" << "\n";
 
     skt.recvall(&message.type, 1, &was_closed);
     std::cout << "Client Protocol: lo recibí, tipo: " << static_cast<int>(message.type) << "\n";
 
     //ARMAR TODOS LOS CASOS
     switch (message.type)
+
     {
+    case FIRST_GAME_MESSAGE:
+        //recibo el nuevo id del jugador
+        skt.recvall(&message.player_id, 2, &was_closed);
+        break;
+
     case MAP_INICIALIZATION:
-        message.map.resize(MATRIX_N, std::vector<char>(MATRIX_M));  
+
+        message.map.resize(MATRIX_N, std::vector<char>(MATRIX_M));
         for (size_t i = 0; i < MATRIX_N; ++i) { 
             skt.recvall(message.map[i].data(), MATRIX_M * sizeof(char), &was_closed); // Recibir cada fila
         }
-    break;
+        break;
 
     case ITEM_POSITION:
         skt.recvall(&message.item_id, sizeof(uint8_t), &was_closed);
@@ -85,9 +91,7 @@ Message ClientProtocol::receive_message(){
 
     default:
         skt.recvall(&message.player_id, 2, &was_closed);
-        std::cout << "Client Protocol: lo recibí, player_id: " << static_cast<int>(message.player_id) << "\n";
         skt.recvall(&message.len_matches, 2, &was_closed);
-        std::cout << "Client Protocol: lo recibí, len_matches: " << static_cast<int>(message.len_matches) << "\n";
 
         if(message.len_matches > 0){
 
@@ -96,7 +100,6 @@ Message ClientProtocol::receive_message(){
         }
 
         skt.recvall(&message.current_match_id, 1, &was_closed);
-        std::cout << "Client Protocol: lo recibí, current ,match: " << static_cast<int>(message.current_match_id) << "\n";
         break;
     }
 

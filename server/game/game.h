@@ -59,7 +59,7 @@ Queue<std::shared_ptr<Executable>>& get_game_queue();
 
 void inicializate_map();
 
-void create_ducks(const std::vector<uint16_t>& ids);
+void create_ducks(int size);
 
 void create_items();
 

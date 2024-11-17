@@ -4,7 +4,7 @@
 #include <utility>
 
 
-Player::Player(ServerProtocol&& prot, const uint16_t id, Queue<std::shared_ptr<Executable>>& game_queue):
+Player::Player(ServerProtocol&& prot, uint16_t id, Queue<std::shared_ptr<Executable>>& game_queue):
         protocol(std::move(prot)),
         player_id(id),
         sender(protocol),
@@ -34,6 +34,8 @@ void Player::stop_playing() {
 }
 
 uint16_t Player::get_player_id() { return player_id; }
+
+void Player::set_player_id(uint16_t id){ id = id; }
 
 bool Player::is_connected() { return connected; }
 
