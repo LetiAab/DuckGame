@@ -45,9 +45,6 @@ void Game::simulate_round() {
                 duck.update_position();
                 duck.update_weapon();
 
-                std::cout << "Vuelvo a imprimir el mapa después de actualizar las balas \n";
-                map.tellMap();
-
                 // Si el pato murio, avisamos al cliente
                 //estaria bueno mover esto 
 
@@ -67,10 +64,8 @@ void Game::simulate_round() {
                 Message kill_duck_message;
                 if (duck.get_duck_dead_message(kill_duck_message)) {
                         monitor.broadcast(kill_duck_message);
-                        std::cout << "Pato muerto. Tamaño actual de ducks: " << ducks.size() << std::endl;
                 }
         }
-
 }
 
 void Game::add_projectile(std::unique_ptr<Proyectil> projectile) {

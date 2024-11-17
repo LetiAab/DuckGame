@@ -146,8 +146,6 @@ void Duck::update_weapon(){
     
     if (weapon != nullptr) {
         weapon->update_weapon();
-        std::cout << "Despues de eliminar la bala, en duck, el tellMap es:" << std::endl;
-        map->tellMap();    
     }
 }
 

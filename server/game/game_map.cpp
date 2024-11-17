@@ -32,21 +32,11 @@ void GameMap::setBulletNewPosition(Position pos) {
 }
 
 void GameMap::cleanBulletOldPosition(Position pos) {
-    std::cout << "cleanPostImpacto en map, la posición es x: " << pos.x << " y: " << pos.y << std:: endl;
-
-    std::cout << "Las dos posiciones de la bala antes de borrar son " << pos.x << " " << pos.y << " " << map[pos.y][pos.x] << " y " << pos.x+1 << " " << pos.y << " " << map[pos.y][pos.x+1] << std::endl;
-
-    tellMap();
-
     for (int y = pos.y; y < pos.y + BULLET_SIZE_Y; ++y) {
         for (int x = pos.x; x < pos.x + BULLET_SIZE_X; ++x) {
             map[y][x] = EMPTY;
         }
     }
-
-    tellMap();
-    
-    std::cout << "Las dos posiciones de la bala 'borradas' son " << pos.x << " " << pos.y << " " << map[pos.y][pos.x] << " y " << pos.x+1 << " " << pos.y << " " << map[pos.y][pos.x+1] << std::endl;
 }
 
 bool GameMap::bullet_hit_other_duck(char e, char duck_shooting){
@@ -63,9 +53,6 @@ Position GameMap::try_move_bullet_to(Position old_position, Position new_positio
     int dx = (new_position.x > old_position.x) ? 1 : (new_position.x < old_position.x ? -1 : 0);
     int dy = (new_position.y > old_position.y) ? 1 : (new_position.y < old_position.y ? -1 : 0);
 
-    std::cout << "dx es " << dx << " dy es " << dy << "\n";
-
-
     //itero hasta llegar a la posición final, encontrar un obstaculo o pegarle a un pato
     while (final_x != new_position.x || final_y != new_position.y) {
         int next_x = final_x + dx;
@@ -80,7 +67,6 @@ Position GameMap::try_move_bullet_to(Position old_position, Position new_positio
         for (int y = next_y; y < next_y + BULLET_SIZE_Y; ++y) {
             for (int x = next_x; x < next_x + BULLET_SIZE_X; ++x) {
 
-                std::cout << "x es " << x << " y es " << y << ". En esa posición el map es" << map[y][x] << "\n";
                 if (map[y][x] == PLATFORM) {
                     // Caso 1: choque con una plataforma
                     hit_something = true;

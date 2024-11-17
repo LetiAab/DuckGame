@@ -72,7 +72,6 @@ void Ak47::update_weapon(){
         it->update_position();
 
         if(it->should_erase_bullet()) {
-                std::cout << "Eliminando bala en posición: (" << it->get_position().x << ", " << it->get_position().y << ")" << std::endl;
               it = bullets.erase(it);
         } else {
             ++it;

@@ -22,12 +22,17 @@ void Bullet::comenzar_trayectoria() {
 
 void Bullet::update_position() {
 
+    if (should_erase) {
+        std::cout << "Debería eliminar esta bala pero la estoy actualizando, return \n";
+        return;
+    }
+
     if(alcance <= 0){
         //si recorrio su maximo tiene que frenar
         impacto = true;
     } else {
 
-        std::cout << "Comienzo trayectoria desde x: " << position.x << "\n";
+        std::cout << "Comienzo trayectoria desde x: " << position.x << " e y: " << position.y << std::endl;
         std::cout << "Speed x: " << speed.x << " y: " << speed.y << "\n";
 
 
@@ -36,9 +41,6 @@ void Bullet::update_position() {
         old_position = position;
 
         position = map->try_move_bullet_to(position, Position(delta_x, delta_y), duck_id, impacto);
-
-        std::cout << "La posicion despues de intentar mov trayectoria desde x: " << position.x << " y: " << position.y << "\n";
-
         
         map->cleanBulletOldPosition(old_position);
         map->setBulletNewPosition(position);
@@ -53,9 +55,7 @@ bool Bullet::get_bullet_message(Message& msg){
 
     if(impacto){
         //si impacte con algo debo eliminar la bala luego de mandar el mensaje
-        std::cout << "Llamo a cleanPostImpacto, la bullet se 'borra' en x" << position.x << " y: " << position.y << std:: endl;
         cleanPostImpacto();
-        std::cout << "Las dos posiciones de la bala 'borradas' son " << map->at(position) << " y " << map->at(Position {position.x + 1, position.y});
         should_erase = true;
     }
 
@@ -75,7 +75,6 @@ bool Bullet::get_bullet_message(Message& msg){
 }
 
 void Bullet::cleanPostImpacto(){
-    std::cout << "En el cleanPostImpacto de bullet, la posición es x" << position.x << " y: " << position.y << std:: endl;
     map->cleanBulletOldPosition(position);
 }
 
