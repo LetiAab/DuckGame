@@ -15,8 +15,8 @@ const int NUM_ITEMS = 10;
 
 
 //TODO: Tamanio del mapa hardcodeado
-Game::Game(uint16_t match_id, GameQueueMonitor& monitor):
-match_id(match_id), monitor(monitor), is_running(true), game_queue(), map(MATRIX_M, MATRIX_N){}
+Game::Game(uint16_t match_id, GameQueueMonitor& monitor, bool& is_over):
+match_id(match_id), monitor(monitor), is_over(is_over), is_running(true), game_queue(), map(MATRIX_M, MATRIX_N){}
 
 Queue<std::shared_ptr<Executable>>& Game::get_game_queue(){
         return game_queue;
@@ -159,9 +159,11 @@ bool Game::check_end_game(){
 
 void Game::stop() {
         game_queue.close();
+        monitor.remove_all_queues();
         items.clear();
         ducks.clear();
         is_running = false;
+        is_over = true;
 }
 
 void Game::inicializate_map() {

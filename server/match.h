@@ -14,6 +14,7 @@ class Match {
 private:
     uint16_t match_id;
     bool is_running;
+    bool over;
     uint8_t min_players;
     uint8_t max_players;
     uint8_t current_players;
@@ -31,6 +32,10 @@ public:
     bool can_add_player();
 
     void start_match();
+
+    void stop_match();
+
+    bool is_over();
 
     bool is_able_to_start();
 

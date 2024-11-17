@@ -31,8 +31,6 @@ void Acceptor::run() {
     } catch (const std::exception& e) {
         std::cout << "Acceptor: atrape una excepcion"  << std::endl;
         is_alive = false;
-        stop();
-        std::cout << "Acceptor: detuve el lobby y me mori"  << std::endl;
     }
 }
 

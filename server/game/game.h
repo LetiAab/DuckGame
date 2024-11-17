@@ -42,6 +42,7 @@ class Game: public Thread {
 private:
         uint16_t match_id;
         GameQueueMonitor& monitor;
+        bool& is_over;
         bool is_running;
         Queue<std::shared_ptr<Executable>> game_queue;
         std::vector<Update> updates;
@@ -53,7 +54,7 @@ public:
         std::vector<std::unique_ptr<Item>> items;
 
 
-explicit Game(uint16_t match_id, GameQueueMonitor& monitor);
+explicit Game(uint16_t match_id, GameQueueMonitor& monitor, bool& is_over);
 
 Queue<std::shared_ptr<Executable>>& get_game_queue();
 

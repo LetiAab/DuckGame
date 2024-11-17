@@ -2,8 +2,8 @@
 #include "common/constants.h"
 
 Match::Match(uint16_t match_id): 
-match_id(match_id), is_running(false), min_players(MIN_PLAYERS), max_players(MAX_PLAYERS), current_players(0), players(),
-monitor(), game(match_id, monitor) {}
+match_id(match_id), is_running(false), over(false), min_players(MIN_PLAYERS), max_players(MAX_PLAYERS), current_players(0), players(),
+monitor(), game(match_id, monitor, over) {}
 
 bool Match::add_player(std::shared_ptr<Player> player) {
     players.push_back(player);
@@ -56,6 +56,19 @@ void Match::start_match() {
     std::cout << "Match:Continuo la ejecucion luego de lanzar game"  << std::endl;
 
     
+}
+
+void Match::stop_match(){
+    game.join();
+    for(auto& player: players){
+        player->stop_playing();
+    }
+    
+    players.clear();
+}
+
+bool Match::is_over(){
+    return over;
 }
 
 uint16_t Match::get_match_id() {

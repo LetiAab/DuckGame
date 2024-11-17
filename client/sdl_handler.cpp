@@ -160,17 +160,25 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
 
     // Event Loop: La ventana se abre => se entra al loop
     int done = SUCCESS;
-    while (!done) {
-        //PRIMERO MANDO AL SERVER
-        done = eventProcessor.processGameEvents(window, &game, id);
+    try{
+        while (!done) {
+            //PRIMERO MANDO AL SERVER
+            done = eventProcessor.processGameEvents(window, &game, id);
 
-        //LUEGO RECIBO DEL SERVER Y HAGO EL RENDER
-        Message message = handleMessages(&game, message_queue);
+            //LUEGO RECIBO DEL SERVER Y HAGO EL RENDER
+            Message message = handleMessages(&game, message_queue);
 
-        rendererManager->doRenderDynamic(&game, message);
-        //renderItems(renderer, &game);
+            rendererManager->doRenderDynamic(&game, message);
+            //renderItems(renderer, &game);
 
-        SDL_Delay(DELAY_TIME);
+            SDL_Delay(DELAY_TIME);
+        }
+    } catch (const ClosedQueue& e){
+        done = ERROR;
+        std::cout << "SE CERRO LA QUEUE"<< "\n";
+    } catch (const LibError& l){
+        done = ERROR;
+        std::cout << "SE CERRO EL PROTOCOLO"<< "\n";
     }
 
     // Termino el juego => libero recursos

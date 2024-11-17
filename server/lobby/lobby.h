@@ -21,6 +21,7 @@ private:
     Queue<LobbyCommand> lobby_queue;
     uint16_t match_counter_ids;
 
+    void clean_finished_matches();
     void clean_disconnected_players();
     LobbyMessage process_command(const LobbyCommand& cmd);
     void process_start_match_command(const LobbyCommand& cmd);

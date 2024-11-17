@@ -10,6 +10,8 @@
 #include <sstream>
 #include <string>
 #include <utility>
+#include <memory>
+#include <algorithm>
 
 
 Lobby::Lobby(): is_alive(true), lobby_players(), matches(), lobby_queue(), match_counter_ids(1){}
@@ -28,11 +30,29 @@ void Lobby::run() {
             }
 
             clean_disconnected_players();
+            clean_finished_matches();
         }
 
     } catch (const ClosedQueue& e) {
         std::cout << "Se cerró la queue del lobby\n";
     }
+}
+
+void Lobby::clean_finished_matches() {
+
+    for (const auto& match : matches) {
+        if (match->is_over()) {
+            match->stop_match();
+            std::cout << "Lobby: termino un partido. Voy a eliminarlo"  << std::endl;
+        }
+    }
+
+    auto it = std::remove_if(matches.begin(), matches.end(),
+                             [](const std::unique_ptr<Match>& match) {
+                                 return match->is_over();
+                             });
+
+    matches.erase(it, matches.end());
 }
 
 void Lobby::clean_disconnected_players() {
