@@ -28,6 +28,7 @@ target_sources(taller_server
     guns/cowboy_pistol.cpp
     guns/magnum.cpp
     guns/shotgun.cpp
+    guns/sniper.cpp
     armor/armor.cpp
     armor/helmet.cpp
     #guns/gun.cpp
@@ -73,6 +74,7 @@ target_sources(taller_server
     guns/cowboy_pistol.h
     guns/magnum.h
     guns/shotgun.h
+    guns/sniper.h
     armor/armor.h
     armor/helmet.h
     #guns/gun.h
