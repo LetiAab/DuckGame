@@ -76,10 +76,10 @@ std::shared_ptr<LobbyPlayer> Lobby::find_player_by_id(const uint16_t id) {
     return nullptr;
 }
 
-std::shared_ptr<Match> Lobby::find_match_by_id(const uint16_t id) {
+Match* Lobby::find_match_by_id(const uint16_t id) {
     for (auto& match : matches) {
         if (match->get_match_id() == id) {
-            return match;
+            return match.get();
         }
     }
     return nullptr;
@@ -112,15 +112,15 @@ LobbyMessage Lobby::create_lobby_response(uint16_t player_id, uint8_t type, uint
     msg.current_match_id = current_match;
 
     if (type == LOBBY_COMMAND_FAIL) {
-        msg.len_matches = matches.size();
         get_all_match_ids(msg.existing_matches);
+        msg.len_matches = msg.existing_matches.size();
         msg.current_match_id = 0;
     }
 
     return msg;
 }
 
-void Lobby::notify_players(std::shared_ptr<Match> match, LobbyMessage msg){
+void Lobby::notify_players(Match* match, LobbyMessage msg){
     uint16_t match_id = match->get_match_id();
     Queue<std::shared_ptr<Executable>>& queue = match->get_game_queue();
 
@@ -141,7 +141,7 @@ void Lobby::process_start_match_command(const LobbyCommand& cmd) {
 
 
     std::shared_ptr<LobbyPlayer> player = find_player_by_id(cmd.player_id);
-    std::shared_ptr<Match> match = find_match_by_id(cmd.match_id);
+    Match* match = find_match_by_id(cmd.match_id);
 
     if (match and match->is_able_to_start()) {
 
@@ -168,20 +168,20 @@ LobbyMessage Lobby::process_command(const LobbyCommand& cmd) {
 
     switch (type) {
         case NEW_MATCH_CODE: {
-            std::shared_ptr<Match> new_match = std::make_shared<Match>(match_counter_ids);
+            std::unique_ptr<Match> new_match = std::make_unique<Match>(match_counter_ids);
             new_match->can_add_player();
 
             match_id = new_match->get_match_id();
             lobby_player->set_match_id(match_id);
 
-            matches.push_back(new_match);
+            matches.push_back(std::move(new_match));
             match_counter_ids += 1;
 
             std::cout << "El jugador creó una nueva partida\n";
             break;
         }
         case EXISTING_MATCH_CODE: {
-            std::shared_ptr<Match> match = find_match_by_id(cmd.match_id);
+            Match* match = find_match_by_id(cmd.match_id);
 
             if (match->can_add_player()) {
 

@@ -43,8 +43,8 @@ void Match::start_match() {
     game.create_ducks(player_ids);
     game.start();
 
-    game.join();
-    //std::cout << "Se joineo game."  << std::endl;
+    //game.join();
+    std::cout << "Match:Continuo la ejecucion luego de lanzar game"  << std::endl;
 
     
 }
