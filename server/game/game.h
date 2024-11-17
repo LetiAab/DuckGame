@@ -72,6 +72,9 @@ Duck* getDuckById(char id);
 
 Item* getItemByPosition(Position position);
 
+SpawnPlace* getSpawnPlaceByPosition(Position position);
+
+
 void game_broadcast(Message message);
 
 void simulate_round();

@@ -64,6 +64,9 @@ const uint8_t ARMOR_BROKEN = 0X78;
 
 const uint8_t SPAWN_PLACE_POSITION = 0X79;
 
+const uint8_t SPAWN_PLACE_ITEM_UPDATE = 0X80;
+
+
 const int N_SPAWN_PLACES = 4;
 
 

@@ -118,9 +118,19 @@ bool ServerProtocol::send_message(Message& message){
         }
 
         break;
+
+    case SPAWN_PLACE_ITEM_UPDATE:
+        if (!skt.sendall(&message.spawn_place_id, sizeof(message.spawn_place_id), &was_closed) || was_closed) {
+            return false;
+        }
+        if (!skt.sendall(&message.item_id, sizeof(message.item_id), &was_closed) || was_closed) {
+            return false;
+        }
+        break;
+
     
     case SPAWN_PLACE_POSITION:
-
+ 
         if (!skt.sendall(&message.spawn_place_id, sizeof(message.spawn_place_id), &was_closed) || was_closed) {
             return false;
         }

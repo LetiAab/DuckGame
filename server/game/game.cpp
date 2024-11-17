@@ -273,6 +273,7 @@ Duck* Game::getDuckById(char id) {
         return nullptr; // Retorna nullptr si no se encuentra el pato
 }
 
+//REFACTOR! ESTOY BUSCANDO EL ITEM Y EL SPAWN PLACE
 Item* Game::getItemByPosition(Position position) {
     // Coordenadas del área del pato
     int area_x_min = position.x;
@@ -295,6 +296,32 @@ Item* Game::getItemByPosition(Position position) {
 
     return nullptr; 
 }
+
+SpawnPlace* Game::getSpawnPlaceByPosition(Position position) {
+    // Coordenadas del área del pato
+    int area_x_min = position.x;
+    int area_x_max = position.x + DUCK_SIZE_X;
+    int area_y_min = position.y;
+    int area_y_max = position.y + DUCK_SIZE_Y;
+
+    std::cout << "Buscando SpawnPlace en el área del pato desde X: " << area_x_min 
+              << " hasta X: " << area_x_max
+              << ", y desde Y: " << area_y_min 
+              << " hasta Y: " << area_y_max << "\n";
+
+    for (auto& spawn_place_ptr : spawn_places) {
+        Position spawnPlacePos = spawn_place_ptr->getPosition();
+
+        if (spawnPlacePos.x >= area_x_min && spawnPlacePos.x < area_x_max &&
+            spawnPlacePos.y >= area_y_min && spawnPlacePos.y < area_y_max) {
+            return spawn_place_ptr.get();
+        }
+    }
+
+    return nullptr; 
+}
+
+
 void Game::game_broadcast(Message message){
         monitor.broadcast(message);
 }

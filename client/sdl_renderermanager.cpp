@@ -22,32 +22,6 @@ void RendererManager::doRenderStatic(GameState* game) {
         SDL_Rect spawn_rect = {spawn_place.x, spawn_place.y, TILE_SIZE * 6, TILE_SIZE * 4};
         SDL_RenderCopy(renderer, texture_handler.getTexture("spawn"), NULL, &spawn_rect);
 
-        std::cout << "ITEM ID DEL SPAWN: " << static_cast<unsigned int>(spawn_place.item_id) << "\n";
-
-        if(spawn_place.item_id == WEAPON_1_ID){
-            SDL_Rect gun_rect = { spawn_place.x ,spawn_place.y - TILE_SIZE * 11, TILE_SIZE * DUCK_SIZE_X, TILE_SIZE * DUCK_SIZE_Y};
-            SDL_RenderCopyEx(renderer, texture_handler.getTexture("gun"), NULL, &gun_rect, 0, NULL, SDL_FLIP_NONE);
-        }
-        if(spawn_place.item_id == HELMET_ID){
-            SDL_Rect helmet_rect = {
-                spawn_place.x,
-                (spawn_place.y - TILE_SIZE*9),
-                (TILE_SIZE * DUCK_SIZE_X / 2) + TILE_SIZE,
-                (TILE_SIZE * DUCK_SIZE_Y / 2) + TILE_SIZE
-            };
-            
-            SDL_RenderCopyEx(renderer, texture_handler.getTexture("helmet"), NULL, &helmet_rect, 0, NULL, SDL_FLIP_NONE);
-        }
-        if(spawn_place.item_id == ARMOR_ID){
-            SDL_Rect armor_rect = {
-                spawn_place.x - TILE_SIZE,
-                (spawn_place.y  -  TILE_SIZE * 8),
-                (TILE_SIZE * DUCK_SIZE_X / 2) + TILE_SIZE,
-                (TILE_SIZE * DUCK_SIZE_Y / 2)
-            };            
-            
-            SDL_RenderCopyEx(renderer, texture_handler.getTexture("armor"), NULL, &armor_rect, 0, NULL, SDL_FLIP_NONE);
-        }
   }
 
     SDL_SetRenderTarget(renderer, NULL);
@@ -164,25 +138,62 @@ void RendererManager::renderDucks(GameState* game) {
     }
 }
 
+void RendererManager::renderItems(GameState* game) {
+    for (auto& spawn_place : game->spawn_places) {
+
+        if (spawn_place.item_id == WEAPON_1_ID) {
+            SDL_Rect gun_rect = { 
+                spawn_place.x, 
+                spawn_place.y - TILE_SIZE * 11, 
+                TILE_SIZE * DUCK_SIZE_X, 
+                TILE_SIZE * DUCK_SIZE_Y 
+            };
+            SDL_RenderCopyEx(renderer, texture_handler.getTexture("gun"), NULL, &gun_rect, 0, NULL, SDL_FLIP_NONE);
+        } else if (spawn_place.item_id == HELMET_ID) {
+            SDL_Rect helmet_rect = {
+                spawn_place.x,
+                spawn_place.y - TILE_SIZE * 9,
+                (TILE_SIZE * DUCK_SIZE_X / 2) + TILE_SIZE,
+                (TILE_SIZE * DUCK_SIZE_Y / 2) + TILE_SIZE
+            };
+            SDL_RenderCopyEx(renderer, texture_handler.getTexture("helmet"), NULL, &helmet_rect, 0, NULL, SDL_FLIP_NONE);
+        } else if (spawn_place.item_id == ARMOR_ID) {
+            SDL_Rect armor_rect = {
+                spawn_place.x - TILE_SIZE,
+                spawn_place.y - TILE_SIZE * 8,
+                (TILE_SIZE * DUCK_SIZE_X / 2) + TILE_SIZE,
+                (TILE_SIZE * DUCK_SIZE_Y / 2)
+            };
+            SDL_RenderCopyEx(renderer, texture_handler.getTexture("armor"), NULL, &armor_rect, 0, NULL, SDL_FLIP_NONE);
+        }
+    }
+}
+
+
 void RendererManager::doRenderDynamic(GameState* game, Message& message) {
     SDL_RenderCopy(renderer, texture_handler.getTexture("static_scene"), NULL, NULL);
 
+    if(message.type == SPAWN_PLACE_ITEM_UPDATE){
+        std::cout << "el nuevo item del spawn tiene que ser: " << static_cast<unsigned int>(message.item_id) << "\n";
+
+        int pos_spaw_id = message.spawn_place_id;
+        game->spawn_places[pos_spaw_id].item_id = message.item_id; 
+    }
+    
+
     if(message.type == DUCK_PICKUP_ITEM){
+        int pos_id = message.player_id - 1;
+
 
         if(message.item_id == WEAPON_1_ID){
-            int pos_id = message.player_id - 1;
             game->ducks[pos_id].weapon_equiped = message.item_id;
         }
 
         if(message.item_id == HELMET_ID){
-            int pos_id = message.player_id - 1;
             game->ducks[pos_id].item_on_hand = message.item_id;
         }
 
-        // si es un ARMOR 
-
         if(message.item_id == ARMOR_ID){
-            int pos_id = message.player_id - 1;
             game->ducks[pos_id].item_on_hand = message.item_id;
         }
     }
@@ -224,6 +235,7 @@ void RendererManager::doRenderDynamic(GameState* game, Message& message) {
     }
 
     renderDucks(game);
+    renderItems(game);
     if(message.type == BULLET_POS_UPDATE){
         renderBullet(message.bullet_x, message.bullet_y);
     }
