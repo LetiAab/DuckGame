@@ -28,7 +28,7 @@ public:
 
     bool add_player(std::shared_ptr<Player> player);
 
-    bool add_player();
+    bool can_add_player();
 
     void start_match();
 

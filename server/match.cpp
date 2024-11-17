@@ -10,7 +10,7 @@ bool Match::add_player(std::shared_ptr<Player> player) {
     return true;
 }
 
-bool Match::add_player() {
+bool Match::can_add_player() {
     if(is_match_available()){
         current_players += 1;
         return true;

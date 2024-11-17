@@ -168,7 +168,7 @@ LobbyMessage Lobby::process_command(const LobbyCommand& cmd) {
     switch (type) {
         case NEW_MATCH_CODE: {
             std::shared_ptr<Match> new_match = std::make_shared<Match>(match_counter_ids);
-            new_match->add_player();
+            new_match->can_add_player();
 
             match_id = new_match->get_match_id();
             lobby_player->set_match_id(match_id);
@@ -182,7 +182,7 @@ LobbyMessage Lobby::process_command(const LobbyCommand& cmd) {
         case EXISTING_MATCH_CODE: {
             std::shared_ptr<Match> match = find_match_by_id(cmd.match_id);
 
-            if (match->add_player()) {
+            if (match->can_add_player()) {
 
                 match_id = cmd.match_id;
                 lobby_player->set_match_id(match_id);
