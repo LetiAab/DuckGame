@@ -64,7 +64,7 @@ void Game::simulate_round() {
                 Message kill_duck_message;
                 if (duck.get_duck_dead_message(kill_duck_message)) {
                         monitor.broadcast(kill_duck_message);
-                        std::cout << "Pato muerto. Tamaño actual de ducks: " << ducks.size() << std::endl;
+                        std::cout << "Pato muerto."  << std::endl;
                 }
         }
 
@@ -132,15 +132,19 @@ void Game::run() {
                         }
                 }
 
-                check_end_game();
+                if (check_end_game()){
+                        stop();
+                        break;
+                }
 
                 std::this_thread::sleep_for(std::chrono::milliseconds(60));
 
         }
+        std::cout << "Termino el juego!"  << std::endl;
 
 }
 
-void Game::check_end_game(){
+bool Game::check_end_game(){
         //checkear las condiciones necesarias para que termine un juego
         bool end = true;
         for (Duck& duck : ducks) {
@@ -149,8 +153,15 @@ void Game::check_end_game(){
                 }
         }
 
-        if (end){  throw EndGame(); }
+        return end;
 
+}
+
+void Game::stop() {
+        game_queue.close();
+        items.clear();
+        ducks.clear();
+        is_running = false;
 }
 
 void Game::inicializate_map() {
@@ -230,7 +241,6 @@ void Game::create_items() {
         //agrego al vector
         items.push_back(std::move(item));
 
-        
     }
 }
 
@@ -268,5 +278,3 @@ Item* Game::getItemByPosition(Position position) {
 void Game::game_broadcast(Message message){
         monitor.broadcast(message);
 }
-
-void Game::stop() { is_running = false; }

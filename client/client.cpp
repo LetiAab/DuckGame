@@ -85,6 +85,7 @@ void Client::handleLobby(uint16_t& id, Queue<Message>& message_queue) {
 
 int Client::start(){
     // primer mensaje de la conexion para saber mi id
+    std::cout << "Estoy por recibir el primer mensaje" << "\n";
     Message first_message = protocol.receive_message();
 
     //persisto mi id

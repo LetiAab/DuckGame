@@ -77,9 +77,10 @@ void simulate_round();
 
 void add_projectile(std::unique_ptr<Proyectil> projectile);
 
-void check_end_game();
+bool check_end_game();
 
 void run() override;
+
 void stop() override;
 
 Game(const Game&) = delete;

@@ -18,7 +18,7 @@ void Lobby::run() {
     try {
         while (is_alive) {
             LobbyCommand cmd = lobby_queue.pop(); // OJO: bloqueante, quizás tengamos que usar try_pop + sleep
-
+            std::cout << "Lobby: saque un comando de mi queue"  << std::endl;
             if(cmd.type == START_MATCH_CODE) {
                 process_start_match_command(cmd);
 
@@ -43,6 +43,7 @@ void Lobby::clean_disconnected_players() {
 
 
 void Lobby::add_player(std::shared_ptr<LobbyPlayer> player) {
+    std::cout << "Lobby: recibi un nuevo jugador"  << std::endl;
     LobbyMessage msg = create_lobby_message(player->get_player_id());
 
     player->send_lobby_message(msg);
@@ -96,8 +97,8 @@ LobbyMessage Lobby::create_lobby_message(uint16_t player_id) {
     LobbyMessage msg;
     msg.player_id = player_id;
     msg.type = FIRST_LOBBY_MESSAGE;
-    msg.len_matches = matches.size();
     get_all_match_ids(msg.existing_matches);
+    msg.len_matches = msg.existing_matches.size();
     msg.current_match_id = 0;
 
     return msg;
