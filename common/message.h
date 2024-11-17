@@ -28,6 +28,10 @@ struct Message {
     int item_y;
     uint8_t item_id;
 
+    int spaw_place_x;
+    int spaw_place_y;
+    uint8_t spawn_place_id;
+
 
 
 };

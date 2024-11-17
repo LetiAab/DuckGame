@@ -11,6 +11,7 @@
 #include <vector>
 #include "duck.h"
 #include "item.h"
+#include "spawn_place.h"
 
 #include <cstdlib>  // Para rand y srand
 #include <ctime>    // Para time
@@ -47,6 +48,8 @@ public:
         GameMap map;
         std::vector<Duck> ducks;
         std::vector<std::unique_ptr<Item>> items;
+        std::vector<std::unique_ptr<SpawnPlace>> spawn_places;
+
 
 
 explicit Game(uint16_t match_id, GameQueueMonitor& monitor);
@@ -59,6 +62,8 @@ void create_ducks(const std::vector<uint16_t>& ids);
 
 void create_items();
 
+void create_spawn_places();
+
 void refreshDuckPositions();
 
 Duck* getDuckByPosition(Position position);
@@ -66,6 +71,9 @@ Duck* getDuckByPosition(Position position);
 Duck* getDuckById(char id);
 
 Item* getItemByPosition(Position position);
+
+SpawnPlace* getSpawnPlaceByPosition(Position position);
+
 
 void game_broadcast(Message message);
 

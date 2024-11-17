@@ -362,6 +362,13 @@ void GameMap::setEscenario() {
         map[height - 12][x] = PLATFORM;
     }
 
+    for (int x = 15; x < width - 60; ++x) {
+        map[height - 50][x] = PLATFORM;
+        map[height - 51][x] = PLATFORM;
+        map[height - 52][x] = PLATFORM;
+    }
+
+
     // Costados (barreras izquierda y derecha)
     for (int y = 0; y < height; ++y) {
         map[y][0] = PLATFORM;
