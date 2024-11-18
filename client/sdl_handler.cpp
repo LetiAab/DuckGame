@@ -118,11 +118,13 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
         }
 
         if(message.type == ARMOR_BROKEN){
-            std::cout << "SE ME ROMPIO EL ARMOR" << "\n";
+            int pos_id = message.player_id - 1;
+            game->ducks[pos_id].armor_equiped = 0;
         }
 
         if(message.type == HELMET_BROKEN){
-            std::cout << "SE ME ROMPIO EL HELMET" << "\n";
+            int pos_id = message.player_id - 1;
+            game->ducks[pos_id].helmet_equiped = 0; 
         }
 
         if(message.type == BULLET_POS_UPDATE){

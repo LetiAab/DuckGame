@@ -35,6 +35,16 @@ Duck* Game::getDuckByPosition(Position position) {
 
 void Game::simulate_round() {
 
+        //sumo 1 al contador de rondas hasta generar un nuevo item en el spawn place
+        for (const auto& spawn_place : spawn_places) {
+                if(spawn_place->updateIterations(items)){
+                        Message msg;
+                        spawn_place->getSpawnPlaceItemUpdateMessage(msg);
+                        monitor.broadcast(msg);
+                }
+        }
+
+
         for (Duck& duck : ducks) {
                 if (duck.is_dead) {
                         // Si el pato murio en la ronda anterior, lo saltamos y continuamos con el siguiente
@@ -218,9 +228,6 @@ void Game::create_ducks(int size) {
         }
 }
 
-//REFACTOR!!!!
-//Mi duda existencial es si spawn place vale la pena como clase o simplemente deberias ser
-//Unas posiciones x e y constantes donde hago aparecer a los items
 void Game::create_spawn_places() {
     //CREO ITEMS PARA METER EN LOS SPAWN PLACES
     std::cout << "CREO LOS ITEMS" << "\n";
@@ -257,48 +264,6 @@ void Game::create_spawn_places() {
     }
 }
 
-void Game::create_items() {
-
-    std::srand(static_cast<unsigned>(std::time(nullptr))); // Inicializar la semilla aleatoria
-
-    for (int i = 0; i < 1; ++i) {
-        int x = 30;//std::rand() % map.get_width();  // Generar posición aleatoria en el mapa
-        int y = 125;//std::rand() % map.get_height();
-
-        // Crear un tipo de ítem aleatorio
-        int item_type = 1;//std::rand() % 3;
-        std::unique_ptr<Item> item;
-
-        if (item_type == 0) {
-            item = std::make_unique<Weapon>("Nombre", 100.0, 1.5, 30, x, y);
-        } else if (item_type == 1) {
-            item = std::make_unique<Armor>(x, y);
-        } else {
-            item = std::make_unique<Helmet>(x, y);
-        }
-
-        // Agregar el ítem al vector de ítems 
-        //NO NECESITO A LOS ITEMS EN LA MATRIZ DE COLICIONES PORQUE NO COLICIONAN
-        //SI YO INTENTO AGARRAR UN ITEM CON "E" INTENTA AGARRAR EL PATO ALGO QUE ESTE EN SU POSICION
-        //SI HAY ALGO LO AGARRA SI NO NO. PARA ESTO REVISA LA LISTA DE ITEMS Y BUSCA ALGUNO
-        //QUE COINCIDA CON SU POSICION
-
-
-        //mando al cliente donde se creo el item para que lo renderice
-
-        std::cout << "MANDO MENSAJE" << "\n";    
-
-        Message item_position_message;
-        item->getItemPositionMessage(item_position_message);
-        monitor.broadcast(item_position_message);
-        
-        std::cout << "MANDO MENSAJE?" << "\n";    
-
-        //agrego al vector
-        items.push_back(std::move(item));
-
-    }
-}
 
 Duck* Game::getDuckById(char id) {
         for (auto& duck : ducks) {
@@ -310,8 +275,8 @@ Duck* Game::getDuckById(char id) {
 }
 
 //REFACTOR! ESTOY BUSCANDO EL ITEM Y EL SPAWN PLACE
+
 Item* Game::getItemByPosition(Position position) {
-    // Coordenadas del área del pato
     int area_x_min = position.x;
     int area_x_max = position.x + DUCK_SIZE_X;
     int area_y_min = position.y;
