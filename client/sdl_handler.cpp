@@ -70,6 +70,15 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
 
         }
 
+        if(message.type == SHOOT){
+            //si recibo esto es que efectivamente disparé y tengo que reproducir el sonido
+            const std::string path = std::string(AUDIO_PATH) + "shoot.wav";
+            audioManager->loadSoundEffect(path);
+            audioManager->playSoundEffect();
+            audioManager->setSoundEffectVolume(70);
+
+        }
+
         if(message.type == ITEM_POSITION){
             //RENDERIZAR LOS ITEMS bien
             /*Item item;
@@ -245,7 +254,9 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
             
             //no se si pasar el audio manager aca para reproducir el sonido del disparo es lo mejor 
             //pero por ahora funciona... 
-            done = eventProcessor.processGameEvents(window, &game, id, *audioManager);
+            done = eventProcessor.processGameEvents(window, &game, id);
+
+
 
             //LUEGO RECIBO DEL SERVER Y HAGO EL RENDER
             Message message = handleMessages(&game, message_queue);

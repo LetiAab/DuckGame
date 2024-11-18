@@ -86,7 +86,7 @@ public:
     void useOnHand();
     Item* getItemOnHand() const;
 
-    void disparar();
+    bool disparar();
 
     Position getPosition();
 

@@ -10,7 +10,7 @@
 class EventProcessor {
 public:
     EventProcessor() = default;
-    int processGameEvents(SDL_Window *window, GameState *game, uint16_t id, AudioManager& audioManager);
+    int processGameEvents(SDL_Window *window, GameState *game, uint16_t id);
     int processLobbyEvents(ScreenManager* screenManager, bool& start_game, int& id_match);
 private:
     std::unordered_map<SDL_Keycode, bool> keyState; //necesito esto para que se mande un solo comando

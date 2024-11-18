@@ -235,12 +235,14 @@ void Duck::setHelmet(Helmet* new_helmet) {
 }
 
 
-void Duck::disparar() {
-    if(is_dead){return;}
+bool Duck::disparar() {
+    if(is_dead){return false;}
 
     if (weapon != nullptr) {
         weapon->disparar(position.x, position.y, looking, map, id_player);
+        return true;
     }
+    return false;
 }
 
 

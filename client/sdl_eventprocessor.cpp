@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-int EventProcessor::processGameEvents(SDL_Window* window, GameState* game, uint16_t id, AudioManager& audioManager) {
+int EventProcessor::processGameEvents(SDL_Window* window, GameState* game, uint16_t id) {
     int done = SUCCESS;
     bool positionUpdated = false;
     SDL_Event event;
@@ -28,15 +28,6 @@ int EventProcessor::processGameEvents(SDL_Window* window, GameState* game, uint1
                     positionUpdated = true;
                 }
 
-                //reproduzco el sonido de disparo si es un shoot (es el mejor lugar para hacer esto?)
-                if(move == SHOOT){
-                    const std::string path = std::string(AUDIO_PATH) + "shoot.wav";
-
-                    audioManager.loadSoundEffect(path);
-                    audioManager.playSoundEffect();
-                    audioManager.setSoundEffectVolume(70);
-                }
-
                 break;
             case SDL_KEYUP:
                 move = handleKeyUp(event.key.keysym.sym);
@@ -53,6 +44,7 @@ int EventProcessor::processGameEvents(SDL_Window* window, GameState* game, uint1
     }
 
     if (positionUpdated) {
+        
         auto cmd = Command(id, move);
         game->command_queue->push(cmd);
     }
@@ -83,7 +75,6 @@ uint8_t EventProcessor::handleKeyDown(SDL_Keycode key) {
                 break;
             case SDLK_f:
                 move =  SHOOT;
-                
                 break;
             case SDLK_e:
                 move = TAKE_ITEM;
