@@ -15,7 +15,7 @@ const int NUM_ITEMS = 10;
 
 
 //TODO: Tamanio del mapa hardcodeado
-Game::Game(uint16_t match_id, GameQueueMonitor& monitor, bool& is_over):
+Game::Game(uint16_t match_id, GameQueueMonitor& monitor,  bool& is_over):
 match_id(match_id), monitor(monitor), is_over(is_over), is_running(true), game_queue(), map(MATRIX_M, MATRIX_N){}
 
 Queue<std::shared_ptr<Executable>>& Game::get_game_queue(){
@@ -76,17 +76,17 @@ void Game::add_projectile(std::unique_ptr<Proyectil> projectile) {
 
 }
 
+void Game::set_players(int number_of_players){
+        players = number_of_players;
+}
+
 
 
 void Game::run() {
 
-        //Creo el mapa con los objetos fijos (bloques) y la posicion inicial de los patos
-        //inicializate_map();
-        //map.printMap();
+        map.setEscenario();
+        create_ducks(players);
 
-
-        //Mando la posicion de todo el mapa por primera vez para tener referencia de donde estan
-        //Todos los obstaculos
         Message message;
         message.type = MAP_INICIALIZATION;
         message.map = map.getMap();
@@ -97,11 +97,6 @@ void Game::run() {
         create_spawn_places();
 
 
-
-        //creo los items y le mando al server
-        //create_items();
-
-
         while (is_running) {
 
                 // saco de 10 comandos de la queue y los ejecuto
@@ -110,31 +105,14 @@ void Game::run() {
                 int i = 0;
                 while( i < 10 && game_queue.try_pop(command)){
                         command->execute(*this);
-
                         i += 1;
                 }
 
                 // Simulo una ronda de movimientos
                 simulate_round();
 
-                for (Duck& duck : ducks) {
-
-                        Message duck_message;
-                        if(duck.get_duck_position_message(duck_message)){
-                                monitor.broadcast(duck_message);
-                        }
-
-                        //quizas se pueda hacer un get_duck_bullet_position() en vez de esto
-                        //o sea mover la creacion del mensaje dentro del pato
-                        if(duck.weapon != nullptr){
-                                for (Bullet& bullet : duck.weapon->bullets) {
-                                        Message bullet_message;
-                                        if (bullet.get_bullet_message(bullet_message)){
-                                                monitor.broadcast(bullet_message);
-                                        }
-                                }
-                        }
-                }
+                // envio las actualizaciones a los jugadores
+                send_updates();
 
                 if (check_end_game()){
                         notify_players_end_game();
@@ -147,6 +125,28 @@ void Game::run() {
 
         }
         std::cout << "Termino el juego!"  << std::endl;
+
+}
+
+void Game::send_updates(){
+        for (Duck& duck : ducks) {
+
+                Message duck_message;
+                if(duck.get_duck_position_message(duck_message)){
+                        monitor.broadcast(duck_message);
+                }
+
+                //quizas se pueda hacer un get_duck_bullet_position() en vez de esto
+                //o sea mover la creacion del mensaje dentro del pato
+                if(duck.weapon != nullptr){
+                        for (Bullet& bullet : duck.weapon->bullets) {
+                                Message bullet_message;
+                                if (bullet.get_bullet_message(bullet_message)){
+                                        monitor.broadcast(bullet_message);
+                                }
+                        }
+                }
+        }
 
 }
 
@@ -181,40 +181,53 @@ void Game::stop() {
         std::cout << "termino el stop"  << std::endl;
 }
 
-void Game::inicializate_map() {
-    // Le doy armas a los patos para probar
-    
-    for (Duck& duck : ducks) {
+void Game::initialize_round() {
+        //por ahora el escenario es unico y esta harcodeado
+        //cuando cambia la ronda deberia aparecer un mapa nuevo al azar
+        map.setEscenario();
+        initialize_ducks();
 
-        Helmet* helmet = new Helmet(5,5); //le pongo posicion pero no importa porque se la asigno al pato
-
-        duck.setHelmet(helmet);
-    }
 }
 
-//TODO: Esto solo sirve para dos patos y siempre tiene en cuenta que es el mismo distribucion de obstaculos
-void Game::create_ducks(int size) {
+void Game::initialize_ducks(){
+        for (Duck& duck : ducks) {
+                Position pos = get_random_position_for_duck(duck.get_id());
+                duck.reset_for_round(pos);
+        }
+}
+
+Position Game::get_random_position_for_duck(char duck_id){
         std::random_device rd;
         std::mt19937 gen(rd());
 
         std::uniform_int_distribution<> distrib_x(18, map.get_width() - 18);
         std::uniform_int_distribution<> distrib_y(10, map.get_height() - 20);
 
+
+        int random_x = distrib_x(gen);
+        int random_y = distrib_y(gen);
+
+        bool has_place = map.placeDuck(random_x, random_y, duck_id);
+        while (!has_place) {
+                random_x = distrib_x(gen);
+                random_y = distrib_y(gen);
+
+                has_place = map.placeDuck(random_x, random_y, duck_id);
+        }
+
+        return Position(random_x, random_y);
+        
+}
+
+
+
+//TODO: Esto solo sirve para la  distribucion de obstaculos hardcodeados
+void Game::create_ducks(int size) {
         for(uint16_t id= 1; id <= size; ++id) {
                 char char_id = static_cast<char>(id + '0');
-
-                int random_x = distrib_x(gen);
-                int random_y = distrib_y(gen);
-
-                bool has_place = map.placeDuck(random_x, random_y, char_id);
-                while (has_place == false) {
-                        random_x = distrib_x(gen);
-                        random_y = distrib_y(gen);
-
-                        has_place = map.placeDuck(random_x, random_y, char_id);
-                }
-
-                ducks.emplace_back(char_id, random_x, random_y, &map);
+                Position pos = get_random_position_for_duck(char_id);
+                Duck(char_id, pos.x, pos.y, &map);
+                ducks.emplace_back(char_id, pos.x, pos.y, &map);
         }
 }
 

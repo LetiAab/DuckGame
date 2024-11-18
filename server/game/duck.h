@@ -88,6 +88,8 @@ public:
 
     void disparar();
 
+    void reset_for_round(Position pos);
+
     Position getPosition();
 
 };

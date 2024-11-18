@@ -248,6 +248,25 @@ Position Duck::getPosition(){
     return position;
 }
 
+void Duck::reset_for_round(Position pos){
+    position = pos;
+    old_position = pos;
+    is_moving = false;
+    speed_x = 0;
+    speed_y = 0;
+    looking = LOOKING_RIGHT;
+    is_jumping = false;
+    is_fluttering= false;
+    is_slippy= false;
+    life_points = 1;
+    stop_notificated = false;
+    is_dead = false;
+    weapon = nullptr;
+    armor = nullptr;
+    helmet = nullptr;
+    onHand.reset();
+}
+
 Item* Duck::getItemOnHand() const {
     return onHand ? onHand.get() : nullptr;
 }
