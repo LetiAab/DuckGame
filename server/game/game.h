@@ -69,8 +69,6 @@ void inicializate_map();
 
 void create_ducks(int size);
 
-void create_items();
-
 void create_spawn_places();
 
 void refreshDuckPositions();

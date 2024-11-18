@@ -20,9 +20,8 @@ void TakeItemCommand::execute(Game& game) {
 
         //le aviso al spawn place que ahora tiene el item con id 0 (ninguno)
         Message msg1;
-        msg1.type = SPAWN_PLACE_ITEM_UPDATE;
-        msg1.spawn_place_id = spawn->getId();
-        msg1.item_id = 0;
+        spawn->setItemId(0);
+        spawn->getSpawnPlaceItemUpdateMessage(msg1);
         game.game_broadcast(msg1);
 
         //le aviso al jugador que agarro un item y ahora lo tiene que tener en la mano

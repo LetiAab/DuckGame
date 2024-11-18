@@ -97,6 +97,9 @@ const uint8_t SNIPER_ID = 0x51;
 
 
 
+
+const int ITERATIONS_TO_GENERATE_ITEMS = 100; //a ojo
+
 static const char QUIT_SERVER[] = "q";
 
 const int MAX_PLAYERS = 6;
