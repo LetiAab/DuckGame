@@ -13,9 +13,10 @@ const char DUCK_6 = '6';
 
 const int NUM_ITEMS = 10;
 
+
 //TODO: Tamanio del mapa hardcodeado
-Game::Game(uint16_t match_id, GameQueueMonitor& monitor):
-match_id(match_id), monitor(monitor), is_running(true), game_queue(), map(MATRIX_M, MATRIX_N){}
+Game::Game(uint16_t match_id, GameQueueMonitor& monitor, bool& is_over):
+match_id(match_id), monitor(monitor), is_over(is_over), is_running(true), game_queue(), map(MATRIX_M, MATRIX_N){}
 
 Queue<std::shared_ptr<Executable>>& Game::get_game_queue(){
         return game_queue;
@@ -63,7 +64,7 @@ void Game::simulate_round() {
                 Message kill_duck_message;
                 if (duck.get_duck_dead_message(kill_duck_message)) {
                         monitor.broadcast(kill_duck_message);
-                        std::cout << "Pato muerto. Tamaño actual de ducks: " << ducks.size() << std::endl;
+                        std::cout << "Pato muerto."  << std::endl;
                 }
         }
 
@@ -135,13 +136,49 @@ void Game::run() {
                         }
                 }
 
-
-                // renew_iteration(); para resetear cosas que duren una ronda
+                if (check_end_game()){
+                        notify_players_end_game();
+                        is_running = false;
+                        is_over = true;
+                        break;
+                }
 
                 std::this_thread::sleep_for(std::chrono::milliseconds(60));
 
         }
+        std::cout << "Termino el juego!"  << std::endl;
 
+}
+
+void Game::notify_players_end_game(){
+        Message msg;
+        msg.type = END_GAME;
+        monitor.broadcast(msg);
+        std::cout << "Le aviso a los jugadores que el juego termino"  << std::endl;
+}
+
+bool Game::check_end_game(){
+        //checkear las condiciones necesarias para que termine un juego
+        bool end = true;
+        for (Duck& duck : ducks) {
+                if (!duck.is_dead) {
+                        end = false;
+                }
+        }
+
+        return end;
+
+}
+
+void Game::stop() {
+        std::cout << "Comienzo el stop"  << std::endl;
+        game_queue.close();
+        monitor.remove_all_queues();
+        items.clear();
+        ducks.clear();
+        is_running = false;
+        is_over = true;
+        std::cout << "termino el stop"  << std::endl;
 }
 
 void Game::inicializate_map() {
@@ -156,14 +193,14 @@ void Game::inicializate_map() {
 }
 
 //TODO: Esto solo sirve para dos patos y siempre tiene en cuenta que es el mismo distribucion de obstaculos
-void Game::create_ducks(const std::vector<uint16_t>& ids) {
+void Game::create_ducks(int size) {
         std::random_device rd;
         std::mt19937 gen(rd());
 
         std::uniform_int_distribution<> distrib_x(18, map.get_width() - 18);
         std::uniform_int_distribution<> distrib_y(10, map.get_height() - 20);
 
-        for(uint16_t id: ids) {
+        for(uint16_t id= 1; id <= size; ++id) {
                 char char_id = static_cast<char>(id + '0');
 
                 int random_x = distrib_x(gen);
@@ -260,7 +297,6 @@ void Game::create_items() {
         //agrego al vector
         items.push_back(std::move(item));
 
-        
     }
 }
 
@@ -325,5 +361,3 @@ SpawnPlace* Game::getSpawnPlaceByPosition(Position position) {
 void Game::game_broadcast(Message message){
         monitor.broadcast(message);
 }
-
-void Game::stop() { is_running = false; }

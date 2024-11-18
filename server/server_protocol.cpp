@@ -55,8 +55,14 @@ bool ServerProtocol::send_message(Message& message){
 
     switch (message.type)
     {
-    case MAP_INICIALIZATION:
+    case FIRST_GAME_MESSAGE:
+        //le envio el NUEVO ID, que usara en la partida
+        if (!skt.sendall(&message.player_id, sizeof(message.player_id), &was_closed) || was_closed) {
+            return false;
+        }
+        break;
 
+    case MAP_INICIALIZATION:
         // Enviar la matriz fila por fila
         for (size_t i = 0; i < MATRIX_N; ++i) {
             if (!skt.sendall(message.map[i].data(), MATRIX_M * sizeof(char), &was_closed) || was_closed) {
@@ -205,7 +211,7 @@ bool ServerProtocol::send_message(Message& message){
         if (!skt.sendall(&message.is_fluttering, sizeof(message.is_fluttering), &was_closed) || was_closed) {
             return false;
         }
-    
+
     default:
         break;
     }

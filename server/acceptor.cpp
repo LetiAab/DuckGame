@@ -19,6 +19,8 @@ void Acceptor::run() {
         while (is_alive) {
             Socket peer = skt_listener.accept();
 
+            std::cout << "Acceptor: se conecto un nuevo cliente"  << std::endl;
+
             std::shared_ptr<LobbyPlayer> new_player = std::make_unique<LobbyPlayer>(std::move(peer), ids_counter, lobby.get_lobby_queue());
             new_player->start();
 
@@ -27,6 +29,7 @@ void Acceptor::run() {
         }
 
     } catch (const std::exception& e) {
+        std::cout << "Acceptor: atrape una excepcion"  << std::endl;
         is_alive = false;
     }
 }

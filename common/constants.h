@@ -9,6 +9,7 @@ const int SUCCESS = 0;
 const int DOS_BYTES = 2;
 const int UN_BYTE = 1;
 
+const uint8_t FIRST_GAME_MESSAGE = 0x02;
 const uint8_t FIRST_LOBBY_MESSAGE = 0x03;
 const uint8_t LOBBY_COMMAND_FAIL = 0x04;
 const uint8_t NEW_MATCH_CODE = 0x05;
@@ -30,6 +31,7 @@ const uint8_t STOP_UP = 0x16;
 const uint8_t STOP_DOWN = 0x17;
 
 const uint8_t SHOOT = 0x18;
+const uint8_t END_GAME = 0x19;
 
 
 //flags que indican la direccion en la que mira el patos

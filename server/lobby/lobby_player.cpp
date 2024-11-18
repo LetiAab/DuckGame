@@ -15,6 +15,7 @@ LobbyPlayer::LobbyPlayer(Socket&& socket, const uint16_t id, Queue<LobbyCommand>
 
 bool LobbyPlayer::send_lobby_message(const LobbyMessage& msg) {
         protocol.send_lobby_message(msg);
+        std::cout << "Lobby Player: mande el mensaje del lobby"  << std::endl;
         return true;
 }
 

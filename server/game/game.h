@@ -34,11 +34,16 @@ typedef struct update
 //se me genera una dependencia circular entre game y executable
 class Executable;
 
+struct EndGame: public std::runtime_error {
+    EndGame(): std::runtime_error("END GAME!") {}
+};
+
 class Game: public Thread {
 
 private:
         uint16_t match_id;
         GameQueueMonitor& monitor;
+        bool& is_over;
         bool is_running;
         Queue<std::shared_ptr<Executable>> game_queue;
         std::vector<Update> updates;
@@ -52,13 +57,13 @@ public:
 
 
 
-explicit Game(uint16_t match_id, GameQueueMonitor& monitor);
+explicit Game(uint16_t match_id, GameQueueMonitor& monitor, bool& is_over);
 
 Queue<std::shared_ptr<Executable>>& get_game_queue();
 
 void inicializate_map();
 
-void create_ducks(const std::vector<uint16_t>& ids);
+void create_ducks(int size);
 
 void create_items();
 
@@ -81,8 +86,13 @@ void simulate_round();
 
 void add_projectile(std::unique_ptr<Proyectil> projectile);
 
+bool check_end_game();
+
 void run() override;
+
 void stop() override;
+
+void notify_players_end_game();
 
 Game(const Game&) = delete;
 Game& operator=(const Game&) = delete;
