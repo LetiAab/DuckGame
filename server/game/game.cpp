@@ -35,6 +35,16 @@ Duck* Game::getDuckByPosition(Position position) {
 
 void Game::simulate_round() {
 
+        //sumo 1 al contador de rondas hasta generar un nuevo item en el spawn place
+        for (const auto& spawn_place : spawn_places) {
+                if(spawn_place->updateIterations(items)){
+                        Message msg;
+                        spawn_place->getSpawnPlaceItemUpdateMessage(msg);
+                        monitor.broadcast(msg);
+                }
+        }
+
+
         for (Duck& duck : ducks) {
                 if (duck.is_dead) {
                         // Si el pato murio en la ronda anterior, lo saltamos y continuamos con el siguiente

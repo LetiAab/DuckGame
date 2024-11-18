@@ -83,6 +83,7 @@ const uint8_t WEAPON_1_ID = 0x41;
 
 
 
+const int ITERATIONS_TO_GENERATE_ITEMS = 100; //a ojo
 
 
 static const char QUIT_SERVER[] = "q";
