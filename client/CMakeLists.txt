@@ -36,3 +36,7 @@ target_compile_definitions(taller_client PRIVATE IMAGE_PATH="${CMAKE_CURRENT_SOU
 
 #Path de fuentes
 target_compile_definitions(taller_client PRIVATE FONT_PATH="${CMAKE_CURRENT_SOURCE_DIR}/fonts/")
+
+#Path de audios
+target_compile_definitions(taller_client PRIVATE AUDIO_PATH="${CMAKE_CURRENT_SOURCE_DIR}/audio/")
+

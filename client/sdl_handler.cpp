@@ -1,7 +1,9 @@
 #include "sdl_handler.h"
 #include <iostream>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_mixer.h>
 #include <common/message.h>
+
 
 #define DELAY_TIME 60
 
@@ -9,6 +11,7 @@
 
 SDLHandler::SDLHandler(): handle_textures(nullptr) {
     SDL_Init(SDL_INIT_VIDEO);
+    SDL_Init(SDL_INIT_AUDIO);
 }
 
 SDLHandler::~SDLHandler() {
@@ -45,6 +48,26 @@ void SDLHandler::loadGame(GameState* game) {
 
     // Inicializo el render manager
     rendererManager = std::make_unique<RendererManager>(game->renderer, handle_textures);
+
+
+
+
+    // Cargar música
+ 
+    const std::string path = std::string(AUDIO_PATH) +"ambient-music.wav";
+
+    Mix_Music* music = Mix_LoadMUS(path.c_str());
+        if (!music) {
+            std::cerr << "Error al cargar la música: " << Mix_GetError() << std::endl;
+        } else {
+            std::cout << "COMIENZO A REPRODUCIR LA MUSICA" << "\n";
+            // Reproducir en bucle (-1 para loop infinito)
+            Mix_VolumeMusic(50); //maximo volumen 128
+            if (Mix_PlayMusic(music, -1) == -1) {
+                std::cerr << "Error al reproducir música: " << Mix_GetError() << std::endl;
+            }
+        }
+
 }
 
 
@@ -197,6 +220,12 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
         return;
     }
 
+    //inicializo el mixer para el audio
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+        std::cerr << "Error al inicializar SDL_mixer: " << Mix_GetError() << std::endl;
+        return;
+    }
+
     GameState game{};
     game.renderer = renderer;
     game.client_game_map.setMap(map);
@@ -252,4 +281,5 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
     // Termino el juego => libero recursos
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
+    Mix_CloseAudio();
 }
