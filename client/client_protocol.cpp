@@ -19,6 +19,15 @@ Message ClientProtocol::receive_message(){
     switch (message.type)
 
     {
+    case END_GAME:
+        skt.recvall(&message.duck_winner, sizeof(message.duck_winner), &was_closed);
+        break;
+
+    case END_ROUND:
+
+        skt.recvall(&message.duck_winner, sizeof(message.duck_winner), &was_closed);
+        break;
+
     case FIRST_GAME_MESSAGE:
         //recibo el nuevo id del jugador
         skt.recvall(&message.player_id, 2, &was_closed);
@@ -96,9 +105,6 @@ Message ClientProtocol::receive_message(){
 
     case KILL_DUCK:
         skt.recvall(&message.player_id, 2, &was_closed);
-        break;
-    
-    case END_GAME:
         break;
 
     default:

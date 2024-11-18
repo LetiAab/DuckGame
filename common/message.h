@@ -32,7 +32,7 @@ struct Message {
     int spaw_place_y;
     uint8_t spawn_place_id;
 
-
+    char duck_winner;
 
 };
 

@@ -18,6 +18,7 @@ class RoundManager {
 private:
     int rounds;
     char duck_winner;
+    char last_round_winner;
     std::vector<DuckRegister> ducks;
 
 public:
@@ -30,6 +31,8 @@ public:
     bool check_end_of_match();
 
     char get_duck_winner();
+
+    char get_duck_round_winner();
 
 
 };

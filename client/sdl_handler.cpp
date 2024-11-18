@@ -227,7 +227,17 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
 
             //LUEGO RECIBO DEL SERVER Y HAGO EL RENDER
             Message message = handleMessages(&game, message_queue);
+            
+            if(message.type == END_ROUND){
+                std::cout << "TERMINO LA RONDA"<< "\n";
+                std::cout << "El ganador fue el pato "<< message.duck_winner << "\n";
+                //TODO:renderizar las cosas estaticas otra vez
+            }
+
             if(message.type == END_GAME){
+                std::cout << "TERMINO LA PARTIDA"<< "\n";
+                std::cout << "El ganador fue el pato "<< message.duck_winner << "\n";
+                //TODO:  mostrar pantalla de victoria antes de salir
                 done = ERROR;
                 break;
             }

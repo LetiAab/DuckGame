@@ -87,14 +87,11 @@ void Game::run() {
         map.setEscenario();
         create_ducks(players);
 
-        Message message;
-        message.type = MAP_INICIALIZATION;
-        message.map = map.getMap();
-
-        monitor.broadcast(message);
+        send_map_message();
 
         //MANDO LOS MENSAJES CON LA POSICION DE LOS SPAWN PLACES
         create_spawn_places();
+        send_spawn_place_message();
 
 
         while (is_running) {
@@ -119,19 +116,26 @@ void Game::run() {
                         if (round_manager.check_end_of_match()){
                                 //vaciar la queue del juego
                                 //mandarle al cliente que termino el partido y quien gano
+                                notify_players_end_game();
+                                //mandarle mas info sobre los puntajes de la partida
+
+                        break;
 
                         } else {
+                                std::cout << "Envio mensajes para iniciar la nueva ronda"  << std::endl;
 
                                 initialize_round();
                                 //avisarle al cliente que empieza un nuevo round
+                                notify_players_end_round();
                                 //pasarle al cliente el nuevo mapa
-                                Message message;
-                                message.type = MAP_INICIALIZATION;
-                                message.map = map.getMap();
+                                //send_map_message();
+                                //send_spawn_place_message();
+                                
                                 //vaciar la queue del juego para descartar cualquier comando viejo
                         }
                 }
 
+                //esta verificacion luego se va a ir
                 if (check_end_game()){
                         notify_players_end_game();
                         is_running = false;
@@ -171,6 +175,15 @@ void Game::send_updates(){
 void Game::notify_players_end_game(){
         Message msg;
         msg.type = END_GAME;
+        msg.duck_winner = round_manager.get_duck_winner();
+        monitor.broadcast(msg);
+        std::cout << "Le aviso a los jugadores que el juego termino"  << std::endl;
+}
+
+void Game::notify_players_end_round(){
+        Message msg;
+        msg.type = END_ROUND;
+        msg.duck_winner = round_manager.get_duck_round_winner();
         monitor.broadcast(msg);
         std::cout << "Le aviso a los jugadores que el juego termino"  << std::endl;
 }
@@ -187,6 +200,8 @@ bool Game::check_end_of_round(){
                 for (Duck& duck : ducks) {
                         if (!duck.is_dead) {
                                 round_manager.declare_round_winner(duck.get_id());
+                                std::cout << "Termino una ronda!"  << std::endl;
+                                std::cout << "El ganador fue el pato "<< duck.get_id() << std::endl;
                         }
                 }
         }
@@ -220,10 +235,11 @@ void Game::stop() {
 }
 
 void Game::initialize_round() {
-        //por ahora el escenario es unico y esta harcodeado
+        //TODO: MAPA Y LOS OBJETOS ESTAN TODOS HARDCODEADO Y ES SIEMPRE IGUAL
         //cuando cambia la ronda deberia aparecer un mapa nuevo al azar
         map.setEscenario();
-        initialize_ducks();
+        initialize_ducks(); //reseteo los patos para que revivan y pierdan sus armas
+        create_spawn_places();
 
 }
 
@@ -303,11 +319,23 @@ void Game::create_spawn_places() {
     items.push_back(std::move(item4));
 
 
-    for (int i = 0; i < N_SPAWN_PLACES; i++){
-        Message spawn_place_position_message;
-        spawn_places[i]->getSpawnPlacePositionMessage(spawn_place_position_message);
-        monitor.broadcast(spawn_place_position_message);
-    }
+    
+}
+
+void Game::send_spawn_place_message(){
+        for (int i = 0; i < N_SPAWN_PLACES; i++){
+                Message spawn_place_position_message;
+                spawn_places[i]->getSpawnPlacePositionMessage(spawn_place_position_message);
+                monitor.broadcast(spawn_place_position_message);
+        }
+}
+
+void Game::send_map_message(){
+        Message message;
+        message.type = MAP_INICIALIZATION;
+        message.map = map.getMap();
+
+        monitor.broadcast(message);
 }
 
 void Game::create_items() {

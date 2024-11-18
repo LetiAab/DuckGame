@@ -1,6 +1,6 @@
 #include "round_manager.h"
 
-RoundManager::RoundManager(): rounds(1), duck_winner('0') {}
+RoundManager::RoundManager(): rounds(1), duck_winner('0'), last_round_winner('0') {}
 
 void RoundManager::initialize_manager(int ducks_size) {
     ducks.clear();
@@ -13,6 +13,7 @@ void RoundManager::initialize_manager(int ducks_size) {
 
 void RoundManager::declare_round_winner(char duck_id) {
     int id = static_cast<int>(duck_id - '0');
+    last_round_winner = id;
     for (auto& duck : ducks) {
         if (duck.duck_id == id) {
             duck.rounds_won += 1;
@@ -50,4 +51,8 @@ bool RoundManager::check_end_of_match() {
 
 char RoundManager::get_duck_winner(){
     return duck_winner;
+}
+
+char RoundManager::get_duck_round_winner(){
+    return last_round_winner;
 }

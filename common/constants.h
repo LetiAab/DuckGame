@@ -31,7 +31,7 @@ const uint8_t STOP_UP = 0x16;
 const uint8_t STOP_DOWN = 0x17;
 
 const uint8_t SHOOT = 0x18;
-const uint8_t END_GAME = 0x19;
+
 
 
 //flags que indican la direccion en la que mira el patos
@@ -68,6 +68,8 @@ const uint8_t SPAWN_PLACE_POSITION = 0X79;
 
 const uint8_t SPAWN_PLACE_ITEM_UPDATE = 0X80;
 
+const uint8_t END_ROUND = 0X81;
+const uint8_t END_GAME = 0x82;
 
 const int N_SPAWN_PLACES = 4;
 
