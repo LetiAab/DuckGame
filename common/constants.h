@@ -11,6 +11,7 @@ const int SUCCESS = 0;
 const int DOS_BYTES = 2;
 const int UN_BYTE = 1;
 
+const uint8_t FIRST_GAME_MESSAGE = 0x02;
 const uint8_t FIRST_LOBBY_MESSAGE = 0x03;
 const uint8_t LOBBY_COMMAND_FAIL = 0x04;
 const uint8_t NEW_MATCH_CODE = 0x05;
@@ -32,6 +33,7 @@ const uint8_t STOP_UP = 0x16;
 const uint8_t STOP_DOWN = 0x17;
 
 const uint8_t SHOOT = 0x18;
+const uint8_t END_GAME = 0x19;
 
 
 //flags que indican la direccion en la que mira el patos
@@ -64,16 +66,33 @@ const uint8_t DROP_WEAPON = 0X38;
 const uint8_t HELMET_BROKEN = 0X77;
 const uint8_t ARMOR_BROKEN = 0X78;
 
+const uint8_t SPAWN_PLACE_POSITION = 0X79;
+
+const uint8_t SPAWN_PLACE_ITEM_UPDATE = 0X80;
+
+
+const int N_SPAWN_PLACES = 4;
+
 
 
 //VOY A NECESITAR IDS PARA QUE SEPAN QUE ITEM RENDERERIZAR 
 const uint8_t ARMOR_ID = 0x39;
 const uint8_t HELMET_ID = 0x40;
-const uint8_t WEAPON_1_ID = 0x41;
+
+const uint8_t BASE_WEAPON_ID = 0x41;
+
+const uint8_t GRANADA_ID = 0x42;
+const uint8_t BANANA_ID = 0x43;
+const uint8_t PEW_PEW_LASER_ID = 0x44;
+const uint8_t LASER_RIFLE_ID = 0x45;
+const uint8_t AK_47_ID = 0x46; //0x47 (?
+const uint8_t DUEL_PISTOL_ID = 0x47;
+const uint8_t COWBOY_PISTOL_ID = 0x48;
+const uint8_t MAGNUM_ID = 0x49;
+const uint8_t SHOTGUN_ID = 0x50;
+const uint8_t SNIPER_ID = 0x51;
+
 // ...
-
-
-
 
 
 
@@ -109,5 +128,8 @@ const std::vector<std::vector<uint8_t>> colors = {
     {192,192,192}, //gris
     {255,178,102} //naranja
 };
+
+const int BUTTON_W = 239;
+const int BUTTON_H = 77;
 
 #endif

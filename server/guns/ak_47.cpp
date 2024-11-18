@@ -3,7 +3,7 @@
 
 // 30 balas, Alcance: 13 tiles
 Ak47::Ak47(int x, int y)
-    : Weapon(WEAPON_1_ID, "Ak 47", 13, 0, 30, x, y) {}
+    : Weapon(AK_47_ID, "Ak 47", 13, 0, 30, x, y) {}
 
 void Ak47::disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) {
     if (municiones > 0) {

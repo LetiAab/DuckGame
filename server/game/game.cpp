@@ -2,6 +2,7 @@
 
 #include "common/constants.h"
 #include "../guns/sniper.h"
+#include "../guns/cowboy_pistol.h"
 
 #include <random>
 #include <utility>
@@ -17,9 +18,10 @@ const char DUCK_6 = '6';
 
 const int NUM_ITEMS = 10;
 
+
 //TODO: Tamanio del mapa hardcodeado
-Game::Game(uint16_t match_id, GameQueueMonitor& monitor):
-match_id(match_id), monitor(monitor), is_running(true), game_queue(), map(MATRIX_M, MATRIX_N){}
+Game::Game(uint16_t match_id, GameQueueMonitor& monitor, bool& is_over):
+match_id(match_id), monitor(monitor), is_over(is_over), is_running(true), game_queue(), map(MATRIX_M, MATRIX_N){}
 
 Queue<std::shared_ptr<Executable>>& Game::get_game_queue(){
         return game_queue;
@@ -67,6 +69,7 @@ void Game::simulate_round() {
                 Message kill_duck_message;
                 if (duck.get_duck_dead_message(kill_duck_message)) {
                         monitor.broadcast(kill_duck_message);
+                        std::cout << "Pato muerto."  << std::endl;
                 }
         }
 }
@@ -82,7 +85,7 @@ void Game::add_projectile(std::unique_ptr<Proyectil> projectile) {
 void Game::run() {
 
         //Creo el mapa con los objetos fijos (bloques) y la posicion inicial de los patos
-        inicializate_map();
+        //inicializate_map();
         //map.printMap();
 
 
@@ -94,9 +97,13 @@ void Game::run() {
 
         monitor.broadcast(message);
 
+        //MANDO LOS MENSAJES CON LA POSICION DE LOS SPAWN PLACES
+        create_spawn_places();
+
+
 
         //creo los items y le mando al server
-        create_items();
+        //create_items();
 
 
         while (is_running) {
@@ -133,15 +140,51 @@ void Game::run() {
                         }
                 }
 
-
-                // renew_iteration(); para resetear cosas que duren una ronda
+                if (check_end_game()){
+                        notify_players_end_game();
+                        is_running = false;
+                        is_over = true;
+                        break;
+                }
 
                 std::this_thread::sleep_for(std::chrono::milliseconds(60));
 
                 map.tellMap();
 
         }
+        std::cout << "Termino el juego!"  << std::endl;
 
+}
+
+void Game::notify_players_end_game(){
+        Message msg;
+        msg.type = END_GAME;
+        monitor.broadcast(msg);
+        std::cout << "Le aviso a los jugadores que el juego termino"  << std::endl;
+}
+
+bool Game::check_end_game(){
+        //checkear las condiciones necesarias para que termine un juego
+        bool end = true;
+        for (Duck& duck : ducks) {
+                if (!duck.is_dead) {
+                        end = false;
+                }
+        }
+
+        return end;
+
+}
+
+void Game::stop() {
+        std::cout << "Comienzo el stop"  << std::endl;
+        game_queue.close();
+        monitor.remove_all_queues();
+        items.clear();
+        ducks.clear();
+        is_running = false;
+        is_over = true;
+        std::cout << "termino el stop"  << std::endl;
 }
 
 void Game::inicializate_map() {
@@ -159,14 +202,14 @@ void Game::inicializate_map() {
 }
 
 //TODO: Esto solo sirve para dos patos y siempre tiene en cuenta que es el mismo distribucion de obstaculos
-void Game::create_ducks(const std::vector<uint16_t>& ids) {
+void Game::create_ducks(int size) {
         std::random_device rd;
         std::mt19937 gen(rd());
 
         std::uniform_int_distribution<> distrib_x(18, map.get_width() - 18);
         std::uniform_int_distribution<> distrib_y(10, map.get_height() - 20);
 
-        for(uint16_t id: ids) {
+        for(uint16_t id= 1; id <= size; ++id) {
                 char char_id = static_cast<char>(id + '0');
 
                 int random_x = distrib_x(gen);
@@ -184,6 +227,45 @@ void Game::create_ducks(const std::vector<uint16_t>& ids) {
         }
 }
 
+//REFACTOR!!!!
+//Mi duda existencial es si spawn place vale la pena como clase o simplemente deberias ser
+//Unas posiciones x e y constantes donde hago aparecer a los items
+void Game::create_spawn_places() {
+    //CREO ITEMS PARA METER EN LOS SPAWN PLACES
+    std::cout << "CREO LOS ITEMS" << "\n";
+
+
+    std::unique_ptr<Item> item1 = std::make_unique<CowboyPistol>(30, 130);
+    std::unique_ptr<Item> item2 = std::make_unique<Armor>(100, 130);
+    std::unique_ptr<Item> item3 = std::make_unique<Sniper>(30, 75);
+    std::unique_ptr<Item> item4 = std::make_unique<Helmet>(100, 75);
+
+
+
+
+    //seteo N spawn places (4)
+    std::cout << "CREO LOS SPAWN PLACES" << "\n";
+
+    spawn_places.emplace_back(std::make_unique<SpawnPlace>(Position(30, 130), 0, item1->getItemId()));  
+    spawn_places.emplace_back(std::make_unique<SpawnPlace>(Position(100, 130), 1, item2->getItemId()));  
+    spawn_places.emplace_back(std::make_unique<SpawnPlace>(Position(30, 75), 2, item3->getItemId()));  
+    spawn_places.emplace_back(std::make_unique<SpawnPlace>(Position(100, 75), 3, item4->getItemId()));
+
+
+    //guardo los items en el vector de items despues de acceder a su item id, porque sino ya no tengo la refe
+    items.push_back(std::move(item1));
+    items.push_back(std::move(item2));
+    items.push_back(std::move(item3));
+    items.push_back(std::move(item4));
+
+
+    for (int i = 0; i < N_SPAWN_PLACES; i++){
+        Message spawn_place_position_message;
+        spawn_places[i]->getSpawnPlacePositionMessage(spawn_place_position_message);
+        monitor.broadcast(spawn_place_position_message);
+    }
+}
+
 void Game::create_items() {
 
     std::srand(static_cast<unsigned>(std::time(nullptr))); // Inicializar la semilla aleatoria
@@ -193,7 +275,7 @@ void Game::create_items() {
         int y = 125;//std::rand() % map.get_height();
 
         // Crear un tipo de ítem aleatorio
-        int item_type = 0;//std::rand() % 3;
+        int item_type = 1;//std::rand() % 3;
         std::unique_ptr<Item> item;
 
         if (item_type == 0) {
@@ -224,7 +306,6 @@ void Game::create_items() {
         //agrego al vector
         items.push_back(std::move(item));
 
-        
     }
 }
 
@@ -237,6 +318,7 @@ Duck* Game::getDuckById(char id) {
         return nullptr; // Retorna nullptr si no se encuentra el pato
 }
 
+//REFACTOR! ESTOY BUSCANDO EL ITEM Y EL SPAWN PLACE
 Item* Game::getItemByPosition(Position position) {
     // Coordenadas del área del pato
     int area_x_min = position.x;
@@ -250,17 +332,45 @@ Item* Game::getItemByPosition(Position position) {
     for (auto& item_ptr : items) {
         Position itemPos = item_ptr->getPosition();
 
+        std::cout << "Item actual, de Id " << item_ptr->getItemId() << ", y posicion x: " << itemPos.x << " y: " << itemPos.y << std::endl;
+
 
         if (itemPos.x >= area_x_min && itemPos.x < area_x_max &&
             itemPos.y >= area_y_min && itemPos.y < area_y_max) {
+            std::cout << "Encontré un item, en la pos x: " << itemPos.x << " y: " << itemPos.y << std::endl;
             return item_ptr.get(); 
         }
     }
 
     return nullptr; 
 }
+
+SpawnPlace* Game::getSpawnPlaceByPosition(Position position) {
+    // Coordenadas del área del pato
+    int area_x_min = position.x;
+    int area_x_max = position.x + DUCK_SIZE_X;
+    int area_y_min = position.y;
+    int area_y_max = position.y + DUCK_SIZE_Y;
+
+    std::cout << "Buscando SpawnPlace en el área del pato desde X: " << area_x_min 
+              << " hasta X: " << area_x_max
+              << ", y desde Y: " << area_y_min 
+              << " hasta Y: " << area_y_max << "\n";
+
+    for (auto& spawn_place_ptr : spawn_places) {
+        Position spawnPlacePos = spawn_place_ptr->getPosition();
+
+        if (spawnPlacePos.x >= area_x_min && spawnPlacePos.x < area_x_max &&
+            spawnPlacePos.y >= area_y_min && spawnPlacePos.y < area_y_max) {
+            std::cout << "Encontré un spawn place " << std::endl;
+            return spawn_place_ptr.get();
+        }
+    }
+
+    return nullptr; 
+}
+
+
 void Game::game_broadcast(Message message){
         monitor.broadcast(message);
 }
-
-void Game::stop() { is_running = false; }

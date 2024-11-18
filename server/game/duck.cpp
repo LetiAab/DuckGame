@@ -36,7 +36,7 @@ bool Duck::pickUpItem(Item* item) {
 
     
     if (item != nullptr){
-        std::cout << "Agarro el item" << "\n";
+        std::cout << "Agarro el item de ID " << item->getItemId() << "\n";
         onHand.reset(item);  
         return true;
     } 
@@ -243,7 +243,9 @@ void Duck::disparar() {
     if (weapon != nullptr) {
         weapon->disparar(position.x, position.y, looking, map, id_player);
 
-        if (typeid(*weapon) == typeid(Ak47) || typeid(*weapon) == typeid(Magnum)) {
+        // Esto lo puedo reemplazar por el item ID
+        if (weapon->getItemId() == AK_47_ID || weapon->getItemId() == MAGNUM_ID) {
+
             int shoot_speed = (looking == LOOKING_RIGHT) ? -1 : 1;
             int delta_x = position.x + shoot_speed;
             int delta_y = position.y;
@@ -256,6 +258,7 @@ void Duck::disparar() {
             // Un problema de esto es que el retroceso no se notifica si el usuario no se mueve en la ronda
             // Esto porque no tengo el monitor a mano ni el game, solo el map, y no puedo notificarlo
         }
+
     }
 }
 

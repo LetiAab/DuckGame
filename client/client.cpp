@@ -6,7 +6,7 @@
 #include "common/constants.h"
 
 Client::Client(const std::string& hostname, const std::string& port):
-        protocol(Socket(hostname.c_str(), port.c_str())){}
+        protocol(Socket(hostname.c_str(), port.c_str())), lobby_id(0), duck_id(0){}
 
 void printExistingMatches(const std::vector<uint16_t>& existing_matches) {
     std::cout << "=> Ids de partidas disponibles: ";
@@ -88,13 +88,13 @@ int Client::start(){
     Message first_message = protocol.receive_message();
 
     //persisto mi id
-    uint16_t id = first_message.player_id;
+    lobby_id = first_message.player_id;
     print_first_message(first_message);
 
     //inputhandler ---> sender
     //SDL? <--- receiver
     sender = std::make_unique<ClientSender>(protocol);
-    input_handler = std::make_unique<InputHandler> (id, sender->get_queue());
+    input_handler = std::make_unique<InputHandler> (lobby_id, sender->get_queue());
     receiver = std::make_unique<ClientReceiver>(protocol);
 
     //obtengo la queue para procesar los mensajes que me manda el server
@@ -107,15 +107,20 @@ int Client::start(){
     input_handler->start();
 
     //manejo la interaccion con el lobby
-    handleLobby(id, message_queue);
+    handleLobby(lobby_id, message_queue);
 
-    //aca deberia recibir un mensaje especial con el Mapa, y dibujarlo
+    //A partir  de ahora estoy jugando y recibo un nuevo id, el cual corresponde a mi pato
+    Message first_game_message = message_queue.pop();
+    duck_id = first_game_message.player_id;
+    std::cout << "My DUCK ID is: " << duck_id  << std::endl;
+
+
     std::cout << "Inicializacion del mapa" << std::endl;
     Message message = message_queue.pop();
-    printMap(message.map);
+    //printMap(message.map);
 
     sdl_handler = std::make_unique<SDLHandler>();
-    sdl_handler->run(message.map, sender->get_queue(), id, message_queue);
+    sdl_handler->run(message.map, sender->get_queue(), duck_id, message_queue);
 
     //---------------------------------------------------------
     //hacer un cierre mas prolijo

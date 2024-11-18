@@ -3,7 +3,7 @@
 
 // 12 rafagas, Alcance: 35 a 38 tiles
 PewPewLaser::PewPewLaser(int x, int y)
-    : Weapon(WEAPON_1_ID, "Pew Pew Laser", 35, 1, 12, x, y) {}
+    : Weapon(PEW_PEW_LASER_ID, "Pew Pew Laser", 35, 1, 12, x, y) {}
 
 void PewPewLaser::disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) {
     if (municiones > 0) {

@@ -3,9 +3,9 @@
 #include <random>
 
 
-// 6 bala, Alcance: 20 tiles
+// 6 balas, Alcance: 20 tiles
 CowboyPistol::CowboyPistol(int x, int y)
-    : Weapon(WEAPON_1_ID, "Cowboy Pistol", 20, 0, 6, x, y) {}
+    : Weapon(COWBOY_PISTOL_ID, "Cowboy Pistol", 20, 0, 6, x, y) {}
 
 void CowboyPistol::disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) {
     if (municiones > 0) {

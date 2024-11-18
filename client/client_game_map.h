@@ -14,15 +14,7 @@ public:
 
     ClientGameMap(int width, int height);
 
-    bool placeDuck(int x, int y, char duck_id);
-
     void setMap(const std::vector<std::vector<char>>& new_map);
-
-    bool canMoveDuckTo(int x, int y, char duck_id);
-
-    void cleanDuckOldPosition(int x, int y);
-
-    void setDuckNewPosition(int x, int y, char duck_id);
 
     int get_height();
     int get_width();

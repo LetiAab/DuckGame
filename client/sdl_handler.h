@@ -3,6 +3,7 @@
 
 #include "game_initializer.h"
 #include "common/message.h"
+#include "common/liberror.h"
 #include "sdl_texturehandler.h"
 #include "game_state.h"
 #include "sdl_eventprocessor.h"
@@ -23,6 +24,7 @@ private:
     std::unique_ptr<ScreenManager> screenManager;
     std::unique_ptr<RendererManager> rendererManager;
     void loadGame(GameState* game);
+    Message handleMessages(GameState* game, Queue<Message>& message_queue);
     int waitForStartGame();
 
 };

@@ -17,7 +17,6 @@ void ClientSender::run() {
 
     } catch (const ClosedQueue& e) {
         is_alive = false;
-
     } catch (const LibError& e) {
         is_alive = false;
 

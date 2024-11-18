@@ -10,28 +10,45 @@ ClientProtocol::ClientProtocol(Socket&& skt): skt(std::move(skt)) {}
 
 Message ClientProtocol::receive_message(){
 
-    
-    
     bool was_closed = false;
     Message message;
 
     skt.recvall(&message.type, 1, &was_closed);
-
+    
     //ARMAR TODOS LOS CASOS
     switch (message.type)
+
     {
+    case FIRST_GAME_MESSAGE:
+        //recibo el nuevo id del jugador
+        skt.recvall(&message.player_id, 2, &was_closed);
+        break;
+
     case MAP_INICIALIZATION:
-        message.map.resize(MATRIX_N, std::vector<char>(MATRIX_M));  
+
+        message.map.resize(MATRIX_N, std::vector<char>(MATRIX_M));
         for (size_t i = 0; i < MATRIX_N; ++i) { 
             skt.recvall(message.map[i].data(), MATRIX_M * sizeof(char), &was_closed); // Recibir cada fila
         }
-    break;
+        break;
 
     case ITEM_POSITION:
         skt.recvall(&message.item_id, sizeof(uint8_t), &was_closed);
         skt.recvall(&message.item_x, sizeof(int), &was_closed);
         skt.recvall(&message.item_y, sizeof(int), &was_closed);
 
+        break;
+
+    case SPAWN_PLACE_ITEM_UPDATE:
+        skt.recvall(&message.spawn_place_id, sizeof(uint8_t), &was_closed);
+        skt.recvall(&message.item_id, sizeof(uint8_t), &was_closed);
+        break;
+    
+    case SPAWN_PLACE_POSITION:
+        skt.recvall(&message.spawn_place_id, sizeof(uint8_t), &was_closed);
+        skt.recvall(&message.spaw_place_x, sizeof(int), &was_closed);
+        skt.recvall(&message.spaw_place_y, sizeof(int), &was_closed);
+        skt.recvall(&message.item_id, sizeof(uint8_t), &was_closed);
         break;
     
     case DUCK_PICKUP_ITEM:
@@ -79,6 +96,9 @@ Message ClientProtocol::receive_message(){
 
     case KILL_DUCK:
         skt.recvall(&message.player_id, 2, &was_closed);
+        break;
+    
+    case END_GAME:
         break;
 
     default:

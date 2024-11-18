@@ -5,7 +5,7 @@
 
 // 1 bala, Alcance: 5 tiles
 DuelPistol::DuelPistol(int x, int y)
-    : Weapon(WEAPON_1_ID, "Duel Pistol", 5, 0, 1, x, y) {}
+    : Weapon(DUEL_PISTOL_ID, "Duel Pistol", 5, 0, 1, x, y) {}
 
 void DuelPistol::disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) {
     if (municiones > 0) {

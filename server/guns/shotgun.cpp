@@ -3,7 +3,7 @@
 
 // 2 disparos, Alcance: 7 a 9 tiles
 Shotgun::Shotgun(int x, int y)
-    : Weapon(WEAPON_1_ID, "Shotgun", 7, 0, 2, x, y) {}
+    : Weapon(SHOTGUN_ID, "Shotgun", 7, 0, 2, x, y) {}
 
 void Shotgun::disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) {
     if (municiones > 0) {

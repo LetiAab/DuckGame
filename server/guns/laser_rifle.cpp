@@ -3,7 +3,7 @@
 
 // 10 rayos, Alcance: 30 tiles
 LaserRifle::LaserRifle(int x, int y)
-    : Weapon(WEAPON_1_ID, "Laser Rifle", 30, 0, 10, x, y) {}
+    : Weapon(LASER_RIFLE_ID, "Laser Rifle", 30, 0, 10, x, y) {}
 
 void LaserRifle::disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) {
     if (municiones > 0) {
@@ -70,61 +70,3 @@ void LaserRifle::update_weapon(){
     }
 
 }
-
-
-/* #include "laser_rifle.h"
-#include <iostream>
-#include <cmath>
-
-#define LASER_RIFLE_NAME "Laser Rifle"
-#define LASER_RIFLE_RANGE 30
-#define LASER_RIFLE_DISPERSION 5  // Variación del ángulo en disparos consecutivos
-#define LASER_RIFLE_INITIAL_AMMO 10
-#define LASER_RIFLE_REBOUND_LIMIT 5
-
-LaserRifle::LaserRifle(int x, int y)
-    : Weapon(LASER_RIFLE_NAME, LASER_RIFLE_RANGE, LASER_RIFLE_DISPERSION, LASER_RIFLE_INITIAL_AMMO, x, y),
-      current_angle(45.0),  // Ángulo inicial de 45 grados
-      rebound_limit(LASER_RIFLE_REBOUND_LIMIT) {}
-
-void LaserRifle::disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) {
-    if (municiones > 0) {
-        int bullet_position_x = (looking == LOOKING_RIGHT) ? position_x + DUCK_SIZE_X : position_x - 1;
-        int bullet_position_y = position_y;
-
-        Position bullet_pos(bullet_position_x, bullet_position_y);
-
-        if (map->at(bullet_pos) == 'P') {
-            std::cout << "No puedo disparar, hay una pared inmediatamente al lado." << std::endl;
-            return;
-        }
-
-        int direccion_x = (looking == LOOKING_RIGHT) ? 6 : -6;
-        int direccion_y = 6;  // Inclinación inicial de 45 grados hacia abajo
-
-        int laser_id = municiones;
-
-        // Crear un nuevo láser con rebotes
-        BouncingLaser nuevo_laser(laser_id, bullet_pos, direccion_x, direccion_y, map, id_player, alcance, 3);  // Hasta 3 rebotes
-        nuevo_laser.comenzar_trayectoria();
-        lasers.push_back(nuevo_laser);
-
-        municiones--;
-        std::cout << "Disparo realizado. Quedan " << municiones << " municiones." << std::endl;
-    } else {
-        std::cout << "No hay municiones disponibles." << std::endl;
-    }
-}
-
-
-void LaserRifle::update_weapon() {
-    for (auto it = bullets.begin(); it != bullets.end(); ) {
-        it->update_position();
-        if (it->should_erase_bullet()) {
-            it = bullets.erase(it);
-        } else {
-            ++it;
-        }
-    }
-}
- */
