@@ -6,16 +6,20 @@
 #include "common/queue.h"
 #include "common/thread.h"
 #include "common/command.h"
+
+#include "../armor/armor.h"
+#include "../armor/helmet.h"
 #include "game_map.h"
-#include <list>
-#include <vector>
 #include "duck.h"
 #include "item.h"
+#include "../guns/weapon.h"
 #include "spawn_place.h"
 
-#include <cstdlib>  // Para rand y srand
-#include <ctime>    // Para time
 
+#include <cstdlib>
+#include <ctime>
+#include <list>
+#include <vector>
 
 #define GAME_TIME_SLEEP 100
 // En gun.h tengo la misma variable, cambiar también ahí o mejorar el import
@@ -47,7 +51,7 @@ private:
         bool is_running;
         Queue<std::shared_ptr<Executable>> game_queue;
         std::vector<Update> updates;
-        std::vector<std::unique_ptr<Proyectil>> projectiles;
+        //std::vector<std::unique_ptr<Proyectil>> projectiles;
 
 public:
         GameMap map;
@@ -82,7 +86,7 @@ void game_broadcast(Message message);
 
 void simulate_round();
 
-void add_projectile(std::unique_ptr<Proyectil> projectile);
+//void add_projectile(std::unique_ptr<Proyectil> projectile);
 
 bool check_end_game();
 

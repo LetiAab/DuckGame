@@ -1,17 +1,17 @@
-#ifndef BULLET_H
-#define BULLET_H
+#ifndef LASER_H
+#define LASER_H
 
 #include "common/message.h"
 #include "common/constants.h"
 #include "../game/game_map.h"
 
-#include <iostream>
 #include <cmath> 
+#include <iostream>
 
 class GameMap;
-class Bullet {
+class Laser {
 private:
-    int bullet_id; //para identificar las balas en los mensajes
+    int laser_id; //para identificar las balas en los mensajes
 
     Position position;
     Position old_position;
@@ -27,15 +27,15 @@ private:
 
 
 public:
-    Bullet(int bullet_id, Position position, int direction_x, int direction_y, GameMap* map, char duck_id, int alcance);
+    Laser(int laser_id, Position position, int direction_x, int direction_y, GameMap* map, char duck_id, int alcance);
     void comenzar_trayectoria();
     void update_position();
 
-    bool should_erase_bullet();
+    bool should_erase_laser();
     void cleanPostImpacto();
     void impactar();
 
-    bool get_bullet_message(Message& msg);
+    bool get_laser_message(Message& msg);
 
     Position get_position();
 
@@ -44,5 +44,5 @@ public:
 
 };
 
-#endif // BULLET_H
+#endif // LASER_H
 

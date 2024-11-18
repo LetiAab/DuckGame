@@ -1,7 +1,7 @@
-#include "bullet.h"
+#include "laser.h"
 
-Bullet::Bullet(int bullet_id, Position position, int direction_x, int direction_y, GameMap* map, char duck_id, int alcance) 
-    : bullet_id(bullet_id),
+Laser::Laser(int laser_id, Position position, int direction_x, int direction_y, GameMap* map, char duck_id, int alcance) 
+    : laser_id(laser_id),
     position(position),
     old_position(position),
     speed(direction_x, direction_y),
@@ -15,25 +15,18 @@ Bullet::Bullet(int bullet_id, Position position, int direction_x, int direction_
 
 
 
-void Bullet::comenzar_trayectoria() {
+void Laser::comenzar_trayectoria() {
     update_position();
 }
 
-void Bullet::update_position() {
-
-    if (should_erase) {
-        std::cout << "Debería eliminar esta bala pero la estoy actualizando, return \n";
-        return;
-    }
+void Laser::update_position() {
 
     if(alcance <= 0){
         //si recorrio su maximo tiene que frenar
         impacto = true;
     } else {
 
-        std::cout << "Comienzo trayectoria desde x: " << position.x << " e y: " << position.y << std::endl;
-        std::cout << "Speed x: " << speed.x << " y: " << speed.y << "\n";
-
+        std::cout << "Comienzo trayectoria desde x: " << position.x << "\n";
 
         int delta_x = position.x + speed.x;
         int delta_y = position.y + speed.y;
@@ -45,15 +38,15 @@ void Bullet::update_position() {
         map->setBulletNewPosition(position);
         
         //por ahora, le resto la velocidad en x ya que solo dispara en horizontal
-        alcance -= (std::abs(speed.x) + std::abs(speed.y));
+        alcance -= std::abs(speed.x);
     }
 
 }
 
-bool Bullet::get_bullet_message(Message& msg){
+bool Laser::get_laser_message(Message& msg){
 
     if(impacto){
-        //si impacte con algo debo eliminar la bala luego de mandar el mensaje
+        //si empacte con algo debo eliminar la bala luego de mandar el mensaje
         cleanPostImpacto();
         should_erase = true;
     }
@@ -66,30 +59,30 @@ bool Bullet::get_bullet_message(Message& msg){
     msg.player_id =static_cast<uint16_t>(duck_id - '0');
     msg.bullet_x = position.x;
     msg.bullet_y = position.y;
-    msg.bullet_id = bullet_id;
+    msg.bullet_id = laser_id;
     //mandar flag del impacto (?)
 
     return true;
 
 }
 
-void Bullet::cleanPostImpacto(){
+void Laser::cleanPostImpacto(){
     map->cleanBulletOldPosition(position);
 }
 
-void Bullet::impactar(){
+void Laser::impactar(){
     impacto = true;
 }
 
 
-bool Bullet::should_erase_bullet(){
+bool Laser::should_erase_laser(){
     return should_erase;
 }
 
-Position Bullet::get_position() {
+Position Laser::get_position() {
     return position;
 }
 
-Position Bullet::get_speed() {
+Position Laser::get_speed() {
     return speed;
 }

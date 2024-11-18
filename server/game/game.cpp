@@ -1,8 +1,13 @@
 #include "game.h"
+
 #include "common/constants.h"
+#include "../guns/sniper.h"
+#include "../guns/cowboy_pistol.h"
 
 #include <random>
 #include <utility>
+
+
 
 const char DUCK_1 = '1';
 const char DUCK_2 = '2';
@@ -77,14 +82,13 @@ void Game::simulate_round() {
                         std::cout << "Pato muerto."  << std::endl;
                 }
         }
-
 }
-
+/* 
 void Game::add_projectile(std::unique_ptr<Proyectil> projectile) {
     // Transfiere la propiedad del proyectil usando std::move
     projectiles.push_back(std::move(projectile));
 
-}
+} */
 
 
 
@@ -155,6 +159,8 @@ void Game::run() {
 
                 std::this_thread::sleep_for(std::chrono::milliseconds(60));
 
+                map.tellMap();
+
         }
         std::cout << "Termino el juego!"  << std::endl;
 
@@ -196,6 +202,9 @@ void Game::inicializate_map() {
     
     for (Duck& duck : ducks) {
 
+        Sniper* weapon = new Sniper();
+
+        duck.setWeapon(weapon);
         Helmet* helmet = new Helmet(5,5); //le pongo posicion pero no importa porque se la asigno al pato
 
         duck.setHelmet(helmet);
@@ -233,9 +242,9 @@ void Game::create_spawn_places() {
     std::cout << "CREO LOS ITEMS" << "\n";
 
 
-    std::unique_ptr<Item> item1 = std::make_unique<Weapon>("Nombre", 100.0, 1.5, 30, 30, 130);
+    std::unique_ptr<Item> item1 = std::make_unique<CowboyPistol>(30, 130);
     std::unique_ptr<Item> item2 = std::make_unique<Armor>(100, 130);
-    std::unique_ptr<Item> item3 = std::make_unique<Weapon>("Nombre", 100.0, 1.5, 30, 30, 75);
+    std::unique_ptr<Item> item3 = std::make_unique<Sniper>(30, 75);
     std::unique_ptr<Item> item4 = std::make_unique<Helmet>(100, 75);
 
 
@@ -264,7 +273,6 @@ void Game::create_spawn_places() {
     }
 }
 
-
 Duck* Game::getDuckById(char id) {
         for (auto& duck : ducks) {
                 if (duck.get_id() == id) {
@@ -288,9 +296,12 @@ Item* Game::getItemByPosition(Position position) {
     for (auto& item_ptr : items) {
         Position itemPos = item_ptr->getPosition();
 
+        std::cout << "Item actual, de Id " << item_ptr->getItemId() << ", y posicion x: " << itemPos.x << " y: " << itemPos.y << std::endl;
+
 
         if (itemPos.x >= area_x_min && itemPos.x < area_x_max &&
             itemPos.y >= area_y_min && itemPos.y < area_y_max) {
+            std::cout << "Encontré un item, en la pos x: " << itemPos.x << " y: " << itemPos.y << std::endl;
             return item_ptr.get(); 
         }
     }
@@ -315,6 +326,7 @@ SpawnPlace* Game::getSpawnPlaceByPosition(Position position) {
 
         if (spawnPlacePos.x >= area_x_min && spawnPlacePos.x < area_x_max &&
             spawnPlacePos.y >= area_y_min && spawnPlacePos.y < area_y_max) {
+            std::cout << "Encontré un spawn place " << std::endl;
             return spawn_place_ptr.get();
         }
     }

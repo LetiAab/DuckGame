@@ -1,5 +1,7 @@
 #include "duck.h"
 #include <iostream>
+#include <typeinfo>
+
 
 const int HELMET_BROKE = 0;
 const int ARMOR_BROKE = 1;
@@ -34,8 +36,13 @@ bool Duck::pickUpItem(Item* item) {
 
     
     if (item != nullptr){
-        std::cout << "Agarro el item" << "\n";
-        onHand.reset(item);  
+        std::cout << "Agarro el item de ID " << item->getItemId() << "\n";
+        if (onHand == nullptr)
+            std::cout << "No tiene un ítem en la mano actualmente" << "\n";
+        else
+            std::cout << "El item de la mano antes de cambiarlo tiene ID " << onHand->getItemId() << "\n";
+        onHand.reset(item);
+        std::cout << "Ahora el Id del Item en la mano es " << onHand->getItemId() << "\n";
         return true;
     } 
     
@@ -47,13 +54,25 @@ bool Duck::pickUpItem(Item* item) {
 void Duck::useOnHand() {
     if (!onHand) return;  // Verificamos si hay un item en la mano
 
-    if (Weapon* w = dynamic_cast<Weapon*>(onHand.get())) {
+    std::cout << "Antes de los casteos" << "\n";
+
+    Item* on_hand_item = onHand.get();
+    if (on_hand_item == NULL) {
+        std::cout << "on_hand_item es NULL, no debería" << "\n";
+    }
+    std::cout << "El id del item es " << on_hand_item->getItemId() << "\n";
+    if (Weapon* w = dynamic_cast<Weapon*>(on_hand_item)) {
+        std::cout << "Entrando a set weapon" << "\n";
         setWeapon(w);
-    } else if (Armor* a = dynamic_cast<Armor*>(onHand.get())) {
+    } else if (Armor* a = dynamic_cast<Armor*>(on_hand_item)) {
+        std::cout << "Entrando a set armor" << "\n";
         setArmor(a);
-    } else if (Helmet* h = dynamic_cast<Helmet*>(onHand.get())) {
+    } else if (Helmet* h = dynamic_cast<Helmet*>(on_hand_item)) {
+        std::cout << "Entrando a set helmet" << "\n";
         setHelmet(h);
     }
+
+    std::cout << "Despues de los ifs" << "\n";
 
     onHand.reset();  // Después de usar el item, lo quitamos de la mano
 }
@@ -240,6 +259,23 @@ void Duck::disparar() {
 
     if (weapon != nullptr) {
         weapon->disparar(position.x, position.y, looking, map, id_player);
+
+        // Esto lo puedo reemplazar por el item ID
+        if (weapon->getItemId() == AK_47_ID || weapon->getItemId() == MAGNUM_ID) {
+
+            int shoot_speed = (looking == LOOKING_RIGHT) ? -1 : 1;
+            int delta_x = position.x + shoot_speed;
+            int delta_y = position.y;
+
+            Position new_pos(delta_x, delta_y);
+            old_position = position;
+            //mueve al pato a la nueva posicion si esta libre o a la que este libre inmediatamente antes
+            position = map->move_duck_to(position, new_pos, id_player);
+
+            // Un problema de esto es que el retroceso no se notifica si el usuario no se mueve en la ronda
+            // Esto porque no tengo el monitor a mano ni el game, solo el map, y no puedo notificarlo
+        }
+
     }
 }
 

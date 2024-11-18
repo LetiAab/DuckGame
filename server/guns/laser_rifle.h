@@ -1,24 +1,25 @@
-#ifndef WEAPON_H
-#define WEAPON_H
+#ifndef LASER_RIFLE_H
+#define LASER_RIFLE_H
 
 #include <string>
 #include <vector>
 
-#include "../game/item.h"
+#include "bouncing_laser.h"
 #include "common/constants.h"
-#include "../game/game_map.h"
-#include "bullet.h"
+#include "common/position.h"
+#include "../guns/weapon.h"
 
-class Weapon : public Item {
+class GameMap; // Declaración anticipada de la clase GameMap 
+
+class LaserRifle : public Weapon {  // Herencia de Item
 public:
-    std::vector<Bullet> bullets;
+    std::vector<BouncingLaser> lasers;
 
     // Constructor que inicializa la posición
-    Weapon(uint16_t item_id, const std::string& nombre, double alcance, int dispersion, int municiones, int x = 0, int y = 0);
+    LaserRifle(int x = 0, int y = 0);
 
     // Métodos
     void disparar(int position_x, int position_y, char looking, GameMap* map, char id_player);
-    void recargar(int cantidad);  
 
     void mostrarInformacion() const;  
     void update_weapon();
@@ -28,12 +29,6 @@ public:
     double getAlcance() const;
     double getDispersion() const;
     int getMuniciones() const;
-
-protected:
-    std::string nombre;
-    double alcance;
-    int dispersion;
-    int municiones;
 };
 
-#endif  // WEAPON_H
+#endif  // LASER_RIFLE_H

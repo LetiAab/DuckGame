@@ -76,12 +76,30 @@ void SpawnPlace::create_items(std::vector<std::unique_ptr<Item>>& items) {
         int y = position.y;
 
         // Crear un tipo de ítem aleatorio
-        int item_type = std::rand() % 3;
+        int item_type = std::rand() % 12;
         std::unique_ptr<Item> item;
 
-        if (item_type == 0) {
-            item = std::make_unique<Weapon>("Nombre", 100.0, 1.5, 30, x, y);
+/*         if (item_type == 0) {
+            item = std::make_unique<Granada>(x, y);
         } else if (item_type == 1) {
+            item = std::make_unique<Banana>(x, y);
+        } else */ if (item_type == 2) {
+            item = std::make_unique<PewPewLaser>(x, y);
+        } else if (item_type == 3) {
+            item = std::make_unique<LaserRifle>(x, y);
+        } else if (item_type == 4) {
+            item = std::make_unique<Ak47>(x, y);
+        } else if (item_type == 5) {
+            item = std::make_unique<DuelPistol>(x, y);
+        } else if (item_type == 6) {
+            item = std::make_unique<CowboyPistol>(x, y);
+        } else if (item_type == 7) {
+            item = std::make_unique<Magnum>(x, y);
+        } else if (item_type == 8) {
+            item = std::make_unique<Shotgun>(x, y);
+        } else if (item_type == 9) {
+            item = std::make_unique<Sniper>(x, y);
+        } else if (item_type == 10) {
             item = std::make_unique<Armor>(x, y);
         } else {
             item = std::make_unique<Helmet>(x, y);

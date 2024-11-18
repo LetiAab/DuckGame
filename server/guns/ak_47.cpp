@@ -1,11 +1,15 @@
-#include "weapon.h"
+#include "ak_47.h"
 #include <iostream>
 
-Weapon::Weapon(uint16_t item_id, const std::string& nombre, double alcance, int dispersion, int municiones, int x, int y)
-    : Item(item_id,x, y), nombre(nombre), alcance(alcance), dispersion(dispersion), municiones(municiones) {}  // Inicializar posición
+// 30 balas, Alcance: 13 tiles
+Ak47::Ak47(int x, int y)
+    : Weapon(AK_47_ID, "Ak 47", 13, 0, 30, x, y) {}
 
-void Weapon::disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) {
+void Ak47::disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) {
     if (municiones > 0) {
+        if (dispersion > 5) {
+            dispersion = 0;
+        }
         //la bala debe aparecer fuera del pato, o sino se mata a si mismo
         int bullet_position_x = (looking == LOOKING_RIGHT) ? position_x + DUCK_SIZE_X : position_x -1;
         int bullet_position_y = position_y;
@@ -17,57 +21,56 @@ void Weapon::disparar(int position_x, int position_y, char looking, GameMap* map
             return;
         }
 
-        int direccion_x = (looking == LOOKING_RIGHT) ? 6 : -6; //personalizar la velocidad
+        int direccion_x = (looking == LOOKING_RIGHT) ? 6 : -6;
         int direccion_y = 0;  // La bala se mueve horizonalmente
 
         int bullet_id = municiones; //el id es el numero de muncion. Inteligente verdad?
 
-        Bullet nueva_bala(bullet_id, bullet_pos, direccion_x, direccion_y, map, id_player, alcance);
-        nueva_bala.comenzar_trayectoria();
-        bullets.push_back(nueva_bala);
+        // Esto no diferencia si los disparos son sequidos o no
+        int dispersion_disparo = (dispersion % 2 == 0) ? dispersion : (0-dispersion);
 
+        Bullet new_bullet(bullet_id, bullet_pos, direccion_x, direccion_y + dispersion_disparo, map, id_player, alcance);
+        new_bullet.comenzar_trayectoria();
+        bullets.push_back(new_bullet);
+        
         municiones--;
+        dispersion ++;
         std::cout << "Disparo realizado. Quedan " << municiones << " municiones." << std::endl;
     } else {
         std::cout << "No hay municiones disponibles." << std::endl;
     }
 }
 
-void Weapon::recargar(int cantidad) {
-    municiones += cantidad;
-    std::cout << "Se han recargado " << cantidad << " municiones. Ahora tienes " << municiones << " municiones." << std::endl;
-}
-
-void Weapon::mostrarInformacion() const {
+void Ak47::mostrarInformacion() const {
     std::cout << "Arma: " << nombre << std::endl;
     std::cout << "Alcance: " << alcance << " metros" << std::endl;
     std::cout << "Dispersion: " << dispersion << std::endl;
     std::cout << "Municiones: " << municiones << std::endl;
 }
 
-std::string Weapon::getNombre() const {
+std::string Ak47::getNombre() const {
     return nombre;
 }
 
-double Weapon::getAlcance() const {
+double Ak47::getAlcance() const {
     return alcance;
 }
 
-double Weapon::getDispersion() const {
+double Ak47::getDispersion() const {
     return dispersion;
 }
 
-int Weapon::getMuniciones() const {
+int Ak47::getMuniciones() const {
     return municiones;
 }
 
-void Weapon::update_weapon(){
+void Ak47::update_weapon(){
 
     for(auto it = bullets.begin(); it != bullets.end(); ) {
         it->update_position();
 
         if(it->should_erase_bullet()) {
-            it = bullets.erase(it);
+              it = bullets.erase(it);
         } else {
             ++it;
         }

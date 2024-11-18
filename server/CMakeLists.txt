@@ -20,6 +20,16 @@ target_sources(taller_server
     game/spawn_place.cpp
     guns/bullet.cpp
     guns/weapon.cpp
+    guns/pew_pew_laser.cpp
+    guns/laser.cpp
+    guns/laser_rifle.cpp
+    guns/bouncing_laser.cpp
+    guns/ak_47.cpp
+    guns/duel_pistol.cpp
+    guns/cowboy_pistol.cpp
+    guns/magnum.cpp
+    guns/shotgun.cpp
+    guns/sniper.cpp
     armor/armor.cpp
     armor/helmet.cpp
     #guns/gun.cpp
@@ -57,6 +67,16 @@ target_sources(taller_server
     game/spawn_place.h
     guns/bullet.h
     guns/weapon.h
+    guns/pew_pew_laser.h
+    guns/laser.h
+    guns/laser_rifle.h
+    guns/bouncing_laser.h
+    guns/ak_47.h
+    guns/duel_pistol.h
+    guns/cowboy_pistol.h
+    guns/magnum.h
+    guns/shotgun.h
+    guns/sniper.h
     armor/armor.h
     armor/helmet.h
     #guns/gun.h
