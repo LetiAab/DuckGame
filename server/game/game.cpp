@@ -114,6 +114,24 @@ void Game::run() {
                 // envio las actualizaciones a los jugadores
                 send_updates();
 
+                if (check_end_of_round()){
+
+                        if (round_manager.check_end_of_match()){
+                                //vaciar la queue del juego
+                                //mandarle al cliente que termino el partido y quien gano
+
+                        } else {
+
+                                initialize_round();
+                                //avisarle al cliente que empieza un nuevo round
+                                //pasarle al cliente el nuevo mapa
+                                Message message;
+                                message.type = MAP_INICIALIZATION;
+                                message.map = map.getMap();
+                                //vaciar la queue del juego para descartar cualquier comando viejo
+                        }
+                }
+
                 if (check_end_game()){
                         notify_players_end_game();
                         is_running = false;
@@ -157,6 +175,26 @@ void Game::notify_players_end_game(){
         std::cout << "Le aviso a los jugadores que el juego termino"  << std::endl;
 }
 
+bool Game::check_end_of_round(){
+        int ducks_alive = 0;
+        for (Duck& duck : ducks) {
+                if (!duck.is_dead) {
+                        ducks_alive += 1;
+                }
+        }
+
+        if(ducks_alive == 1){
+                for (Duck& duck : ducks) {
+                        if (!duck.is_dead) {
+                                round_manager.declare_round_winner(duck.get_id());
+                        }
+                }
+        }
+
+        return (ducks_alive == 1);
+
+}
+
 bool Game::check_end_game(){
         //checkear las condiciones necesarias para que termine un juego
         bool end = true;
@@ -196,6 +234,7 @@ void Game::initialize_ducks(){
         }
 }
 
+//TODO: Esto solo sirve para la  distribucion de obstaculos hardcodeados
 Position Game::get_random_position_for_duck(char duck_id){
         std::random_device rd;
         std::mt19937 gen(rd());
@@ -221,12 +260,13 @@ Position Game::get_random_position_for_duck(char duck_id){
 
 
 
-//TODO: Esto solo sirve para la  distribucion de obstaculos hardcodeados
 void Game::create_ducks(int size) {
+        round_manager.initialize_manager(size);
+
         for(uint16_t id= 1; id <= size; ++id) {
                 char char_id = static_cast<char>(id + '0');
                 Position pos = get_random_position_for_duck(char_id);
-                Duck(char_id, pos.x, pos.y, &map);
+
                 ducks.emplace_back(char_id, pos.x, pos.y, &map);
         }
 }

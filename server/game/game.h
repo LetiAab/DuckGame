@@ -60,7 +60,9 @@ private:
         void refreshDuckPositions();
         void simulate_round();
         bool check_end_game();
+        bool check_end_of_round();
         void notify_players_end_game();
+
 
 public:
         GameMap map;
