@@ -17,6 +17,8 @@ private:
     TextureHandler& texture_handler;
     void renderBullet(int x, int y, int size = 20);
     void renderDucks(GameState* game, Message& message);
+    void renderItems(GameState* game);
+
 
 };
 

@@ -64,6 +64,13 @@ const uint8_t DROP_WEAPON = 0X38;
 const uint8_t HELMET_BROKEN = 0X77;
 const uint8_t ARMOR_BROKEN = 0X78;
 
+const uint8_t SPAWN_PLACE_POSITION = 0X79;
+
+const uint8_t SPAWN_PLACE_ITEM_UPDATE = 0X80;
+
+
+const int N_SPAWN_PLACES = 4;
+
 
 
 //VOY A NECESITAR IDS PARA QUE SEPAN QUE ITEM RENDERERIZAR 
@@ -109,5 +116,8 @@ const std::vector<std::vector<uint8_t>> colors = {
     {192,192,192}, //gris
     {255,178,102} //naranja
 };
+
+const int BUTTON_W = 239;
+const int BUTTON_H = 77;
 
 #endif

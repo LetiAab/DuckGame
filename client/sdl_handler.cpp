@@ -21,6 +21,9 @@ void SDLHandler::loadGame(GameState* game) {
         {"forest", "backgrounds/forest", 1},
         {"crate", "crate", 1},
         {"gun", "guns/AK-47", 1},
+        {"spawn", "spawn-place", 1},
+        {"helmet", "armor/helmet", 1},
+        {"armor", "armor/armor", 1},
         {"bullet", "ammo/bullet", 1},
         {"duck-walking", "duck-walking", 6},
         {"duck-walking-wings", "duck-walking-wings", 1},
@@ -38,11 +41,15 @@ void SDLHandler::loadGame(GameState* game) {
     // Inicializo los patos y los crates
     gameInitializer.initializeDucks(game, frame_width, frame_height);
     gameInitializer.initializeCrates(game);
+    
 
     // Inicializo el render manager
     rendererManager = std::make_unique<RendererManager>(game->renderer, handle_textures);
 }
 
+
+
+      
 Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queue) {
     Message message;
     while (message_queue.try_pop(message)) {
@@ -50,6 +57,13 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
         if(message.type == END_GAME){
             std::cout << "SE TERMINO LA PARTIDA "<< "\n";
         }
+        if(message.type == SPAWN_PLACE_ITEM_UPDATE){
+
+            int pos_spaw_id = message.spawn_place_id;
+            game->spawn_places[pos_spaw_id].item_id = message.item_id; 
+
+        }
+
         if(message.type == ITEM_POSITION){
             //RENDERIZAR LOS ITEMS bien
             /*Item item;
@@ -59,20 +73,48 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
         }
 
         if(message.type == DUCK_PICKUP_ITEM){
-            std::cout << "ME PONGO EL ITEM EN LA MANO" << "\n";
-            //aca te fijas en el mensaje el DUCK ID y el ITEM ID.
-            //cuando recibis esto tenes que renderizarle al pato con DUCK ID el ITEM ID
-            //EN LA MANO. OSEA TODABIA NO LO TIENE PUESTO. con las armas es lo mismo
-            //LA DIFERENCIA ES CUANDO AGARRO UNA ARMADURA O CASCO
+            int pos_id = message.player_id - 1;
+
+
+            if(message.item_id == WEAPON_1_ID){
+                game->ducks[pos_id].weapon_equiped = message.item_id;
+            }
+
+            if(message.item_id == HELMET_ID){
+                game->ducks[pos_id].item_on_hand = message.item_id;
+            }
+
+            if(message.item_id == ARMOR_ID){
+                game->ducks[pos_id].item_on_hand = message.item_id;
+            }
         }
 
         if(message.type == DUCK_EQUIP_ITEM){
-            std::cout << "ME EQUIPO EL ITEM QUE TENGO EN LA MANO" << "\n";
-            //SI RECIBO ESTO AHORA SI ME TENGO QUE PONER LA ARMADURA O EMPUÑAR EL ARMA
+            int pos_id = message.player_id - 1;
+            game->ducks[pos_id].item_on_hand = 0;
+
+
+            // si es un arma la equipo como arma
+            if(message.item_id == WEAPON_1_ID){
+                game->ducks[pos_id].weapon_equiped = message.item_id;
+            }
+
+            // si es un helmet 
+
+            if(message.item_id == HELMET_ID){
+                game->ducks[pos_id].helmet_equiped = message.item_id;
+            }
+
+            // si es un ARMOR 
+
+            if(message.item_id == ARMOR_ID){
+                game->ducks[pos_id].armor_equiped = message.item_id;
+            }
         }
 
         if(message.type == DROP_WEAPON){
-            std::cout << "SUELTO EL ARMA" << "\n";
+            int pos_id = message.player_id - 1;
+            game->ducks[pos_id].weapon_equiped = 0;
         }
 
         if(message.type == ARMOR_BROKEN){
@@ -127,12 +169,10 @@ int SDLHandler::waitForStartGame() {
     bool start_game = false;
 
     while (!start_game && !done) {
-        screenManager->showLobbyScreen();
-        done = eventProcessor.processLobbyEvents(start_game);
+        done = eventProcessor.processLobbyEvents(screenManager.get(), start_game);
     }
     return done;
 }
-
 
 void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& command_queue, uint16_t id, Queue<Message>& message_queue) {
     SDL_Window* window = SDL_CreateWindow("Duck Game",
@@ -145,6 +185,8 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
     screenManager = std::make_unique<ScreenManager>(renderer, handle_textures);
     screenManager->showStartScreen();
 
+    screenManager->loadLobbyScreen();
+    screenManager->showLobbyScreen();
     if(waitForStartGame() == ERROR) {
         SDL_DestroyWindow(window);
         SDL_DestroyRenderer(renderer);
@@ -157,7 +199,23 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
     game.command_queue = &command_queue;
     std::cout << "ID: " << id << "\n";
 
+    //recibo la posicion de los N spawn places
+
+
+
     loadGame(&game);
+
+    std::cout << "HORA DE RECIBIR SPAWNS" << "\n";
+    for (int i = 0; i < N_SPAWN_PLACES; i++){
+        // lo hago bloqueante asi no avanza hasta recibir los spawnplaces
+
+        Message message = message_queue.pop();
+
+        if(message.type == SPAWN_PLACE_POSITION){
+            game.spawn_places.emplace_back(message.spaw_place_x * TILE_SIZE, message.spaw_place_y * TILE_SIZE, message.item_id);
+        }
+    }
+
     rendererManager->doRenderStatic(&game);
 
     // Event Loop: La ventana se abre => se entra al loop

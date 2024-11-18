@@ -83,7 +83,6 @@ bool ServerProtocol::send_message(Message& message){
         break;
 
     case DUCK_EQUIP_ITEM:
-        std::cout << "EQUIPO ITEM ME LLEGA POR PROTOCOL" << "\n";
 
         if (!skt.sendall(&message.player_id, sizeof(message.player_id), &was_closed) || was_closed) {
             return false;
@@ -125,6 +124,37 @@ bool ServerProtocol::send_message(Message& message){
         }
 
         break;
+
+    case SPAWN_PLACE_ITEM_UPDATE:
+        if (!skt.sendall(&message.spawn_place_id, sizeof(message.spawn_place_id), &was_closed) || was_closed) {
+            return false;
+        }
+        if (!skt.sendall(&message.item_id, sizeof(message.item_id), &was_closed) || was_closed) {
+            return false;
+        }
+        break;
+
+    
+    case SPAWN_PLACE_POSITION:
+ 
+        if (!skt.sendall(&message.spawn_place_id, sizeof(message.spawn_place_id), &was_closed) || was_closed) {
+            return false;
+        }
+
+        if (!skt.sendall(&message.spaw_place_x, sizeof(message.spaw_place_x), &was_closed) || was_closed) {
+            return false;
+        }
+
+        if (!skt.sendall(&message.spaw_place_y, sizeof(message.spaw_place_y), &was_closed) || was_closed) {
+            return false;
+        }
+
+        if (!skt.sendall(&message.item_id, sizeof(message.item_id), &was_closed) || was_closed) {
+            return false;
+        }
+
+        break;
+
 
     case BULLET_POS_UPDATE:
         std::cout << "MANDO LA BULLET" << "\n";

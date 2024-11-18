@@ -81,7 +81,7 @@ void Game::add_projectile(std::unique_ptr<Proyectil> projectile) {
 void Game::run() {
 
         //Creo el mapa con los objetos fijos (bloques) y la posicion inicial de los patos
-        inicializate_map();
+        //inicializate_map();
         //map.printMap();
 
 
@@ -93,9 +93,13 @@ void Game::run() {
 
         monitor.broadcast(message);
 
+        //MANDO LOS MENSAJES CON LA POSICION DE LOS SPAWN PLACES
+        create_spawn_places();
+
+
 
         //creo los items y le mando al server
-        create_items();
+        //create_items();
 
 
         while (is_running) {
@@ -214,6 +218,45 @@ void Game::create_ducks(int size) {
         }
 }
 
+//REFACTOR!!!!
+//Mi duda existencial es si spawn place vale la pena como clase o simplemente deberias ser
+//Unas posiciones x e y constantes donde hago aparecer a los items
+void Game::create_spawn_places() {
+    //CREO ITEMS PARA METER EN LOS SPAWN PLACES
+    std::cout << "CREO LOS ITEMS" << "\n";
+
+
+    std::unique_ptr<Item> item1 = std::make_unique<Weapon>("Nombre", 100.0, 1.5, 30, 30, 130);
+    std::unique_ptr<Item> item2 = std::make_unique<Armor>(100, 130);
+    std::unique_ptr<Item> item3 = std::make_unique<Weapon>("Nombre", 100.0, 1.5, 30, 30, 75);
+    std::unique_ptr<Item> item4 = std::make_unique<Helmet>(100, 75);
+
+
+
+
+    //seteo N spawn places (4)
+    std::cout << "CREO LOS SPAWN PLACES" << "\n";
+
+    spawn_places.emplace_back(std::make_unique<SpawnPlace>(Position(30, 130), 0, item1->getItemId()));  
+    spawn_places.emplace_back(std::make_unique<SpawnPlace>(Position(100, 130), 1, item2->getItemId()));  
+    spawn_places.emplace_back(std::make_unique<SpawnPlace>(Position(30, 75), 2, item3->getItemId()));  
+    spawn_places.emplace_back(std::make_unique<SpawnPlace>(Position(100, 75), 3, item4->getItemId()));
+
+
+    //guardo los items en el vector de items despues de acceder a su item id, porque sino ya no tengo la refe
+    items.push_back(std::move(item1));
+    items.push_back(std::move(item2));
+    items.push_back(std::move(item3));
+    items.push_back(std::move(item4));
+
+
+    for (int i = 0; i < N_SPAWN_PLACES; i++){
+        Message spawn_place_position_message;
+        spawn_places[i]->getSpawnPlacePositionMessage(spawn_place_position_message);
+        monitor.broadcast(spawn_place_position_message);
+    }
+}
+
 void Game::create_items() {
 
     std::srand(static_cast<unsigned>(std::time(nullptr))); // Inicializar la semilla aleatoria
@@ -223,7 +266,7 @@ void Game::create_items() {
         int y = 125;//std::rand() % map.get_height();
 
         // Crear un tipo de ítem aleatorio
-        int item_type = 0;//std::rand() % 3;
+        int item_type = 1;//std::rand() % 3;
         std::unique_ptr<Item> item;
 
         if (item_type == 0) {
@@ -266,6 +309,7 @@ Duck* Game::getDuckById(char id) {
         return nullptr; // Retorna nullptr si no se encuentra el pato
 }
 
+//REFACTOR! ESTOY BUSCANDO EL ITEM Y EL SPAWN PLACE
 Item* Game::getItemByPosition(Position position) {
     // Coordenadas del área del pato
     int area_x_min = position.x;
@@ -288,6 +332,32 @@ Item* Game::getItemByPosition(Position position) {
 
     return nullptr; 
 }
+
+SpawnPlace* Game::getSpawnPlaceByPosition(Position position) {
+    // Coordenadas del área del pato
+    int area_x_min = position.x;
+    int area_x_max = position.x + DUCK_SIZE_X;
+    int area_y_min = position.y;
+    int area_y_max = position.y + DUCK_SIZE_Y;
+
+    std::cout << "Buscando SpawnPlace en el área del pato desde X: " << area_x_min 
+              << " hasta X: " << area_x_max
+              << ", y desde Y: " << area_y_min 
+              << " hasta Y: " << area_y_max << "\n";
+
+    for (auto& spawn_place_ptr : spawn_places) {
+        Position spawnPlacePos = spawn_place_ptr->getPosition();
+
+        if (spawnPlacePos.x >= area_x_min && spawnPlacePos.x < area_x_max &&
+            spawnPlacePos.y >= area_y_min && spawnPlacePos.y < area_y_max) {
+            return spawn_place_ptr.get();
+        }
+    }
+
+    return nullptr; 
+}
+
+
 void Game::game_broadcast(Message message){
         monitor.broadcast(message);
 }

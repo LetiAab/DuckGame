@@ -14,6 +14,15 @@ struct Duck {
     bool is_jumping;
     bool is_fluttering;
 
+    //EL pato tiene los ids de las armas/armaduras que tiene. Si es 0 no tiene ninguna
+    uint8_t weapon_equiped;
+    uint8_t helmet_equiped;
+    uint8_t armor_equiped;
+
+    uint8_t item_on_hand;
+
+
+
     int animation_frame; // Contador para controlar la animación
     int current_frame_index; // Índice del fotograma actual en el *sprite sheet*
     int frame_width;
@@ -34,10 +43,16 @@ struct Crate {
     int x, y;
 };
 
+struct SpawnPlace {
+    int x, y;
+    uint8_t item_id;
+};
+
 struct GameState {
     Duck ducks[MAX_PLAYERS];
     int ducks_quantity;
     std::vector<Crate> crates;
+    std::vector<SpawnPlace> spawn_places;
     SDL_Renderer* renderer;
     ClientGameMap client_game_map;
     Queue<Command>* command_queue;
