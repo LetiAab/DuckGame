@@ -35,6 +35,7 @@ target_sources(taller_server
     executables/guns_commands/shoot_command.cpp
     executables/guns_commands/take_item_command.cpp
     executables/guns_commands/drop_weapon_command.cpp
+    round_manager.cpp
 
     
     PUBLIC
@@ -74,6 +75,7 @@ target_sources(taller_server
     executables/guns_commands/shoot_command.h
     executables/guns_commands/take_item_command.h
     executables/guns_commands/drop_weapon_command.h
+    round_manager.h
 
 
 
