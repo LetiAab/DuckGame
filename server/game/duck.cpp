@@ -37,7 +37,12 @@ bool Duck::pickUpItem(Item* item) {
     
     if (item != nullptr){
         std::cout << "Agarro el item de ID " << item->getItemId() << "\n";
-        onHand.reset(item);  
+        if (onHand == nullptr)
+            std::cout << "No tiene un ítem en la mano actualmente" << "\n";
+        else
+            std::cout << "El item de la mano antes de cambiarlo tiene ID " << onHand->getItemId() << "\n";
+        onHand.reset(item);
+        std::cout << "Ahora el Id del Item en la mano es " << onHand->getItemId() << "\n";
         return true;
     } 
     
@@ -49,13 +54,25 @@ bool Duck::pickUpItem(Item* item) {
 void Duck::useOnHand() {
     if (!onHand) return;  // Verificamos si hay un item en la mano
 
-    if (Weapon* w = dynamic_cast<Weapon*>(onHand.get())) {
+    std::cout << "Antes de los casteos" << "\n";
+
+    Item* on_hand_item = onHand.get();
+    if (on_hand_item == NULL) {
+        std::cout << "on_hand_item es NULL, no debería" << "\n";
+    }
+    std::cout << "El id del item es " << on_hand_item->getItemId() << "\n";
+    if (Weapon* w = dynamic_cast<Weapon*>(on_hand_item)) {
+        std::cout << "Entrando a set weapon" << "\n";
         setWeapon(w);
-    } else if (Armor* a = dynamic_cast<Armor*>(onHand.get())) {
+    } else if (Armor* a = dynamic_cast<Armor*>(on_hand_item)) {
+        std::cout << "Entrando a set armor" << "\n";
         setArmor(a);
-    } else if (Helmet* h = dynamic_cast<Helmet*>(onHand.get())) {
+    } else if (Helmet* h = dynamic_cast<Helmet*>(on_hand_item)) {
+        std::cout << "Entrando a set helmet" << "\n";
         setHelmet(h);
     }
+
+    std::cout << "Despues de los ifs" << "\n";
 
     onHand.reset();  // Después de usar el item, lo quitamos de la mano
 }
