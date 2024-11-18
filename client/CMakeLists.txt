@@ -14,6 +14,7 @@ target_sources(taller_client
         game_initializer.cpp
         sdl_renderermanager.cpp
         sdl_screenmanager.cpp
+        sdl_audiomanager.cpp
     PUBLIC
     # .h files
     client.h
@@ -29,6 +30,7 @@ target_sources(taller_client
         game_initializer.h
         sdl_renderermanager.h
         sdl_screenmanager.h
+        sdl_audiomanager.h
     )
 
 # Path de imagenes

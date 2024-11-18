@@ -5,11 +5,12 @@
 #include <unordered_map>
 #include "game_state.h"
 #include "sdl_screenmanager.h"
+#include "sdl_audiomanager.h"
 
 class EventProcessor {
 public:
     EventProcessor() = default;
-    int processGameEvents(SDL_Window *window, GameState *game, uint16_t id);
+    int processGameEvents(SDL_Window *window, GameState *game, uint16_t id, AudioManager& audioManager);
     int processLobbyEvents(ScreenManager* screenManager, bool& start_game, int& id_match);
 private:
     std::unordered_map<SDL_Keycode, bool> keyState; //necesito esto para que se mande un solo comando
