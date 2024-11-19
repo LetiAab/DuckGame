@@ -84,16 +84,10 @@ explicit Game(uint16_t match_id, GameQueueMonitor& monitor, bool& is_over);
 
 Queue<std::shared_ptr<Executable>>& get_game_queue();
 
-<<<<<<< HEAD
+
 void set_players(int number_of_players);
-=======
-void inicializate_map();
 
-void create_ducks(int size);
-
-void create_spawn_places();
-
-void refreshDuckPositions();
+//void inicializate_map();
 
 Duck* getDuckByPosition(Position position);
 
@@ -103,11 +97,7 @@ std::shared_ptr<Item> getItemByPosition(Position position);
 
 SpawnPlace* getSpawnPlaceByPosition(Position position);
 
-
 void game_broadcast(Message message);
-
-void simulate_round();
->>>>>>> origin
 
 //void add_projectile(std::unique_ptr<Proyectil> projectile);
 
@@ -115,11 +105,6 @@ void run() override;
 
 void stop() override;
 
-Duck* getDuckByPosition(Position position);
-Duck* getDuckById(char id);
-Item* getItemByPosition(Position position);
-void game_broadcast(Message message);
-SpawnPlace* getSpawnPlaceByPosition(Position position);
 
 Game(const Game&) = delete;
 Game& operator=(const Game&) = delete;

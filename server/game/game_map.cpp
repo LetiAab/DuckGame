@@ -440,6 +440,14 @@ char GameMap::duck_in_position(int x, int y, int size_x, int size_y) {
     return 0;
 }
 
+void GameMap::clear_map() {
+    for (int y = 0; y < height; ++y) {
+        for (int x = 0; x < width; ++x) {
+            map[y][x] = EMPTY;
+        }
+    }
+}
+
 void GameMap::setEscenario() {
     // SETEO EL VACIO. SI COLISIONO CON EL VACIO MUERO
     for (int x = 0; x < width; ++x) {

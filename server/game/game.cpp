@@ -109,9 +109,6 @@ void Game::run() {
         create_spawn_places();
         send_spawn_place_message();
 
-        uint64_t counter_bullets = 0;
-
-
         while (is_running) {
 
                 // saco de 10 comandos de la queue y los ejecuto
@@ -131,14 +128,14 @@ void Game::run() {
 
                 if (check_end_of_round()){
 
-<<<<<<< HEAD
+
                         if (round_manager.check_end_of_match()){
                                 //vaciar la queue del juego
                                 //mandarle al cliente que termino el partido y quien gano
                                 notify_players_end_game();
                                 //mandarle mas info sobre los puntajes de la partida
 
-                        break;
+                                break;
 
                         } else {
                                 std::cout << "Envio mensajes para iniciar la nueva ronda"  << std::endl;
@@ -151,23 +148,10 @@ void Game::run() {
                                 //send_spawn_place_message();
                                 
                                 //vaciar la queue del juego para descartar cualquier comando viejo
-=======
-                        //quizas se pueda hacer un get_duck_bullet_position() en vez de esto
-                        //o sea mover la creacion del mensaje dentro del pato
-                        if (counter_bullets % 3 == 0) {
-                                if(duck.weapon != nullptr){
-                                        for (std::unique_ptr<Projectile>& unique_proyectile : duck.weapon->projectiles) {
-                                                Projectile* projectile = unique_proyectile.get();
-                                                Message projectile_message;
-                                                if (projectile->get_projectile_message(projectile_message)){
-                                                        monitor.broadcast(projectile_message);
-                                                }
-                                        }
-                                }
->>>>>>> origin
-                        }
+                                //quizas se pueda hacer un get_duck_bullet_position() en vez de esto
+
+                        
                 }
-                counter_bullets ++;
 
                 //esta verificacion luego se va a ir
                 if (check_end_game()){
@@ -176,10 +160,9 @@ void Game::run() {
                         is_over = true;
                         break;
                 }
+        }
 
                 std::this_thread::sleep_for(std::chrono::milliseconds(60));
-
-                //map.tellMap();
 
         }
         std::cout << "Termino el juego!"  << std::endl;
@@ -194,21 +177,24 @@ void Game::send_updates(){
                         monitor.broadcast(duck_message);
                 }
 
-                //quizas se pueda hacer un get_duck_bullet_position() en vez de esto
-                //o sea mover la creacion del mensaje dentro del pato
                 if(duck.weapon != nullptr){
-                        for (Bullet& bullet : duck.weapon->bullets) {
-                                Message bullet_message;
-                                if (bullet.get_bullet_message(bullet_message)){
-                                        monitor.broadcast(bullet_message);
+                        for (std::unique_ptr<Projectile>& unique_proyectile : duck.weapon->projectiles) {
+                                Projectile* projectile = unique_proyectile.get();
+                                Message projectile_message;
+                                if (projectile->get_projectile_message(projectile_message)){
+                                        monitor.broadcast(projectile_message);
                                 }
                         }
                 }
+                
         }
 
 }
 
+
+
 void Game::notify_players_end_game(){
+         std::cout << "El ganador de la partida fue el pato "<< static_cast<char>(round_manager.get_duck_winner()) << std::endl;
         Message msg;
         msg.type = END_GAME;
         msg.duck_winner = round_manager.get_duck_winner();
@@ -221,7 +207,7 @@ void Game::notify_players_end_round(){
         msg.type = END_ROUND;
         msg.duck_winner = round_manager.get_duck_round_winner();
         monitor.broadcast(msg);
-        std::cout << "Le aviso a los jugadores que el juego termino"  << std::endl;
+        std::cout << "Le aviso a los jugadores que la ronda termino"  << std::endl;
 }
 
 bool Game::check_end_of_round(){
@@ -237,7 +223,7 @@ bool Game::check_end_of_round(){
                         if (!duck.is_dead) {
                                 round_manager.declare_round_winner(duck.get_id());
                                 std::cout << "Termino una ronda!"  << std::endl;
-                                std::cout << "El ganador fue el pato "<< duck.get_id() << std::endl;
+                                std::cout << "El ganador fue el pato "<< static_cast<char>(duck.get_id()) << std::endl;
                         }
                 }
         }
@@ -260,37 +246,22 @@ bool Game::check_end_game(){
 }
 
 void Game::stop() {
-        std::cout << "Comienzo el stop..."  << std::endl;
+        std::cout << "Comienzo el stop"  << std::endl;
         game_queue.close();
         monitor.remove_all_queues();
         is_running = false;
         is_over = true;
-        std::cout << "Termino el stop"  << std::endl;
+        std::cout << "termino el stop"  << std::endl;
 }
 
-<<<<<<< HEAD
 void Game::initialize_round() {
         //TODO: MAPA Y LOS OBJETOS ESTAN TODOS HARDCODEADO Y ES SIEMPRE IGUAL
         //cuando cambia la ronda deberia aparecer un mapa nuevo al azar
+        map.clear_map();
         map.setEscenario();
         initialize_ducks(); //reseteo los patos para que revivan y pierdan sus armas
         create_spawn_places();
 
-<<<<<<< HEAD
-=======
-        Sniper* weapon = new Sniper();
-
-        duck.setWeapon(weapon);
-        Helmet* helmet = new Helmet(5,5); //le pongo posicion pero no importa porque se la asigno al pato
-
-        duck.setHelmet(helmet);
-    }
->>>>>>> origin
-=======
-void Game::inicializate_map() {
-    // Le doy armas a los patos para probar
-
->>>>>>> origin
 }
 
 void Game::initialize_ducks(){
@@ -414,7 +385,6 @@ std::shared_ptr<Item> Game::getItemByPosition(Position position) {
         if (itemPos.x >= area_x_min && itemPos.x < area_x_max &&
             itemPos.y >= area_y_min && itemPos.y < area_y_max) {
             std::cout << "Encontré un item, en la pos x: " << itemPos.x << " y: " << itemPos.y << std::endl;
-            //debo eliminarlo de la lista
             return item_ptr; 
         }
     }
