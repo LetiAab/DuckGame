@@ -12,13 +12,11 @@ class GameMap; // Declaración anticipada de la clase GameMap
 
 class Sniper : public Weapon {
 public:
-    std::vector<Bullet> bullets;
-
     // Constructor que inicializa la posición
     Sniper(int x = 0, int y = 0);
 
     // Métodos
-    void disparar(int position_x, int position_y, char looking, GameMap* map, char id_player);
+    void disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) override;
 
     void mostrarInformacion() const;  
     void update_weapon();

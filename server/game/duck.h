@@ -18,6 +18,13 @@
 #include "../guns/weapon.h"
 #include "../guns/ak_47.h"
 #include "../guns/magnum.h"
+#include "../guns/cowboy_pistol.h"
+#include "../guns/duel_pistol.h"
+#include "../guns/pew_pew_laser.h"
+#include "../guns/laser_rifle.h"
+#include "../guns/shotgun.h"
+#include "../guns/sniper.h"
+
 
 
 class GameMap;

@@ -13,13 +13,11 @@ class GameMap; // Declaración anticipada de la clase GameMap
 
 class PewPewLaser : public Weapon {  // Herencia de Item
 public:
-    std::vector<Laser> lasers;
-
     // Constructor que inicializa la posición
     PewPewLaser(int x = 0, int y = 0);
 
     // Métodos
-    void disparar(int position_x, int position_y, char looking, GameMap* map, char id_player);
+    void disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) override;
 
     void mostrarInformacion() const;  
     void update_weapon();

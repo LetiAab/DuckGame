@@ -1,61 +1,40 @@
 #ifndef PROJECTILE_H
 #define PROJECTILE_H
 
-#include <iostream>
-#include <string>
+#include "common/message.h"
+#include "common/constants.h"
+#include "../game/game_map.h"
 
-#define TIME_SLEEP 20
-
-class Game;
-
-class Proyectil {
+class Projectile {
 protected:
-    std::string tipo;
+    int projectile_id;
+    int projectile_type;
+    Position position;
+    Position old_position;
+    Position speed;
+    int direction_x;
+    int direction_y;
+    GameMap* map;
+    bool impacto;
+    char duck_id;
     int alcance;
-    int daño;
-    int pos_x;
-    int pos_y;
+    bool should_erase;
 
 public:
-    int speed_x;
-    int speed_y;
+    Projectile(int projectile_id, int projectile_type, Position position, int direction_x, int direction_y, GameMap* map, char duck_id, int alcance);
+    virtual ~Projectile() = default;
 
-    Proyectil(const std::string& tipo, int alcance, int daño, int pos_x, int pos_y, int speed_x, int speed_y)
-        : tipo(tipo), alcance(alcance), daño(daño), pos_x(pos_x), pos_y(pos_y), speed_x(speed_x), speed_y(speed_y)  {}
+    virtual void comenzar_trayectoria() = 0;
+    virtual void update_position() = 0;
 
-    virtual void simular(Game& game) = 0;  // Define el movimiento en cada tipo de proyectil
-    virtual void impactar() = 0;  // Define el comportamiento al impactar
+    virtual bool should_erase_projectile() = 0;
+    virtual void cleanPostImpacto() = 0;
+    virtual void impactar() = 0;
 
-    virtual ~Proyectil() = default;
-};
+    virtual bool get_projectile_message(Message& msg) = 0;
 
-class ProyectilGranada : public Proyectil {
-public:
-    int tiempo_explosion;
-
-    ProyectilGranada(int tiempo, int pos_x, int pos_y, int speed_x, int speed_y);
-
-    void simular(Game& game) override;
-
-    void impactar() override ;
-};
-
-class ProyectilLaser : public Proyectil {
-public:
-    ProyectilLaser(int pos_x, int pos_y, int speed_x, int speed_y);
-    
-    void simular(Game& game) override;
-
-    void impactar() override;
-};
-
-class ProyectilBanana : public Proyectil {
-public:
-    ProyectilBanana(int pos_x, int pos_y, int speed_x, int speed_y);
-
-    void simular(Game& game) override;
-
-    void impactar() override;
+    virtual Position get_position() = 0;
+    virtual Position get_speed() = 0;
 };
 
 #endif // PROJECTILE_H

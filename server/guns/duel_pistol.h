@@ -14,14 +14,12 @@ class GameMap; // Declaración anticipada de la clase GameMap
 
 class DuelPistol : public Weapon {  // Herencia de Item
 public:
-    // Could be just an object
-    std::vector<Bullet> bullets;
 
     // Constructor que inicializa la posición
     DuelPistol(int x = 0, int y = 0);
 
     // Métodos
-    void disparar(int position_x, int position_y, char looking, GameMap* map, char id_player);
+    void disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) override;
 
     void mostrarInformacion() const;  
     void update_weapon();

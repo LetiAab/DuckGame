@@ -57,12 +57,9 @@ void Duck::useOnHand() {
     std::cout << "Antes de los casteos" << "\n";
 
     Item* on_hand_item = onHand.get();
-    if (on_hand_item == NULL) {
-        std::cout << "on_hand_item es NULL, no debería" << "\n";
-    }
     std::cout << "El id del item es " << on_hand_item->getItemId() << "\n";
     if (Weapon* w = dynamic_cast<Weapon*>(on_hand_item)) {
-        std::cout << "Entrando a set weapon" << "\n";
+        std::cout << "Entrando a set weapon, el id es " << w->getItemId() << "\n";
         setWeapon(w);
     } else if (Armor* a = dynamic_cast<Armor*>(on_hand_item)) {
         std::cout << "Entrando a set armor" << "\n";
@@ -72,9 +69,12 @@ void Duck::useOnHand() {
         setHelmet(h);
     }
 
-    std::cout << "Despues de los ifs" << "\n";
+    //std::cout << "Despues de los ifs" << "\n";
 
-    onHand.reset();  // Después de usar el item, lo quitamos de la mano
+    //std::cout << "Antes de reset: " << (onHand ? "No es nulo" : "Es nulo") << "\n";
+
+    onHand.reset(); // Libera el recurso
+    //std::cout << "Después de reset: " << (onHand ? "No es nulo" : "Es nulo") << "\n";
 }
 
 void Duck::check_gravity(){
@@ -206,6 +206,9 @@ void Duck::form_position_message(Message& msg){
 bool Duck::get_duck_position_message(Message& msg){
     if(is_dead){return false;}
 
+//    std::cout << "Chequeo del mensaje, old position es x: " << old_position.x << " y: " << old_position.y << 
+//            "y position es x: " << position.x << " y: " << position.y << "\n";
+            
     if (old_position.x == position.x && old_position.y == position.y){
         if(stop_notificated){
             return false;
@@ -233,7 +236,32 @@ char Duck::get_id() const {
 
 void Duck::setWeapon(Weapon* new_weapon) {
     std::cout << "ASIGNO NUEVA ARMA" << "\n";
-    weapon = new_weapon;  // Asigna el arma al pato
+
+    if (new_weapon->getItemId() == COWBOY_PISTOL_ID){
+        CowboyPistol* pistol = new CowboyPistol();
+        weapon = pistol;
+    } else if (new_weapon->getItemId() == PEW_PEW_LASER_ID){
+        PewPewLaser* pistol = new PewPewLaser();
+        weapon = pistol;
+    } else if (new_weapon->getItemId() == LASER_RIFLE_ID){
+        LaserRifle* pistol = new LaserRifle();
+        weapon = pistol;
+    } else if (new_weapon->getItemId() == AK_47_ID){
+        Ak47* pistol = new Ak47();
+        weapon = pistol;
+    } else if (new_weapon->getItemId() == DUEL_PISTOL_ID){
+        DuelPistol* pistol = new DuelPistol();
+        weapon = pistol;
+    } else if (new_weapon->getItemId() == MAGNUM_ID){
+        Magnum* pistol = new Magnum();
+        weapon = pistol;
+    } else if (new_weapon->getItemId() == SHOTGUN_ID){
+        Shotgun* pistol = new Shotgun();
+        weapon = pistol;
+    } else if (new_weapon->getItemId() == SNIPER_ID){
+        Sniper* pistol = new Sniper();
+        weapon = pistol;
+    }
 }
 
 void Duck::setArmor(Armor* new_armor) {
@@ -258,20 +286,24 @@ void Duck::disparar() {
     if(is_dead){return;}
 
     if (weapon != nullptr) {
+        std::cout << "Soy pato, disparo desde x: " << position.x << " y: " << position.y << "\n";
+        bool habia_municiones = (weapon->getMuniciones() > 0);
         weapon->disparar(position.x, position.y, looking, map, id_player);
 
-        // Esto lo puedo reemplazar por el item ID
-        if (weapon->getItemId() == AK_47_ID || weapon->getItemId() == MAGNUM_ID) {
+        if (habia_municiones && (weapon->getItemId() == AK_47_ID || weapon->getItemId() == MAGNUM_ID)) {
+            old_position = position;
 
             int shoot_speed = (looking == LOOKING_RIGHT) ? -1 : 1;
             int delta_x = position.x + shoot_speed;
             int delta_y = position.y;
 
             Position new_pos(delta_x, delta_y);
-            old_position = position;
             //mueve al pato a la nueva posicion si esta libre o a la que este libre inmediatamente antes
             position = map->move_duck_to(position, new_pos, id_player);
 
+            std::cout << "Retroceso, old position es x: " << old_position.x << " y: " << old_position.y << 
+            "y position es x: " << position.x << " y: " << position.y << "\n";
+            
             // Un problema de esto es que el retroceso no se notifica si el usuario no se mueve en la ronda
             // Esto porque no tengo el monitor a mano ni el game, solo el map, y no puedo notificarlo
         }

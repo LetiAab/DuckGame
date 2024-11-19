@@ -60,6 +60,8 @@ void Game::simulate_round() {
                 duck.update_position();
                 duck.update_weapon();
 
+                // std::cout << "Despues de mover las balas \n";
+
                 // Si el pato murio, avisamos al cliente
                 //estaria bueno mover esto 
 
@@ -115,6 +117,8 @@ void Game::run() {
         //creo los items y le mando al server
         //create_items();
 
+        uint64_t counter_bullets = 0;
+
 
         while (is_running) {
 
@@ -140,15 +144,19 @@ void Game::run() {
 
                         //quizas se pueda hacer un get_duck_bullet_position() en vez de esto
                         //o sea mover la creacion del mensaje dentro del pato
-                        if(duck.weapon != nullptr){
-                                for (Bullet& bullet : duck.weapon->bullets) {
-                                        Message bullet_message;
-                                        if (bullet.get_bullet_message(bullet_message)){
-                                                monitor.broadcast(bullet_message);
+                        if (counter_bullets % 3 == 0) {
+                                if(duck.weapon != nullptr){
+                                        for (std::unique_ptr<Projectile>& unique_proyectile : duck.weapon->projectiles) {
+                                                Projectile* projectile = unique_proyectile.get();
+                                                Message projectile_message;
+                                                if (projectile->get_projectile_message(projectile_message)){
+                                                        monitor.broadcast(projectile_message);
+                                                }
                                         }
                                 }
                         }
                 }
+                counter_bullets ++;
 
                 if (check_end_game()){
                         notify_players_end_game();
@@ -159,7 +167,7 @@ void Game::run() {
 
                 std::this_thread::sleep_for(std::chrono::milliseconds(60));
 
-                map.tellMap();
+                //map.tellMap();
 
         }
         std::cout << "Termino el juego!"  << std::endl;
@@ -242,9 +250,9 @@ void Game::create_spawn_places() {
     std::cout << "CREO LOS ITEMS" << "\n";
 
 
-    std::unique_ptr<Item> item1 = std::make_unique<CowboyPistol>(30, 130);
+    std::unique_ptr<Item> item1 = std::make_unique<Shotgun>(30, 130);
     std::unique_ptr<Item> item2 = std::make_unique<Armor>(100, 130);
-    std::unique_ptr<Item> item3 = std::make_unique<Sniper>(30, 75);
+    std::unique_ptr<Item> item3 = std::make_unique<PewPewLaser>(30, 75);
     std::unique_ptr<Item> item4 = std::make_unique<Helmet>(100, 75);
 
 

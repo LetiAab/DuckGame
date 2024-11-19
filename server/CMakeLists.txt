@@ -33,7 +33,7 @@ target_sources(taller_server
     armor/armor.cpp
     armor/helmet.cpp
     #guns/gun.cpp
-    #guns/projectile.cpp
+    guns/projectile.cpp
     executables/start/move_left_command.cpp
     executables/start/move_right_command.cpp
     executables/start/move_down_command.cpp
@@ -80,7 +80,7 @@ target_sources(taller_server
     armor/armor.h
     armor/helmet.h
     #guns/gun.h
-    #guns/projectile.h
+    guns/projectile.h
     executables/executable.h
     executables/commands.h
     executables/start/move_left_command.h

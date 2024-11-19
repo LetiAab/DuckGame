@@ -1,18 +1,8 @@
 #include "bullet.h"
 
 Bullet::Bullet(int bullet_id, Position position, int direction_x, int direction_y, GameMap* map, char duck_id, int alcance) 
-    : bullet_id(bullet_id),
-    position(position),
-    old_position(position),
-    speed(direction_x, direction_y),
-    direction_x(direction_x),
-    direction_y(direction_y),
-    map(map),
-    impacto(false),
-    duck_id(duck_id),
-    alcance(alcance),
-    should_erase(false) {}
-
+    : Projectile(bullet_id, 0, position, direction_x, direction_y, map, duck_id, alcance) {}
+// Nota: deberías diferenciar entre el número de bala y el tipo de proyectil
 
 
 void Bullet::comenzar_trayectoria() {
@@ -31,8 +21,8 @@ void Bullet::update_position() {
         impacto = true;
     } else {
 
-        std::cout << "Comienzo trayectoria desde x: " << position.x << " e y: " << position.y << std::endl;
-        std::cout << "Speed x: " << speed.x << " y: " << speed.y << "\n";
+        //std::cout << "Comienzo trayectoria desde x: " << position.x << " e y: " << position.y << std::endl;
+        //std::cout << "Speed x: " << speed.x << " y: " << speed.y << "\n";
 
 
         int delta_x = position.x + speed.x;
@@ -66,7 +56,8 @@ bool Bullet::get_bullet_message(Message& msg){
     msg.player_id =static_cast<uint16_t>(duck_id - '0');
     msg.bullet_x = position.x;
     msg.bullet_y = position.y;
-    msg.bullet_id = bullet_id;
+    msg.bullet_id = projectile_id;
+    msg.bullet_type = projectile_type;
     //mandar flag del impacto (?)
 
     return true;

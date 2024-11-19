@@ -1,17 +1,7 @@
 #include "bouncing_laser.h"
 
 BouncingLaser::BouncingLaser(int laser_id, Position position, int direction_x, int direction_y, GameMap* map, char duck_id, int alcance) 
-    : laser_id(laser_id),
-    position(position),
-    old_position(position),
-    speed(direction_x, direction_y),
-    direction_x(direction_x),
-    direction_y(direction_y),
-    map(map),
-    impacto(false),
-    duck_id(duck_id),
-    alcance(alcance),
-    should_erase(false) {}
+    : Projectile(laser_id, 2, position, direction_x, direction_y, map, duck_id, alcance) {}
 // Nota: Para dibujar el laser necesitaría un manejo de grados, lo cual no es tan complicado, pero no lo uso para caluclar la posición
 
 
@@ -26,7 +16,7 @@ void BouncingLaser::update_position() {
         impacto = true;
     } else {
 
-        std::cout << "Comienzo trayectoria desde x: " << position.x << "\n";
+        std::cout << "Comienzo trayectoria desde x: " << position.x << " y: " << position.y << "\n";
 
         int delta_x = position.x + speed.x;
         int delta_y = position.y + speed.y;
@@ -37,6 +27,7 @@ void BouncingLaser::update_position() {
 
         position = map->try_move_bouncing_laser_to(position, Position(delta_x, delta_y), duck_id, impacto, hit_platform, hit_x);
         if (hit_platform) {
+                std::cout << "Se invierte la velocidad \n";
                 if (hit_x) {
                         speed.x = 0 - speed.x;
                 } else {
@@ -50,6 +41,8 @@ void BouncingLaser::update_position() {
         
         //por ahora, le resto la velocidad en x ya que solo dispara en horizontal
         alcance -= std::abs(speed.x);
+
+        std::cout << "En el turno el laser avanzó hasta x: " << position.x << " y: " << position.y << "\n";
     }
 
 }
@@ -70,7 +63,8 @@ bool BouncingLaser::get_laser_message(Message& msg){
     msg.player_id =static_cast<uint16_t>(duck_id - '0');
     msg.bullet_x = position.x;
     msg.bullet_y = position.y;
-    msg.bullet_id = laser_id;
+    msg.bullet_id = projectile_id;
+    msg.bullet_type = 1;
     //mandar flag del impacto (?)
 
     return true;

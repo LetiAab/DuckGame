@@ -7,7 +7,7 @@
 CowboyPistol::CowboyPistol(int x, int y)
     : Weapon(COWBOY_PISTOL_ID, "Cowboy Pistol", 20, 0, 6, x, y) {}
 
-void CowboyPistol::disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) {
+void CowboyPistol::disparar_cowboy_pistol(int position_x, int position_y, char looking, GameMap* map, char id_player) {
     if (municiones > 0) {
         //la bala debe aparecer fuera del pato, o sino se mata a si mismo
         int bullet_position_x = (looking == LOOKING_RIGHT) ? position_x + DUCK_SIZE_X : position_x -1;
@@ -25,9 +25,9 @@ void CowboyPistol::disparar(int position_x, int position_y, char looking, GameMa
 
         int bullet_id = municiones; //el id es el numero de muncion. Inteligente verdad?
 
-        Bullet new_bullet(bullet_id, bullet_pos, direccion_x, direccion_y, map, id_player, alcance);
-        new_bullet.comenzar_trayectoria();
-        bullets.push_back(new_bullet);
+        auto new_bullet = std::make_unique<Bullet>(bullet_id, bullet_pos, direccion_x, direccion_y, map, id_player, alcance);
+        new_bullet->comenzar_trayectoria();
+        projectiles.push_back(std::move(new_bullet));
         
         municiones--;
         std::cout << "Disparo realizado. Quedan " << municiones << " municiones." << std::endl;
@@ -61,11 +61,13 @@ int CowboyPistol::getMuniciones() const {
 
 void CowboyPistol::update_weapon(){
 
-    for(auto it = bullets.begin(); it != bullets.end(); ) {
-        it->update_position();
+    for(auto it = projectiles.begin(); it != projectiles.end(); ) {
+        Projectile* projectile = it->get();
 
-        if(it->should_erase_bullet()) {
-              it = bullets.erase(it);
+        projectile->update_position();
+
+        if(projectile->should_erase_projectile()) {
+              it = projectiles.erase(it);
         } else {
             ++it;
         }
