@@ -1,7 +1,9 @@
 #include "sdl_handler.h"
 #include <iostream>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_mixer.h>
 #include <common/message.h>
+
 
 #define DELAY_TIME 60
 
@@ -9,6 +11,7 @@
 
 SDLHandler::SDLHandler(): handle_textures(nullptr) {
     SDL_Init(SDL_INIT_VIDEO);
+    SDL_Init(SDL_INIT_AUDIO);
 }
 
 SDLHandler::~SDLHandler() {
@@ -54,6 +57,9 @@ void SDLHandler::loadGame(GameState* game) {
 
     // Inicializo el render manager
     rendererManager = std::make_unique<RendererManager>(game->renderer, handle_textures);
+
+    audioManager = std::make_unique<AudioManager>();
+
 }
 
 
@@ -70,6 +76,15 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
 
             int pos_spawn_id = message.spawn_place_id;
             game->spawn_places[pos_spawn_id].item_id = message.item_id; 
+
+        }
+
+        if(message.type == SHOOT){
+            //si recibo esto es que efectivamente disparé y tengo que reproducir el sonido
+            const std::string path = std::string(AUDIO_PATH) + "shoot.wav";
+            audioManager->loadSoundEffect(path);
+            audioManager->playSoundEffect();
+            audioManager->setSoundEffectVolume(70);
 
         }
 
@@ -235,6 +250,8 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
         return;
     }
 
+
+
     GameState game{};
     game.renderer = renderer;
     game.client_game_map.setMap(map);
@@ -258,6 +275,13 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
         }
     }
 
+    //Empiezo la musica de fondo
+    const std::string path = std::string(AUDIO_PATH) +"ambient-music.wav";
+    audioManager->loadMusic(path);
+    audioManager->playMusic(-1); //musica en bucle infinitamente
+    audioManager->setMusicVolume(30);
+
+    //Renderizo lo estatico
     rendererManager->doRenderStatic(&game);
 
     // Event Loop: La ventana se abre => se entra al loop
@@ -265,7 +289,12 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
     try{
         while (!done) {
             //PRIMERO MANDO AL SERVER
+            
+            //no se si pasar el audio manager aca para reproducir el sonido del disparo es lo mejor 
+            //pero por ahora funciona... 
             done = eventProcessor.processGameEvents(window, &game, id);
+
+
 
             //LUEGO RECIBO DEL SERVER Y HAGO EL RENDER
             Message message = handleMessages(&game, message_queue);
@@ -275,7 +304,6 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
             }
 
             rendererManager->doRenderDynamic(&game, message);
-            //renderItems(renderer, &game);
 
             SDL_Delay(DELAY_TIME);
         }
@@ -290,4 +318,5 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
     // Termino el juego => libero recursos
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
+    Mix_CloseAudio();
 }

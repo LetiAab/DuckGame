@@ -284,13 +284,14 @@ void Duck::setHelmet(std::shared_ptr<Helmet> new_helmet) {
 }
 
 
-void Duck::disparar() {
-    if(is_dead){return;}
+bool Duck::disparar() {
+    if(is_dead){return false;}
 
     if (weapon != nullptr) {
         std::cout << "Soy pato, disparo desde x: " << position.x << " y: " << position.y << "\n";
         bool habia_municiones = (weapon->getMuniciones() > 0);
         weapon->disparar(position.x, position.y, looking, map, id_player);
+
 
         if (habia_municiones && (weapon->getItemId() == AK_47_ID || weapon->getItemId() == MAGNUM_ID)) {
             old_position = position;
@@ -311,6 +312,7 @@ void Duck::disparar() {
         }
 
     }
+    return false;
 }
 
 

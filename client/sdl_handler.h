@@ -9,6 +9,7 @@
 #include "sdl_eventprocessor.h"
 #include "sdl_renderermanager.h"
 #include "sdl_screenmanager.h"
+#include "sdl_audiomanager.h"
 
 
 class SDLHandler {
@@ -23,6 +24,8 @@ private:
     GameInitializer gameInitializer;
     std::unique_ptr<ScreenManager> screenManager;
     std::unique_ptr<RendererManager> rendererManager;
+    std::unique_ptr<AudioManager> audioManager;
+
     void loadGame(GameState* game);
     Message handleMessages(GameState* game, Queue<Message>& message_queue);
     int waitForStartGame();
