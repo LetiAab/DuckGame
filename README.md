@@ -34,6 +34,9 @@ Para levantar el cliente
  ./taller_client localhost 8080
 ```
 
+# Como jugar
+
+Para el modo un jugador, usar las teclas wasd para el movimiento, la letra e para agarrar un arma, la letra f para disparar y la letra q para descartar un arma.
 
 
 # Ejemplo de CMAKE para el TP Final
@@ -81,4 +84,25 @@ ni scripts adicionales (como correr valgrind).
 en los tps individuales, recaps y hands-on.
 
 
-# Calculos para el tamanio de PANTALLA, MATRIZ Y TILE SIZE
+# Status hasta la fecha
+
+## Cosas implementadas
+
+- Protocolo general de comunicación
+- Creación genérica del mapa
+- Spawn points
+- Disparo con armas
+- Se implementaron todas las armas menos la granada y la banana
+
+## Cosas no implementadas (todavía)
+
+- Armas: Granada y Banana
+- Cajas
+- Diseñador de mapa
+- Mayor variedad de mapas
+
+## Cosas que se pueden mejorar
+
+- El retroceso en las armas no se muestra cuando el pato está quieto, recién se muestra el cambio cuando el pato se mueve
+- Para el rebote del laser en el Laser Rifle, cuando el laser choca se pierden los movimientos que podía hacer el laser en ese turno
+- En la Ak47 la dispersión no es incremental en el disparo cuando se deja apretado, sino siempre. Tiene un if para que no se descontrole, pero debería mejorarse
