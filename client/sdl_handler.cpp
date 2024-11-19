@@ -21,6 +21,12 @@ void SDLHandler::loadGame(GameState* game) {
         {"forest", "backgrounds/forest", 1},
         {"crate", "crate", 1},
         {"gun", "guns/AK-47", 1},
+        {"cowboy-pistol", "guns/cowboy_pistol", 1},
+        {"laser-rifle", "guns/laser_rifle", 1},
+        {"magnum", "guns/magnum", 1},
+        {"pew-pew-laser", "guns/pew_pew_laser", 1},
+        {"shotgun", "guns/shotgun", 1},
+        {"AK-47", "guns/AK-47", 1},
         {"spawn", "spawn-place", 1},
         {"helmet", "armor/helmet", 1},
         {"armor", "armor/armor", 1},
@@ -77,12 +83,15 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
 
             // Acá reemplazar con los ids de las otras armas cuando tengas los renders de las mismas
             if((message.item_id == BASE_WEAPON_ID)|| (message.item_id == GRANADA_ID) || (message.item_id == BANANA_ID) || 
-            (message.item_id == PEW_PEW_LASER_ID) || (message.item_id == LASER_RIFLE_ID) || (message.item_id == AK_47_ID) || 
-            (message.item_id == DUEL_PISTOL_ID) || (message.item_id == COWBOY_PISTOL_ID) || (message.item_id == MAGNUM_ID) || 
-            (message.item_id == SHOTGUN_ID) || (message.item_id == SNIPER_ID)){
+            (message.item_id == DUEL_PISTOL_ID) || (message.item_id == SNIPER_ID)){
                 //game->ducks[pos_id].weapon_equiped = message.item_id;
                 game->ducks[pos_id].weapon_equiped = BASE_WEAPON_ID;
             }
+
+            if((message.item_id == PEW_PEW_LASER_ID) || (message.item_id == LASER_RIFLE_ID) || (message.item_id == AK_47_ID) || 
+            (message.item_id == COWBOY_PISTOL_ID) || (message.item_id == MAGNUM_ID) || (message.item_id == SHOTGUN_ID)){
+                game->ducks[pos_id].weapon_equiped = message.item_id;
+            }            
 
             if(message.item_id == HELMET_ID){
                 game->ducks[pos_id].item_on_hand = message.item_id;
@@ -101,12 +110,15 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
             // si es un arma la equipo como arma
             // Acá reemplazar con los ids de las otras armas cuando tengas los renders de las mismas
             if((message.item_id == BASE_WEAPON_ID)|| (message.item_id == GRANADA_ID) || (message.item_id == BANANA_ID) || 
-            (message.item_id == PEW_PEW_LASER_ID) || (message.item_id == LASER_RIFLE_ID) || (message.item_id == AK_47_ID) || 
-            (message.item_id == DUEL_PISTOL_ID) || (message.item_id == COWBOY_PISTOL_ID) || (message.item_id == MAGNUM_ID) || 
-            (message.item_id == SHOTGUN_ID) || (message.item_id == SNIPER_ID)){
+            (message.item_id == DUEL_PISTOL_ID) || (message.item_id == SNIPER_ID)){
                 //game->ducks[pos_id].weapon_equiped = message.item_id;
                 game->ducks[pos_id].weapon_equiped = BASE_WEAPON_ID;
             }
+
+            if((message.item_id == PEW_PEW_LASER_ID) || (message.item_id == LASER_RIFLE_ID) || (message.item_id == AK_47_ID) || 
+            (message.item_id == COWBOY_PISTOL_ID) || (message.item_id == MAGNUM_ID) || (message.item_id == SHOTGUN_ID)){
+                game->ducks[pos_id].weapon_equiped = message.item_id;
+            }            
 
             // si es un helmet 
 
