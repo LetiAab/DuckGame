@@ -35,14 +35,14 @@ void Weapon::update_weapon(){
 
         projectile->update_position();
 
-        std::cout << "Despues de actualizar una bala \n";
+        //std::cout << "Despues de actualizar una bala \n";
 
         if(projectile->should_erase_projectile()) {
             it = projectiles.erase(it);
         } else {
             ++it;
         }
-        std::cout << "Despues de chequear que debería borrar una bala \n";
+        //std::cout << "Despues de chequear que debería borrar una bala \n";
     }
 
 }

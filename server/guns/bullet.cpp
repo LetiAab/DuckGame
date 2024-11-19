@@ -21,8 +21,8 @@ void Bullet::update_position() {
         impacto = true;
     } else {
 
-        std::cout << "Comienzo trayectoria desde x: " << position.x << " e y: " << position.y << std::endl;
-        std::cout << "Speed x: " << speed.x << " y: " << speed.y << "\n";
+        //std::cout << "Comienzo trayectoria desde x: " << position.x << " e y: " << position.y << std::endl;
+        //std::cout << "Speed x: " << speed.x << " y: " << speed.y << "\n";
 
 
         int delta_x = position.x + speed.x;

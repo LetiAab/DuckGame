@@ -56,7 +56,7 @@ Position GameMap::try_move_bullet_to(Position old_position, Position new_positio
 
     //itero hasta llegar a la posición final, encontrar un obstaculo o pegarle a un pato
     while (final_x != new_position.x || final_y != new_position.y) {
-        std::cout << "dx es " << dx << " y dy es " << dy << std::endl;
+        //std::cout << "dx es " << dx << " y dy es " << dy << std::endl;
         
         int next_x = final_x + dx;
         int next_y = final_y + dy;

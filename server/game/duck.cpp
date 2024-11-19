@@ -69,12 +69,12 @@ void Duck::useOnHand() {
         setHelmet(h);
     }
 
-    std::cout << "Despues de los ifs" << "\n";
+    //std::cout << "Despues de los ifs" << "\n";
 
-    std::cout << "Antes de reset: " << (onHand ? "No es nulo" : "Es nulo") << "\n";
+    //std::cout << "Antes de reset: " << (onHand ? "No es nulo" : "Es nulo") << "\n";
 
     onHand.reset(); // Libera el recurso
-    std::cout << "Después de reset: " << (onHand ? "No es nulo" : "Es nulo") << "\n";
+    //std::cout << "Después de reset: " << (onHand ? "No es nulo" : "Es nulo") << "\n";
 }
 
 void Duck::check_gravity(){
@@ -206,6 +206,9 @@ void Duck::form_position_message(Message& msg){
 bool Duck::get_duck_position_message(Message& msg){
     if(is_dead){return false;}
 
+//    std::cout << "Chequeo del mensaje, old position es x: " << old_position.x << " y: " << old_position.y << 
+//            "y position es x: " << position.x << " y: " << position.y << "\n";
+            
     if (old_position.x == position.x && old_position.y == position.y){
         if(stop_notificated){
             return false;
@@ -298,6 +301,9 @@ void Duck::disparar() {
             //mueve al pato a la nueva posicion si esta libre o a la que este libre inmediatamente antes
             position = map->move_duck_to(position, new_pos, id_player);
 
+            std::cout << "Retroceso, old position es x: " << old_position.x << " y: " << old_position.y << 
+            "y position es x: " << position.x << " y: " << position.y << "\n";
+            
             // Un problema de esto es que el retroceso no se notifica si el usuario no se mueve en la ronda
             // Esto porque no tengo el monitor a mano ni el game, solo el map, y no puedo notificarlo
         }
