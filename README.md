@@ -36,52 +36,9 @@ Para levantar el cliente
 
 # Como jugar
 
-Para el modo un jugador, usar las teclas wasd para el movimiento, la letra e para agarrar un arma, la letra f para disparar y la letra q para descartar un arma.
+Para el modo un jugador, usar las teclas WASD para el movimiento, la letra E para agarrar un arma, la letra F para disparar y la letra Q para descartar un arma.
 
-
-# Ejemplo de CMAKE para el TP Final
-
-**Importante:** el primer commit de este repositorio tiene el setup
-básico para el TP Final que incluye la instalación de la lib
-`libSDL2pp` (el wrapper de C++).
-
-El resto de los commits son a modo de ejemplo de como se pueden
-agregar mas código fuente al proyecto.
-
-Este ejemplo **no** incluye instalarse la librería `SDL2` ni tampoco
-instala otras librerías que puedan ser necesarias ni tampoco un
-instalador (aunque **si** incluye Google Tests)
-
-**Se deben agregar las librerias necesarias y el instalador.**
-
-También el ejemplo usa una estructura de carpetas muy simple:
-
-```
-client/
-server/
-editor/
-common/
-```
-
-Bien se puede mejorar (cambiando el cmakefile) agregando mas
-sub-carpetas.
-
-Asi tambien **deben** ser cambiados los *targets* del cmake (`taller_client`,
-`taller_server`, ...) por nombres mas acordes al TP que se este
-haciendo.
-
-Tambien, por default solo se compila una version *debug* sin
-optimizar. Si se quiere compilar binarios optimizados
-(lo que cmake llama *release*) se puede, solo hay modificar
-cmake.
-
-Aprender del ejemplo para saber como extenderlo!
-
-**Importante:** este repositorio **no** incluye pre-commits hooks,
-ni scripts adicionales (como correr valgrind).
-
-**Eso esta a cargo de los estudiantes,** tal como fue mostrado
-en los tps individuales, recaps y hands-on.
+Se salta con la letra W y se aleta con la letra S.
 
 
 # Status hasta la fecha
@@ -93,6 +50,7 @@ en los tps individuales, recaps y hands-on.
 - Spawn points
 - Disparo con armas
 - Se implementaron todas las armas menos la granada y la banana
+- Movimientos: derecha, izquierda, salto y aleteo
 
 ## Cosas no implementadas (todavía)
 
@@ -100,9 +58,30 @@ en los tps individuales, recaps y hands-on.
 - Cajas
 - Diseñador de mapa
 - Mayor variedad de mapas
+- Movimiento: tirarse al piso (letra X)
+- Conexion del lobby con el protocolo (por ahora se ingresa por consola y se ve la renderizacion del lobby donde se inicia al tocar boton start)
 
 ## Cosas que se pueden mejorar
 
 - El retroceso en las armas no se muestra cuando el pato está quieto, recién se muestra el cambio cuando el pato se mueve
 - Para el rebote del laser en el Laser Rifle, cuando el laser choca se pierden los movimientos que podía hacer el laser en ese turno
 - En la Ak47 la dispersión no es incremental en el disparo cuando se deja apretado, sino siempre. Tiene un if para que no se descontrole, pero debería mejorarse
+
+# Supuestos
+
+- Cuando termina la partida los jugadores no vuelven al lobby, se termina el juego.
+- Cantidad de jugadores: minimo 2 y maximo 6
+- Cualquiera que este dentro de la partida puede iniciarla
+- Un jugador puede crear varias partidas, pero solo unirse a una
+- Spawn places:
+  * se muestran en el mapa, pero se pueden atravesar
+  * se encarga de generar un casco/armadura/arma aleatoria
+  * decide en qué tiempo mínimo + un tiempo aleatorio aparece el arma
+- Cajas:
+  * se muestran en el mapa, pero se pueden atravesar
+  * se ponen al principio en cada ronda en lugares al azar libres (1 por pato)
+  * tienen cascos/armaduras/armas y granadas que EXPLOTAN
+
+# Fuente
+
+Se utilizo como diseño inicial el ejemplo de CMAKE otorgado por la Catedra Veiga.
