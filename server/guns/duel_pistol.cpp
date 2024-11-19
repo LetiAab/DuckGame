@@ -32,9 +32,9 @@ void DuelPistol::disparar(int position_x, int position_y, char looking, GameMap*
         std::uniform_int_distribution<> distrib(-3, 3);
         int random_dispersion = distrib(gen);
 
-        Bullet new_bullet(bullet_id, bullet_pos, direccion_x, direccion_y + random_dispersion, map, id_player, alcance);
-        new_bullet.comenzar_trayectoria();
-        bullets.push_back(new_bullet);
+        auto new_bullet = std::make_unique<Bullet>(bullet_id, bullet_pos, direccion_x, direccion_y + random_dispersion, map, id_player, alcance);
+        new_bullet->comenzar_trayectoria();
+        projectiles.push_back(std::move(new_bullet));
         
         municiones--;
         std::cout << "Disparo realizado. Quedan " << municiones << " municiones." << std::endl;
@@ -68,11 +68,13 @@ int DuelPistol::getMuniciones() const {
 
 void DuelPistol::update_weapon(){
 
-    for(auto it = bullets.begin(); it != bullets.end(); ) {
-        it->update_position();
+    for(auto it = projectiles.begin(); it != projectiles.end(); ) {
+        Projectile* projectile = it->get();
 
-        if(it->should_erase_bullet()) {
-              it = bullets.erase(it);
+        projectile->update_position();
+
+        if(projectile->should_erase_projectile()) {
+              it = projectiles.erase(it);
         } else {
             ++it;
         }

@@ -5,70 +5,36 @@
 #include "common/constants.h"
 #include "common/position.h"
 #include "../game/game_map.h"
+#include "projectile.h"
 
 #include <cmath> 
 #include <iostream>
 
-class BouncingLaser {
+class BouncingLaser : public Projectile {
 private:
-    int laser_id; //para identificar las balas en los mensajes
-
-    Position position;
-    Position old_position;
-    Position speed;
-    int direction_x; 
-    int direction_y;
-
-    GameMap* map;   
-    bool impacto;
-    char duck_id; //tengo que saber de quien es la bala para que no se autopegue
-    int alcance;
-    bool should_erase;
-
 
 public:
     BouncingLaser(int laser_id, Position position, int direction_x, int direction_y, GameMap* map, char duck_id, int alcance);
-    void comenzar_trayectoria();
-    void update_position();
+    void comenzar_trayectoria() override;
+    void update_position() override;
 
     bool should_erase_laser();
-    void cleanPostImpacto();
-    void impactar();
+    bool should_erase_projectile() override {
+        return should_erase_projectile();
+    };
+    void cleanPostImpacto() override;
+    void impactar() override;
 
     bool get_laser_message(Message& msg);
+    bool get_projectile_message(Message& msg) override {
+        return get_laser_message(msg);
+    };
 
-    Position get_position();
+    Position get_position() override;
 
-    Position get_speed();
+    Position get_speed() override;
 
 
 };
 
 #endif // BOUNCING_LASER_H
-
-
-
-
-
-
-
-
-/* #ifndef BOUNCING_LASER_H
-#define BOUNCING_LASER_H
-
-#include "laser.h"
-#include "../game/game_map.h"
-
-class BouncingLaser : public Laser {
-private:
-    int max_rebotes;  // Número máximo de rebotes permitidos
-    int rebotes_realizados;  // Contador de rebotes realizados
-
-public:
-    BouncingLaser(int laser_id, Position position, int direction_x, int direction_y, GameMap* map, char duck_id, int alcance, int max_rebotes);
-
-    void update_position() override;  // Sobrescribir el comportamiento de `update_position`
-};
-
-#endif // BOUNCING_LASER_H
- */

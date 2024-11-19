@@ -13,8 +13,6 @@ class GameMap; // Declaración anticipada de la clase GameMap
 
 class LaserRifle : public Weapon {  // Herencia de Item
 public:
-    std::vector<BouncingLaser> lasers;
-
     // Constructor que inicializa la posición
     LaserRifle(int x = 0, int y = 0);
 

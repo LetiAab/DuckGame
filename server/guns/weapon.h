@@ -11,7 +11,7 @@
 
 class Weapon : public Item {
 public:
-    std::vector<Bullet> bullets;
+    std::vector<std::unique_ptr<Projectile>> projectiles;
 
     // Constructor que inicializa la posición
     Weapon(uint16_t item_id, const std::string& nombre, double alcance, int dispersion, int municiones, int x = 0, int y = 0);

@@ -4,43 +4,35 @@
 #include "common/message.h"
 #include "common/constants.h"
 #include "../game/game_map.h"
+#include "projectile.h"
 
 #include <iostream>
 #include <cmath> 
 
 class GameMap;
-class Bullet {
-private:
-    int bullet_id; //para identificar las balas en los mensajes
-
-    Position position;
-    Position old_position;
-    Position speed;
-    int direction_x; 
-    int direction_y;
-
-    GameMap* map;   
-    bool impacto;
-    char duck_id; //tengo que saber de quien es la bala para que no se autopegue
-    int alcance;
-    bool should_erase;
-
-
+class Bullet : public Projectile {
 public:
     Bullet(int bullet_id, Position position, int direction_x, int direction_y, GameMap* map, char duck_id, int alcance);
-    void comenzar_trayectoria();
-    void update_position();
+    void comenzar_trayectoria() override;
+    void update_position() override;
 
     bool should_erase_bullet();
-    void cleanPostImpacto();
-    void impactar();
+    bool should_erase_projectile() override {
+        return should_erase_bullet();
+    };
+
+    void cleanPostImpacto() override;
+    void impactar() override;
 
     bool get_bullet_message(Message& msg);
 
-    Position get_position();
+    bool get_projectile_message(Message& msg) override {
+        return get_bullet_message(msg);
+    };
 
-    Position get_speed();
 
+    Position get_position() override;
+    Position get_speed() override;
 
 };
 

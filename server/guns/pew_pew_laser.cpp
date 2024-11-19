@@ -24,9 +24,9 @@ void PewPewLaser::disparar(int position_x, int position_y, char looking, GameMap
         int laser_id = municiones; //el id es el numero de muncion. Inteligente verdad?
 
         for (int i = -1; i < 2; i++){
-                Laser new_laser(laser_id, laser_pos, direccion_x, direccion_y + i, map, id_player, alcance);
-                new_laser.comenzar_trayectoria();
-                lasers.push_back(new_laser);
+                auto new_laser = std::make_unique<Laser>(laser_id, laser_pos, direccion_x, direccion_y + i, map, id_player, alcance);
+                new_laser->comenzar_trayectoria();
+                projectiles.push_back(std::move(new_laser));
         }
         
         municiones--;
@@ -61,11 +61,13 @@ int PewPewLaser::getMuniciones() const {
 
 void PewPewLaser::update_weapon(){
 
-    for(auto it = lasers.begin(); it != lasers.end(); ) {
-        it->update_position();
+    for(auto it = projectiles.begin(); it != projectiles.end(); ) {
+        Projectile* projectile = it->get();
 
-        if(it->should_erase_laser()) {
-            it = lasers.erase(it);
+        projectile->update_position();
+
+        if(projectile->should_erase_projectile()) {
+            it = projectiles.erase(it);
         } else {
             ++it;
         }

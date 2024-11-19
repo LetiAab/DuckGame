@@ -30,11 +30,13 @@ int Weapon::getMuniciones() const {
 
 void Weapon::update_weapon(){
 
-    for(auto it = bullets.begin(); it != bullets.end(); ) {
-        it->update_position();
+    for(auto it = projectiles.begin(); it != projectiles.end(); ) {
+        Projectile* projectile = it->get();
 
-        if(it->should_erase_bullet()) {
-            it = bullets.erase(it);
+        projectile->update_position();
+
+        if(projectile->should_erase_projectile()) {
+            it = projectiles.erase(it);
         } else {
             ++it;
         }

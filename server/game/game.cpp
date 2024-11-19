@@ -141,10 +141,11 @@ void Game::run() {
                         //quizas se pueda hacer un get_duck_bullet_position() en vez de esto
                         //o sea mover la creacion del mensaje dentro del pato
                         if(duck.weapon != nullptr){
-                                for (Bullet& bullet : duck.weapon->bullets) {
-                                        Message bullet_message;
-                                        if (bullet.get_bullet_message(bullet_message)){
-                                                monitor.broadcast(bullet_message);
+                                for (std::unique_ptr<Projectile>& unique_proyectile : duck.weapon->projectiles) {
+                                        Projectile* projectile = unique_proyectile.get();
+                                        Message projectile_message;
+                                        if (projectile->get_projectile_message(projectile_message)){
+                                                monitor.broadcast(projectile_message);
                                         }
                                 }
                         }

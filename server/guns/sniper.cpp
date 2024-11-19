@@ -15,7 +15,6 @@ void Sniper::disparar(int position_x, int position_y, char looking, GameMap* map
 
         Position bullet_pos(bullet_position_x, bullet_position_y);
         //si donde debe salir la bala hay una pared, no puedo disparar
-        std::cout << "Antes del map->at() \n";
         if(map->at(bullet_pos)== 'P') {
             std::cout << "No puedo disparar, hay una pared inmediatamente al lado" << std::endl;
             return;
@@ -26,10 +25,9 @@ void Sniper::disparar(int position_x, int position_y, char looking, GameMap* map
 
         int bullet_id = municiones; //el id es el numero de muncion. Inteligente verdad?
 
-        std::cout << "Creando la bala \n";
-        Bullet new_bullet(bullet_id, bullet_pos, direccion_x, direccion_y, map, id_player, alcance);
-        new_bullet.comenzar_trayectoria();
-        bullets.push_back(new_bullet);
+        auto new_bullet = std::make_unique<Bullet>(bullet_id, bullet_pos, direccion_x, direccion_y, map, id_player, alcance);
+        new_bullet->comenzar_trayectoria();
+        projectiles.push_back(std::move(new_bullet));
         
         municiones--;
         std::cout << "Disparo realizado. Quedan " << municiones << " municiones." << std::endl;
@@ -63,11 +61,13 @@ int Sniper::getMuniciones() const {
 
 void Sniper::update_weapon(){
 
-    for(auto it = bullets.begin(); it != bullets.end(); ) {
-        it->update_position();
+    for(auto it = projectiles.begin(); it != projectiles.end(); ) {
+        Projectile* projectile = it->get();
 
-        if(it->should_erase_bullet()) {
-              it = bullets.erase(it);
+        projectile->update_position();
+
+        if(projectile->should_erase_projectile()) {
+              it = projectiles.erase(it);
         } else {
             ++it;
         }

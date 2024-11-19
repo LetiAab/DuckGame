@@ -29,9 +29,9 @@ void Ak47::disparar(int position_x, int position_y, char looking, GameMap* map, 
         // Esto no diferencia si los disparos son sequidos o no
         int dispersion_disparo = (dispersion % 2 == 0) ? dispersion : (0-dispersion);
 
-        Bullet new_bullet(bullet_id, bullet_pos, direccion_x, direccion_y + dispersion_disparo, map, id_player, alcance);
-        new_bullet.comenzar_trayectoria();
-        bullets.push_back(new_bullet);
+        auto new_bullet = std::make_unique<Bullet>(bullet_id, bullet_pos, direccion_x, direccion_y + dispersion_disparo, map, id_player, alcance);
+        new_bullet->comenzar_trayectoria();
+        projectiles.push_back(std::move(new_bullet));
         
         municiones--;
         dispersion ++;
@@ -66,11 +66,13 @@ int Ak47::getMuniciones() const {
 
 void Ak47::update_weapon(){
 
-    for(auto it = bullets.begin(); it != bullets.end(); ) {
-        it->update_position();
+    for(auto it = projectiles.begin(); it != projectiles.end(); ) {
+        Projectile* projectile = it->get();
 
-        if(it->should_erase_bullet()) {
-              it = bullets.erase(it);
+        projectile->update_position();
+
+        if(projectile->should_erase_projectile()) {
+              it = projectiles.erase(it);
         } else {
             ++it;
         }
