@@ -284,17 +284,17 @@ void Duck::disparar() {
 
     if (weapon != nullptr) {
         std::cout << "Soy pato, disparo desde x: " << position.x << " y: " << position.y << "\n";
+        bool habia_municiones = (weapon->getMuniciones() > 0);
         weapon->disparar(position.x, position.y, looking, map, id_player);
 
-        // Esto lo puedo reemplazar por el item ID
-        if (weapon->getItemId() == AK_47_ID || weapon->getItemId() == MAGNUM_ID) {
+        if (habia_municiones && (weapon->getItemId() == AK_47_ID || weapon->getItemId() == MAGNUM_ID)) {
+            old_position = position;
 
             int shoot_speed = (looking == LOOKING_RIGHT) ? -1 : 1;
             int delta_x = position.x + shoot_speed;
             int delta_y = position.y;
 
             Position new_pos(delta_x, delta_y);
-            old_position = position;
             //mueve al pato a la nueva posicion si esta libre o a la que este libre inmediatamente antes
             position = map->move_duck_to(position, new_pos, id_player);
 
