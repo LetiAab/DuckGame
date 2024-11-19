@@ -7,7 +7,7 @@
 CowboyPistol::CowboyPistol(int x, int y)
     : Weapon(COWBOY_PISTOL_ID, "Cowboy Pistol", 20, 0, 6, x, y) {}
 
-void CowboyPistol::disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) {
+void CowboyPistol::disparar_cowboy_pistol(int position_x, int position_y, char looking, GameMap* map, char id_player) {
     if (municiones > 0) {
         //la bala debe aparecer fuera del pato, o sino se mata a si mismo
         int bullet_position_x = (looking == LOOKING_RIGHT) ? position_x + DUCK_SIZE_X : position_x -1;

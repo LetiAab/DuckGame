@@ -159,7 +159,7 @@ void Game::run() {
 
                 std::this_thread::sleep_for(std::chrono::milliseconds(60));
 
-                map.tellMap();
+                //map.tellMap();
 
         }
         std::cout << "Termino el juego!"  << std::endl;

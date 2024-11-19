@@ -15,6 +15,7 @@ void Sniper::disparar(int position_x, int position_y, char looking, GameMap* map
 
         Position bullet_pos(bullet_position_x, bullet_position_y);
         //si donde debe salir la bala hay una pared, no puedo disparar
+        std::cout << "Antes del map->at() \n";
         if(map->at(bullet_pos)== 'P') {
             std::cout << "No puedo disparar, hay una pared inmediatamente al lado" << std::endl;
             return;
@@ -25,6 +26,7 @@ void Sniper::disparar(int position_x, int position_y, char looking, GameMap* map
 
         int bullet_id = municiones; //el id es el numero de muncion. Inteligente verdad?
 
+        std::cout << "Creando la bala \n";
         Bullet new_bullet(bullet_id, bullet_pos, direccion_x, direccion_y, map, id_player, alcance);
         new_bullet.comenzar_trayectoria();
         bullets.push_back(new_bullet);

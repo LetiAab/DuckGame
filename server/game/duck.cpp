@@ -57,12 +57,9 @@ void Duck::useOnHand() {
     std::cout << "Antes de los casteos" << "\n";
 
     Item* on_hand_item = onHand.get();
-    if (on_hand_item == NULL) {
-        std::cout << "on_hand_item es NULL, no debería" << "\n";
-    }
     std::cout << "El id del item es " << on_hand_item->getItemId() << "\n";
     if (Weapon* w = dynamic_cast<Weapon*>(on_hand_item)) {
-        std::cout << "Entrando a set weapon" << "\n";
+        std::cout << "Entrando a set weapon, el id es " << w->getItemId() << "\n";
         setWeapon(w);
     } else if (Armor* a = dynamic_cast<Armor*>(on_hand_item)) {
         std::cout << "Entrando a set armor" << "\n";
@@ -74,7 +71,10 @@ void Duck::useOnHand() {
 
     std::cout << "Despues de los ifs" << "\n";
 
-    onHand.reset();  // Después de usar el item, lo quitamos de la mano
+    std::cout << "Antes de reset: " << (onHand ? "No es nulo" : "Es nulo") << "\n";
+
+    onHand.reset(); // Libera el recurso
+    std::cout << "Después de reset: " << (onHand ? "No es nulo" : "Es nulo") << "\n";
 }
 
 void Duck::check_gravity(){
@@ -233,7 +233,32 @@ char Duck::get_id() const {
 
 void Duck::setWeapon(Weapon* new_weapon) {
     std::cout << "ASIGNO NUEVA ARMA" << "\n";
-    weapon = new_weapon;  // Asigna el arma al pato
+
+    if (new_weapon->getItemId() == COWBOY_PISTOL_ID){
+        CowboyPistol* pistol = new CowboyPistol();
+        weapon = pistol;
+    } else if (new_weapon->getItemId() == PEW_PEW_LASER_ID){
+        PewPewLaser* pistol = new PewPewLaser();
+        weapon = pistol;
+    } else if (new_weapon->getItemId() == LASER_RIFLE_ID){
+        LaserRifle* pistol = new LaserRifle();
+        weapon = pistol;
+    } else if (new_weapon->getItemId() == AK_47_ID){
+        Ak47* pistol = new Ak47();
+        weapon = pistol;
+    } else if (new_weapon->getItemId() == DUEL_PISTOL_ID){
+        DuelPistol* pistol = new DuelPistol();
+        weapon = pistol;
+    } else if (new_weapon->getItemId() == MAGNUM_ID){
+        Magnum* pistol = new Magnum();
+        weapon = pistol;
+    } else if (new_weapon->getItemId() == SHOTGUN_ID){
+        Shotgun* pistol = new Shotgun();
+        weapon = pistol;
+    } else if (new_weapon->getItemId() == SNIPER_ID){
+        Sniper* pistol = new Sniper();
+        weapon = pistol;
+    }
 }
 
 void Duck::setArmor(Armor* new_armor) {
