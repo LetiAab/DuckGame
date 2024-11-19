@@ -40,6 +40,19 @@ struct Bullet {
     int type;
 };
 
+// This does not contemplate bananas or grenades, that can keep in ground
+// Implementate them implies using a protocol with an eliminate_bullet option
+// Or using an 'updated' flag
+struct Projectile {
+    int current_x;
+    int current_y;
+    int old_x;
+    int old_y;
+    int id;
+    int type;
+    int times_repeated;
+};
+
 struct Crate {
     int x, y;
 };
@@ -57,6 +70,8 @@ struct GameState {
     SDL_Renderer* renderer;
     ClientGameMap client_game_map;
     Queue<Command>* command_queue;
+    std::vector<Projectile> projectiles;
+
 
     // Constructor para inicializar client_game_map
     GameState() : client_game_map(MATRIX_M, MATRIX_N) {}

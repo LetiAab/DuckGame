@@ -66,8 +66,8 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
         }
         if(message.type == SPAWN_PLACE_ITEM_UPDATE){
 
-            int pos_spaw_id = message.spawn_place_id;
-            game->spawn_places[pos_spaw_id].item_id = message.item_id; 
+            int pos_spawn_id = message.spawn_place_id;
+            game->spawn_places[pos_spawn_id].item_id = message.item_id; 
 
         }
 
@@ -150,9 +150,23 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
         }
 
         if(message.type == BULLET_POS_UPDATE){
-            //renderizar la bala. NO se como ahcerlo aca y no dentro del DORender.
-            //capaz simplemente va ahi
-            //cada bala viene con su id para poder identificarla de alguna forma al momento de renderizar
+            std::cout << "Sdl Handler, id" << message.bullet_id << " y type " << message.bullet_type << ", en x: " << 
+            message.bullet_x << " y: " << message.bullet_y << std::endl;
+            bool includes = false;
+            for (Projectile& projectile: game->projectiles) {
+                if (projectile.id == message.bullet_id) {
+                    includes = true;
+                    projectile.old_x = projectile.current_x;
+                    projectile.old_y = projectile.current_y;
+                    projectile.current_x = message.bullet_x;
+                    projectile.current_y = message.bullet_y;
+                    std::cout << "Ya tenia ese id, lo actualizo \n";
+                }
+            }
+            if (!includes) {
+                game->projectiles.push_back(Projectile{message.bullet_x, message.bullet_y, 10000, 10000, message.bullet_id, message.bullet_type, 0});
+                std::cout << "No tenia ese id, lo meto \n";
+            }
         }
 
         if(message.type == KILL_DUCK){

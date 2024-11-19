@@ -29,15 +29,27 @@ void RendererManager::doRenderStatic(GameState* game) {
 
 
 //** Dinamico **//
-void RendererManager::renderBullet(const int x, const int y, int bullet_type, const int size) {
-    if (bullet_type == 0) {
-        SDL_Rect bulletRect = { x * TILE_SIZE, y * TILE_SIZE, size, size };
-        SDL_RenderCopy(renderer, texture_handler.getTexture("bullet"), NULL, &bulletRect);
-    } else {
-        SDL_Rect laserRect = { x * TILE_SIZE, y * TILE_SIZE, size, size };
-        SDL_RenderCopy(renderer, texture_handler.getTexture("laser"), NULL, &laserRect);        
+void RendererManager::renderBullet(GameState* game, const int size) {
+    for (Projectile& projectile: game->projectiles) {    
+        if (projectile.type == 0) {
+            SDL_Rect bulletRect = { projectile.current_x * TILE_SIZE, projectile.current_y * TILE_SIZE, size, size };
+            SDL_RenderCopy(renderer, texture_handler.getTexture("bullet"), NULL, &bulletRect);
+            projectile.times_repeated++;
+        } else {
+            SDL_Rect laserRect = { projectile.current_x * TILE_SIZE, projectile.current_y * TILE_SIZE, size, size };
+            SDL_RenderCopy(renderer, texture_handler.getTexture("laser"), NULL, &laserRect);        
+            projectile.times_repeated++;
+        }
     }
 
+    // Saco las balas y laseres que repitieron posición en el mapa
+    for (auto it = game->projectiles.begin(); it != game->projectiles.end();) {
+        if (it->times_repeated > 1) {
+            it = game->projectiles.erase(it);
+        } else {
+            ++it; // Solo avanzas si no eliminaste
+        }
+    }
 }
 
 void RendererManager::renderDucks(GameState* game, Message& message) {
@@ -257,16 +269,11 @@ void RendererManager::renderItems(GameState* game) {
 void RendererManager::doRenderDynamic(GameState* game, Message& message) {
     SDL_RenderCopy(renderer, texture_handler.getTexture("static_scene"), NULL, NULL);
 
-
-
-
-
-
     renderDucks(game, message);
     renderItems(game);
 
-    if(message.type == BULLET_POS_UPDATE){
-        renderBullet(message.bullet_x, message.bullet_y, message.bullet_type);
+    if (message.type == BULLET_POS_UPDATE){
+        renderBullet(game);
     }
 
     SDL_RenderPresent(renderer);
