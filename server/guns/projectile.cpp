@@ -2,7 +2,21 @@
 
 #include "../game/game.h"
 
+Projectile::Projectile(int projectile_id, int projectile_type, Position position, int direction_x, int direction_y, GameMap* map, char duck_id, int alcance) 
+    : projectile_id(projectile_id),
+    projectile_type(projectile_type),
+    position(position),
+    old_position(position),
+    speed(direction_x, direction_y),
+    direction_x(direction_x),
+    direction_y(direction_y),
+    map(map),
+    impacto(false),
+    duck_id(duck_id),
+    alcance(alcance),
+    should_erase(false) {}
 
+/* 
     ProyectilGranada::ProyectilGranada(int tiempo, int pos_x, int pos_y, int speed_x, int speed_y) : Proyectil("Granada", 5, 15, pos_x, pos_y, speed_x, speed_y) {
         tiempo_explosion = tiempo;
     }
@@ -69,3 +83,4 @@ void ProyectilLaser::impactar() {
     void ProyectilBanana::impactar() {
         std::cout << "Un pato pisa la banana y se resbala.\n";
     }
+ */

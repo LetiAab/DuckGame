@@ -15,8 +15,8 @@ public:
 private:
     SDL_Renderer* renderer;
     TextureHandler& texture_handler;
-    void renderBullet(int x, int y, int size = 20);
-    void renderDucks(GameState* game, Message& message);
+    void renderBullet(GameState* game,  int size = 20);
+    void renderDucks(GameState* game);
     void renderItems(GameState* game);
 
 

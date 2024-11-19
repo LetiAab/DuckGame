@@ -3,6 +3,8 @@
 
 #include <vector>
 
+#include <cstdint>
+
 const int ERROR = 1;
 const int SUCCESS = 0;
 
@@ -78,14 +80,27 @@ const int N_SPAWN_PLACES = 4;
 //VOY A NECESITAR IDS PARA QUE SEPAN QUE ITEM RENDERERIZAR 
 const uint8_t ARMOR_ID = 0x39;
 const uint8_t HELMET_ID = 0x40;
-const uint8_t WEAPON_1_ID = 0x41;
+
+const uint8_t BASE_WEAPON_ID = 0x41;
+
+const uint8_t GRANADA_ID = 0x42;
+const uint8_t BANANA_ID = 0x43;
+const uint8_t PEW_PEW_LASER_ID = 0x44;
+const uint8_t LASER_RIFLE_ID = 0x45;
+const uint8_t AK_47_ID = 0x46; //0x47 (?
+const uint8_t DUEL_PISTOL_ID = 0x47;
+const uint8_t COWBOY_PISTOL_ID = 0x48;
+const uint8_t MAGNUM_ID = 0x49;
+const uint8_t SHOTGUN_ID = 0x50;
+const uint8_t SNIPER_ID = 0x51;
+
 // ...
 
 
 
 
 
-
+const int ITERATIONS_TO_GENERATE_ITEMS = 100; //a ojo
 
 static const char QUIT_SERVER[] = "q";
 

@@ -87,6 +87,7 @@ Message ClientProtocol::receive_message(){
         skt.recvall(&message.bullet_x, sizeof(int), &was_closed);
         skt.recvall(&message.bullet_y, sizeof(int), &was_closed);
         skt.recvall(&message.bullet_id, sizeof(int), &was_closed);
+        skt.recvall(&message.bullet_type, sizeof(int), &was_closed);
 
         break;
 

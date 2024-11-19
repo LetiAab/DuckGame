@@ -6,17 +6,21 @@
 #include "common/queue.h"
 #include "common/thread.h"
 #include "common/command.h"
+
+#include "../armor/armor.h"
+#include "../armor/helmet.h"
 #include "game_map.h"
-#include <list>
-#include <vector>
 #include "duck.h"
 #include "item.h"
+#include "../guns/weapon.h"
 #include "spawn_place.h"
 #include "round_manager.h"
 
-#include <cstdlib>  // Para rand y srand
-#include <ctime>    // Para time
 
+#include <cstdlib>
+#include <ctime>
+#include <list>
+#include <vector>
 
 #define GAME_TIME_SLEEP 100
 // En gun.h tengo la misma variable, cambiar también ahí o mejorar el import
@@ -47,7 +51,7 @@ private:
         Queue<std::shared_ptr<Executable>> game_queue;
         int players; //cantidad de jugadores
         std::vector<Update> updates;
-        std::vector<std::unique_ptr<Proyectil>> projectiles;
+        //std::vector<std::unique_ptr<Proyectil>> projectiles;
 
 
         void send_updates();
@@ -80,9 +84,32 @@ explicit Game(uint16_t match_id, GameQueueMonitor& monitor, bool& is_over);
 
 Queue<std::shared_ptr<Executable>>& get_game_queue();
 
+<<<<<<< HEAD
 void set_players(int number_of_players);
+=======
+void inicializate_map();
 
-void add_projectile(std::unique_ptr<Proyectil> projectile);
+void create_ducks(int size);
+
+void create_spawn_places();
+
+void refreshDuckPositions();
+
+Duck* getDuckByPosition(Position position);
+
+Duck* getDuckById(char id);
+
+Item* getItemByPosition(Position position);
+
+SpawnPlace* getSpawnPlaceByPosition(Position position);
+
+
+void game_broadcast(Message message);
+
+void simulate_round();
+>>>>>>> origin
+
+//void add_projectile(std::unique_ptr<Proyectil> projectile);
 
 void run() override;
 

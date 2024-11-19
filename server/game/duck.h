@@ -3,27 +3,34 @@
 
 
 #include <cstdint>
+#include <string>
+#include <condition_variable>
+
 #include "game_map.h"
-#include "../guns/projectile.h"
+
 #include "common/constants.h"
 #include "common/position.h"
 #include "common/message.h"
 
-
-#include <string>
-
-#include "../guns/bullet.h"
-#include "../guns/weapon.h"
 #include "../armor/armor.h"
 #include "../armor/helmet.h"
 
+#include "../guns/weapon.h"
+#include "../guns/ak_47.h"
+#include "../guns/magnum.h"
+#include "../guns/cowboy_pistol.h"
+#include "../guns/duel_pistol.h"
+#include "../guns/pew_pew_laser.h"
+#include "../guns/laser_rifle.h"
+#include "../guns/shotgun.h"
+#include "../guns/sniper.h"
 
-class Arma;
+
+
 class GameMap;
-class Bullet;  // Declaración adelantada de Bullet
-class Weapon;  // Declaración adelantada de Weapon
-class Armor;  // Declaración adelantada de Weapon
-class Helmet;  // Declaración adelantada de Weapon
+class Item;
+class Weapon;
+class Bullet;
 
 
 
