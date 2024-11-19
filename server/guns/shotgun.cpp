@@ -25,11 +25,12 @@ void Shotgun::disparar(int position_x, int position_y, char looking, GameMap* ma
         int direccion_x = (looking == LOOKING_RIGHT) ? 6 : -6;
         int direccion_y = 0;  // La bala se mueve horizonalmente
 
-        int bullet_id = municiones; //el id es el numero de municion. Inteligente verdad?
+        //el id es el numero de municion. Inteligente verdad?
 
         for (int i = -3; i < 4; i++){
             if (i == 0)
                 continue;
+            int bullet_id = municiones * SHOTGUN_ID + i; 
             auto new_bullet = std::make_unique<Bullet>(bullet_id, bullet_pos, direccion_x, direccion_y + i, map, id_player, alcance);
             new_bullet->comenzar_trayectoria();
             projectiles.push_back(std::move(new_bullet));
