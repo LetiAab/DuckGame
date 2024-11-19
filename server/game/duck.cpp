@@ -283,6 +283,7 @@ void Duck::disparar() {
     if(is_dead){return;}
 
     if (weapon != nullptr) {
+        std::cout << "Soy pato, disparo desde x: " << position.x << " y: " << position.y << "\n";
         weapon->disparar(position.x, position.y, looking, map, id_player);
 
         // Esto lo puedo reemplazar por el item ID

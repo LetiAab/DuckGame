@@ -16,7 +16,7 @@ void BouncingLaser::update_position() {
         impacto = true;
     } else {
 
-        std::cout << "Comienzo trayectoria desde x: " << position.x << "\n";
+        std::cout << "Comienzo trayectoria desde x: " << position.x << " y: " << position.y << "\n";
 
         int delta_x = position.x + speed.x;
         int delta_y = position.y + speed.y;
@@ -27,6 +27,7 @@ void BouncingLaser::update_position() {
 
         position = map->try_move_bouncing_laser_to(position, Position(delta_x, delta_y), duck_id, impacto, hit_platform, hit_x);
         if (hit_platform) {
+                std::cout << "Se invierte la velocidad \n";
                 if (hit_x) {
                         speed.x = 0 - speed.x;
                 } else {
@@ -40,6 +41,8 @@ void BouncingLaser::update_position() {
         
         //por ahora, le resto la velocidad en x ya que solo dispara en horizontal
         alcance -= std::abs(speed.x);
+
+        std::cout << "En el turno el laser avanzó hasta x: " << position.x << " y: " << position.y << "\n";
     }
 
 }
@@ -61,6 +64,7 @@ bool BouncingLaser::get_laser_message(Message& msg){
     msg.bullet_x = position.x;
     msg.bullet_y = position.y;
     msg.bullet_id = projectile_id;
+    msg.bullet_type = 1;
     //mandar flag del impacto (?)
 
     return true;

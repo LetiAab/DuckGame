@@ -31,6 +31,7 @@ void SDLHandler::loadGame(GameState* game) {
         {"helmet", "armor/helmet", 1},
         {"armor", "armor/armor", 1},
         {"bullet", "ammo/bullet", 1},
+        {"laser", "ammo/laser_flare", 2},
         {"duck-walking", "duck-walking", 6},
         {"duck-walking-wings", "duck-walking-wings", 1},
         {"duck-jumping", "duck-jumping", 1},

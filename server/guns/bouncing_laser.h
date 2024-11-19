@@ -20,7 +20,7 @@ public:
 
     bool should_erase_laser();
     bool should_erase_projectile() override {
-        return should_erase_projectile();
+        return should_erase_laser();
     };
     void cleanPostImpacto() override;
     void impactar() override;

@@ -23,10 +23,11 @@ void LaserRifle::disparar(int position_x, int position_y, char looking, GameMap*
 
         int laser_id = municiones; //el id es el numero de muncion. Inteligente verdad?
 
+        std::cout << "Creada la bala, a darle vida" << std::endl;
         auto new_laser = std::make_unique<BouncingLaser>(laser_id, laser_pos, direccion_x, direccion_y, map, id_player, alcance);
         new_laser->comenzar_trayectoria();
         projectiles.push_back(std::move(new_laser));
-        
+
         municiones--;
         std::cout << "Disparo realizado. Quedan " << municiones << " municiones." << std::endl;
     } else {

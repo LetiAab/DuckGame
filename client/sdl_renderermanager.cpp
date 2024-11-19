@@ -29,9 +29,15 @@ void RendererManager::doRenderStatic(GameState* game) {
 
 
 //** Dinamico **//
-void RendererManager::renderBullet(const int x, const int y, const int size) {
-    SDL_Rect bulletRect = { x * TILE_SIZE, y * TILE_SIZE, size, size };
-    SDL_RenderCopy(renderer, texture_handler.getTexture("bullet"), NULL, &bulletRect);
+void RendererManager::renderBullet(const int x, const int y, int bullet_type, const int size) {
+    if (bullet_type == 0) {
+        SDL_Rect bulletRect = { x * TILE_SIZE, y * TILE_SIZE, size, size };
+        SDL_RenderCopy(renderer, texture_handler.getTexture("bullet"), NULL, &bulletRect);
+    } else {
+        SDL_Rect laserRect = { x * TILE_SIZE, y * TILE_SIZE, size, size };
+        SDL_RenderCopy(renderer, texture_handler.getTexture("laser"), NULL, &laserRect);        
+    }
+
 }
 
 void RendererManager::renderDucks(GameState* game, Message& message) {
@@ -87,16 +93,12 @@ void RendererManager::renderDucks(GameState* game, Message& message) {
             if (duck.weapon_equiped == COWBOY_PISTOL_ID) {
                 SDL_RenderCopyEx(renderer, texture_handler.getTexture("cowboy-pistol"), NULL, &gun_rect, 0, NULL, duck.flipType);
             } else if (duck.weapon_equiped == LASER_RIFLE_ID) {
-
                 SDL_RenderCopyEx(renderer, texture_handler.getTexture("laser-rifle"), NULL, &gun_rect, 0, NULL, duck.flipType);
             } else if (duck.weapon_equiped == MAGNUM_ID) {
-
                 SDL_RenderCopyEx(renderer, texture_handler.getTexture("magnum"), NULL, &gun_rect, 0, NULL, duck.flipType);
             } else if (duck.weapon_equiped == PEW_PEW_LASER_ID) {
-
                 SDL_RenderCopyEx(renderer, texture_handler.getTexture("pew-pew-laser"), NULL, &gun_rect, 0, NULL, duck.flipType);
             } else if (duck.weapon_equiped == SHOTGUN_ID) {
-
                 SDL_RenderCopyEx(renderer, texture_handler.getTexture("shotgun"), NULL, &gun_rect, 0, NULL, duck.flipType);
             } else if (duck.weapon_equiped == AK_47_ID) {
                 SDL_RenderCopyEx(renderer, texture_handler.getTexture("AK-47"), NULL, &gun_rect, 0, NULL, duck.flipType);
@@ -264,7 +266,7 @@ void RendererManager::doRenderDynamic(GameState* game, Message& message) {
     renderItems(game);
 
     if(message.type == BULLET_POS_UPDATE){
-        renderBullet(message.bullet_x, message.bullet_y);
+        renderBullet(message.bullet_x, message.bullet_y, message.bullet_type);
     }
 
     SDL_RenderPresent(renderer);

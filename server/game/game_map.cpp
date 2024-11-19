@@ -112,10 +112,15 @@ Position GameMap::try_move_bouncing_laser_to(Position old_position, Position new
     int dx = (new_position.x > old_position.x) ? 1 : (new_position.x < old_position.x ? -1 : 0);
     int dy = (new_position.y > old_position.y) ? 1 : (new_position.y < old_position.y ? -1 : 0);
 
+    std::cout << "TryMoveBouncingLaserTo. Comienzo trayectoria desde x: " << old_position.x << " y: " << old_position.y << "\n";
+
     //itero hasta llegar a la posición final, encontrar un obstaculo o pegarle a un pato
     while (final_x != new_position.x || final_y != new_position.y) {
         int next_x = final_x + dx;
         int next_y = final_y + dy;
+
+        std::cout << "La posición tentativa de esta iteración es x: " << next_x << " y: " << next_y << "\n";
+
 
         //verifico si la nueva posición está dentro de los límites del mapa
         if (next_x < 0 || next_x + BULLET_SIZE_X > width || next_y < 0 || next_y + BULLET_SIZE_Y > height) {
@@ -127,6 +132,8 @@ Position GameMap::try_move_bouncing_laser_to(Position old_position, Position new
             for (int x = next_x; x < next_x + BULLET_SIZE_X; ++x) {
 
                 if (map[y][x] == PLATFORM) {
+                    std::cout << "Choco con una plataforma \n";
+
                     // Nota: El proximo upgrade que debería tener esto es que el movimiento no se termine cuando
                     // choca con una pared, sino que recalcule el esperado
                     hit_platform = true;
@@ -155,6 +162,7 @@ Position GameMap::try_move_bouncing_laser_to(Position old_position, Position new
                     return Position(final_x, final_y);  // devuelvo la posición actual
                 }
                 else if (bullet_hit_other_duck(map[y][x], duck_id)) {
+                    std::cout << "Choco con un pato (no el owner) \n";
                     // Caso 2: choque con otro pato
                     hit_something = true;
                     // avanzo una posición más para que la bala quede "dentro" del pato
@@ -176,7 +184,8 @@ Position GameMap::try_move_bouncing_laser_to(Position old_position, Position new
         //si el área está libre, actualizo la posición final
         final_x = next_x;
         final_y = next_y;
-        
+
+        std::cout << "Se alcanzó la posición tentativa, x: " << final_x << " y: " << final_y << "\n";
     }
 
     return Position(final_x, final_y);

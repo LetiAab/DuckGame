@@ -57,6 +57,7 @@ bool Bullet::get_bullet_message(Message& msg){
     msg.bullet_x = position.x;
     msg.bullet_y = position.y;
     msg.bullet_id = projectile_id;
+    msg.bullet_type = projectile_type;
     //mandar flag del impacto (?)
 
     return true;

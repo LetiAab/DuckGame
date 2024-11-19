@@ -60,6 +60,8 @@ void Game::simulate_round() {
                 duck.update_position();
                 duck.update_weapon();
 
+                std::cout << "Despues de mover las balas \n";
+
                 // Si el pato murio, avisamos al cliente
                 //estaria bueno mover esto 
 
@@ -243,9 +245,9 @@ void Game::create_spawn_places() {
     std::cout << "CREO LOS ITEMS" << "\n";
 
 
-    std::unique_ptr<Item> item1 = std::make_unique<CowboyPistol>(30, 130);
+    std::unique_ptr<Item> item1 = std::make_unique<LaserRifle>(30, 130);
     std::unique_ptr<Item> item2 = std::make_unique<Armor>(100, 130);
-    std::unique_ptr<Item> item3 = std::make_unique<Sniper>(30, 75);
+    std::unique_ptr<Item> item3 = std::make_unique<PewPewLaser>(30, 75);
     std::unique_ptr<Item> item4 = std::make_unique<Helmet>(100, 75);
 
 
