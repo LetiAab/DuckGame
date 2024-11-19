@@ -57,11 +57,11 @@ public:
     int life_points;
     bool stop_notificated;
     bool is_dead;
-    Weapon* weapon;
-    Armor* armor;
-    Helmet* helmet;
+    std::shared_ptr<Weapon> weapon;
+    std::shared_ptr<Armor> armor;
+    std::shared_ptr<Helmet> helmet;
     
-    std::unique_ptr<Item> onHand;  // Usamos un smart pointer para manejar el recurso
+    std::shared_ptr<Item> onHand;  // Usamos un smart pointer para manejar el recurso
 
     Duck(char id, int x, int y, GameMap* map);
 
@@ -83,15 +83,15 @@ public:
 
     char get_id() const;
 
-    void setWeapon(Weapon* new_weapon);
-    void setArmor(Armor* new_armor);
-    void setHelmet(Helmet* new_helmet);
+    void setWeapon(std::shared_ptr<Weapon> new_weapon);
+    void setArmor(std::shared_ptr<Armor> new_armor);
+    void setHelmet(std::shared_ptr<Helmet> new_helmet);
 
     bool dropWeapon();
 
-    bool pickUpItem(Item* item);
+    bool pickUpItem(std::shared_ptr<Item> item);
     void useOnHand();
-    Item* getItemOnHand() const;
+    std::shared_ptr<Item> getItemOnHand() const;
 
     void disparar();
 

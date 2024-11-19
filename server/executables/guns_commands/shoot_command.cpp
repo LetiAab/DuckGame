@@ -29,7 +29,7 @@ void ShootCommand::execute(Game& game) {
         duck->useOnHand();  //se equipa el item
         std::cout << "Saliendo del agarrar item \n";
 
-        //si es un arma disparo
+        //si es un arma disparo, simplemente disparo
         if(msg.item_id != ARMOR_ID && msg.item_id != HELMET_ID){
             duck->disparar();
         }

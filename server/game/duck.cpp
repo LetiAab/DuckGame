@@ -32,7 +32,7 @@ bool Duck::is_in_air(){
     return map->canMoveDuckTo(position.x, position.y + 1, id_player);
 }
 
-bool Duck::pickUpItem(Item* item) {
+bool Duck::pickUpItem(std::shared_ptr<Item> item) {
 
     
     if (item != nullptr){
@@ -41,7 +41,7 @@ bool Duck::pickUpItem(Item* item) {
             std::cout << "No tiene un ítem en la mano actualmente" << "\n";
         else
             std::cout << "El item de la mano antes de cambiarlo tiene ID " << onHand->getItemId() << "\n";
-        onHand.reset(item);
+        onHand = item;
         std::cout << "Ahora el Id del Item en la mano es " << onHand->getItemId() << "\n";
         return true;
     } 
@@ -56,25 +56,21 @@ void Duck::useOnHand() {
 
     std::cout << "Antes de los casteos" << "\n";
 
-    Item* on_hand_item = onHand.get();
-    std::cout << "El id del item es " << on_hand_item->getItemId() << "\n";
-    if (Weapon* w = dynamic_cast<Weapon*>(on_hand_item)) {
+    std::cout << "El id del item es " << onHand->getItemId() << "\n";
+
+    if (auto w = std::dynamic_pointer_cast<Weapon>(onHand)) {
         std::cout << "Entrando a set weapon, el id es " << w->getItemId() << "\n";
         setWeapon(w);
-    } else if (Armor* a = dynamic_cast<Armor*>(on_hand_item)) {
+    } else if (auto a = std::dynamic_pointer_cast<Armor>(onHand)) {
         std::cout << "Entrando a set armor" << "\n";
         setArmor(a);
-    } else if (Helmet* h = dynamic_cast<Helmet*>(on_hand_item)) {
+    } else if (auto h = std::dynamic_pointer_cast<Helmet>(onHand)) {
         std::cout << "Entrando a set helmet" << "\n";
         setHelmet(h);
     }
 
-    //std::cout << "Despues de los ifs" << "\n";
-
-    //std::cout << "Antes de reset: " << (onHand ? "No es nulo" : "Es nulo") << "\n";
-
-    onHand.reset(); // Libera el recurso
-    //std::cout << "Después de reset: " << (onHand ? "No es nulo" : "Es nulo") << "\n";
+    onHand.reset();  // Libera el recurso
+    std::cout << "Después de reset: " << (onHand ? "No es nulo" : "Es nulo") << "\n";
 }
 
 void Duck::check_gravity(){
@@ -234,51 +230,57 @@ char Duck::get_id() const {
 
 
 
-void Duck::setWeapon(Weapon* new_weapon) {
+void Duck::setWeapon(std::shared_ptr<Weapon> new_weapon) {
     std::cout << "ASIGNO NUEVA ARMA" << "\n";
 
-    if (new_weapon->getItemId() == COWBOY_PISTOL_ID){
-        CowboyPistol* pistol = new CowboyPistol();
-        weapon = pistol;
-    } else if (new_weapon->getItemId() == PEW_PEW_LASER_ID){
-        PewPewLaser* pistol = new PewPewLaser();
-        weapon = pistol;
-    } else if (new_weapon->getItemId() == LASER_RIFLE_ID){
-        LaserRifle* pistol = new LaserRifle();
-        weapon = pistol;
-    } else if (new_weapon->getItemId() == AK_47_ID){
-        Ak47* pistol = new Ak47();
-        weapon = pistol;
-    } else if (new_weapon->getItemId() == DUEL_PISTOL_ID){
-        DuelPistol* pistol = new DuelPistol();
-        weapon = pistol;
-    } else if (new_weapon->getItemId() == MAGNUM_ID){
-        Magnum* pistol = new Magnum();
-        weapon = pistol;
-    } else if (new_weapon->getItemId() == SHOTGUN_ID){
-        Shotgun* pistol = new Shotgun();
-        weapon = pistol;
-    } else if (new_weapon->getItemId() == SNIPER_ID){
-        Sniper* pistol = new Sniper();
-        weapon = pistol;
+    switch (new_weapon->getItemId()) {
+        case COWBOY_PISTOL_ID:
+            weapon = std::make_shared<CowboyPistol>();
+            break;
+        case PEW_PEW_LASER_ID:
+            weapon = std::make_shared<PewPewLaser>();
+            break;
+        case LASER_RIFLE_ID:
+            weapon = std::make_shared<LaserRifle>();
+            break;
+        case AK_47_ID:
+            weapon = std::make_shared<Ak47>();
+            break;
+        case DUEL_PISTOL_ID:
+            weapon = std::make_shared<DuelPistol>();
+            break;
+        case MAGNUM_ID:
+            weapon = std::make_shared<Magnum>();
+            break;
+        case SHOTGUN_ID:
+            weapon = std::make_shared<Shotgun>();
+            break;
+        case SNIPER_ID:
+            weapon = std::make_shared<Sniper>();
+            break;
+        default:
+            std::cout << "Tipo de arma desconocido" << "\n";
     }
 }
 
-void Duck::setArmor(Armor* new_armor) {
+void Duck::setArmor(std::shared_ptr<Armor> new_armor) {
     std::cout << "ASIGNO NUEVA ARMADURA" << "\n";
-    if(armor == nullptr){
-        armor = new_armor;  // Asigna el arma al pato
-        life_points += 1;
+    if (!armor) {
+        armor = new_armor;
+        life_points += 1; 
+    } else {
+        std::cout << "El pato ya tiene una armadura equipada" << "\n";
     }
 }
 
-void Duck::setHelmet(Helmet* new_helmet) {
-    if(helmet == nullptr){
+void Duck::setHelmet(std::shared_ptr<Helmet> new_helmet) {
+    if (!helmet) {
         std::cout << "ASIGNO NUEVO CASCO" << "\n";
-        helmet = new_helmet;  // Asigna el arma al pato
+        helmet = new_helmet;
         life_points += 1;
+    } else {
+        std::cout << "El pato ya tiene un casco equipado" << "\n";
     }
-
 }
 
 
@@ -335,14 +337,15 @@ void Duck::reset_for_round(Position pos){
     onHand.reset();
 }
 
-Item* Duck::getItemOnHand() const {
-    return onHand ? onHand.get() : nullptr;
+std::shared_ptr<Item> Duck::getItemOnHand() const {
+    return onHand ? onHand : nullptr;
 }
 
 bool Duck::dropWeapon() {
     if (weapon) {
         std::cout << "El jugador " << id_player << " deja caer su arma: " << std::endl;
         //SE ELIMINA LA REFERENCIA SOLAMENTE
+        //deberia pasarle el arma a la lista de items del juego
         weapon = nullptr;
         return true;
         

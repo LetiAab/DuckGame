@@ -48,7 +48,7 @@ bool SpawnPlace::getSpawnPlaceItemUpdateMessage(Message& msg){
         return true;
 }
 
-bool SpawnPlace::updateIterations(std::vector<std::unique_ptr<Item>>& items){
+bool SpawnPlace::updateIterations(std::vector<std::shared_ptr<Item>>& items){
 
     if(item_id == 0){
         iterations_to_generate_item--;
@@ -67,48 +67,42 @@ bool SpawnPlace::updateIterations(std::vector<std::unique_ptr<Item>>& items){
 }
 
 
-void SpawnPlace::create_items(std::vector<std::unique_ptr<Item>>& items) {
-
+void SpawnPlace::create_items(std::vector<std::shared_ptr<Item>>& items) {
     std::srand(static_cast<unsigned>(::time(nullptr)));
     
     for (int i = 0; i < 1; ++i) {
         int x = position.x;
         int y = position.y;
 
-        // Crear un tipo de ítem aleatorio
         int item_type = std::rand() % 12;
-        std::unique_ptr<Item> item;
+        std::shared_ptr<Item> item;
 
-/*         if (item_type == 0) {
-            item = std::make_unique<Granada>(x, y);
-        } else if (item_type == 1) {
-            item = std::make_unique<Banana>(x, y);
-        } else */ if (item_type == 2) {
-            item = std::make_unique<PewPewLaser>(x, y);
+        //tipos 1 y 2 son para la banana y granada que no estan implementadas aun
+        if (item_type == 2) {
+            item = std::make_shared<PewPewLaser>(x, y);
         } else if (item_type == 3) {
-            item = std::make_unique<LaserRifle>(x, y);
+            item = std::make_shared<LaserRifle>(x, y);
         } else if (item_type == 4) {
-            item = std::make_unique<Ak47>(x, y);
+            item = std::make_shared<Ak47>(x, y);
         } else if (item_type == 5) {
-            item = std::make_unique<DuelPistol>(x, y);
+            item = std::make_shared<DuelPistol>(x, y);
         } else if (item_type == 6) {
-            item = std::make_unique<CowboyPistol>(x, y);
+            item = std::make_shared<CowboyPistol>(x, y);
         } else if (item_type == 7) {
-            item = std::make_unique<Magnum>(x, y);
+            item = std::make_shared<Magnum>(x, y);
         } else if (item_type == 8) {
-            item = std::make_unique<Shotgun>(x, y);
+            item = std::make_shared<Shotgun>(x, y);
         } else if (item_type == 9) {
-            item = std::make_unique<Sniper>(x, y);
+            item = std::make_shared<Sniper>(x, y);
         } else if (item_type == 10) {
-            item = std::make_unique<Armor>(x, y);
+            item = std::make_shared<Armor>(x, y);
         } else {
-            item = std::make_unique<Helmet>(x, y);
+            item = std::make_shared<Helmet>(x, y);
         }
 
-        //agrego al vector
         item_id = item->getItemId();
 
-        items.push_back(std::move(item));
-
+        items.push_back(item);
     }
 }
+

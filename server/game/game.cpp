@@ -260,16 +260,15 @@ bool Game::check_end_game(){
 }
 
 void Game::stop() {
-        std::cout << "Comienzo el stop"  << std::endl;
+        std::cout << "Comienzo el stop..."  << std::endl;
         game_queue.close();
         monitor.remove_all_queues();
-        items.clear();
-        ducks.clear();
         is_running = false;
         is_over = true;
-        std::cout << "termino el stop"  << std::endl;
+        std::cout << "Termino el stop"  << std::endl;
 }
 
+<<<<<<< HEAD
 void Game::initialize_round() {
         //TODO: MAPA Y LOS OBJETOS ESTAN TODOS HARDCODEADO Y ES SIEMPRE IGUAL
         //cuando cambia la ronda deberia aparecer un mapa nuevo al azar
@@ -286,6 +285,11 @@ void Game::initialize_round() {
 
         duck.setHelmet(helmet);
     }
+>>>>>>> origin
+=======
+void Game::inicializate_map() {
+    // Le doy armas a los patos para probar
+
 >>>>>>> origin
 }
 
@@ -392,7 +396,7 @@ Duck* Game::getDuckById(char id) {
 
 //REFACTOR! ESTOY BUSCANDO EL ITEM Y EL SPAWN PLACE
 
-Item* Game::getItemByPosition(Position position) {
+std::shared_ptr<Item> Game::getItemByPosition(Position position) {
     int area_x_min = position.x;
     int area_x_max = position.x + DUCK_SIZE_X;
     int area_y_min = position.y;
@@ -410,7 +414,8 @@ Item* Game::getItemByPosition(Position position) {
         if (itemPos.x >= area_x_min && itemPos.x < area_x_max &&
             itemPos.y >= area_y_min && itemPos.y < area_y_max) {
             std::cout << "Encontré un item, en la pos x: " << itemPos.x << " y: " << itemPos.y << std::endl;
-            return item_ptr.get(); 
+            //debo eliminarlo de la lista
+            return item_ptr; 
         }
     }
 
