@@ -52,7 +52,7 @@ void RendererManager::renderBullet(GameState* game, const int size) {
     }
 }
 
-void RendererManager::renderDucks(GameState* game, Message& message) {
+void RendererManager::renderDucks(GameState* game) {
     for (int i = 0; i < game->ducks_quantity; i++) {
         Duck& duck = game->ducks[i];
 
@@ -85,10 +85,10 @@ void RendererManager::renderDucks(GameState* game, Message& message) {
 
         SDL_Texture* duck_texture = nullptr;
         SDL_Texture* wings_texture = nullptr;
-        if (message.is_jumping && !message.is_fluttering) {
+        if (duck.is_jumping && !duck.is_fluttering) {
             duck_texture = texture_handler.getTexture("duck-jumping");
             wings_texture = texture_handler.getTexture("duck-jumping-wings");
-        } else if (message.is_fluttering) {
+        } else if (duck.is_fluttering) {
             duck_texture = texture_handler.getTexture("duck-fluttering");
             //wings_texture = texture_handler.getTexture("duck-fluttering-wings");
         } else {
@@ -288,7 +288,7 @@ void RendererManager::renderItems(GameState* game) {
 void RendererManager::doRenderDynamic(GameState* game, Message& message) {
     SDL_RenderCopy(renderer, texture_handler.getTexture("static_scene"), NULL, NULL);
 
-    renderDucks(game, message);
+    renderDucks(game);
     renderItems(game);
 
     if (message.type == BULLET_POS_UPDATE){
