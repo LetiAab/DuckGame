@@ -1,9 +1,9 @@
 #include "pew_pew_laser.h"
 #include <iostream>
 
-// 12 rafagas, Alcance: 35 a 38 tiles
+// 12 rafagas, Alcance: 35 a 38 tiles (35 x TILE_SIZE = 140)
 PewPewLaser::PewPewLaser(int x, int y)
-    : Weapon(PEW_PEW_LASER_ID, "Pew Pew Laser", 35, 1, 12, x, y) {}
+    : Weapon(PEW_PEW_LASER_ID, "Pew Pew Laser", 140, 1, 12, x, y) {}
 
 void PewPewLaser::disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) {
     if (municiones > 0) {

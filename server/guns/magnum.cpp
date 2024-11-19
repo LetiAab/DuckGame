@@ -1,9 +1,9 @@
 #include "magnum.h"
 
 
-// 6 balas, Alcance: 20 tiles
+// 6 balas, Alcance: 20 tiles (20 x TILE_SIZE = 80)
 Magnum::Magnum(int x, int y)
-    : Weapon(MAGNUM_ID, "Magnum", 20, 0, 6, x, y) {}
+    : Weapon(MAGNUM_ID, "Magnum", 80, 0, 6, x, y) {}
 
 void Magnum::disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) {
     if (municiones > 0) {

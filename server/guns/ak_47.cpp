@@ -1,9 +1,9 @@
 #include "ak_47.h"
 #include <iostream>
 
-// 30 balas, Alcance: 13 tiles
+// 30 balas, Alcance: 13 tiles (13 x TILE_SIZE = 52)
 Ak47::Ak47(int x, int y)
-    : Weapon(AK_47_ID, "Ak 47", 13, 0, 30, x, y) {}
+    : Weapon(AK_47_ID, "Ak 47", 52, 0, 30, x, y) {}
 
 void Ak47::disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) {
     if (municiones > 0) {

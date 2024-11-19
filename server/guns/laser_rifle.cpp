@@ -1,9 +1,9 @@
 #include "laser_rifle.h"
 #include <iostream>
 
-// 10 rayos, Alcance: 30 tiles
+// 10 rayos, Alcance: 30 tiles (30 x TILE_SIZE = 120)
 LaserRifle::LaserRifle(int x, int y)
-    : Weapon(LASER_RIFLE_ID, "Laser Rifle", 30, 0, 10, x, y) {}
+    : Weapon(LASER_RIFLE_ID, "Laser Rifle", 120, 0, 10, x, y) {}
 
 void LaserRifle::disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) {
     if (municiones > 0) {

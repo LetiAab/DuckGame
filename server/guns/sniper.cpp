@@ -3,9 +3,9 @@
 #include <random>
 
 
-// 3 balas, Alcance: 64 tiles
+// 3 balas, Alcance: 64 tiles (64 x TILE_SIZE = 256)
 Sniper::Sniper(int x, int y)
-    : Weapon(SNIPER_ID, "Sniper", 64, 0, 3, x, y) {}  // Inicializar posición
+    : Weapon(SNIPER_ID, "Sniper", 256, 0, 3, x, y) {}  // Inicializar posición
 
 void Sniper::disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) {
     if (municiones > 0) {

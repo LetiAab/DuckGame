@@ -1,9 +1,9 @@
 #include "shotgun.h"
 #include <iostream>
 
-// 2 disparos, Alcance: 7 a 9 tiles
+// 2 disparos, Alcance: 7 a 9 tiles (7 x TILE_SIZE = 28)
 Shotgun::Shotgun(int x, int y)
-    : Weapon(SHOTGUN_ID, "Shotgun", 7, 0, 2, x, y) {}
+    : Weapon(SHOTGUN_ID, "Shotgun", 28, 0, 2, x, y) {}
 
 void Shotgun::disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) {
     if (municiones > 0) {
