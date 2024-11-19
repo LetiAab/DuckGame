@@ -373,24 +373,26 @@ std::shared_ptr<Item> Game::getItemByPosition(Position position) {
     int area_y_min = position.y;
     int area_y_max = position.y + DUCK_SIZE_Y;
 
-    std::cout << "Buscando item en el área del pato desde X: " << area_x_min << " hasta X: " << area_x_max
-              << ", y desde Y: " << area_y_min << " hasta Y: " << area_y_max << "\n";
 
-    for (auto& item_ptr : items) {
-        Position itemPos = item_ptr->getPosition();
-
-        std::cout << "Item actual, de Id " << item_ptr->getItemId() << ", y posicion x: " << itemPos.x << " y: " << itemPos.y << std::endl;
+    for (auto it = items.begin(); it != items.end(); ++it) {
+        Position itemPos = (*it)->getPosition();
 
 
         if (itemPos.x >= area_x_min && itemPos.x < area_x_max &&
             itemPos.y >= area_y_min && itemPos.y < area_y_max) {
             std::cout << "Encontré un item, en la pos x: " << itemPos.x << " y: " << itemPos.y << std::endl;
-            return item_ptr; 
+
+            auto foundItem = *it;
+
+            items.erase(it);
+
+            return foundItem;
         }
     }
 
-    return nullptr; 
+    return nullptr; // No se encontró ningún item
 }
+
 
 SpawnPlace* Game::getSpawnPlaceByPosition(Position position) {
     // Coordenadas del área del pato

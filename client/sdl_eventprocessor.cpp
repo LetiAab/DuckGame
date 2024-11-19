@@ -1,5 +1,6 @@
 #include "sdl_eventprocessor.h"
 
+
 #include <iostream>
 
 int EventProcessor::processGameEvents(SDL_Window* window, GameState* game, uint16_t id) {
@@ -26,6 +27,7 @@ int EventProcessor::processGameEvents(SDL_Window* window, GameState* game, uint1
                 if (move != 0) {
                     positionUpdated = true;
                 }
+
                 break;
             case SDL_KEYUP:
                 move = handleKeyUp(event.key.keysym.sym);
@@ -42,6 +44,7 @@ int EventProcessor::processGameEvents(SDL_Window* window, GameState* game, uint1
     }
 
     if (positionUpdated) {
+        
         auto cmd = Command(id, move);
         game->command_queue->push(cmd);
     }

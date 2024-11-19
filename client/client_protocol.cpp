@@ -61,23 +61,15 @@ Message ClientProtocol::receive_message(){
         break;
     
     case DUCK_PICKUP_ITEM:
-        skt.recvall(&message.player_id, 2, &was_closed);
-        skt.recvall(&message.item_id, sizeof(uint8_t), &was_closed);
-        break;
-
     case DUCK_EQUIP_ITEM:
         skt.recvall(&message.player_id, 2, &was_closed);
         skt.recvall(&message.item_id, sizeof(uint8_t), &was_closed);
         break;
-
+        
+    case KILL_DUCK:    
     case DROP_WEAPON:
-        skt.recvall(&message.player_id, 2, &was_closed);
-        break;
-
+    case SHOOT:
     case ARMOR_BROKEN:
-        skt.recvall(&message.player_id, 2, &was_closed);
-        break;
-
     case HELMET_BROKEN:
         skt.recvall(&message.player_id, 2, &was_closed);
         break;
@@ -104,9 +96,6 @@ Message ClientProtocol::receive_message(){
 
         break;
 
-    case KILL_DUCK:
-        skt.recvall(&message.player_id, 2, &was_closed);
-        break;
 
     default:
         skt.recvall(&message.player_id, 2, &was_closed);

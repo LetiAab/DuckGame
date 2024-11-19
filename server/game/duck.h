@@ -93,7 +93,7 @@ public:
     void useOnHand();
     std::shared_ptr<Item> getItemOnHand() const;
 
-    void disparar();
+    bool disparar();
 
     void reset_for_round(Position pos);
 

@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include "game_state.h"
 #include "sdl_screenmanager.h"
+#include "sdl_audiomanager.h"
 
 class EventProcessor {
 public:

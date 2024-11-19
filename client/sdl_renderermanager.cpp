@@ -288,6 +288,7 @@ void RendererManager::renderItems(GameState* game) {
 void RendererManager::doRenderDynamic(GameState* game, Message& message) {
     SDL_RenderCopy(renderer, texture_handler.getTexture("static_scene"), NULL, NULL);
 
+
     renderDucks(game);
     renderItems(game);
 
