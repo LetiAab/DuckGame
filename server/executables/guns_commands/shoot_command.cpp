@@ -2,9 +2,6 @@
 #include <iostream>
 #include "common/constants.h"
 
-#include "../../guns/gun.h"
-#include "../../guns/projectile.h"
-
 ShootCommand::ShootCommand(uint16_t player_id) : player_id(player_id) {}
 
 void ShootCommand::execute(Game& game) {
@@ -16,6 +13,9 @@ void ShootCommand::execute(Game& game) {
 
     if (duck->onHand) {
         std::cout << "Jugador " << player_id << " se equipa el item en mano\n";
+
+        std::cout << "El item de la mano es de ID " << duck->getItemOnHand()->getItemId() << "\n";
+
         Message msg;
         msg.type = DUCK_EQUIP_ITEM;
         msg.item_id = duck->getItemOnHand()->getItemId();
@@ -24,10 +24,12 @@ void ShootCommand::execute(Game& game) {
         //aviso que el pato se equipo un item
         game.game_broadcast(msg);
 
+        std::cout << "Antes del useOnHand \n";
         
         duck->useOnHand();  //se equipa el item
+        std::cout << "Saliendo del agarrar item \n";
 
-        //si es un arma disparo
+        //si es un arma disparo, simplemente disparo
         if(msg.item_id != ARMOR_ID && msg.item_id != HELMET_ID){
 
 
@@ -41,7 +43,6 @@ void ShootCommand::execute(Game& game) {
                 game.game_broadcast(msg2);
             }
         }
-
     } else {
         //hago como un handshaking de disparar para saber si tengo que  
         //reproducir el sonido de la bala
@@ -54,7 +55,4 @@ void ShootCommand::execute(Game& game) {
             std::cout << "Jugador " << player_id << " dispara con su arma\n";
         } 
     }
-
-
-
 }

@@ -42,17 +42,18 @@ void Lobby::clean_finished_matches() {
 
     for (const auto& match : matches) {
         if (match->is_over()) {
-            std::cout << "Lobby: detecto que termino el partido: " << match->get_match_id() <<" Voy a eliminarlo"  << std::endl;
+            std::cout << "Lobby: detecto que termino el partido " << match->get_match_id() <<". Voy a eliminarlo"  << std::endl;
             match->stop_match();
         }
     }
 
     auto it = std::remove_if(matches.begin(), matches.end(),
                              [](const std::unique_ptr<Match>& match) {
-                                 return match->is_over();
+                                return match->is_over();
                              });
 
     matches.erase(it, matches.end());
+    std::cout << "Lobby: borre el partido "  << std::endl;
 }
 
 void Lobby::clean_disconnected_players() {

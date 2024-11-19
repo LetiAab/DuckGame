@@ -4,6 +4,14 @@
 #include "item.h"
 #include "common/position.h" 
 #include "../guns/weapon.h"
+#include "../guns/pew_pew_laser.h"
+#include "../guns/laser_rifle.h"
+#include "../guns/ak_47.h"
+#include "../guns/duel_pistol.h"
+#include "../guns/cowboy_pistol.h"
+#include "../guns/magnum.h"
+#include "../guns/shotgun.h"
+#include "../guns/sniper.h"
 #include "../armor/armor.h"
 #include "../armor/helmet.h"
 #include "item.h"
@@ -31,9 +39,9 @@ public:
     bool getSpawnPlaceItemUpdateMessage(Message& msg);
 
 
-    bool updateIterations(std::vector<std::unique_ptr<Item>>& items);
+    bool updateIterations(std::vector<std::shared_ptr<Item>>& items);
     
-    void create_items(std::vector<std::unique_ptr<Item>>& items);
+    void create_items(std::vector<std::shared_ptr<Item>>& items);
 
 
 };

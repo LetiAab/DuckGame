@@ -1,8 +1,13 @@
 #include "game.h"
+
 #include "common/constants.h"
+#include "../guns/sniper.h"
+#include "../guns/cowboy_pistol.h"
 
 #include <random>
 #include <utility>
+
+
 
 const char DUCK_1 = '1';
 const char DUCK_2 = '2';
@@ -55,6 +60,8 @@ void Game::simulate_round() {
                 duck.update_position();
                 duck.update_weapon();
 
+                // std::cout << "Despues de mover las balas \n";
+
                 // Si el pato murio, avisamos al cliente
                 //estaria bueno mover esto 
 
@@ -77,14 +84,13 @@ void Game::simulate_round() {
                         std::cout << "Pato muerto."  << std::endl;
                 }
         }
-
 }
-
+/* 
 void Game::add_projectile(std::unique_ptr<Proyectil> projectile) {
     // Transfiere la propiedad del proyectil usando std::move
     projectiles.push_back(std::move(projectile));
 
-}
+} */
 
 
 
@@ -111,6 +117,8 @@ void Game::run() {
         //creo los items y le mando al server
         //create_items();
 
+        uint64_t counter_bullets = 0;
+
 
         while (is_running) {
 
@@ -136,15 +144,19 @@ void Game::run() {
 
                         //quizas se pueda hacer un get_duck_bullet_position() en vez de esto
                         //o sea mover la creacion del mensaje dentro del pato
-                        if(duck.weapon != nullptr){
-                                for (Bullet& bullet : duck.weapon->bullets) {
-                                        Message bullet_message;
-                                        if (bullet.get_bullet_message(bullet_message)){
-                                                monitor.broadcast(bullet_message);
+                        if (counter_bullets % 3 == 0) {
+                                if(duck.weapon != nullptr){
+                                        for (std::unique_ptr<Projectile>& unique_proyectile : duck.weapon->projectiles) {
+                                                Projectile* projectile = unique_proyectile.get();
+                                                Message projectile_message;
+                                                if (projectile->get_projectile_message(projectile_message)){
+                                                        monitor.broadcast(projectile_message);
+                                                }
                                         }
                                 }
                         }
                 }
+                counter_bullets ++;
 
                 if (check_end_game()){
                         notify_players_end_game();
@@ -154,6 +166,8 @@ void Game::run() {
                 }
 
                 std::this_thread::sleep_for(std::chrono::milliseconds(60));
+
+                //map.tellMap();
 
         }
         std::cout << "Termino el juego!"  << std::endl;
@@ -181,25 +195,17 @@ bool Game::check_end_game(){
 }
 
 void Game::stop() {
-        std::cout << "Comienzo el stop"  << std::endl;
+        std::cout << "Comienzo el stop..."  << std::endl;
         game_queue.close();
         monitor.remove_all_queues();
-        items.clear();
-        ducks.clear();
         is_running = false;
         is_over = true;
-        std::cout << "termino el stop"  << std::endl;
+        std::cout << "Termino el stop"  << std::endl;
 }
 
 void Game::inicializate_map() {
     // Le doy armas a los patos para probar
-    
-    for (Duck& duck : ducks) {
 
-        Helmet* helmet = new Helmet(5,5); //le pongo posicion pero no importa porque se la asigno al pato
-
-        duck.setHelmet(helmet);
-    }
 }
 
 //TODO: Esto solo sirve para dos patos y siempre tiene en cuenta que es el mismo distribucion de obstaculos
@@ -233,9 +239,9 @@ void Game::create_spawn_places() {
     std::cout << "CREO LOS ITEMS" << "\n";
 
 
-    std::unique_ptr<Item> item1 = std::make_unique<Weapon>("Nombre", 100.0, 1.5, 30, 30, 130);
+    std::unique_ptr<Item> item1 = std::make_unique<Shotgun>(30, 130);
     std::unique_ptr<Item> item2 = std::make_unique<Armor>(100, 130);
-    std::unique_ptr<Item> item3 = std::make_unique<Weapon>("Nombre", 100.0, 1.5, 30, 30, 75);
+    std::unique_ptr<Item> item3 = std::make_unique<PewPewLaser>(30, 75);
     std::unique_ptr<Item> item4 = std::make_unique<Helmet>(100, 75);
 
 
@@ -264,7 +270,6 @@ void Game::create_spawn_places() {
     }
 }
 
-
 Duck* Game::getDuckById(char id) {
         for (auto& duck : ducks) {
                 if (duck.get_id() == id) {
@@ -276,7 +281,7 @@ Duck* Game::getDuckById(char id) {
 
 //REFACTOR! ESTOY BUSCANDO EL ITEM Y EL SPAWN PLACE
 
-Item* Game::getItemByPosition(Position position) {
+std::shared_ptr<Item> Game::getItemByPosition(Position position) {
     int area_x_min = position.x;
     int area_x_max = position.x + DUCK_SIZE_X;
     int area_y_min = position.y;
@@ -288,10 +293,14 @@ Item* Game::getItemByPosition(Position position) {
     for (auto& item_ptr : items) {
         Position itemPos = item_ptr->getPosition();
 
+        std::cout << "Item actual, de Id " << item_ptr->getItemId() << ", y posicion x: " << itemPos.x << " y: " << itemPos.y << std::endl;
+
 
         if (itemPos.x >= area_x_min && itemPos.x < area_x_max &&
             itemPos.y >= area_y_min && itemPos.y < area_y_max) {
-            return item_ptr.get(); 
+            std::cout << "Encontré un item, en la pos x: " << itemPos.x << " y: " << itemPos.y << std::endl;
+            //debo eliminarlo de la lista
+            return item_ptr; 
         }
     }
 
@@ -315,6 +324,7 @@ SpawnPlace* Game::getSpawnPlaceByPosition(Position position) {
 
         if (spawnPlacePos.x >= area_x_min && spawnPlacePos.x < area_x_max &&
             spawnPlacePos.y >= area_y_min && spawnPlacePos.y < area_y_max) {
+            std::cout << "Encontré un spawn place " << std::endl;
             return spawn_place_ptr.get();
         }
     }

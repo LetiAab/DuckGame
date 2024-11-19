@@ -11,7 +11,7 @@ void TakeItemCommand::execute(Game& game) {
     //Refactor! No creo que haga falta buscar el spawn place y el item
     char char_id = static_cast<char>(player_id + '0');
     Duck* duck = game.getDuckById(char_id);
-    Item* item = game.getItemByPosition(duck->getPosition());
+    std::shared_ptr<Item> item = game.getItemByPosition(duck->getPosition());
     SpawnPlace* spawn = game.getSpawnPlaceByPosition(duck->getPosition());
 
     //No se bien donde mandar el mensaje de PATO_ID agarro ITEM_ID (lo puse aca)
@@ -30,10 +30,7 @@ void TakeItemCommand::execute(Game& game) {
         msg2.player_id = player_id;
         msg2.item_id = item->getItemId();
         game.game_broadcast(msg2);
-
-
     
     }
-
 
 }
