@@ -56,7 +56,7 @@ private:
 public:
         GameMap map;
         std::vector<Duck> ducks;
-        std::vector<std::unique_ptr<Item>> items;
+        std::vector<std::shared_ptr<Item>> items;
         std::vector<std::unique_ptr<SpawnPlace>> spawn_places;
 
 
@@ -77,7 +77,7 @@ Duck* getDuckByPosition(Position position);
 
 Duck* getDuckById(char id);
 
-Item* getItemByPosition(Position position);
+std::shared_ptr<Item> getItemByPosition(Position position);
 
 SpawnPlace* getSpawnPlaceByPosition(Position position);
 

@@ -39,9 +39,9 @@ public:
     bool getSpawnPlaceItemUpdateMessage(Message& msg);
 
 
-    bool updateIterations(std::vector<std::unique_ptr<Item>>& items);
+    bool updateIterations(std::vector<std::shared_ptr<Item>>& items);
     
-    void create_items(std::vector<std::unique_ptr<Item>>& items);
+    void create_items(std::vector<std::shared_ptr<Item>>& items);
 
 
 };

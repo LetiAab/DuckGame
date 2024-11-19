@@ -195,28 +195,17 @@ bool Game::check_end_game(){
 }
 
 void Game::stop() {
-        std::cout << "Comienzo el stop"  << std::endl;
+        std::cout << "Comienzo el stop..."  << std::endl;
         game_queue.close();
         monitor.remove_all_queues();
-        items.clear();
-        ducks.clear();
         is_running = false;
         is_over = true;
-        std::cout << "termino el stop"  << std::endl;
+        std::cout << "Termino el stop"  << std::endl;
 }
 
 void Game::inicializate_map() {
     // Le doy armas a los patos para probar
-    
-    for (Duck& duck : ducks) {
 
-        Sniper* weapon = new Sniper();
-
-        duck.setWeapon(weapon);
-        Helmet* helmet = new Helmet(5,5); //le pongo posicion pero no importa porque se la asigno al pato
-
-        duck.setHelmet(helmet);
-    }
 }
 
 //TODO: Esto solo sirve para dos patos y siempre tiene en cuenta que es el mismo distribucion de obstaculos
@@ -292,7 +281,7 @@ Duck* Game::getDuckById(char id) {
 
 //REFACTOR! ESTOY BUSCANDO EL ITEM Y EL SPAWN PLACE
 
-Item* Game::getItemByPosition(Position position) {
+std::shared_ptr<Item> Game::getItemByPosition(Position position) {
     int area_x_min = position.x;
     int area_x_max = position.x + DUCK_SIZE_X;
     int area_y_min = position.y;
@@ -310,7 +299,8 @@ Item* Game::getItemByPosition(Position position) {
         if (itemPos.x >= area_x_min && itemPos.x < area_x_max &&
             itemPos.y >= area_y_min && itemPos.y < area_y_max) {
             std::cout << "Encontré un item, en la pos x: " << itemPos.x << " y: " << itemPos.y << std::endl;
-            return item_ptr.get(); 
+            //debo eliminarlo de la lista
+            return item_ptr; 
         }
     }
 
