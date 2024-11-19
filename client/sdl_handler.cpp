@@ -108,14 +108,20 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
             if((message.item_id == PEW_PEW_LASER_ID) || (message.item_id == LASER_RIFLE_ID) || (message.item_id == AK_47_ID) || 
             (message.item_id == COWBOY_PISTOL_ID) || (message.item_id == MAGNUM_ID) || (message.item_id == SHOTGUN_ID) ||
             (message.item_id == DUEL_PISTOL_ID) || (message.item_id == SNIPER_ID)){
+                
+                std::cout << "agarre un ARMA A: " << static_cast<int>(message.item_id) << "\n";
                 game->ducks[pos_id].weapon_equiped = message.item_id;
             }            
 
             if(message.item_id == HELMET_ID){
+                std::cout << "agarre un casco" << "\n";
+
                 game->ducks[pos_id].item_on_hand = message.item_id;
             }
 
             if(message.item_id == ARMOR_ID){
+                std::cout << "agarre un armor" << "\n";
+
                 game->ducks[pos_id].item_on_hand = message.item_id;
             }
         }
