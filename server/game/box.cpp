@@ -40,11 +40,7 @@ void Box::destroy(std::vector<std::shared_ptr<Item>>& items) {
 }
 
 bool Box::getBoxMessage(Message& msg) const {
-    if (destroyed) {
-        std::cout << "La caja está destruida y no contiene ítems.\n";
-        return false;
-    }
-
+    
     msg.type = BOX_DESTROYED;
     msg.box_id = id;
     msg.item_id = item_id;
@@ -88,8 +84,6 @@ void Box::createItem(std::vector<std::shared_ptr<Item>>& items) {
 }
 
 bool Box::update_life(std::vector<std::shared_ptr<Item>>& items){
-
-    std::cout << "UPDATE LIFE" << "\n";
 
     if(map->boxIsOverBullet(position)){
         std::cout << "LA CAJA ESTA SOBRE UNA BALA" << "\n";

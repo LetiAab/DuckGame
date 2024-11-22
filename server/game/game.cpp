@@ -57,6 +57,7 @@ void Game::simulate_round() {
                 }
 
                 if(box->update_life(items)){
+                        std::cout << "MANDO EL MENSAJE DE LA BALA" << "\n";
                         Message msg;
                         box->getBoxMessage(msg);
                         monitor.broadcast(msg);
@@ -127,7 +128,6 @@ void Game::run() {
 
         //MANDO LOS MENSAJES CON LA POSICION DE LOS SPAWN PLACES
         create_spawn_places();
-
 
 
 
@@ -227,12 +227,10 @@ void Game::inicializate_map() {
 
 void Game::create_boxes(){
 
-
     //pongo una caja en la matriz de coliciones
-    Position boxPosition(MATRIX_M / 3 - BOX_SIZE_X, MATRIX_N / 2 + BOX_SIZE_Y );
+    Position boxPosition(MATRIX_M / 3 - BOX_SIZE_X, MATRIX_N / 2 + BOX_SIZE_Y + 5 );
     map.placeBox(boxPosition);
 
-   
     //agrego la caja al vector de cajas
     boxes.emplace_back(std::make_unique<Box>(boxPosition ,0,&map));
 

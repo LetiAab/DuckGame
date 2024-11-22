@@ -77,8 +77,13 @@ Position GameMap::try_move_bullet_to(Position old_position, Position new_positio
                     hit_something = true;
                     return Position(final_x, final_y);  // devuelvo la posición actual
                 }
-                if (map[y][x] == BOX) {
+                else if (map[y][x] == BOX) {
+                   std::cout << "bala choca con una caja \n";
+
                    hit_something = true;
+                   // avanzo una posición más para que la bala quede "dentro" del pato
+                   final_x = next_x;
+                   final_y = next_y;
                    return Position(final_x, final_y);
                 }
                 else if (bullet_hit_other_duck(map[y][x], duck_id)) {
@@ -166,6 +171,15 @@ Position GameMap::try_move_bouncing_laser_to(Position old_position, Position new
                         hit_x = false;
                     }
                     return Position(final_x, final_y);  // devuelvo la posición actual
+                }
+                else if (map[y][x] == BOX) {
+                    std::cout << "el laser choca con una caja \n";
+
+                   hit_something = true;
+                   // avanzo una posición más para que la bala quede "dentro" del pato
+                   final_x = next_x;
+                   final_y = next_y;
+                   return Position(final_x, final_y);
                 }
                 else if (bullet_hit_other_duck(map[y][x], duck_id)) {
                     std::cout << "Choco con un pato (no el owner) \n";
