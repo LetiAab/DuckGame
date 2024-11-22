@@ -53,7 +53,7 @@ void SDLHandler::loadGame(GameState* game) {
     // Inicializo los patos y los crates
     gameInitializer.initializeDucks(game, frame_width, frame_height);
     gameInitializer.initializeCrates(game);
-    gameInitializer.initializeBoxes(game);
+    gameInitializer.initializeBoxes(game, frame_width, frame_height);
     
 
     // Inicializo el render manager
@@ -90,9 +90,12 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
         }
 
         if(message.type == BOX_DESTROYED){
+
+            std::cout << "ME LLEGA LA NOTI DE QUE SE ROMPE LA CAJA " << "\n"; 
+
             int box_id = message.box_id;
-            game->boxes[box_id].item_id = message.item_id;
             game->boxes[box_id].destroyed = true;
+            game->boxes[box_id].item_id = message.item_id;
 
         }
 

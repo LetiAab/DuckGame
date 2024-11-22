@@ -190,14 +190,13 @@ void RendererManager::renderDucks(GameState* game) {
 void RendererManager::renderBoxes(GameState* game){
         for (auto& box : game->boxes) {
         
-        std::cout << "Box State: " << std::endl;
-        std::cout << "  Destroyed: " << box.destroyed << std::endl;
-        std::cout << "  Item Taken: " << box.item_taked << std::endl;
-        std::cout << "  Item ID: " << box.item_id << std::endl;
-        std::cout << "  Position (x, y): (" << box.x << ", " << box.y << ")" << std::endl;
+            if(box.destroyed){
+                std::cout << "SE DESTRUYOOO" << "\n";
+            }
 
-        
             if(!box.destroyed){
+
+
                 SDL_Rect box_rect = { 
                     box.x, 
                     box.y, 
