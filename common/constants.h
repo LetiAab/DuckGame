@@ -70,6 +70,8 @@ const uint8_t SPAWN_PLACE_POSITION = 0X79;
 
 const uint8_t SPAWN_PLACE_ITEM_UPDATE = 0X80;
 
+const uint8_t BOX_DESTROYED = 0X81;
+
 
 const int N_SPAWN_PLACES = 4;
 
@@ -114,6 +116,12 @@ const int PLATFORM_SIZE_Y = 2;
 const int DUCK_SIZE_X = 10;
 const int DUCK_SIZE_Y = 14;
 const int DUCK_TOTAL_SIZE = 140; //Cantidad total de cuadrados que ocupa el pato 9X13
+
+
+const int BOX_SIZE_X = 5;
+const int BOX_SIZE_Y = 5;
+const int BOX_TOTAL_SIZE = 25;
+
 
 const int BULLET_SIZE_Y = 1;
 const int BULLET_SIZE_X = 2;

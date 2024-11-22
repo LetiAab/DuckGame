@@ -18,6 +18,7 @@ target_sources(taller_server
     game/duck.cpp
     game/item.cpp
     game/spawn_place.cpp
+    game/box.cpp
     guns/bullet.cpp
     guns/weapon.cpp
     guns/pew_pew_laser.cpp
@@ -65,6 +66,7 @@ target_sources(taller_server
     game/duck.h
     game/item.h
     game/spawn_place.h
+    game/box.h
     guns/bullet.h
     guns/weapon.h
     guns/pew_pew_laser.h

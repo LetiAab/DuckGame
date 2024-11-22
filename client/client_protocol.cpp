@@ -32,6 +32,12 @@ Message ClientProtocol::receive_message(){
         }
         break;
 
+    case BOX_DESTROYED:        
+        skt.recvall(&message.box_id, sizeof(uint8_t), &was_closed);
+        skt.recvall(&message.item_id, sizeof(uint8_t), &was_closed);
+        break;
+
+
     case ITEM_POSITION:
         skt.recvall(&message.item_id, sizeof(uint8_t), &was_closed);
         skt.recvall(&message.item_x, sizeof(int), &was_closed);

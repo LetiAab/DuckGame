@@ -39,6 +39,7 @@ Duck* Game::getDuckByPosition(Position position) {
 }
 
 void Game::simulate_round() {
+        
 
         //sumo 1 al contador de rondas hasta generar un nuevo item en el spawn place
         for (const auto& spawn_place : spawn_places) {
@@ -47,6 +48,20 @@ void Game::simulate_round() {
                         spawn_place->getSpawnPlaceItemUpdateMessage(msg);
                         monitor.broadcast(msg);
                 }
+        }
+
+
+        for(const auto& box: boxes){
+                if(box->isDestroyed()){
+                        continue;
+                }
+
+                if(box->update_life(items)){
+                        Message msg;
+                        box->getBoxMessage(msg);
+                        monitor.broadcast(msg);
+                }
+
         }
 
 
@@ -96,9 +111,10 @@ void Game::add_projectile(std::unique_ptr<Proyectil> projectile) {
 
 void Game::run() {
 
-        //Creo el mapa con los objetos fijos (bloques) y la posicion inicial de los patos
-        //inicializate_map();
-        //map.printMap();
+
+
+        //creo las cajas y las meto a la matriz
+        create_boxes();
 
 
         //Mando la posicion de todo el mapa por primera vez para tener referencia de donde estan
@@ -111,6 +127,7 @@ void Game::run() {
 
         //MANDO LOS MENSAJES CON LA POSICION DE LOS SPAWN PLACES
         create_spawn_places();
+
 
 
 
@@ -205,6 +222,19 @@ void Game::stop() {
 
 void Game::inicializate_map() {
     // Le doy armas a los patos para probar
+
+}
+
+void Game::create_boxes(){
+
+
+    //pongo una caja en la matriz de coliciones
+    Position boxPosition(MATRIX_M / 3 - BOX_SIZE_X, MATRIX_N / 2 + BOX_SIZE_Y );
+    map.placeBox(boxPosition);
+
+   
+    //agrego la caja al vector de cajas
+    boxes.emplace_back(std::make_unique<Box>(boxPosition ,0,&map));
 
 }
 

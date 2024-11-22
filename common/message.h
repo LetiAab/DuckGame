@@ -33,6 +33,8 @@ struct Message {
     int spaw_place_y;
     uint8_t spawn_place_id;
 
+    
+    uint8_t box_id;
 
 
 };

@@ -74,6 +74,12 @@ public:
 
     void tellMap() const;
 
+    void placeBox(Position pos);
+    void removeBox(Position pos);
+    bool isCollisionWithBox(Position pos, int size_x, int size_y);
+    bool boxIsOverBullet(Position position);
+
+
 };
 
 #endif

@@ -53,6 +53,7 @@ void SDLHandler::loadGame(GameState* game) {
     // Inicializo los patos y los crates
     gameInitializer.initializeDucks(game, frame_width, frame_height);
     gameInitializer.initializeCrates(game);
+    gameInitializer.initializeBoxes(game);
     
 
     // Inicializo el render manager
@@ -85,6 +86,13 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
             audioManager->loadSoundEffect(path);
             audioManager->playSoundEffect();
             audioManager->setSoundEffectVolume(70);
+
+        }
+
+        if(message.type == BOX_DESTROYED){
+            int box_id = message.box_id;
+            game->boxes[box_id].item_id = message.item_id;
+            game->boxes[box_id].destroyed = true;
 
         }
 

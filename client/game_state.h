@@ -57,6 +57,13 @@ struct Crate {
     int x, y;
 };
 
+struct Box {
+    int x, y;
+    uint8_t item_id;
+    bool destroyed;
+    bool item_taked;
+};
+
 struct SpawnPlace {
     int x, y;
     uint8_t item_id;
@@ -67,6 +74,7 @@ struct GameState {
     int ducks_quantity;
     std::vector<Crate> crates;
     std::vector<SpawnPlace> spawn_places;
+    std::vector<Box> boxes;
     SDL_Renderer* renderer;
     ClientGameMap client_game_map;
     Queue<Command>* command_queue;

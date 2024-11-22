@@ -14,6 +14,7 @@
 #include "item.h"
 #include "../guns/weapon.h"
 #include "spawn_place.h"
+#include "box.h"
 
 
 #include <cstdlib>
@@ -58,6 +59,8 @@ public:
         std::vector<Duck> ducks;
         std::vector<std::shared_ptr<Item>> items;
         std::vector<std::unique_ptr<SpawnPlace>> spawn_places;
+        std::vector<std::unique_ptr<Box>> boxes;
+
 
 
 
@@ -96,8 +99,12 @@ void stop() override;
 
 void notify_players_end_game();
 
+void create_boxes();
+
 Game(const Game&) = delete;
 Game& operator=(const Game&) = delete;
+
+
 };
 
 #endif  // GAME_H
