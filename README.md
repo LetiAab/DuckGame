@@ -36,15 +36,17 @@ Para levantar el cliente
 
 # Como jugar
 
-Para el modo un jugador, usar las teclas WASD para el movimiento, la letra E para agarrar un arma, la letra F para disparar y la letra Q para descartar un arma.
-
-Se salta con la letra W y se aleta con la letra S.
+Para el modo un jugador:
+Usar las teclas WASD para el movimiento: Se salta con la tecla W y si se vuelve a tocar se aletea. (la tecla A es para tirarse al suelo pero no esta implementado aun)
+La tecla E para agarrar un arma
+La tecla F para disparar y equipar un casco/armadura que se haya agarrado antes
+La tecla Q para descartar un arma.
 
 
 # Status hasta la fecha
 
 ## Cosas implementadas
-
+- Conexion al lobby y soporte de multiples partidas. 
 - Protocolo general de comunicación
 - Creación genérica del mapa
 - Spawn points
@@ -58,19 +60,28 @@ Se salta con la letra W y se aleta con la letra S.
 - Cajas
 - Diseñador de mapa
 - Mayor variedad de mapas
-- Movimiento: tirarse al piso (letra X)
-- Conexion del lobby con el protocolo (por ahora se ingresa por consola y se ve la renderizacion del lobby donde se inicia al tocar boton start)
+- Movimiento: tirarse al piso (letra S)
+- Apuntar y disparar para arriba.
+- Conexion del lobby con el protocolo y el servidor (por ahora se ingresa por consola y se ve la renderizacion del lobby donde se inicia al tocar boton start).
+- Rondas
+- Condicion de victoria y fin de la partida. (por ahora se termina una partida cuando todos los patos mueren, y esta se elimina del lobby).
+- Modo dos jugadores
+- Camara
 
 ## Cosas que se pueden mejorar
 
 - El retroceso en las armas no se muestra cuando el pato está quieto, recién se muestra el cambio cuando el pato se mueve
 - Para el rebote del laser en el Laser Rifle, cuando el laser choca se pierden los movimientos que podía hacer el laser en ese turno
 - En la Ak47 la dispersión no es incremental en el disparo cuando se deja apretado, sino siempre. Tiene un if para que no se descontrole, pero debería mejorarse
+- La implementacion de los Spawn Places puede simplificarse, dandole la responsabilidad a esa clase de almacenar los Items, en lugar de a Game.
+- La implementacion de los mensajes que recibe el cliente, estos pueden ser una clase similar a Command.
+- El orden en que se realiza el broadcast de los distintos mensajes.
+- Actualmente contamos con un sleep comun, debemos modificarlo para tener un constant rate loop.
 
 # Supuestos
 
 - Cuando termina la partida los jugadores no vuelven al lobby, se termina el juego.
-- Cantidad de jugadores: minimo 2 y maximo 6
+- Cantidad de jugadores: minimo 2 y maximo 6. Por ahora se puede iniciar una partida con un unico jugador, pra probar cosas.
 - Cualquiera que este dentro de la partida puede iniciarla
 - Un jugador puede crear varias partidas, pero solo unirse a una
 - Spawn places:
