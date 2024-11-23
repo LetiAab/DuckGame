@@ -22,7 +22,6 @@ GameMap::GameMap(int width, int height) : width(width), height(height) {
     map.resize(height, std::vector<char>(width, EMPTY));
 }
 
-
 void GameMap::setBulletNewPosition(Position pos) {
     for (int y = pos.y; y < pos.y + BULLET_SIZE_Y; ++y) {
         for (int x = pos.x; x < pos.x + BULLET_SIZE_X; ++x) {
@@ -319,7 +318,6 @@ char GameMap::at(Position position) {
     return map[position.y][position.x];
 }
 
-
 bool GameMap::is_duck_touching_floor(int x, int y) {
     // Verifica que el pato no tenga plataformas en el piso
     int j = y + DUCK_SIZE_Y;
@@ -328,7 +326,6 @@ bool GameMap::is_duck_touching_floor(int x, int y) {
             return true;
         }
     }
-    
     return false;
 }
 
@@ -492,7 +489,6 @@ void GameMap::setEscenario() {
             map[y][x] = PLATFORM;
         }
     }
-
 }
 
 
@@ -515,10 +511,6 @@ void GameMap::setDuckNewPosition(int x, int y, char duck_id) {
         }
     }
 }
-
-
-
-
 
 //Pone un pato en una posición (x, y) ocupando un rectángulo de DUCK_SIZE_X x DUCK_SIZE_Y
 bool GameMap::placeDuck(int x, int y, char duck_id) {
@@ -600,9 +592,7 @@ void GameMap::tellMap() const {
             }
         }
     }
-
     std:: cout << "\n" << "\n";
-
 }
 
 std::vector<std::vector<char>> GameMap::getMap(){

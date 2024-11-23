@@ -6,6 +6,7 @@
 
 
 #define DELAY_TIME 60
+#define VOLUME 0
 
 //using namespace SDL2pp;
 
@@ -41,7 +42,8 @@ void SDLHandler::loadGame(GameState* game) {
         {"duck-walking-wings", "duck-walking-wings", 1},
         {"duck-jumping", "duck-jumping", 1},
         {"duck-jumping-wings", "duck-jumping-wings", 1},
-        {"duck-fluttering", "duck-fluttering", 6}
+        {"duck-fluttering", "duck-fluttering", 6},
+        {"duck-laying-down", "duck-laying-down", 1}
     };
 
     // Cargo las texturas
@@ -62,9 +64,6 @@ void SDLHandler::loadGame(GameState* game) {
 
 }
 
-
-
-      
 Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queue) {
     Message message;
     while (message_queue.try_pop(message)) {
@@ -218,6 +217,7 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
             game->ducks[pos_id].is_moving = message.is_moving;
             game->ducks[pos_id].is_jumping = message.is_jumping;
             game->ducks[pos_id].is_fluttering = message.is_fluttering;
+            game->ducks[pos_id].is_laying_down = message.is_laying_down;
         }
     }
     return message;
@@ -285,7 +285,7 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
     const std::string path = std::string(AUDIO_PATH) +"ambient-music.wav";
     audioManager->loadMusic(path);
     audioManager->playMusic(-1); //musica en bucle infinitamente
-    audioManager->setMusicVolume(30);
+    audioManager->setMusicVolume(VOLUME);
 
     //Renderizo lo estatico
     rendererManager->doRenderStatic(&game);

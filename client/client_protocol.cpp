@@ -7,7 +7,6 @@
 
 ClientProtocol::ClientProtocol(Socket&& skt): skt(std::move(skt)) {}
 
-
 Message ClientProtocol::receive_message(){
 
     bool was_closed = false;
@@ -25,7 +24,6 @@ Message ClientProtocol::receive_message(){
         break;
 
     case MAP_INICIALIZATION:
-
         message.map.resize(MATRIX_N, std::vector<char>(MATRIX_M));
         for (size_t i = 0; i < MATRIX_N; ++i) { 
             skt.recvall(message.map[i].data(), MATRIX_M * sizeof(char), &was_closed); // Recibir cada fila
@@ -75,8 +73,6 @@ Message ClientProtocol::receive_message(){
         break;
 
     case DUCK_POS_UPDATE:
-
-
         skt.recvall(&message.player_id, 2, &was_closed);
         skt.recvall(&message.duck_x, sizeof(int), &was_closed);
         skt.recvall(&message.duck_y, sizeof(int), &was_closed);
@@ -84,9 +80,8 @@ Message ClientProtocol::receive_message(){
         skt.recvall(&message.is_moving, sizeof(bool), &was_closed);
         skt.recvall(&message.is_jumping, sizeof(bool), &was_closed);
         skt.recvall(&message.is_fluttering, sizeof(bool), &was_closed);
-
+        skt.recvall(&message.is_laying_down, sizeof(bool), &was_closed);
         break;
-
 
     case END_GAME:
         break;
@@ -104,8 +99,6 @@ Message ClientProtocol::receive_message(){
         skt.recvall(&message.current_match_id, 1, &was_closed);
         break;
     }
-
-
 
     return message;
 }
@@ -155,8 +148,6 @@ bool ClientProtocol::send_command(Command command){
         }
         break;
     }
-
-
 
     return true;
 }

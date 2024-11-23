@@ -222,6 +222,10 @@ bool ServerProtocol::send_message(Message& message){
             return false;
         }
 
+        if (!skt.sendall(&message.is_laying_down, sizeof(message.is_laying_down), &was_closed) || was_closed) {
+            return false;
+        }
+
     default:
         break;
     }
@@ -273,7 +277,6 @@ std::shared_ptr<Executable> ServerProtocol::receive_command(){
         return std::make_shared<MoveUpCommand>(player_id);
     case MOVE_DOWN:
         return std::make_shared<MoveDownCommand>(player_id);
-
     case STOP_LEFT:
         return std::make_shared<StopMoveLeftCommand>(player_id);
     case STOP_RIGHT:
@@ -281,7 +284,7 @@ std::shared_ptr<Executable> ServerProtocol::receive_command(){
     case STOP_UP:
         return std::make_shared<StopJumpCommand>(player_id);
     case STOP_DOWN:
-        return std::make_shared<StopJumpCommand>(player_id);
+        return std::make_shared<StopMoveDownCommand>(player_id);
     case SHOOT:
         return std::make_shared<ShootCommand>(player_id);
     case TAKE_ITEM:

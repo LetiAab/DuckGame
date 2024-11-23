@@ -2,11 +2,9 @@
 #include <iostream>
 #include <typeinfo>
 
-
 const int HELMET_BROKE = 0;
 const int ARMOR_BROKE = 1;
 const int DEAD = 2;
-
 
 Duck::Duck(char id, int x, int y, GameMap* map) :
     id_player(id),
@@ -19,6 +17,8 @@ Duck::Duck(char id, int x, int y, GameMap* map) :
     looking(LOOKING_RIGHT),
     is_jumping(false),
     is_fluttering(false),
+    is_laying_down(false),
+    was_laying_down(false),
     is_slippy(false),
     life_points(1),
     stop_notificated(false),
@@ -33,8 +33,6 @@ bool Duck::is_in_air(){
 }
 
 bool Duck::pickUpItem(std::shared_ptr<Item> item) {
-
-    
     if (item != nullptr){
         std::cout << "Agarro el item de ID " << item->getItemId() << "\n";
         if (onHand == nullptr)
@@ -74,7 +72,6 @@ void Duck::useOnHand() {
 }
 
 void Duck::check_gravity(){
-
     if(is_in_air()) {
         if (is_fluttering){
             //si esta aleteando cae a velocidad constante de 1
@@ -83,14 +80,11 @@ void Duck::check_gravity(){
             //sino, cae con aceleracion
             speed_y += DUCK_FALL_POWER;
         }
-        
     }
-
 }
 
 int Duck::update_life(){
-//Esta funcion tiene que avisar que le sacaron el casco, le sacaron el armor, o que murio
-
+    //Esta funcion tiene que avisar que le sacaron el casco, le sacaron el armor, o que murio
     if(map->duckIsOverVoid(position.x, position.y)){
         is_dead = true;
     }
@@ -107,9 +101,7 @@ int Duck::update_life(){
             armor = nullptr;
             life_points -= 1;
             return ARMOR_BROKE;
-
         }
-
 
         life_points -= 1;
         if (life_points == 0){
@@ -123,11 +115,9 @@ int Duck::update_life(){
     }
 
     return DEAD;
-
 }
 
 void Duck::update_position() {
-
     if(is_dead){return;}
 
     check_gravity();
@@ -135,13 +125,10 @@ void Duck::update_position() {
     int delta_x = position.x + speed_x;
     int delta_y = position.y + speed_y;
 
-
-
     Position new_pos(delta_x, delta_y);
     old_position = position;
     //mueve al pato a la nueva posicion si esta libre o a la que este libre inmediatamente antes
     position = map->move_duck_to(position, new_pos, id_player);
-
 
     if ((is_jumping || is_fluttering) && !is_in_air()){
         //si esta saltando o aleteando pero no esta en el aire, significa que aterrizo
@@ -153,9 +140,8 @@ void Duck::update_position() {
     if(!is_in_air()){
         speed_y = 0;
     }
-    
-
 }
+
 void Duck::update_weapon(){
     if(is_dead){return;}
     
@@ -197,10 +183,17 @@ void Duck::form_position_message(Message& msg){
     msg.is_moving = is_moving;
     msg.is_jumping = is_jumping;
     msg.is_fluttering = is_fluttering;
+    msg.is_laying_down = is_laying_down;
 }
 
 bool Duck::get_duck_position_message(Message& msg){
     if(is_dead){return false;}
+
+    if (is_laying_down != was_laying_down) {
+        form_position_message(msg);
+        was_laying_down = is_laying_down;
+        return true;
+    }
 
 //    std::cout << "Chequeo del mensaje, old position es x: " << old_position.x << " y: " << old_position.y << 
 //            "y position es x: " << position.x << " y: " << position.y << "\n";
@@ -223,12 +216,9 @@ bool Duck::get_duck_position_message(Message& msg){
     return true;
 }
 
-
 char Duck::get_id() const {
     return id_player;
 }
-
-
 
 void Duck::setWeapon(std::shared_ptr<Weapon> new_weapon) {
     std::cout << "ASIGNO NUEVA ARMA" << "\n";
@@ -315,7 +305,6 @@ bool Duck::disparar() {
     return false;
 }
 
-
 Position Duck::getPosition(){
     return position;
 }
@@ -331,9 +320,7 @@ bool Duck::dropWeapon() {
         //deberia pasarle el arma a la lista de items del juego
         weapon = nullptr;
         return true;
-        
     }
-
     return false;
 }
 

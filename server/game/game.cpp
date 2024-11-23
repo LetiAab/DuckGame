@@ -7,8 +7,6 @@
 #include <random>
 #include <utility>
 
-
-
 const char DUCK_1 = '1';
 const char DUCK_2 = '2';
 const char DUCK_3 = '3';
@@ -39,7 +37,6 @@ Duck* Game::getDuckByPosition(Position position) {
 }
 
 void Game::simulate_round() {
-
         //sumo 1 al contador de rondas hasta generar un nuevo item en el spawn place
         for (const auto& spawn_place : spawn_places) {
                 if(spawn_place->updateIterations(items)){
@@ -48,7 +45,6 @@ void Game::simulate_round() {
                         monitor.broadcast(msg);
                 }
         }
-
 
         for (Duck& duck : ducks) {
                 if (duck.is_dead) {
@@ -92,14 +88,10 @@ void Game::add_projectile(std::unique_ptr<Proyectil> projectile) {
 
 } */
 
-
-
 void Game::run() {
-
         //Creo el mapa con los objetos fijos (bloques) y la posicion inicial de los patos
         //inicializate_map();
         //map.printMap();
-
 
         //Mando la posicion de todo el mapa por primera vez para tener referencia de donde estan
         //Todos los obstaculos
@@ -112,15 +104,13 @@ void Game::run() {
         //MANDO LOS MENSAJES CON LA POSICION DE LOS SPAWN PLACES
         create_spawn_places();
 
-
-
         //creo los items y le mando al server
         //create_items();
 
         uint64_t counter_bullets = 0;
 
-
         while (is_running) {
+                //map.printMap();
 
                 // saco de 10 comandos de la queue y los ejecuto
                 std::shared_ptr<Executable> command;
@@ -238,14 +228,10 @@ void Game::create_spawn_places() {
     //CREO ITEMS PARA METER EN LOS SPAWN PLACES
     std::cout << "CREO LOS ITEMS" << "\n";
 
-
     std::unique_ptr<Item> item1 = std::make_unique<Shotgun>(30, 130);
     std::unique_ptr<Item> item2 = std::make_unique<Armor>(100, 130);
     std::unique_ptr<Item> item3 = std::make_unique<PewPewLaser>(30, 75);
     std::unique_ptr<Item> item4 = std::make_unique<Helmet>(100, 75);
-
-
-
 
     //seteo N spawn places (4)
     std::cout << "CREO LOS SPAWN PLACES" << "\n";
@@ -255,13 +241,11 @@ void Game::create_spawn_places() {
     spawn_places.emplace_back(std::make_unique<SpawnPlace>(Position(30, 75), 2, item3->getItemId()));  
     spawn_places.emplace_back(std::make_unique<SpawnPlace>(Position(100, 75), 3, item4->getItemId()));
 
-
     //guardo los items en el vector de items despues de acceder a su item id, porque sino ya no tengo la refe
     items.push_back(std::move(item1));
     items.push_back(std::move(item2));
     items.push_back(std::move(item3));
     items.push_back(std::move(item4));
-
 
     for (int i = 0; i < N_SPAWN_PLACES; i++){
         Message spawn_place_position_message;

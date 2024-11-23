@@ -2,7 +2,6 @@
 #define MESSAGE_H
 
 #include <cstdint>
-#include <string>
 #include <vector>
 
 struct Message {
@@ -19,6 +18,7 @@ struct Message {
     bool is_moving;
     bool is_jumping;
     bool is_fluttering;
+    bool is_laying_down;
 
     int bullet_x;
     int bullet_y;
@@ -32,10 +32,6 @@ struct Message {
     int spaw_place_x;
     int spaw_place_y;
     uint8_t spawn_place_id;
-
-
-
 };
-
 
 #endif
