@@ -24,6 +24,7 @@
 #include "../guns/laser_rifle.h"
 #include "../guns/shotgun.h"
 #include "../guns/sniper.h"
+#include "../guns/grenade.h"
 
 
 

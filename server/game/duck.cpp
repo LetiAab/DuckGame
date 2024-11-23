@@ -160,7 +160,13 @@ void Duck::update_weapon(){
     if(is_dead){return;}
     
     if (weapon != nullptr) {
-        weapon->update_weapon();
+        if (weapon->getItemId() == GRENADE_ID) {
+            // Un poco feo este if, pero sino tengo que modificar la firma de la función
+            Grenade* grenade = (Grenade*) weapon.get();
+            grenade->update_weapon(position.x, position.y, looking, map, id_player);
+        } else {
+            weapon->update_weapon();
+        }
     }
 }
 
@@ -234,6 +240,9 @@ void Duck::setWeapon(std::shared_ptr<Weapon> new_weapon) {
     std::cout << "ASIGNO NUEVA ARMA" << "\n";
 
     switch (new_weapon->getItemId()) {
+        case GRENADE_ID:
+            weapon = std::make_shared<Grenade>();
+            break;
         case COWBOY_PISTOL_ID:
             weapon = std::make_shared<CowboyPistol>();
             break;
