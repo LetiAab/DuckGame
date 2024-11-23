@@ -100,7 +100,7 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
             int pos_id = message.player_id - 1;
 
             // Acá reemplazar con los ids de las otras armas cuando tengas los renders de las mismas
-            if((message.item_id == BASE_WEAPON_ID)|| (message.item_id == GRANADA_ID) || (message.item_id == BANANA_ID)){
+            if((message.item_id == BASE_WEAPON_ID)|| (message.item_id == GRENADE_ID) || (message.item_id == BANANA_ID)){
                 //game->ducks[pos_id].weapon_equiped = message.item_id;
                 game->ducks[pos_id].weapon_equiped = BASE_WEAPON_ID;
             }
@@ -133,7 +133,7 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
 
             // si es un arma la equipo como arma
             // Acá reemplazar con los ids de las otras armas cuando tengas los renders de las mismas
-            if((message.item_id == BASE_WEAPON_ID)|| (message.item_id == GRANADA_ID) || (message.item_id == BANANA_ID)){
+            if((message.item_id == BASE_WEAPON_ID)|| (message.item_id == GRENADE_ID) || (message.item_id == BANANA_ID)){
                 //game->ducks[pos_id].weapon_equiped = message.item_id;
                 game->ducks[pos_id].weapon_equiped = BASE_WEAPON_ID;
             }

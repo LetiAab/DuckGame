@@ -192,7 +192,7 @@ void RendererManager::renderItems(GameState* game) {
 
     for (auto& spawn_place : game->spawn_places) {
         // Acá reemplazar con los ids de las otras armas cuando tengas los renders de las mismas
-        if ((spawn_place.item_id == BASE_WEAPON_ID)|| (spawn_place.item_id == GRANADA_ID) || (spawn_place.item_id == BANANA_ID)) {
+        if ((spawn_place.item_id == BASE_WEAPON_ID)|| (spawn_place.item_id == GRENADE_ID) || (spawn_place.item_id == BANANA_ID)) {
             SDL_Rect gun_rect = { 
                 spawn_place.x, 
                 spawn_place.y - TILE_SIZE * 11, 

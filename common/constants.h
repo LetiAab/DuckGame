@@ -81,7 +81,7 @@ const uint8_t HELMET_ID = 0x40;
 
 const uint8_t BASE_WEAPON_ID = 0x41;
 
-const uint8_t GRANADA_ID = 0x42;
+const uint8_t GRENADE_ID = 0x42;
 const uint8_t BANANA_ID = 0x43;
 const uint8_t PEW_PEW_LASER_ID = 0x44;
 const uint8_t LASER_RIFLE_ID = 0x45;
