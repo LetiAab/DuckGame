@@ -45,20 +45,17 @@ public:
 
     void setDuckNewPosition(int x, int y, char duck_id);
 
-    void setBulletNewPosition(int x, int y);
-    void cleanBulletOldPosition(int x, int y);
-
     char at(Position position);
 
-    bool can_move_projectile(int x, int y, int size_x, int size_y);
+    bool can_move_projectile(Position position, int size_x, int size_y);
 
-    int projectile_hits_duck(int x, int y);
+    void move_projectile(Position position, Position speed, int size_x, int size_y);
 
-    void move_projectile(int position_x, int position_y, int speed_x, int speed_y, int size_x, int size_y);
+    void clean_projectile_old_position(Position position, int size_x, int size_y);
 
-    void clean_projectile_old_position(int x, int y, int size_x, int size_y);
+    void set_projectile_new_position(Position position,  int size_x, int size_y);
 
-    void set_projectile_new_position(int x, int y,  int size_x, int size_y);
+    Position try_move_projectile_to(Position old_position, Position new_position, int size_x, int size_y, char duck_id, bool& hit_something);
 
     int get_height();
     int get_width();
