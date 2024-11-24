@@ -4,10 +4,18 @@
 
 LevelEditor::LevelEditor()
     : window(nullptr), renderer(nullptr), backgroundTexture(nullptr), crateTexture(nullptr),
-      selectedTexture(nullptr), crateX(WINDOW_WIDTH + TILE_SIZE), crateY(TILE_SIZE), selectedCrateIndex(0), 
-      spawnPlaceX(WINDOW_WIDTH + TILE_SIZE), spawnPlaceY(TILE_SIZE + std::pow(TILE_SIZE, 2) ), selectedSpawnPlaceIndex(0), currentTool(NONE) {}
+      selectedTexture(nullptr), 
+      
+      crateX(WINDOW_WIDTH + TILE_SIZE), crateY(TILE_SIZE), 
+      spawnPlaceX(WINDOW_WIDTH + TILE_SIZE), spawnPlaceY(TILE_SIZE + GRID_CELL_SIZE ), 
+      boxX(WINDOW_WIDTH + TILE_SIZE), boxY(TILE_SIZE + 2 * GRID_CELL_SIZE),
+      currentTool(NONE) {}
 
 LevelEditor::~LevelEditor() {}
+
+std::string generateKey(int x, int y) {
+    return std::to_string(x) + "," + std::to_string(y);
+}
 
 bool LevelEditor::init() {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -53,7 +61,13 @@ bool LevelEditor::loadTextures(){
         return false;
     }
 
-    selectedTexture = crateTexture; // Textura seleccionada por defecto!!
+    boxTexture = IMG_LoadTexture(renderer, "../client/imgs/box.png");
+    if (!boxTexture) {
+        SDL_Log("Failed to load tree texture: %s", SDL_GetError());
+        return false;
+    }
+
+    selectedTexture = crateTexture; // Textura seleccionada por defecto!! (Esto no anda igual. NO IMPORTA)
 
     return true;
 }
@@ -92,20 +106,33 @@ void LevelEditor::renderToolArea(){
     SDL_Rect spawnPlaceRect = { spawnPlaceX, spawnPlaceY, GRID_CELL_SIZE, GRID_CELL_SIZE };
     SDL_RenderCopy(renderer, spawnPlaceTexture, nullptr, &spawnPlaceRect);
 
+    // Renderizar el botón en la zona de herramientas (el sprite seleccionado)
+    SDL_Rect boxRect = { boxX, boxY, GRID_CELL_SIZE, GRID_CELL_SIZE };
+    SDL_RenderCopy(renderer, boxTexture, nullptr, &boxRect);
+
 
 }
 
 void LevelEditor::renderElements(){
 
-    for (auto& crate : crates) {
-        SDL_Rect crateRect = { crate.x, crate.y, GRID_CELL_SIZE, GRID_CELL_SIZE };
+    for (auto& pair : crates) {
+        Crate& crate = pair.second;
+        SDL_Rect crateRect = { crate.x, crate.y, GRID_CELL_SIZE, GRID_CELL_SIZE };  // Asumimos tamaño de 32x32 para cada Crate
         SDL_RenderCopy(renderer, crate.texture, nullptr, &crateRect);
     }
 
-    for (auto& spawn_place : spawn_places) {
-        SDL_Rect spawnPlaceRect = { spawn_place.x, spawn_place.y, GRID_CELL_SIZE, GRID_CELL_SIZE };
-        SDL_RenderCopy(renderer, spawn_place.texture, nullptr, &spawnPlaceRect);
+    for (auto& pair : spawn_places) {
+        SpawnPlace& spawnPLace = pair.second;
+        SDL_Rect spawnPlaceRect = { spawnPLace.x, spawnPLace.y, GRID_CELL_SIZE, GRID_CELL_SIZE };  // Asumimos tamaño de 32x32 para cada Crate
+        SDL_RenderCopy(renderer, spawnPLace.texture, nullptr, &spawnPlaceRect);
     }
+
+    for (auto& pair : boxes) {
+        Box& box = pair.second;
+        SDL_Rect boxRect = { box.x, box.y, GRID_CELL_SIZE, GRID_CELL_SIZE };  // Asumimos tamaño de 32x32 para cada Crate
+        SDL_RenderCopy(renderer, box.texture, nullptr, &boxRect);
+    }
+
 
 }
 
@@ -134,13 +161,19 @@ void LevelEditor::handleEvent(SDL_Event& event, bool& running) {
                     currentTool = CREATE_SPAWN_PLACE;
                 }
 
+
+                if (mouseX >= boxX && mouseX <= boxX + GRID_CELL_SIZE &&
+                    mouseY >= boxY && mouseY <= boxY + GRID_CELL_SIZE) {
+                    selectedTexture = boxTexture;
+                    currentTool = CREATE_BOX;
+                }
+
+
                 // Si se hace clic en el mapa
                 int roundedX = (mouseX / (GRID_CELL_SIZE)) * (GRID_CELL_SIZE); 
                 int roundedY = (mouseY / (GRID_CELL_SIZE)) * (GRID_CELL_SIZE);
 
                 std::cout << "QUIERO AGREGAR ALGO EN X: " << roundedX << " Y: " << roundedY << std::endl;
-
-
 
 
                 //me dijo si clickeo en la zona del mapa sino break
@@ -165,20 +198,59 @@ void LevelEditor::handleEvent(SDL_Event& event, bool& running) {
                 if (currentTool == CREATE_CRATE && mouseX < WINDOW_WIDTH) {
 
                     Crate newCrate = { roundedX, roundedY, selectedTexture };
-                    crates.push_back(newCrate);
+                    
+                    crates[generateKey(roundedX, roundedY)] = newCrate;
                     occupancyGrid[gridX][gridY] = true;
                 }
 
                 if (currentTool == CREATE_SPAWN_PLACE && mouseX < WINDOW_WIDTH) {
 
                     SpawnPlace newSpawnPlace = { roundedX, roundedY, selectedTexture };
-                    spawn_places.push_back(newSpawnPlace);
+                    spawn_places[generateKey(roundedX, roundedY)] = newSpawnPlace;
                     occupancyGrid[gridX][gridY] = true;
-
                 }
+
+                if (currentTool == CREATE_BOX && mouseX < WINDOW_WIDTH) {
+
+                    Box newBox = { roundedX, roundedY, selectedTexture };
+                    boxes[generateKey(roundedX, roundedY)] = newBox;
+                    occupancyGrid[gridX][gridY] = true;
+                }
+
+
+            } 
+            
+            if (event.button.button == SDL_BUTTON_RIGHT) {
+                std::cout << "CLICK DERECHO: " << std::endl;
+
+                int mouseX = event.button.x;
+                int mouseY = event.button.y;
+
+                int roundedX = (mouseX / (GRID_CELL_SIZE)) * (GRID_CELL_SIZE); 
+                int roundedY = (mouseY / (GRID_CELL_SIZE)) * (GRID_CELL_SIZE);
+
+                 std::string key = generateKey(roundedX, roundedY);
+
+                deleteElement(key);
+
             }
             break;
     }
+}
+
+void LevelEditor::deleteElement(std::string key){
+
+    if (crates.find(key) != crates.end()) {
+        crates.erase(key);
+    } 
+
+    if (spawn_places.find(key) != spawn_places.end()) {
+        spawn_places.erase(key);
+    } 
+    if (boxes.find(key) != boxes.end()) {
+        boxes.erase(key);
+    } 
+
 }
 
 // Modificar el bucle de renderizado para llamar a drawDottedGrid
@@ -217,8 +289,13 @@ void LevelEditor::run() {
 
 void LevelEditor::cleanup() {
     if (crateTexture) SDL_DestroyTexture(crateTexture);
+    if (spawnPlaceTexture) SDL_DestroyTexture(spawnPlaceTexture);
+    if (boxTexture) SDL_DestroyTexture(boxTexture);
     if (backgroundTexture) SDL_DestroyTexture(backgroundTexture);
     if (renderer) SDL_DestroyRenderer(renderer);
     if (window) SDL_DestroyWindow(window);
     SDL_Quit();
 }
+
+
+

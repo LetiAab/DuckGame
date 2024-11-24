@@ -8,6 +8,8 @@
 #include <SDL.h>
 #include <vector>
 #include "common/constants.h"
+#include <unordered_map>
+#include <string>
 
 struct Crate {
     int x, y;
@@ -15,6 +17,11 @@ struct Crate {
 };
 
 struct SpawnPlace {
+    int x, y;
+    SDL_Texture* texture; 
+};
+
+struct Box {
     int x, y;
     SDL_Texture* texture; 
 };
@@ -32,6 +39,7 @@ public:
     void drawDottedGrid();
     void renderToolArea();
     void renderElements();
+    void deleteElement(std::string key);
 
 
 private:
@@ -41,21 +49,29 @@ private:
     SDL_Texture* backgroundTexture;
     SDL_Texture* crateTexture;
     SDL_Texture* spawnPlaceTexture;
+    SDL_Texture* boxTexture; 
 
-    std::vector<Crate> crates; // All placed crates
-    std::vector<SpawnPlace> spawn_places;
-    SDL_Texture* selectedTexture; // Texture of the selected crate
+    //std::vector<Crate> crates; 
+    std::unordered_map<std::string, Crate> crates;
 
-    int crateX, crateY; // Position for the "buttons" in the tool area
-    int selectedCrateIndex; // Index of the selected crate type (0: crate)
+    std::unordered_map<std::string, SpawnPlace> spawn_places;
+    std::unordered_map<std::string, Box> boxes;
 
+
+    SDL_Texture* selectedTexture; 
+
+
+    //Estas son las posiciones donde estan los elementos en la tools area
+    int crateX, crateY; 
     int spawnPlaceX, spawnPlaceY;
-    int selectedSpawnPlaceIndex;
+    int boxX, boxY;
+
 
     enum Tool {
         NONE,
         CREATE_CRATE,
-        CREATE_SPAWN_PLACE
+        CREATE_SPAWN_PLACE,
+        CREATE_BOX
     };
 
     Tool currentTool;
