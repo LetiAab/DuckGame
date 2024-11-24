@@ -70,7 +70,8 @@ struct SpawnPlace {
 };
 
 struct GameState {
-    Duck ducks[MAX_PLAYERS];
+    //Duck ducks[MAX_PLAYERS];
+    std::vector<Duck> ducks;
     int ducks_quantity;
     std::vector<Crate> crates;
     std::vector<SpawnPlace> spawn_places;

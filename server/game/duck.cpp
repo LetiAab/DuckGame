@@ -224,6 +224,12 @@ bool Duck::get_duck_position_message(Message& msg){
 }
 
 
+bool Duck::get_duck_initialize_message(Message& msg){
+    form_position_message(msg);
+    return true;
+}
+
+
 char Duck::get_id() const {
     return id_player;
 }
@@ -318,6 +324,25 @@ bool Duck::disparar() {
 
 Position Duck::getPosition(){
     return position;
+}
+
+void Duck::reset_for_round(Position pos){
+    position = pos;
+    old_position = pos;
+    is_moving = false;
+    speed_x = 0;
+    speed_y = 0;
+    looking = LOOKING_RIGHT;
+    is_jumping = false;
+    is_fluttering= false;
+    is_slippy= false;
+    life_points = 1;
+    stop_notificated = false;
+    is_dead = false;
+    weapon = nullptr;
+    armor = nullptr;
+    helmet = nullptr;
+    onHand.reset();
 }
 
 std::shared_ptr<Item> Duck::getItemOnHand() const {

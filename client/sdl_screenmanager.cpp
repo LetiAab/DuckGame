@@ -30,6 +30,31 @@ void ScreenManager::showStartScreen() {
     SDL_DestroyTexture(start_logo);
 }
 
+void ScreenManager::showNextRoundScreen() {
+    //cambiar por otra cosa
+    SDL_Texture* start_logo = texture_handler.loadSimpleTexture("start/duckgame_logo");
+    SDL_Point size;
+    SDL_QueryTexture(start_logo, NULL, NULL, &size.x, &size.y);
+    SDL_Rect start_logo_rect = {WINDOW_WIDTH/2-size.x/2, WINDOW_HEIGHT/2-size.y/2, size.x, size.y};
+    SDL_RenderClear(renderer);
+    SDL_RenderCopy(renderer, start_logo, NULL, &start_logo_rect);
+    SDL_RenderPresent(renderer);
+
+    SDL_Delay(2000); // cambiar a 2000
+    // Fade out effect
+    for (int alpha = 255; alpha >= 0; alpha -= 5) {
+        SDL_SetTextureAlphaMod(start_logo, alpha);
+        SDL_RenderClear(renderer);
+        SDL_RenderCopy(renderer, start_logo, NULL, &start_logo_rect);
+        SDL_RenderPresent(renderer);
+        SDL_Delay(30);
+    }
+
+    SDL_RenderClear(renderer);
+    SDL_RenderPresent(renderer);
+    SDL_DestroyTexture(start_logo);
+}
+
 void ScreenManager::loadLobbyScreen() {
     std::unordered_map<std::string, std::string> textures_to_load = {
                         {"background", "start/galaxy"},

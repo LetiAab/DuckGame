@@ -33,7 +33,7 @@ const uint8_t STOP_UP = 0x16;
 const uint8_t STOP_DOWN = 0x17;
 
 const uint8_t SHOOT = 0x18;
-const uint8_t END_GAME = 0x19;
+
 
 
 //flags que indican la direccion en la que mira el patos
@@ -44,6 +44,11 @@ static const char LOOKING_LEFT = 'a';
 const int DUCK_JUMP_POWER = 12;
 const int DUCK_WALK_POWER = 3;
 const int DUCK_FALL_POWER = 2;
+
+//constantes para el round manager
+const int MATCH_HAS_WINNER = 1;
+const int MATCH_NEXT_ROUND = 2;
+const int MATCH_5_ROUNDS = 3;
 
 //messages from game
 const uint8_t MAP_INICIALIZATION = 0x14;
@@ -74,9 +79,13 @@ const uint8_t BOX_DESTROYED = 0X81;
 
 const uint8_t BOX_POSITION = 0X82;
 
+const uint8_t END_ROUND = 0X83;
+const uint8_t END_GAME = 0x84;
+const uint8_t DUCKS_INICIALIZATION = 0x85;
 
 const int N_SPAWN_PLACES = 4;
 const int N_BOXES = 1;
+
 
 
 

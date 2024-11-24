@@ -19,6 +19,7 @@ target_sources(taller_server
     game/item.cpp
     game/spawn_place.cpp
     game/box.cpp
+    game/round_manager.cpp
     guns/bullet.cpp
     guns/weapon.cpp
     guns/pew_pew_laser.cpp
@@ -67,6 +68,7 @@ target_sources(taller_server
     game/item.h
     game/spawn_place.h
     game/box.h
+    game/round_manager.h
     guns/bullet.h
     guns/weapon.h
     guns/pew_pew_laser.h

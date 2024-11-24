@@ -29,7 +29,8 @@ void Match::start_match() {
 
     is_running = true;
 
-    //envio a cada jugador el id de su pato, el cual se usara en la partida
+    //envio a cada jugador el id de su pato, el cual se usara durante todo el juego
+    //quizas tambien deberia mandarle su color (?)
     uint16_t duck_id = 1;
     for(auto& player: players){
         Message msg;
@@ -48,8 +49,7 @@ void Match::start_match() {
 
     //cuando inicio el match tengo que crear a los patos dentro de la lista de patos del game
 
-    game.map.setEscenario();
-    game.create_ducks(players.size());
+    game.set_players(players.size());
     game.start();
 
 }

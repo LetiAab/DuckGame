@@ -38,6 +38,8 @@ struct Message {
     int box_x;
     int box_y;
 
+    char duck_winner;
+    int ducks_quantity;
 
 };
 
