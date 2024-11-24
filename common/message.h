@@ -35,6 +35,8 @@ struct Message {
 
     
     uint8_t box_id;
+    int box_x;
+    int box_y;
 
 
 };

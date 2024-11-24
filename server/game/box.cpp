@@ -97,3 +97,11 @@ bool Box::update_life(std::vector<std::shared_ptr<Item>>& items){
     return false;
 
 }
+
+void Box::getBoxPositionMessage(Message& msg){
+    msg.type = BOX_POSITION;
+    msg.box_id = id;
+    msg.item_id = item_id;
+    msg.box_x = position.x;
+    msg.box_y = position.y;
+}

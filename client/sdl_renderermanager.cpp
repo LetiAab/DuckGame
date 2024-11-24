@@ -204,10 +204,10 @@ void RendererManager::renderBoxes(GameState* game){
                     TILE_SIZE * BOX_SIZE_Y 
                 };
             
-                SDL_RenderCopyEx(renderer, texture_handler.getTexture("gun"), NULL, &box_rect, 0, NULL, SDL_FLIP_NONE);
+                SDL_RenderCopyEx(renderer, texture_handler.getTexture("box"), NULL, &box_rect, 0, NULL, SDL_FLIP_NONE);
 
             } else if (!box.item_taked) {
-                renderItem(box.item_id, box.x, box.y);
+                renderItem(box.item_id, box.x, box.y + 20);
             }
 
         }

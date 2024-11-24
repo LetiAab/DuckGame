@@ -7,7 +7,7 @@ class GameInitializer {
 public:
     void initializeDucks(GameState* game, int frame_width, int frame_height);
     void initializeCrates(GameState* game);
-    void initializeBoxes(GameState* game, int frame_width, int frame_height);
+    void initializeBoxes(GameState* game);
 
 };
 

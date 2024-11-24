@@ -114,8 +114,7 @@ void Game::run() {
 
 
 
-        //creo las cajas y las meto a la matriz
-        create_boxes();
+
 
 
         //Mando la posicion de todo el mapa por primera vez para tener referencia de donde estan
@@ -125,6 +124,10 @@ void Game::run() {
         message.map = map.getMap();
 
         monitor.broadcast(message);
+
+        //creo las cajas y las meto a la matriz. Y MANDO AL CLIENTE
+        create_boxes();
+
 
         //MANDO LOS MENSAJES CON LA POSICION DE LOS SPAWN PLACES
         create_spawn_places();
@@ -233,6 +236,12 @@ void Game::create_boxes(){
 
     //agrego la caja al vector de cajas
     boxes.emplace_back(std::make_unique<Box>(boxPosition ,0,&map));
+
+    for (int i = 0; i < N_BOXES; i++){
+        Message box_position_message;
+        boxes[i]->getBoxPositionMessage(box_position_message);
+        monitor.broadcast(box_position_message);
+    }
 
 }
 

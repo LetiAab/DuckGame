@@ -23,6 +23,7 @@ void SDLHandler::loadGame(GameState* game) {
     std::vector<TextureInfo> textures_to_load = {
         {"forest", "backgrounds/forest", 1},
         {"crate", "crate", 1},
+        {"box", "box", 1},
         {"gun", "guns/AK-47", 1},
         {"cowboy-pistol", "guns/cowboy_pistol", 1},
         {"laser-rifle", "guns/laser_rifle", 1},
@@ -53,7 +54,7 @@ void SDLHandler::loadGame(GameState* game) {
     // Inicializo los patos y los crates
     gameInitializer.initializeDucks(game, frame_width, frame_height);
     gameInitializer.initializeCrates(game);
-    gameInitializer.initializeBoxes(game, frame_width, frame_height);
+    //gameInitializer.initializeBoxes(game);
     
 
     // Inicializo el render manager
@@ -281,16 +282,28 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
 
     loadGame(&game);
 
-    std::cout << "HORA DE RECIBIR SPAWNS" << "\n";
-    for (int i = 0; i < N_SPAWN_PLACES; i++){
-        // lo hago bloqueante asi no avanza hasta recibir los spawnplaces
+    //RECIBO LAS CAJAS
+    for (int i = 0; i < N_BOXES; i++){
+        std::cout << "RECIBO LA CAJA" << "\n";
+        Message message = message_queue.pop();
 
+        if(message.type == BOX_POSITION){
+            game.boxes.emplace_back(message.box_x * TILE_SIZE, message.box_y * TILE_SIZE, message.item_id);
+        }
+    }
+
+    //RECIBO LOS SPAWNS 
+
+    for (int i = 0; i < N_SPAWN_PLACES; i++){
         Message message = message_queue.pop();
 
         if(message.type == SPAWN_PLACE_POSITION){
             game.spawn_places.emplace_back(message.spaw_place_x * TILE_SIZE, message.spaw_place_y * TILE_SIZE, message.item_id);
         }
     }
+
+
+
 
     //Empiezo la musica de fondo
     const std::string path = std::string(AUDIO_PATH) +"ambient-music.wav";

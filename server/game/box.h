@@ -44,6 +44,8 @@ public:
 
     bool getBoxMessage(Message& msg) const;
 
+    void getBoxPositionMessage(Message& msg);
+
     bool update_life(std::vector<std::shared_ptr<Item>>& items); //true si se rompio
 
 private:

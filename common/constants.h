@@ -72,8 +72,11 @@ const uint8_t SPAWN_PLACE_ITEM_UPDATE = 0X80;
 
 const uint8_t BOX_DESTROYED = 0X81;
 
+const uint8_t BOX_POSITION = 0X82;
+
 
 const int N_SPAWN_PLACES = 4;
+const int N_BOXES = 1;
 
 
 

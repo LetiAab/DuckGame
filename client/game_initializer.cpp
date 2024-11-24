@@ -52,7 +52,7 @@ void GameInitializer::initializeCrates(GameState* game) {
     }
 }
 
-void GameInitializer::initializeBoxes(GameState* game, const int frame_width, const int frame_height) {
+void GameInitializer::initializeBoxes(GameState* game) {
     for (size_t i = 0; i < game->client_game_map.map.size(); ++i) {
         for (size_t j = 0; j < (game->client_game_map.map)[i].size(); ++j) {
             if ((game->client_game_map.map)[i][j] == 'B') {
