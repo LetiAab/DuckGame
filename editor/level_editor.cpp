@@ -4,7 +4,8 @@
 
 LevelEditor::LevelEditor()
     : window(nullptr), renderer(nullptr), backgroundTexture(nullptr), crateTexture(nullptr),
-      selectedTexture(nullptr), crateX(WINDOW_WIDTH + TILE_SIZE), crateY(TILE_SIZE), selectedCrateIndex(0), currentTool(NONE) {}
+      selectedTexture(nullptr), crateX(WINDOW_WIDTH + TILE_SIZE), crateY(TILE_SIZE), selectedCrateIndex(0), 
+      spawnPlaceX(WINDOW_WIDTH + TILE_SIZE), spawnPlaceY(TILE_SIZE + std::pow(TILE_SIZE, 2) ), selectedSpawnPlaceIndex(0), currentTool(NONE) {}
 
 LevelEditor::~LevelEditor() {}
 
@@ -29,6 +30,11 @@ bool LevelEditor::init() {
         return false;
     }
 
+    return loadTextures();
+}
+
+bool LevelEditor::loadTextures(){
+
     backgroundTexture = IMG_LoadTexture(renderer, "../client/imgs/backgrounds/forest.png");
     if (!backgroundTexture) {
         SDL_Log("Failed to load background: %s", SDL_GetError());
@@ -41,34 +47,137 @@ bool LevelEditor::init() {
         return false;
     }
 
-    selectedTexture = crateTexture; // Default selected texture (crate)
+    spawnPlaceTexture = IMG_LoadTexture(renderer, "../client/imgs/spawn-place.png");
+    if (!spawnPlaceTexture) {
+        SDL_Log("Failed to load tree texture: %s", SDL_GetError());
+        return false;
+    }
+
+    selectedTexture = crateTexture; // Textura seleccionada por defecto!!
 
     return true;
 }
 
-// Función para dibujar la cuadrícula punteada
 void LevelEditor::drawDottedGrid() {
-    // Definir el color de la línea punteada (por ejemplo, gris claro)
-    SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);  // Gris claro
+    SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255); 
 
-    // Establecer la longitud del segmento de línea (en píxeles)
-    const int dashLength = 5;  // Longitud de cada segmento de la línea punteada
-    const int spaceLength = 3; // Longitud del espacio entre segmentos
+    const int dashLength = 5;  
+    const int spaceLength = 3;
 
-    // Dibujar las líneas verticales
-    for (int x = 0; x < WINDOW_WIDTH; x += TILE_SIZE * TILE_SIZE) {
+    for (int x = 0; x < WINDOW_WIDTH; x += GRID_CELL_SIZE) {
         for (int i = 0; i < WINDOW_HEIGHT; i += dashLength + spaceLength) {
-            // Dibujar el segmento de la línea
             SDL_RenderDrawLine(renderer, x, i, x, i + dashLength);
         }
     }
 
-    // Dibujar las líneas horizontales
-    for (int y = 0; y < WINDOW_HEIGHT; y += TILE_SIZE * TILE_SIZE) {
+    for (int y = 0; y < WINDOW_HEIGHT; y += GRID_CELL_SIZE) {
         for (int i = 0; i < WINDOW_WIDTH; i += dashLength + spaceLength) {
-            // Dibujar el segmento de la línea
             SDL_RenderDrawLine(renderer, i, y, i + dashLength, y);
         }
+    }
+}
+
+void LevelEditor::renderToolArea(){
+
+    // Renderizar el área negra para herramientas
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_Rect toolsArea = {WINDOW_WIDTH, 0, 200, WINDOW_HEIGHT};
+    SDL_RenderFillRect(renderer, &toolsArea);
+
+    // Renderizar el botón en la zona de herramientas (el sprite seleccionado)
+    SDL_Rect crateButtonRect = { crateX, crateY, GRID_CELL_SIZE, GRID_CELL_SIZE };
+    SDL_RenderCopy(renderer, crateTexture, nullptr, &crateButtonRect);
+
+    // Renderizar el botón en la zona de herramientas (el sprite seleccionado)
+    SDL_Rect spawnPlaceRect = { spawnPlaceX, spawnPlaceY, GRID_CELL_SIZE, GRID_CELL_SIZE };
+    SDL_RenderCopy(renderer, spawnPlaceTexture, nullptr, &spawnPlaceRect);
+
+
+}
+
+void LevelEditor::renderElements(){
+
+    for (auto& crate : crates) {
+        SDL_Rect crateRect = { crate.x, crate.y, GRID_CELL_SIZE, GRID_CELL_SIZE };
+        SDL_RenderCopy(renderer, crate.texture, nullptr, &crateRect);
+    }
+
+    for (auto& spawn_place : spawn_places) {
+        SDL_Rect spawnPlaceRect = { spawn_place.x, spawn_place.y, GRID_CELL_SIZE, GRID_CELL_SIZE };
+        SDL_RenderCopy(renderer, spawn_place.texture, nullptr, &spawnPlaceRect);
+    }
+
+}
+
+void LevelEditor::handleEvent(SDL_Event& event, bool& running) {
+    switch (event.type) {
+        case SDL_QUIT:
+            running = false;
+            break;
+
+        case SDL_MOUSEBUTTONDOWN:
+            if (event.button.button == SDL_BUTTON_LEFT) {
+                int mouseX = event.button.x;
+                int mouseY = event.button.y;
+
+
+                //Si se hace click en el tool area
+                if (mouseX >= crateX && mouseX <= crateX + GRID_CELL_SIZE &&
+                    mouseY >= crateY && mouseY <= crateY + GRID_CELL_SIZE) {
+                    selectedTexture = crateTexture;
+                    currentTool = CREATE_CRATE;
+                }
+
+                if (mouseX >= spawnPlaceX && mouseX <= spawnPlaceX + GRID_CELL_SIZE &&
+                    mouseY >= spawnPlaceY && mouseY <= spawnPlaceY + GRID_CELL_SIZE) {
+                    selectedTexture = spawnPlaceTexture;
+                    currentTool = CREATE_SPAWN_PLACE;
+                }
+
+                // Si se hace clic en el mapa
+                int roundedX = (mouseX / (GRID_CELL_SIZE)) * (GRID_CELL_SIZE); 
+                int roundedY = (mouseY / (GRID_CELL_SIZE)) * (GRID_CELL_SIZE);
+
+                std::cout << "QUIERO AGREGAR ALGO EN X: " << roundedX << " Y: " << roundedY << std::endl;
+
+
+
+
+                //me dijo si clickeo en la zona del mapa sino break
+                if (!(roundedX >= 0 && roundedX < WINDOW_WIDTH &&
+                        roundedY >= 0 && roundedY < WINDOW_HEIGHT)) {
+                        break;
+                }
+                    
+                int gridX = roundedX / GRID_CELL_SIZE;
+                int gridY = roundedY / GRID_CELL_SIZE;
+
+                std::cout << "REVISO GRID PARA AGREGAR ALGO EN X: " << gridX << " Y: " << gridY << std::endl;
+
+                
+                //si clickeo en una celda ocupada no me deja
+                if (occupancyGrid[gridX][gridY] == true){
+                    std::cout << "ESTA OCUPADO !!" << std::endl;
+                    break;
+                }
+
+
+                if (currentTool == CREATE_CRATE && mouseX < WINDOW_WIDTH) {
+
+                    Crate newCrate = { roundedX, roundedY, selectedTexture };
+                    crates.push_back(newCrate);
+                    occupancyGrid[gridX][gridY] = true;
+                }
+
+                if (currentTool == CREATE_SPAWN_PLACE && mouseX < WINDOW_WIDTH) {
+
+                    SpawnPlace newSpawnPlace = { roundedX, roundedY, selectedTexture };
+                    spawn_places.push_back(newSpawnPlace);
+                    occupancyGrid[gridX][gridY] = true;
+
+                }
+            }
+            break;
     }
 }
 
@@ -79,42 +188,7 @@ void LevelEditor::run() {
 
     while (running) {
         while (SDL_PollEvent(&event)) {
-            switch (event.type) {
-                case SDL_QUIT:
-                    running = false;
-                    break;
-
-                case SDL_MOUSEBUTTONDOWN:
-                    if (event.button.button == SDL_BUTTON_LEFT) {
-                        int mouseX = event.button.x;
-                        int mouseY = event.button.y;
-
-                        // Si se hace clic en la zona de herramientas, cambiar el sprite seleccionado
-                        if (mouseX >= crateX && mouseX <= crateX + TILE_SIZE * TILE_SIZE &&
-                            mouseY >= crateY && mouseY <= crateY + TILE_SIZE * TILE_SIZE) {
-                            selectedTexture = crateTexture; // Seleccionar el crate
-                            currentTool = CREATE_CRATE; // Activar la herramienta para crear crates
-                        }
-
-                        // Si se hace clic en el mapa, colocar el crate seleccionado
-                        if (currentTool == CREATE_CRATE && mouseX < WINDOW_WIDTH) {
-                            // Redondear la posición de clic al múltiplo más cercano de TILE_SIZE
-
-
-                            //Me vueven loco las matematicas tiooo                            
-                            int roundedX = std::floor((mouseX / (TILE_SIZE * TILE_SIZE))) * (TILE_SIZE * TILE_SIZE); 
-                            int roundedY = std::floor((mouseY / (TILE_SIZE * TILE_SIZE))) * (TILE_SIZE * TILE_SIZE);
-
-                            // Asegurarse de que las coordenadas estén dentro de los límites del mapa
-                            if (roundedX >= 0 && roundedX < WINDOW_WIDTH &&
-                                roundedY >= 0 && roundedY < WINDOW_HEIGHT) {
-                                Crate newCrate = { roundedX, roundedY, selectedTexture };
-                                crates.push_back(newCrate);
-                            }
-                        }
-                    }
-                    break;
-            }
+            handleEvent(event, running);
         }
 
         // Limpiar pantalla
@@ -124,23 +198,16 @@ void LevelEditor::run() {
         SDL_Rect backgroundRect = {0, 0, WINDOW_WIDTH, WINDOW_HEIGHT};
         SDL_RenderCopy(renderer, backgroundTexture, nullptr, &backgroundRect);
 
-        // Renderizar la cuadrícula punteada
+
+        //Renderizo cuadricula
         drawDottedGrid();
 
-        // Renderizar el área negra para herramientas
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-        SDL_Rect toolsArea = {WINDOW_WIDTH, 0, 200, WINDOW_HEIGHT};
-        SDL_RenderFillRect(renderer, &toolsArea);
+        //Herramientas
+        renderToolArea();   
 
-        // Renderizar el botón en la zona de herramientas (el sprite seleccionado)
-        SDL_Rect crateButtonRect = { crateX, crateY, TILE_SIZE * TILE_SIZE, TILE_SIZE * TILE_SIZE };
-        SDL_RenderCopy(renderer, selectedTexture, nullptr, &crateButtonRect);
+        //Elementos que ya puse en el mapa
+        renderElements();
 
-        // Renderizar todos los crates en el mapa
-        for (auto& crate : crates) {
-            SDL_Rect crateRect = { crate.x, crate.y, TILE_SIZE * TILE_SIZE, TILE_SIZE * TILE_SIZE };
-            SDL_RenderCopy(renderer, crate.texture, nullptr, &crateRect);
-        }
 
         // Actualizar pantalla
         SDL_RenderPresent(renderer);
