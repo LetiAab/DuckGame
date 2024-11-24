@@ -41,6 +41,20 @@ Message ClientProtocol::receive_message(){
         }
         break;
 
+    case BOX_DESTROYED:        
+        skt.recvall(&message.box_id, sizeof(uint8_t), &was_closed);
+        skt.recvall(&message.item_id, sizeof(uint8_t), &was_closed);
+        break;
+
+    case BOX_POSITION:
+
+        skt.recvall(&message.box_id, sizeof(uint8_t), &was_closed);
+        skt.recvall(&message.box_x, sizeof(int), &was_closed);
+        skt.recvall(&message.box_y, sizeof(int), &was_closed);
+        skt.recvall(&message.item_id, sizeof(uint8_t), &was_closed);
+        break;
+    
+
     case DUCKS_INICIALIZATION:
         skt.recvall(&message.ducks_quantity, sizeof(message.ducks_quantity), &was_closed);
         break;

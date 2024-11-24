@@ -39,6 +39,7 @@ Duck* Game::getDuckByPosition(Position position) {
 }
 
 void Game::simulate_round() {
+        
 
         //sumo 1 al contador de rondas hasta generar un nuevo item en el spawn place
         for (const auto& spawn_place : spawn_places) {
@@ -47,6 +48,21 @@ void Game::simulate_round() {
                         spawn_place->getSpawnPlaceItemUpdateMessage(msg);
                         monitor.broadcast(msg);
                 }
+        }
+
+
+        for(const auto& box: boxes){
+                if(box->isDestroyed()){
+                        continue;
+                }
+
+                if(box->update_life(items)){
+                        std::cout << "MANDO EL MENSAJE DE LA BALA" << "\n";
+                        Message msg;
+                        box->getBoxMessage(msg);
+                        monitor.broadcast(msg);
+                }
+
         }
 
 
@@ -100,6 +116,10 @@ void Game::set_players(int number_of_players){
 
 void Game::run() {
 
+
+
+        //MANDO LOS MENSAJES CON LA POSICION DE LOS SPAWN PLACES
+
         //creo el mapa, los patos y los spawn places
         map.setEscenario();
         create_ducks(players);
@@ -109,6 +129,10 @@ void Game::run() {
         send_map_message();
         send_initialize_ducks_message();
         send_spawn_place_message();
+  
+        //creo las cajas y las meto a la matriz. Y MANDO AL CLIENTE
+        create_boxes();
+
 
         while (is_running) {
 
@@ -276,6 +300,25 @@ void Game::initialize_round() {
 
 }
 
+void Game::create_boxes(){
+
+    //pongo una caja en la matriz de coliciones
+    Position boxPosition(MATRIX_M / 3 - BOX_SIZE_X, MATRIX_N / 2 + BOX_SIZE_Y + 5 );
+    map.placeBox(boxPosition);
+
+    //agrego la caja al vector de cajas
+    boxes.emplace_back(std::make_unique<Box>(boxPosition ,0,&map));
+
+    for (int i = 0; i < N_BOXES; i++){
+        Message box_position_message;
+        boxes[i]->getBoxPositionMessage(box_position_message);
+        monitor.broadcast(box_position_message);
+    }
+
+}
+
+//TODO: Esto solo sirve para dos patos y siempre tiene en cuenta que es el mismo distribucion de obstaculos
+void Game::create_ducks(int size) {
 void Game::send_initialize_ducks_message(){
         //podria mandar todo en un solo mensaje pero primero necesito saber si anda
         Message ducks_message;
@@ -443,6 +486,31 @@ SpawnPlace* Game::getSpawnPlaceByPosition(Position position) {
     return nullptr; 
 }
 
+
+Box* Game::getBoxByPosition(Position position) {
+    // Coordenadas del área del pato
+    int area_x_min = position.x;
+    int area_x_max = position.x + DUCK_SIZE_X;
+    int area_y_min = position.y;
+    int area_y_max = position.y + DUCK_SIZE_Y;
+
+    std::cout << "Buscando Box en el área del pato desde X: " << area_x_min 
+              << " hasta X: " << area_x_max
+              << ", y desde Y: " << area_y_min 
+              << " hasta Y: " << area_y_max << "\n";
+
+    for (auto& box : boxes) {
+        Position boxPos = box->getPosition();
+
+        if (boxPos.x >= area_x_min && boxPos.x < area_x_max &&
+            boxPos.y >= area_y_min && boxPos.y < area_y_max) {
+            std::cout << "Encontré una box, o donde había una  " << std::endl;
+            return box.get();
+        }
+    }
+
+    return nullptr; 
+}
 
 void Game::game_broadcast(Message message){
         monitor.broadcast(message);

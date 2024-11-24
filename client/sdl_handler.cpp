@@ -23,6 +23,7 @@ void SDLHandler::loadGame(GameState &game, Queue<Message> &message_queue) {
     std::vector<TextureInfo> textures_to_load = {
         {"forest", "backgrounds/forest", 1},
         {"crate", "crate", 1},
+        {"box", "box", 1},
         {"gun", "guns/AK-47", 1},
         {"cowboy-pistol", "guns/cowboy_pistol", 1},
         {"laser-rifle", "guns/laser_rifle", 1},
@@ -49,6 +50,7 @@ void SDLHandler::loadGame(GameState &game, Queue<Message> &message_queue) {
     for (const TextureInfo& texture_info : textures_to_load) {
         handle_textures.loadTexture(texture_info, &frame_width, &frame_height);
     }
+
 
     // Recibo e inicializo los elementos del juego
     gameInitializer.initializeGame(message_queue, game, frame_width, frame_height);
@@ -89,6 +91,16 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
             audioManager->loadSoundEffect(path);
             audioManager->playSoundEffect();
             audioManager->setSoundEffectVolume(70);
+
+        }
+
+        if(message.type == BOX_DESTROYED){
+
+            std::cout << "ME LLEGA LA NOTI DE QUE SE ROMPE LA CAJA " << "\n"; 
+
+            int box_id = message.box_id;
+            game->boxes[box_id].destroyed = true;
+            game->boxes[box_id].item_id = message.item_id;
 
         }
 
@@ -267,6 +279,29 @@ void SDLHandler::run(Queue<Command>& command_queue, uint16_t id, Queue<Message>&
     std::cout << "ID: " << id << "\n";
 
     loadGame(game, message_queue);
+
+    //RECIBO LAS CAJAS
+    for (int i = 0; i < N_BOXES; i++){
+        std::cout << "RECIBO LA CAJA" << "\n";
+        Message message = message_queue.pop();
+
+        if(message.type == BOX_POSITION){
+            game.boxes.emplace_back(message.box_x * TILE_SIZE, message.box_y * TILE_SIZE, message.item_id);
+        }
+    }
+
+    //RECIBO LOS SPAWNS 
+
+    for (int i = 0; i < N_SPAWN_PLACES; i++){
+        Message message = message_queue.pop();
+
+        if(message.type == SPAWN_PLACE_POSITION){
+            game.spawn_places.emplace_back(message.spaw_place_x * TILE_SIZE, message.spaw_place_y * TILE_SIZE, message.item_id);
+        }
+    }
+
+
+
 
 
     //Empiezo la musica de fondo

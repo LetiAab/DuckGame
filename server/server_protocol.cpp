@@ -113,6 +113,40 @@ bool ServerProtocol::send_message(Message& message){
             return false;
         }
         break;
+
+    case BOX_POSITION:
+
+        std::cout << "MANDO LA CAJA" << "\n";
+
+
+        if (!skt.sendall(&message.box_id, sizeof(message.box_id), &was_closed) || was_closed) {
+            return false;
+        }
+
+        if (!skt.sendall(&message.box_x, sizeof(message.box_x), &was_closed) || was_closed) {
+            return false;
+        }
+
+        if (!skt.sendall(&message.box_y, sizeof(message.box_y), &was_closed) || was_closed) {
+            return false;
+        }
+
+        if (!skt.sendall(&message.item_id, sizeof(message.item_id), &was_closed) || was_closed) {
+            return false;
+        }
+
+        break;
+
+    case BOX_DESTROYED:
+        if (!skt.sendall(&message.box_id, sizeof(message.box_id), &was_closed) || was_closed) {
+            return false;
+        }
+
+        if (!skt.sendall(&message.item_id, sizeof(message.item_id), &was_closed) || was_closed) {
+            return false;
+        }
+        break;
+
     
     case DROP_WEAPON:
         if (!skt.sendall(&message.player_id, sizeof(message.player_id), &was_closed) || was_closed) {

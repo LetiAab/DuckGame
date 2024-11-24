@@ -14,6 +14,7 @@
 #include "item.h"
 #include "../guns/weapon.h"
 #include "spawn_place.h"
+#include "box.h"
 #include "round_manager.h"
 
 
@@ -77,7 +78,8 @@ public:
         std::vector<Duck> ducks;
         std::vector<std::shared_ptr<Item>> items;
         std::vector<std::unique_ptr<SpawnPlace>> spawn_places;
-        
+        std::vector<std::unique_ptr<Box>> boxes;
+
 
 
 
@@ -98,6 +100,9 @@ std::shared_ptr<Item> getItemByPosition(Position position);
 
 SpawnPlace* getSpawnPlaceByPosition(Position position);
 
+Box* getBoxByPosition(Position position);
+
+
 void game_broadcast(Message message);
 
 //void add_projectile(std::unique_ptr<Proyectil> projectile);
@@ -107,8 +112,12 @@ void run() override;
 void stop() override;
 
 
+void create_boxes();
+
 Game(const Game&) = delete;
 Game& operator=(const Game&) = delete;
+
+
 };
 
 #endif  // GAME_H
