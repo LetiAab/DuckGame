@@ -124,14 +124,15 @@ void Game::run() {
         map.setEscenario();
         create_ducks(players);
         create_spawn_places();
+        create_boxes();
+
 
         //envio al cliente los mensajes
         send_map_message();
         send_initialize_ducks_message();
         send_spawn_place_message();
+        send_boxes_initialize_message();
   
-        //creo las cajas y las meto a la matriz. Y MANDO AL CLIENTE
-        create_boxes();
 
 
         while (is_running) {
@@ -302,23 +303,14 @@ void Game::initialize_round() {
 
 void Game::create_boxes(){
 
-    //pongo una caja en la matriz de coliciones
     Position boxPosition(MATRIX_M / 3 - BOX_SIZE_X, MATRIX_N / 2 + BOX_SIZE_Y + 5 );
     map.placeBox(boxPosition);
 
-    //agrego la caja al vector de cajas
     boxes.emplace_back(std::make_unique<Box>(boxPosition ,0,&map));
-
-    for (int i = 0; i < N_BOXES; i++){
-        Message box_position_message;
-        boxes[i]->getBoxPositionMessage(box_position_message);
-        monitor.broadcast(box_position_message);
-    }
 
 }
 
 //TODO: Esto solo sirve para dos patos y siempre tiene en cuenta que es el mismo distribucion de obstaculos
-void Game::create_ducks(int size) {
 void Game::send_initialize_ducks_message(){
         //podria mandar todo en un solo mensaje pero primero necesito saber si anda
         Message ducks_message;
@@ -406,6 +398,15 @@ void Game::create_spawn_places() {
     items.push_back(std::move(item4));
 
 }
+
+void Game::send_boxes_initialize_message(){
+    for (int i = 0; i < N_BOXES; i++){
+        Message box_position_message;
+        boxes[i]->getBoxPositionMessage(box_position_message);
+        monitor.broadcast(box_position_message);
+    }
+}
+
 
 void Game::send_spawn_place_message(){
         for (int i = 0; i < N_SPAWN_PLACES; i++){

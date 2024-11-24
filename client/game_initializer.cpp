@@ -22,6 +22,8 @@ void GameInitializer::initializeGame(Queue<Message> &message_queue, GameState& g
 
     initializeSpawnPlaces(game, message_queue);
 
+    initializeBoxes(game, message_queue);
+
 }
 
 
@@ -49,6 +51,19 @@ void GameInitializer::initializeSpawnPlaces(GameState& game, Queue<Message> &mes
         }
     }
 }
+
+void GameInitializer::initializeBoxes(GameState& game, Queue<Message> &message_queue){
+    game.boxes.clear(); // borro los anteriores si habia
+
+    for (int i = 0; i < N_BOXES; i++){
+        Message message = message_queue.pop();
+
+        if(message.type == BOX_POSITION){
+            game.boxes.emplace_back(message.box_x * TILE_SIZE, message.box_y * TILE_SIZE, message.item_id);
+        }
+    }
+}
+
 
 void GameInitializer::initializeDucks(GameState &game, Queue<Message> &message_queue){
     Message message_ducks = message_queue.pop();
@@ -147,19 +162,5 @@ void GameInitializer::initializeCrates(GameState& game) {
     }
 }
 
-void GameInitializer::initializeBoxes(GameState* game) {
-    for (size_t i = 0; i < game->client_game_map.map.size(); ++i) {
-        for (size_t j = 0; j < (game->client_game_map.map)[i].size(); ++j) {
-            if ((game->client_game_map.map)[i][j] == 'B') {
-                Box box;
-                box.x = j * TILE_SIZE;
-                box.y = i * TILE_SIZE;
-                box.destroyed = false;
-                box.item_taked = false;
-                game->boxes.push_back(box);
-            }
-        }
-    }
 
-}
 

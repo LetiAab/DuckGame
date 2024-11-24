@@ -71,6 +71,7 @@ private:
         void send_spawn_place_message();
         void send_map_message();
         void send_initialize_ducks_message();
+        void send_boxes_initialize_message();
 
 
 public:

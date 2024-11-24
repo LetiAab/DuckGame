@@ -280,25 +280,6 @@ void SDLHandler::run(Queue<Command>& command_queue, uint16_t id, Queue<Message>&
 
     loadGame(game, message_queue);
 
-    //RECIBO LAS CAJAS
-    for (int i = 0; i < N_BOXES; i++){
-        std::cout << "RECIBO LA CAJA" << "\n";
-        Message message = message_queue.pop();
-
-        if(message.type == BOX_POSITION){
-            game.boxes.emplace_back(message.box_x * TILE_SIZE, message.box_y * TILE_SIZE, message.item_id);
-        }
-    }
-
-    //RECIBO LOS SPAWNS 
-
-    for (int i = 0; i < N_SPAWN_PLACES; i++){
-        Message message = message_queue.pop();
-
-        if(message.type == SPAWN_PLACE_POSITION){
-            game.spawn_places.emplace_back(message.spaw_place_x * TILE_SIZE, message.spaw_place_y * TILE_SIZE, message.item_id);
-        }
-    }
 
 
 
