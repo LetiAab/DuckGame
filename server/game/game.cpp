@@ -53,6 +53,8 @@ void Game::simulate_round() {
         for (Duck& duck : ducks) {
                 if (duck.is_dead) {
                         // Si el pato murio en la ronda anterior, lo saltamos y continuamos con el siguiente
+                        // Nota: dejo esto para el caso en que la granada le explota en la mano al pato
+                        duck.update_weapon();
                         continue;
                 }
 

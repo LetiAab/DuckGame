@@ -157,13 +157,14 @@ void Duck::update_position() {
 
 }
 void Duck::update_weapon(){
-    if(is_dead){return;}
+    //if(is_dead){return;}
     
     if (weapon != nullptr) {
         if (weapon->getItemId() == GRENADE_ID) {
             // Un poco feo este if, pero sino tengo que modificar la firma de la función
             Grenade* grenade = (Grenade*) weapon.get();
-            grenade->update_weapon(position.x, position.y, looking, map, id_player);
+            if (grenade->update_weapon(position.x, position.y, looking, map, id_player))
+                weapon.reset();
         } else {
             weapon->update_weapon();
         }

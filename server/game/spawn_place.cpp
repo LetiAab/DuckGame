@@ -78,7 +78,9 @@ void SpawnPlace::create_items(std::vector<std::shared_ptr<Item>>& items) {
         std::shared_ptr<Item> item;
 
         //tipos 1 y 2 son para la banana y granada que no estan implementadas aun
-        if (item_type == 2) {
+        if (item_type == 1) {
+            item = std::make_shared<Grenade>(x, y);
+        } else if (item_type == 2) {
             item = std::make_shared<PewPewLaser>(x, y);
         } else if (item_type == 3) {
             item = std::make_shared<LaserRifle>(x, y);

@@ -14,6 +14,7 @@ class Grenade : public Weapon {  // Herencia de Item
 public:
     bool activated;
     int ticks_counter;
+    bool exploded;
 
     // Constructor que inicializa la posición
     explicit Grenade(int x = 0, int y = 0);
@@ -26,7 +27,7 @@ public:
     }
 
     void mostrarInformacion() const;  
-    void update_weapon(int position_x, int position_y, char looking, GameMap* map, char id_player);
+    bool update_weapon(int position_x, int position_y, char looking, GameMap* map, char id_player);
 
     // Getters
     std::string getNombre() const;
