@@ -1,0 +1,24 @@
+altura
+ancho
+
+CRATES
+x,y
+x,y
+x,y
+
+SPAWN PLACE
+x,y
+x,y
+
+BOX
+x,y
+
+
+ITEMS
+x,y,item_id
+x,y,item_id
+
+SPAWN DUCK
+x,y
+x,y
+x,y
