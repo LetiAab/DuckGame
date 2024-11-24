@@ -13,6 +13,7 @@ public:
     ScreenManager(SDL_Renderer *renderer, TextureHandler &texture_handler);
     ~ScreenManager();
     void showStartScreen();
+    void showNextRoundScreen();
     void loadLobbyScreen();
     void renderStaticLobby();
     void showLobbyScreen();

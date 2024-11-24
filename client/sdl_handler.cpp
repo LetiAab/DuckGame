@@ -69,6 +69,7 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
             std::cout << "SE TERMINO LA RONDA "<< "\n";
 
             gameInitializer.initialize_new_round(*game, message_queue);
+            message.type = END_ROUND;
         }
 
         if(message.type == END_GAME){
@@ -295,6 +296,7 @@ void SDLHandler::run(Queue<Command>& command_queue, uint16_t id, Queue<Message>&
             if(message.type == END_ROUND){
                 std::cout << "TERMINO LA RONDA"<< "\n";
                 std::cout << "El ganador fue el pato "<< static_cast<char>(message.duck_winner) << "\n";
+                screenManager->showNextRoundScreen();
 
                 rendererManager->doRenderStatic(&game);
                 continue;
