@@ -84,6 +84,9 @@ std::shared_ptr<Item> getItemByPosition(Position position);
 
 SpawnPlace* getSpawnPlaceByPosition(Position position);
 
+Box* getBoxByPosition(Position position);
+
+
 
 void game_broadcast(Message message);
 

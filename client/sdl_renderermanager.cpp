@@ -189,11 +189,7 @@ void RendererManager::renderDucks(GameState* game) {
 
 void RendererManager::renderBoxes(GameState* game){
         for (auto& box : game->boxes) {
-        
-            if(box.destroyed){
-                std::cout << "SE DESTRUYOOO" << "\n";
-            }
-
+    
             if(!box.destroyed){
 
 
