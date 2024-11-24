@@ -45,6 +45,11 @@ const int DUCK_JUMP_POWER = 12;
 const int DUCK_WALK_POWER = 3;
 const int DUCK_FALL_POWER = 2;
 
+//constantes para el round manager
+const int MATCH_HAS_WINNER = 1;
+const int MATCH_NEXT_ROUND = 2;
+const int MATCH_5_ROUNDS = 3;
+
 //messages from game
 const uint8_t MAP_INICIALIZATION = 0x14;
 

@@ -129,47 +129,59 @@ void Game::run() {
 
                 if (check_end_of_round()){
 
+                        int status = round_manager.check_match_status();
 
-                        if (round_manager.check_end_of_match()){
-                                //vaciar la queue del juego
-                                //mandarle al cliente que termino el partido y quien gano
-                                notify_players_end_game();
-                                //mandarle mas info sobre los puntajes de la partida
-
-                                break;
-
-                        } else {
-                                std::cout << "Envio mensajes para iniciar la nueva ronda"  << std::endl;
+                        switch (status){
+                        case MATCH_NEXT_ROUND:
 
                                 initialize_round();
-                                //avisarle al cliente que empieza un nuevo round
+
+                                std::cout << "Envio mensajes para iniciar la nueva ronda"  << std::endl;
+
                                 notify_players_end_round();
-                                //pasarle al cliente el nuevo mapa
                                 send_map_message();
                                 send_initialize_ducks_message();
                                 send_spawn_place_message();
                                 
-                                //vaciar la queue del juego para descartar cualquier comando viejo
-                                //quizas se pueda hacer un get_duck_bullet_position() en vez de esto
-
+                                //vaciar la queue del juego para descartar cualquier comando viejo?)
+                                break;
                         
-                }
+                        case MATCH_5_ROUNDS:
+                                //TODO: Mandar primero un resumen de como va el juego
 
-                //esta verificacion luego se va a ir
-                if (check_end_game()){
-                        notify_players_end_game();
-                        is_running = false;
-                        is_over = true;
-                        break;
+                                initialize_round();
+
+                                std::cout << "Envio mensajes para iniciar la nueva ronda"  << std::endl;
+
+                                notify_players_end_round();
+                                send_map_message();
+                                send_initialize_ducks_message();
+                                send_spawn_place_message();
+                                
+                                //vaciar la queue del juego para descartar cualquier comando viejo?)
+                                break;
+
+                        case MATCH_HAS_WINNER:
+
+                                notify_players_end_game();
+                                //mandarle mas info sobre los puntajes de la partida
+
+                                is_running = false;
+                                is_over = true;
+
+                                break;
+                        }
+
                 }
-        }
 
                 std::this_thread::sleep_for(std::chrono::milliseconds(60));
-
         }
-        std::cout << "Termino el juego!"  << std::endl;
 
+
+        std::cout << "Termino el juego!"  << std::endl;
 }
+
+
 
 void Game::send_updates(){
         for (Duck& duck : ducks) {
@@ -224,8 +236,6 @@ bool Game::check_end_of_round(){
                 for (Duck& duck : ducks) {
                         if (!duck.is_dead) {
                                 round_manager.declare_round_winner(duck.get_id());
-                                std::cout << "Termino una ronda!"  << std::endl;
-                                std::cout << "El ganador fue el pato "<< static_cast<char>(duck.get_id()) << std::endl;
                         }
                 }
         }
