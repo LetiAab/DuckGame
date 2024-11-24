@@ -55,6 +55,19 @@ bool ServerProtocol::send_message(Message& message){
 
     switch (message.type)
     {
+    case END_GAME:
+        if (!skt.sendall(&message.duck_winner, sizeof(message.duck_winner), &was_closed) || was_closed) {
+            return false;
+        }
+        break;
+
+    case END_ROUND:
+
+        if (!skt.sendall(&message.duck_winner, sizeof(message.duck_winner), &was_closed) || was_closed) {
+            return false;
+        }
+        break;
+
     case FIRST_GAME_MESSAGE:
         //le envio el NUEVO ID, que usara en la partida
         if (!skt.sendall(&message.player_id, sizeof(message.player_id), &was_closed) || was_closed) {
@@ -68,6 +81,14 @@ bool ServerProtocol::send_message(Message& message){
             if (!skt.sendall(message.map[i].data(), MATRIX_M * sizeof(char), &was_closed) || was_closed) {
                 return false;
             }
+        }
+
+        break;
+
+    case DUCKS_INICIALIZATION:
+        // Enviar la cantidad de patos
+        if (!skt.sendall(&message.ducks_quantity, sizeof(message.ducks_quantity), &was_closed) || was_closed) {
+            return false;
         }
 
         break;
