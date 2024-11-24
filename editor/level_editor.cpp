@@ -9,8 +9,13 @@ LevelEditor::LevelEditor()
       crateX(WINDOW_WIDTH + TILE_SIZE), crateY(TILE_SIZE), 
       spawnPlaceX(WINDOW_WIDTH + TILE_SIZE), spawnPlaceY(TILE_SIZE + GRID_CELL_SIZE ), 
       boxX(WINDOW_WIDTH + TILE_SIZE), boxY(TILE_SIZE + 2 * GRID_CELL_SIZE),
-      duckX(WINDOW_WIDTH + TILE_SIZE), duckY(TILE_SIZE + 4 * GRID_CELL_SIZE),
-      currentTool(NONE) {}
+      duckX(WINDOW_WIDTH + 4 * GRID_CELL_SIZE), duckY(TILE_SIZE + 4 * GRID_CELL_SIZE),
+      
+      // Inicialización de las posiciones de los items, con una distancia de 2 celdas
+      currentTool(NONE)
+
+{}
+
 
 LevelEditor::~LevelEditor() {}
 
@@ -74,6 +79,79 @@ bool LevelEditor::loadTextures(){
         return false;
     }
 
+    // Cargando las texturas de los items
+    AK47Texture = IMG_LoadTexture(renderer, "../client/imgs/guns/AK-47.png");
+    if (!AK47Texture) {
+        SDL_Log("Failed to load AK47 texture: %s", SDL_GetError());
+        return false;
+    }
+
+    CowboyPistolTexture = IMG_LoadTexture(renderer, "../client/imgs/guns/cowboy_pistol.png");
+    if (!CowboyPistolTexture) {
+        SDL_Log("Failed to load Cowboy Pistol texture: %s", SDL_GetError());
+        return false;
+    }
+
+    DuelPistolTexture = IMG_LoadTexture(renderer, "../client/imgs/guns/duel_pistol.png");
+    if (!DuelPistolTexture) {
+        SDL_Log("Failed to load Duel Pistol texture: %s", SDL_GetError());
+        return false;
+    }
+
+    LaserRifleTexture = IMG_LoadTexture(renderer, "../client/imgs/guns/laser_rifle.png");
+    if (!LaserRifleTexture) {
+        SDL_Log("Failed to load Laser Rifle texture: %s", SDL_GetError());
+        return false;
+    }
+
+    MagnumTexture = IMG_LoadTexture(renderer, "../client/imgs/guns/magnum.png");
+    if (!MagnumTexture) {
+        SDL_Log("Failed to load Magnum texture: %s", SDL_GetError());
+        return false;
+    }
+
+    PewPewLaserTexture = IMG_LoadTexture(renderer, "../client/imgs/guns/pew_pew_laser.png");
+    if (!PewPewLaserTexture) {
+        SDL_Log("Failed to load Pew Pew Laser texture: %s", SDL_GetError());
+        return false;
+    }
+
+    ShotgunTexture = IMG_LoadTexture(renderer, "../client/imgs/guns/shotgun.png");
+    if (!ShotgunTexture) {
+        SDL_Log("Failed to load Shotgun texture: %s", SDL_GetError());
+        return false;
+    }
+
+    SniperTexture = IMG_LoadTexture(renderer, "../client/imgs/guns/sniper.png");
+    if (!SniperTexture) {
+        SDL_Log("Failed to load Sniper texture: %s", SDL_GetError());
+        return false;
+    }
+
+    ArmorTexture = IMG_LoadTexture(renderer, "../client/imgs/armor/armor.png");
+    if (!ArmorTexture) {
+        SDL_Log("Failed to load Armor texture: %s", SDL_GetError());
+        return false;
+    }
+
+    HelmetTexture = IMG_LoadTexture(renderer, "../client/imgs/armor/helmet.png");
+    if (!HelmetTexture) {
+        SDL_Log("Failed to load Helmet texture: %s", SDL_GetError());
+        return false;
+    }
+
+    GrenadaTexture = IMG_LoadTexture(renderer, "../client/imgs/grenades/grenade_with_pin.png");
+    if (!GrenadaTexture) {
+        SDL_Log("Failed to load Grenade texture: %s", SDL_GetError());
+        return false;
+    }
+
+    BananaTexture = IMG_LoadTexture(renderer, "../client/imgs/bananas/banana.png");
+    if (!BananaTexture) {
+        SDL_Log("Failed to load Banana texture: %s", SDL_GetError());
+        return false;
+    }
+
     selectedTexture = crateTexture; // Textura seleccionada por defecto!! (Esto no anda igual. NO IMPORTA)
 
     return true;
@@ -114,11 +192,76 @@ void LevelEditor::renderToolArea(){
     SDL_RenderCopy(renderer, spawnPlaceTexture, nullptr, &spawnPlaceRect);
 
     // Renderizar el botón en la zona de herramientas (el sprite seleccionado)
-    SDL_Rect boxRect = { boxX, boxY, GRID_CELL_SIZE, GRID_CELL_SIZE };
+    SDL_Rect boxRect = { boxX, boxY, GRID_CELL_SIZE * 2, GRID_CELL_SIZE * 2 };
     SDL_RenderCopy(renderer, boxTexture, nullptr, &boxRect);
 
     SDL_Rect duckRect = { duckX, duckY, GRID_CELL_SIZE * 2, GRID_CELL_SIZE * 3 };
     SDL_RenderCopy(renderer, duckTexture, nullptr, &duckRect);
+
+    // Renderizar el botón para los items
+   // Asegúrate de que las posiciones no se sobrepongan
+    int itemX = crateX;
+    int itemY = crateY + GRID_CELL_SIZE * 4;
+
+    // AK47 (Tamaño multiplicado por 2 en X y Y)
+    SDL_Rect ak47Rect = { itemX, itemY, GRID_CELL_SIZE * 2, GRID_CELL_SIZE * 2 };
+    SDL_RenderCopy(renderer, AK47Texture, nullptr, &ak47Rect);
+
+    // Cowboy Pistol
+    itemY += GRID_CELL_SIZE * 2;
+    SDL_Rect cowboyPistolRect = { itemX, itemY, GRID_CELL_SIZE * 2, GRID_CELL_SIZE * 2 };
+    SDL_RenderCopy(renderer, CowboyPistolTexture, nullptr, &cowboyPistolRect);
+
+    // Duel Pistol
+    itemY += GRID_CELL_SIZE * 2;
+    SDL_Rect duelPistolRect = { itemX, itemY, GRID_CELL_SIZE * 2, GRID_CELL_SIZE * 2 };
+    SDL_RenderCopy(renderer, DuelPistolTexture, nullptr, &duelPistolRect);
+
+    // Laser Rifle
+    itemY += GRID_CELL_SIZE * 2;
+    SDL_Rect laserRifleRect = { itemX, itemY, GRID_CELL_SIZE * 2, GRID_CELL_SIZE * 2 };
+    SDL_RenderCopy(renderer, LaserRifleTexture, nullptr, &laserRifleRect);
+
+    // Magnum
+    itemY += GRID_CELL_SIZE * 2;
+    SDL_Rect magnumRect = { itemX, itemY, GRID_CELL_SIZE * 2, GRID_CELL_SIZE * 2 };
+    SDL_RenderCopy(renderer, MagnumTexture, nullptr, &magnumRect);
+
+    // PewPew Laser
+    itemY += GRID_CELL_SIZE * 2;
+    SDL_Rect pewPewLaserRect = { itemX, itemY, GRID_CELL_SIZE * 2, GRID_CELL_SIZE * 2 };
+    SDL_RenderCopy(renderer, PewPewLaserTexture, nullptr, &pewPewLaserRect);
+
+    // Shotgun
+    itemY += GRID_CELL_SIZE * 2;
+    SDL_Rect shotgunRect = { itemX, itemY, GRID_CELL_SIZE * 2, GRID_CELL_SIZE * 2 };
+    SDL_RenderCopy(renderer, ShotgunTexture, nullptr, &shotgunRect);
+
+    // Sniper
+    itemY += GRID_CELL_SIZE * 2;
+    SDL_Rect sniperRect = { itemX, itemY, GRID_CELL_SIZE * 2, GRID_CELL_SIZE * 2 };
+    SDL_RenderCopy(renderer, SniperTexture, nullptr, &sniperRect);
+
+    // Armor
+    itemY += GRID_CELL_SIZE * 2;
+    SDL_Rect armorRect = { itemX, itemY, GRID_CELL_SIZE * 2, GRID_CELL_SIZE * 2 };
+    SDL_RenderCopy(renderer, ArmorTexture, nullptr, &armorRect);
+
+    // Helmet
+    itemY += GRID_CELL_SIZE * 2;
+    SDL_Rect helmetRect = { itemX, itemY, GRID_CELL_SIZE * 2, GRID_CELL_SIZE * 2 };
+    SDL_RenderCopy(renderer, HelmetTexture, nullptr, &helmetRect);
+
+    // Grenade
+    itemY += GRID_CELL_SIZE * 2;
+    SDL_Rect grenadeRect = { itemX, itemY, GRID_CELL_SIZE * 2, GRID_CELL_SIZE * 2 };
+    SDL_RenderCopy(renderer, GrenadaTexture, nullptr, &grenadeRect);
+
+    // Banana
+    itemY += GRID_CELL_SIZE * 2;
+    SDL_Rect bananaRect = { itemX, itemY, GRID_CELL_SIZE, GRID_CELL_SIZE };
+    SDL_RenderCopy(renderer, BananaTexture, nullptr, &bananaRect);
+
 
 
 }
@@ -139,7 +282,7 @@ void LevelEditor::renderElements(){
 
     for (auto& pair : boxes) {
         Box& box = pair.second;
-        SDL_Rect boxRect = { box.x, box.y, GRID_CELL_SIZE, GRID_CELL_SIZE };  // Asumimos tamaño de 32x32 para cada Crate
+        SDL_Rect boxRect = { box.x, box.y, GRID_CELL_SIZE * 2, GRID_CELL_SIZE * 2};  // Asumimos tamaño de 32x32 para cada Crate
         SDL_RenderCopy(renderer, box.texture, nullptr, &boxRect);
     }
 
@@ -149,6 +292,11 @@ void LevelEditor::renderElements(){
         SDL_RenderCopy(renderer, duckTexture, nullptr, &duckRect);
     }
 
+    for (auto& pair : items) {
+        Item& item = pair.second;
+        SDL_Rect itemRect = { item.x, item.y, GRID_CELL_SIZE * 2, GRID_CELL_SIZE * 2 };
+        SDL_RenderCopy(renderer, item.texture, nullptr, &itemRect);
+    }
     
 
 
@@ -191,6 +339,90 @@ void LevelEditor::handleEvent(SDL_Event& event, bool& running) {
                     mouseY >= duckY && mouseY <= duckY + GRID_CELL_SIZE * 3) {
                     selectedTexture = boxTexture;
                     currentTool = CREATE_DUCK;
+                }
+
+            // AK47
+                if (mouseX >= crateX && mouseX <= crateX + GRID_CELL_SIZE * 2 &&
+                    mouseY >= crateY + GRID_CELL_SIZE * 4 && mouseY <= crateY + GRID_CELL_SIZE * 6) {
+                    selectedTexture = AK47Texture;
+                    currentTool = CREATE_AK47;
+                }
+
+                // Cowboy Pistol
+                if (mouseX >= crateX && mouseX <= crateX + GRID_CELL_SIZE * 2 &&
+                    mouseY >= crateY + GRID_CELL_SIZE * 6 && mouseY <= crateY + GRID_CELL_SIZE * 8) {
+                    selectedTexture = CowboyPistolTexture;
+                    currentTool = CREATE_COWBOY_PISTOL;
+                }
+
+                // Duel Pistol
+                if (mouseX >= crateX && mouseX <= crateX + GRID_CELL_SIZE * 2 &&
+                    mouseY >= crateY + GRID_CELL_SIZE * 8 && mouseY <= crateY + GRID_CELL_SIZE * 10) {
+                    selectedTexture = DuelPistolTexture;
+                    currentTool = CREATE_DUEL_PISTOL;
+                }
+
+                // Laser Rifle
+                if (mouseX >= crateX && mouseX <= crateX + GRID_CELL_SIZE * 2 &&
+                    mouseY >= crateY + GRID_CELL_SIZE * 10 && mouseY <= crateY + GRID_CELL_SIZE * 12) {
+                    selectedTexture = LaserRifleTexture;
+                    currentTool = CREATE_LASER_RIFLE;
+                }
+
+                // Magnum
+                if (mouseX >= crateX && mouseX <= crateX + GRID_CELL_SIZE * 2 &&
+                    mouseY >= crateY + GRID_CELL_SIZE * 12 && mouseY <= crateY + GRID_CELL_SIZE * 14) {
+                    selectedTexture = MagnumTexture;
+                    currentTool = CREATE_MAGNUM;
+                }
+
+                // PewPew Laser
+                if (mouseX >= crateX && mouseX <= crateX + GRID_CELL_SIZE * 2 &&
+                    mouseY >= crateY + GRID_CELL_SIZE * 14 && mouseY <= crateY + GRID_CELL_SIZE * 16) {
+                    selectedTexture = PewPewLaserTexture;
+                    currentTool = CREATE_PEWPEW_LASER;
+                }
+
+                // Shotgun
+                if (mouseX >= crateX && mouseX <= crateX + GRID_CELL_SIZE * 2 &&
+                    mouseY >= crateY + GRID_CELL_SIZE * 16 && mouseY <= crateY + GRID_CELL_SIZE * 18) {
+                    selectedTexture = ShotgunTexture;
+                    currentTool = CREATE_SHOTGUN;
+                }
+
+                // Sniper
+                if (mouseX >= crateX && mouseX <= crateX + GRID_CELL_SIZE * 2 &&
+                    mouseY >= crateY + GRID_CELL_SIZE * 18 && mouseY <= crateY + GRID_CELL_SIZE * 20) {
+                    selectedTexture = SniperTexture;
+                    currentTool = CREATE_SNIPER;
+                }
+
+                // Armor
+                if (mouseX >= crateX && mouseX <= crateX + GRID_CELL_SIZE * 2 &&
+                    mouseY >= crateY + GRID_CELL_SIZE * 20 && mouseY <= crateY + GRID_CELL_SIZE * 22) {
+                    selectedTexture = ArmorTexture;
+                    currentTool = CREATE_ARMOR;
+                }
+
+                // Helmet
+                if (mouseX >= crateX && mouseX <= crateX + GRID_CELL_SIZE * 2 &&
+                    mouseY >= crateY + GRID_CELL_SIZE * 22 && mouseY <= crateY + GRID_CELL_SIZE * 24) {
+                    selectedTexture = HelmetTexture;
+                    currentTool = CREATE_HELMET;
+                }
+
+                // Grenade
+                if (mouseX >= crateX && mouseX <= crateX + GRID_CELL_SIZE * 2 &&
+                    mouseY >= crateY + GRID_CELL_SIZE * 24 && mouseY <= crateY + GRID_CELL_SIZE * 26) {
+                    selectedTexture = GrenadaTexture;
+                    currentTool = CREATE_GRENADE;
+                }
+
+                // Banana
+                if (mouseX >= crateX && mouseX <= crateX + GRID_CELL_SIZE &&
+                    mouseY >= crateY + GRID_CELL_SIZE * 26 && mouseY <= crateY + GRID_CELL_SIZE * 28) {
+                    selectedTexture = BananaTexture;
+                    currentTool = CREATE_BANANA;
                 }
 
 
@@ -262,8 +494,244 @@ void LevelEditor::handleEvent(SDL_Event& event, bool& running) {
 
                     Duck newDuck = { roundedX, roundedY, selectedTexture };
                     ducks[generateKey(roundedX, roundedY)] = newDuck;
-                    occupancyGrid[gridX][gridY] = true;
+                    occupancyGrid[gridX][gridY] = true ;
+                    occupancyGrid[gridX + 1][gridY] = true;
+                    occupancyGrid[gridX][gridY + 1] = true ;
+                    occupancyGrid[gridX + 1][gridY + 1] = true;
+                    occupancyGrid[gridX][gridY + 2] = true ;
+                    occupancyGrid[gridX + 1][gridY + 2] = true;         
                 }
+
+                if (currentTool == CREATE_AK47 && mouseX < WINDOW_WIDTH) {
+
+                    if (occupancyGrid[gridX][gridY] == true ||
+                        occupancyGrid[gridX + 1][gridY] == true ||
+                        occupancyGrid[gridX][gridY + 1] == true ||
+                        occupancyGrid[gridX + 1][gridY + 1] == true
+                    ){
+                        std::cout << "ESTA OCUPADO !!" << std::endl;
+                        break;
+                    }
+
+                    Item newItem = { roundedX, roundedY, AK_47_ID, AK47Texture };
+                    items[generateKey(roundedX, roundedY)] = newItem;
+                    occupancyGrid[gridX][gridY] = true;
+                    occupancyGrid[gridX + 1][gridY] = true;
+                    occupancyGrid[gridX][gridY + 1] = true;
+                    occupancyGrid[gridX + 1][gridY + 1] = true;
+                }
+
+                if (currentTool == CREATE_COWBOY_PISTOL && mouseX < WINDOW_WIDTH) {
+
+                    if (occupancyGrid[gridX][gridY] == true ||
+                        occupancyGrid[gridX + 1][gridY] == true ||
+                        occupancyGrid[gridX][gridY + 1] == true ||
+                        occupancyGrid[gridX + 1][gridY + 1] == true
+                    ){
+                        std::cout << "ESTA OCUPADO !!" << std::endl;
+                        break;
+                    }
+
+                    Item newItem = { roundedX, roundedY, COWBOY_PISTOL_ID, CowboyPistolTexture };
+                    items[generateKey(roundedX, roundedY)] = newItem;
+                    occupancyGrid[gridX][gridY] = true;
+                    occupancyGrid[gridX + 1][gridY] = true;
+                    occupancyGrid[gridX][gridY + 1] = true;
+                    occupancyGrid[gridX + 1][gridY + 1] = true;
+                }
+
+                if (currentTool == CREATE_DUEL_PISTOL && mouseX < WINDOW_WIDTH) {
+
+                    if (occupancyGrid[gridX][gridY] == true ||
+                        occupancyGrid[gridX + 1][gridY] == true ||
+                        occupancyGrid[gridX][gridY + 1] == true ||
+                        occupancyGrid[gridX + 1][gridY + 1] == true
+                    ){
+                        std::cout << "ESTA OCUPADO !!" << std::endl;
+                        break;
+                    }
+
+                    Item newItem = { roundedX, roundedY, DUEL_PISTOL_ID, DuelPistolTexture };
+                    items[generateKey(roundedX, roundedY)] = newItem;
+                    occupancyGrid[gridX][gridY] = true;
+                    occupancyGrid[gridX + 1][gridY] = true;
+                    occupancyGrid[gridX][gridY + 1] = true;
+                    occupancyGrid[gridX + 1][gridY + 1] = true;
+                }
+
+                if (currentTool == CREATE_LASER_RIFLE && mouseX < WINDOW_WIDTH) {
+
+                    if (occupancyGrid[gridX][gridY] == true ||
+                        occupancyGrid[gridX + 1][gridY] == true ||
+                        occupancyGrid[gridX][gridY + 1] == true ||
+                        occupancyGrid[gridX + 1][gridY + 1] == true
+                    ){
+                        std::cout << "ESTA OCUPADO !!" << std::endl;
+                        break;
+                    }
+
+                    Item newItem = { roundedX, roundedY, LASER_RIFLE_ID ,LaserRifleTexture };
+                    items[generateKey(roundedX, roundedY)] = newItem;
+                    occupancyGrid[gridX][gridY] = true;
+                    occupancyGrid[gridX + 1][gridY] = true;
+                    occupancyGrid[gridX][gridY + 1] = true;
+                    occupancyGrid[gridX + 1][gridY + 1] = true;
+
+                }
+
+                if (currentTool == CREATE_MAGNUM && mouseX < WINDOW_WIDTH) {
+
+                    if (occupancyGrid[gridX][gridY] == true ||
+                        occupancyGrid[gridX + 1][gridY] == true ||
+                        occupancyGrid[gridX][gridY + 1] == true ||
+                        occupancyGrid[gridX + 1][gridY + 1] == true
+                    ){
+                        std::cout << "ESTA OCUPADO !!" << std::endl;
+                        break;
+                    }
+
+                    Item newItem = { roundedX, roundedY, MAGNUM_ID, MagnumTexture };
+                    items[generateKey(roundedX, roundedY)] = newItem;
+                    occupancyGrid[gridX][gridY] = true;
+                    occupancyGrid[gridX + 1][gridY] = true;
+                    occupancyGrid[gridX][gridY + 1] = true;
+                    occupancyGrid[gridX + 1][gridY + 1] = true;
+                }
+
+                if (currentTool == CREATE_PEWPEW_LASER && mouseX < WINDOW_WIDTH) {
+
+                    if (occupancyGrid[gridX][gridY] == true ||
+                        occupancyGrid[gridX + 1][gridY] == true ||
+                        occupancyGrid[gridX][gridY + 1] == true ||
+                        occupancyGrid[gridX + 1][gridY + 1] == true
+                    ){
+                        std::cout << "ESTA OCUPADO !!" << std::endl;
+                        break;
+                    }
+
+                    Item newItem = { roundedX, roundedY, PEW_PEW_LASER_ID ,PewPewLaserTexture };
+                    items[generateKey(roundedX, roundedY)] = newItem;
+                    occupancyGrid[gridX][gridY] = true;
+                    occupancyGrid[gridX + 1][gridY] = true;
+                    occupancyGrid[gridX][gridY + 1] = true;
+                    occupancyGrid[gridX + 1][gridY + 1] = true;
+                }
+
+                if (currentTool == CREATE_SHOTGUN && mouseX < WINDOW_WIDTH) {
+
+                    if (occupancyGrid[gridX][gridY] == true ||
+                        occupancyGrid[gridX + 1][gridY] == true ||
+                        occupancyGrid[gridX][gridY + 1] == true ||
+                        occupancyGrid[gridX + 1][gridY + 1] == true
+                    ){
+                        std::cout << "ESTA OCUPADO !!" << std::endl;
+                        break;
+                    }
+
+                    Item newItem = { roundedX, roundedY, SHOTGUN_ID, ShotgunTexture };
+                    items[generateKey(roundedX, roundedY)] = newItem;
+                    occupancyGrid[gridX][gridY] = true;
+                    occupancyGrid[gridX + 1][gridY] = true;
+                    occupancyGrid[gridX][gridY + 1] = true;
+                    occupancyGrid[gridX + 1][gridY + 1] = true;
+                }
+
+                if (currentTool == CREATE_SNIPER && mouseX < WINDOW_WIDTH) {
+
+                    if (occupancyGrid[gridX][gridY] == true ||
+                        occupancyGrid[gridX + 1][gridY] == true ||
+                        occupancyGrid[gridX][gridY + 1] == true ||
+                        occupancyGrid[gridX + 1][gridY + 1] == true
+                    ){
+                        std::cout << "ESTA OCUPADO !!" << std::endl;
+                        break;
+                    }
+
+                    Item newItem = { roundedX, roundedY, SNIPER_ID ,SniperTexture };
+                    items[generateKey(roundedX, roundedY)] = newItem;
+                    occupancyGrid[gridX][gridY] = true;
+                    occupancyGrid[gridX + 1][gridY] = true;
+                    occupancyGrid[gridX][gridY + 1] = true;
+                    occupancyGrid[gridX + 1][gridY + 1] = true;
+                }
+
+                if (currentTool == CREATE_ARMOR && mouseX < WINDOW_WIDTH) {
+
+                    if (occupancyGrid[gridX][gridY] == true ||
+                        occupancyGrid[gridX + 1][gridY] == true ||
+                        occupancyGrid[gridX][gridY + 1] == true ||
+                        occupancyGrid[gridX + 1][gridY + 1] == true
+                    ){
+                        std::cout << "ESTA OCUPADO !!" << std::endl;
+                        break;
+                    }
+
+                    Item newItem = { roundedX, roundedY, ARMOR_ID ,ArmorTexture };
+                    items[generateKey(roundedX, roundedY)] = newItem;
+                    occupancyGrid[gridX][gridY] = true;
+                    occupancyGrid[gridX + 1][gridY] = true;
+                    occupancyGrid[gridX][gridY + 1] = true;
+                    occupancyGrid[gridX + 1][gridY + 1] = true;
+                }
+
+                if (currentTool == CREATE_HELMET && mouseX < WINDOW_WIDTH) {
+
+                    if (occupancyGrid[gridX][gridY] == true ||
+                        occupancyGrid[gridX + 1][gridY] == true ||
+                        occupancyGrid[gridX][gridY + 1] == true ||
+                        occupancyGrid[gridX + 1][gridY + 1] == true
+                    ){
+                        std::cout << "ESTA OCUPADO !!" << std::endl;
+                        break;
+                    }
+
+                    Item newItem = { roundedX, roundedY, HELMET_ID, HelmetTexture };
+                    items[generateKey(roundedX, roundedY)] = newItem;
+                    occupancyGrid[gridX][gridY] = true;
+                    occupancyGrid[gridX + 1][gridY] = true;
+                    occupancyGrid[gridX][gridY + 1] = true;
+                    occupancyGrid[gridX + 1][gridY + 1] = true;
+                }
+
+                if (currentTool == CREATE_GRENADE && mouseX < WINDOW_WIDTH) {
+
+                    if (occupancyGrid[gridX][gridY] == true ||
+                        occupancyGrid[gridX + 1][gridY] == true ||
+                        occupancyGrid[gridX][gridY + 1] == true ||
+                        occupancyGrid[gridX + 1][gridY + 1] == true
+                    ){
+                        std::cout << "ESTA OCUPADO !!" << std::endl;
+                        break;
+                    }
+
+                    Item newItem = { roundedX, roundedY, GRANADA_ID, GrenadaTexture };
+                    items[generateKey(roundedX, roundedY)] = newItem;
+                    occupancyGrid[gridX][gridY] = true;
+                    occupancyGrid[gridX + 1][gridY] = true;
+                    occupancyGrid[gridX][gridY + 1] = true;
+                    occupancyGrid[gridX + 1][gridY + 1] = true;
+                }
+
+                if (currentTool == CREATE_BANANA && mouseX < WINDOW_WIDTH) {
+
+                    if (occupancyGrid[gridX][gridY] == true ||
+                        occupancyGrid[gridX + 1][gridY] == true ||
+                        occupancyGrid[gridX][gridY + 1] == true ||
+                        occupancyGrid[gridX + 1][gridY + 1] == true
+                    ){
+                        std::cout << "ESTA OCUPADO !!" << std::endl;
+                        break;
+                    }
+
+                    Item newItem = { roundedX, roundedY, BANANA_ID, BananaTexture };
+                    items[generateKey(roundedX, roundedY)] = newItem;
+                    occupancyGrid[gridX][gridY] = true;
+                    occupancyGrid[gridX + 1][gridY] = true;
+                    occupancyGrid[gridX][gridY + 1] = true;
+                    occupancyGrid[gridX + 1][gridY + 1] = true;
+                }
+
+                                
 
 
             } 
@@ -338,6 +806,7 @@ void LevelEditor::run() {
 
 
 void LevelEditor::cleanup() {
+    //ver si hace falta borrar las texturas de los items
     if (crateTexture) SDL_DestroyTexture(crateTexture);
     if (spawnPlaceTexture) SDL_DestroyTexture(spawnPlaceTexture);
     if (boxTexture) SDL_DestroyTexture(boxTexture);

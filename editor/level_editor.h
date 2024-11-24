@@ -31,6 +31,12 @@ struct Duck {
     SDL_Texture* texture; 
 };
 
+struct Item {
+    int x,y;
+    uint8_t item_id;
+    SDL_Texture* texture; 
+};
+
 class LevelEditor {
 public:
     LevelEditor();
@@ -58,10 +64,29 @@ private:
     SDL_Texture* boxTexture; 
     SDL_Texture* duckTexture;
 
+    //texturas de los items
+    SDL_Texture* AK47Texture;
+    SDL_Texture* CowboyPistolTexture;
+    SDL_Texture* DuelPistolTexture;
+    SDL_Texture* LaserRifleTexture;
+    SDL_Texture* MagnumTexture;
+    SDL_Texture* PewPewLaserTexture;
+    SDL_Texture* ShotgunTexture;
+    SDL_Texture* SniperTexture;
+
+    SDL_Texture* ArmorTexture;
+    SDL_Texture* HelmetTexture;
+
+    SDL_Texture* GrenadaTexture;
+    SDL_Texture* BananaTexture;
+
+
     std::unordered_map<std::string, Crate> crates;
     std::unordered_map<std::string, SpawnPlace> spawn_places;
     std::unordered_map<std::string, Box> boxes;
     std::unordered_map<std::string, Duck> ducks;
+    std::unordered_map<std::string, Item> items;
+    
 
     SDL_Texture* selectedTexture; 
 
@@ -71,14 +96,26 @@ private:
     int spawnPlaceX, spawnPlaceY;
     int boxX, boxY;
     int duckX, duckY;
-
+   
 
     enum Tool {
         NONE,
         CREATE_CRATE,
         CREATE_SPAWN_PLACE,
         CREATE_BOX,
-        CREATE_DUCK
+        CREATE_DUCK,
+        CREATE_AK47,
+        CREATE_COWBOY_PISTOL,
+        CREATE_DUEL_PISTOL,
+        CREATE_LASER_RIFLE,
+        CREATE_MAGNUM,
+        CREATE_PEWPEW_LASER,
+        CREATE_SHOTGUN,
+        CREATE_SNIPER,
+        CREATE_ARMOR,
+        CREATE_HELMET,
+        CREATE_GRENADE,
+        CREATE_BANANA
     };
 
     Tool currentTool;
