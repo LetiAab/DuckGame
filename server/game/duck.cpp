@@ -224,6 +224,12 @@ bool Duck::get_duck_position_message(Message& msg){
 }
 
 
+bool Duck::get_duck_initialize_message(Message& msg){
+    form_position_message(msg);
+    return true;
+}
+
+
 char Duck::get_id() const {
     return id_player;
 }

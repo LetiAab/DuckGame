@@ -72,8 +72,10 @@ const uint8_t SPAWN_PLACE_ITEM_UPDATE = 0X80;
 
 const uint8_t END_ROUND = 0X81;
 const uint8_t END_GAME = 0x82;
+const uint8_t DUCKS_INICIALIZATION = 0x83;
 
 const int N_SPAWN_PLACES = 4;
+
 
 
 

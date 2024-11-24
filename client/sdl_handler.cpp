@@ -19,7 +19,7 @@ SDLHandler::~SDLHandler() {
 }
 
 //** Juego **//
-void SDLHandler::loadGame(GameState* game) {
+void SDLHandler::loadGame(GameState* game, Queue<Message> &message_queue) {
     std::vector<TextureInfo> textures_to_load = {
         {"forest", "backgrounds/forest", 1},
         {"crate", "crate", 1},
@@ -51,8 +51,9 @@ void SDLHandler::loadGame(GameState* game) {
     }
 
     // Inicializo los patos y los crates
-    gameInitializer.initializeDucks(game, frame_width, frame_height);
-    gameInitializer.initializeCrates(game);
+    //gameInitializer.initializeDucks(game, frame_width, frame_height);
+    //gameInitializer.initializeCrates(game);
+    gameInitializer.initializeGame(message_queue, game, frame_width, frame_height);
     
 
     // Inicializo el render manager
@@ -63,19 +64,24 @@ void SDLHandler::loadGame(GameState* game) {
 }
 
 
-
-      
 Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queue) {
     Message message;
     while (message_queue.try_pop(message)) {
 
+        if(message.type == END_ROUND){
+            std::cout << "SE TERMINO LA RONDA "<< "\n";
+
+            gameInitializer.initialize_new_round(game, message_queue);
+        }
+
         if(message.type == END_GAME){
             std::cout << "SE TERMINO LA PARTIDA "<< "\n";
         }
+
         if(message.type == SPAWN_PLACE_ITEM_UPDATE){
 
             int pos_spawn_id = message.spawn_place_id;
-            game->spawn_places[pos_spawn_id].item_id = message.item_id; 
+            game->spawn_places[pos_spawn_id].item_id = message.item_id;
 
         }
 
@@ -236,7 +242,7 @@ int SDLHandler::waitForStartGame() {
     return done;
 }
 
-void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& command_queue, uint16_t id, Queue<Message>& message_queue) {
+void SDLHandler::run(Queue<Command>& command_queue, uint16_t id, Queue<Message>& message_queue) {
     SDL_Window* window = SDL_CreateWindow("Duck Game",
                                           SDL_WINDOWPOS_UNDEFINED,
                                           SDL_WINDOWPOS_UNDEFINED,
@@ -257,29 +263,13 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
     }
 
 
-
     GameState game{};
     game.renderer = renderer;
-    game.client_game_map.setMap(map);
     game.command_queue = &command_queue;
     std::cout << "ID: " << id << "\n";
 
-    //recibo la posicion de los N spawn places
+    loadGame(&game, message_queue);
 
-
-
-    loadGame(&game);
-
-    std::cout << "HORA DE RECIBIR SPAWNS" << "\n";
-    for (int i = 0; i < N_SPAWN_PLACES; i++){
-        // lo hago bloqueante asi no avanza hasta recibir los spawnplaces
-
-        Message message = message_queue.pop();
-
-        if(message.type == SPAWN_PLACE_POSITION){
-            game.spawn_places.emplace_back(message.spaw_place_x * TILE_SIZE, message.spaw_place_y * TILE_SIZE, message.item_id);
-        }
-    }
 
     //Empiezo la musica de fondo
     const std::string path = std::string(AUDIO_PATH) +"ambient-music.wav";
@@ -307,13 +297,16 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
             
             if(message.type == END_ROUND){
                 std::cout << "TERMINO LA RONDA"<< "\n";
-                std::cout << "El ganador fue el pato "<< message.duck_winner << "\n";
-                //TODO:renderizar las cosas estaticas otra vez
+                std::cout << "El ganador fue el pato "<< static_cast<char>(message.duck_winner) << "\n";
+
+                rendererManager->doRenderStatic(&game);
+                continue;
+                
             }
 
             if(message.type == END_GAME){
                 std::cout << "TERMINO LA PARTIDA"<< "\n";
-                std::cout << "El ganador fue el pato "<< message.duck_winner << "\n";
+                std::cout << "El ganador fue el pato "<< static_cast<char>(message.duck_winner)  << "\n";
                 //TODO:  mostrar pantalla de victoria antes de salir
                 done = ERROR;
                 break;

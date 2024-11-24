@@ -16,7 +16,7 @@ class SDLHandler {
 public:
     SDLHandler();
     ~SDLHandler();
-    void run(std::vector<std::vector<char>> &map, Queue<Command>& command_queue, uint16_t id, Queue<Message>& message_queue);
+    void run(Queue<Command>& command_queue, uint16_t id, Queue<Message>& message_queue);
 
 private:
     TextureHandler handle_textures;
@@ -26,7 +26,7 @@ private:
     std::unique_ptr<RendererManager> rendererManager;
     std::unique_ptr<AudioManager> audioManager;
 
-    void loadGame(GameState* game);
+    void loadGame(GameState* game, Queue<Message> &message_queue);
     Message handleMessages(GameState* game, Queue<Message>& message_queue);
     int waitForStartGame();
 

@@ -34,6 +34,7 @@ struct Message {
     uint8_t spawn_place_id;
 
     char duck_winner;
+    int ducks_quantity;
 
 };
 

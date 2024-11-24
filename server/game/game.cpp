@@ -100,13 +100,14 @@ void Game::set_players(int number_of_players){
 
 void Game::run() {
 
+        //creo el mapa, los patos y los spawn places
         map.setEscenario();
         create_ducks(players);
-
-        send_map_message();
-
-        //MANDO LOS MENSAJES CON LA POSICION DE LOS SPAWN PLACES
         create_spawn_places();
+
+        //envio al cliente los mensajes
+        send_map_message();
+        send_initialize_ducks_message();
         send_spawn_place_message();
 
         while (is_running) {
@@ -144,8 +145,9 @@ void Game::run() {
                                 //avisarle al cliente que empieza un nuevo round
                                 notify_players_end_round();
                                 //pasarle al cliente el nuevo mapa
-                                //send_map_message();
-                                //send_spawn_place_message();
+                                send_map_message();
+                                send_initialize_ducks_message();
+                                send_spawn_place_message();
                                 
                                 //vaciar la queue del juego para descartar cualquier comando viejo
                                 //quizas se pueda hacer un get_duck_bullet_position() en vez de esto
@@ -262,6 +264,23 @@ void Game::initialize_round() {
         initialize_ducks(); //reseteo los patos para que revivan y pierdan sus armas
         create_spawn_places();
 
+}
+
+void Game::send_initialize_ducks_message(){
+        //podria mandar todo en un solo mensaje pero primero necesito saber si anda
+        Message ducks_message;
+        ducks_message.type = DUCKS_INICIALIZATION;
+        ducks_message.ducks_quantity = ducks.size();
+
+        monitor.broadcast(ducks_message);
+
+        for (Duck& duck : ducks) {
+
+                Message duck_message;
+                if(duck.get_duck_initialize_message(duck_message)){
+                        monitor.broadcast(duck_message);
+                }
+        }
 }
 
 void Game::initialize_ducks(){
