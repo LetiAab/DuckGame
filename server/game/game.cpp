@@ -38,6 +38,16 @@ Duck* Game::getDuckByPosition(Position position) {
         }
 }
 
+void Game::add_throwed_weapon(Weapon* throwed_weapon) {
+        if (throwed_weapon->getItemId() == GRENADE_ID) {
+                auto shared_throwed_weapon = std::shared_ptr<Grenade>((Grenade*)throwed_weapon);
+                throwed_weapons.push_back(shared_throwed_weapon);
+        } else {
+                std::cout << "Este arma no debería ser agregada! \n";
+        }
+
+}
+
 void Game::simulate_round() {
 
         //sumo 1 al contador de rondas hasta generar un nuevo item en el spawn place
@@ -49,6 +59,17 @@ void Game::simulate_round() {
                 }
         }
 
+        for(auto it = throwed_weapons.begin(); it != throwed_weapons.end(); ) {
+                Weapon* throwed_weapon = it->get();
+
+                if (throwed_weapon->getItemId() == GRENADE_ID) {
+                        Grenade* throwed_grenade = (Grenade*)throwed_weapon;
+                        Position current_position = throwed_grenade->getPosition();
+
+                        throwed_grenade->update_weapon(current_position.x, current_position.y, LOOKING_LEFT, &map, 0);
+                }
+                ++it;
+        }
 
         for (Duck& duck : ducks) {
                 if (duck.is_dead) {
@@ -119,9 +140,6 @@ void Game::run() {
         //creo los items y le mando al server
         //create_items();
 
-        uint64_t counter_bullets = 0;
-
-
         while (is_running) {
 
                 // saco de 10 comandos de la queue y los ejecuto
@@ -146,19 +164,28 @@ void Game::run() {
 
                         //quizas se pueda hacer un get_duck_bullet_position() en vez de esto
                         //o sea mover la creacion del mensaje dentro del pato
-                        if (counter_bullets % 3 == 0) {
-                                if(duck.weapon != nullptr){
-                                        for (std::unique_ptr<Projectile>& unique_proyectile : duck.weapon->projectiles) {
-                                                Projectile* projectile = unique_proyectile.get();
-                                                Message projectile_message;
-                                                if (projectile->get_projectile_message(projectile_message)){
-                                                        monitor.broadcast(projectile_message);
-                                                }
+                        if(duck.weapon != nullptr){
+                                for (std::unique_ptr<Projectile>& unique_proyectile : duck.weapon->projectiles) {
+                                        Projectile* projectile = unique_proyectile.get();
+                                        Message projectile_message;
+                                        if (projectile->get_projectile_message(projectile_message)){
+                                                monitor.broadcast(projectile_message);
                                         }
                                 }
                         }
+
                 }
-                counter_bullets ++;
+
+                // actualizo la posición de las balas de la granada
+                for (auto& throwed_weapon: throwed_weapons) {
+                        for (auto& unique_proyectile : throwed_weapon->projectiles) {
+                                Projectile* projectile = unique_proyectile.get();
+                                Message projectile_message;
+                                if (projectile->get_projectile_message(projectile_message)){
+                                        monitor.broadcast(projectile_message);
+                                }
+                        }
+                }
 
                 if (check_end_game()){
                         notify_players_end_game();

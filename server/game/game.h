@@ -58,6 +58,7 @@ public:
         std::vector<Duck> ducks;
         std::vector<std::shared_ptr<Item>> items;
         std::vector<std::unique_ptr<SpawnPlace>> spawn_places;
+        std::vector<std::shared_ptr<Weapon>> throwed_weapons;
 
 
 
@@ -81,6 +82,7 @@ std::shared_ptr<Item> getItemByPosition(Position position);
 
 SpawnPlace* getSpawnPlaceByPosition(Position position);
 
+void add_throwed_weapon(Weapon* throwed_weapon);
 
 void game_broadcast(Message message);
 

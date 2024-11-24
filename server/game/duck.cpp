@@ -334,16 +334,20 @@ std::shared_ptr<Item> Duck::getItemOnHand() const {
     return onHand ? onHand : nullptr;
 }
 
-bool Duck::dropWeapon() {
+Weapon* Duck::dropWeapon() {
     if (weapon) {
         std::cout << "El jugador " << id_player << " deja caer su arma: " << std::endl;
         //SE ELIMINA LA REFERENCIA SOLAMENTE
         //deberia pasarle el arma a la lista de items del juego
+        Weapon* weapon_to_drop = weapon.get();
         weapon = nullptr;
-        return true;
-        
+
+        Position self_position = getPosition();
+        weapon_to_drop->setPosition(self_position.x, self_position.y);
+
+        return weapon_to_drop;
     }
 
-    return false;
+    return NULL;
 }
 

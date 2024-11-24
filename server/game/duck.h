@@ -88,7 +88,7 @@ public:
     void setArmor(std::shared_ptr<Armor> new_armor);
     void setHelmet(std::shared_ptr<Helmet> new_helmet);
 
-    bool dropWeapon();
+    Weapon* dropWeapon();
 
     bool pickUpItem(std::shared_ptr<Item> item);
     void useOnHand();

@@ -10,8 +10,12 @@ void DropWeaponCommand::execute(Game& game) {
     Duck* duck = game.getDuckById(char_id);
 
 
-    //si efectivamente solte un arma aviso que la solté. Sino no pasa nada
-    if(duck->dropWeapon()){
+    Weapon* dropped_gun = duck->dropWeapon();
+    if(dropped_gun){
+
+        if (dropped_gun->getItemId() == GRENADE_ID) {
+            game.add_throwed_weapon(dropped_gun);
+        }
 
         Message msg;
         msg.type = DROP_WEAPON;
