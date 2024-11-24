@@ -337,9 +337,6 @@ void Game::create_spawn_places() {
     std::unique_ptr<Item> item3 = std::make_unique<PewPewLaser>(30, 75);
     std::unique_ptr<Item> item4 = std::make_unique<Helmet>(100, 75);
 
-
-
-
     //seteo N spawn places (4)
     std::cout << "CREO LOS SPAWN PLACES" << "\n";
 
@@ -355,8 +352,6 @@ void Game::create_spawn_places() {
     items.push_back(std::move(item3));
     items.push_back(std::move(item4));
 
-
-    
 }
 
 void Game::send_spawn_place_message(){

@@ -19,7 +19,7 @@ SDLHandler::~SDLHandler() {
 }
 
 //** Juego **//
-void SDLHandler::loadGame(GameState* game, Queue<Message> &message_queue) {
+void SDLHandler::loadGame(GameState &game, Queue<Message> &message_queue) {
     std::vector<TextureInfo> textures_to_load = {
         {"forest", "backgrounds/forest", 1},
         {"crate", "crate", 1},
@@ -50,14 +50,11 @@ void SDLHandler::loadGame(GameState* game, Queue<Message> &message_queue) {
         handle_textures.loadTexture(texture_info, &frame_width, &frame_height);
     }
 
-    // Inicializo los patos y los crates
-    //gameInitializer.initializeDucks(game, frame_width, frame_height);
-    //gameInitializer.initializeCrates(game);
+    // Recibo e inicializo los elementos del juego
     gameInitializer.initializeGame(message_queue, game, frame_width, frame_height);
     
-
     // Inicializo el render manager
-    rendererManager = std::make_unique<RendererManager>(game->renderer, handle_textures);
+    rendererManager = std::make_unique<RendererManager>(game.renderer, handle_textures);
 
     audioManager = std::make_unique<AudioManager>();
 
@@ -71,7 +68,7 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
         if(message.type == END_ROUND){
             std::cout << "SE TERMINO LA RONDA "<< "\n";
 
-            gameInitializer.initialize_new_round(game, message_queue);
+            gameInitializer.initialize_new_round(*game, message_queue);
         }
 
         if(message.type == END_GAME){
@@ -268,7 +265,7 @@ void SDLHandler::run(Queue<Command>& command_queue, uint16_t id, Queue<Message>&
     game.command_queue = &command_queue;
     std::cout << "ID: " << id << "\n";
 
-    loadGame(&game, message_queue);
+    loadGame(game, message_queue);
 
 
     //Empiezo la musica de fondo

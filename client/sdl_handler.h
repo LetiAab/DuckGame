@@ -26,7 +26,7 @@ private:
     std::unique_ptr<RendererManager> rendererManager;
     std::unique_ptr<AudioManager> audioManager;
 
-    void loadGame(GameState* game, Queue<Message> &message_queue);
+    void loadGame(GameState &game, Queue<Message> &message_queue);
     Message handleMessages(GameState* game, Queue<Message>& message_queue);
     int waitForStartGame();
 
