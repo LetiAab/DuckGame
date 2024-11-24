@@ -26,6 +26,11 @@ struct Box {
     SDL_Texture* texture; 
 };
 
+struct Duck {
+    int x, y;
+    SDL_Texture* texture; 
+};
+
 class LevelEditor {
 public:
     LevelEditor();
@@ -47,16 +52,16 @@ private:
     SDL_Window* window;
     SDL_Renderer* renderer;
     SDL_Texture* backgroundTexture;
+
     SDL_Texture* crateTexture;
     SDL_Texture* spawnPlaceTexture;
     SDL_Texture* boxTexture; 
+    SDL_Texture* duckTexture;
 
-    //std::vector<Crate> crates; 
     std::unordered_map<std::string, Crate> crates;
-
     std::unordered_map<std::string, SpawnPlace> spawn_places;
     std::unordered_map<std::string, Box> boxes;
-
+    std::unordered_map<std::string, Duck> ducks;
 
     SDL_Texture* selectedTexture; 
 
@@ -65,13 +70,15 @@ private:
     int crateX, crateY; 
     int spawnPlaceX, spawnPlaceY;
     int boxX, boxY;
+    int duckX, duckY;
 
 
     enum Tool {
         NONE,
         CREATE_CRATE,
         CREATE_SPAWN_PLACE,
-        CREATE_BOX
+        CREATE_BOX,
+        CREATE_DUCK
     };
 
     Tool currentTool;

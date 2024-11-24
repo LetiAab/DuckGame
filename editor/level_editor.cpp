@@ -9,6 +9,7 @@ LevelEditor::LevelEditor()
       crateX(WINDOW_WIDTH + TILE_SIZE), crateY(TILE_SIZE), 
       spawnPlaceX(WINDOW_WIDTH + TILE_SIZE), spawnPlaceY(TILE_SIZE + GRID_CELL_SIZE ), 
       boxX(WINDOW_WIDTH + TILE_SIZE), boxY(TILE_SIZE + 2 * GRID_CELL_SIZE),
+      duckX(WINDOW_WIDTH + TILE_SIZE), duckY(TILE_SIZE + 4 * GRID_CELL_SIZE),
       currentTool(NONE) {}
 
 LevelEditor::~LevelEditor() {}
@@ -67,6 +68,12 @@ bool LevelEditor::loadTextures(){
         return false;
     }
 
+    duckTexture = IMG_LoadTexture(renderer, "../client/imgs/duck.png");
+    if (!duckTexture) {
+        SDL_Log("Failed to load tree texture: %s", SDL_GetError());
+        return false;
+    }
+
     selectedTexture = crateTexture; // Textura seleccionada por defecto!! (Esto no anda igual. NO IMPORTA)
 
     return true;
@@ -110,6 +117,9 @@ void LevelEditor::renderToolArea(){
     SDL_Rect boxRect = { boxX, boxY, GRID_CELL_SIZE, GRID_CELL_SIZE };
     SDL_RenderCopy(renderer, boxTexture, nullptr, &boxRect);
 
+    SDL_Rect duckRect = { duckX, duckY, GRID_CELL_SIZE * 2, GRID_CELL_SIZE * 3 };
+    SDL_RenderCopy(renderer, duckTexture, nullptr, &duckRect);
+
 
 }
 
@@ -132,6 +142,14 @@ void LevelEditor::renderElements(){
         SDL_Rect boxRect = { box.x, box.y, GRID_CELL_SIZE, GRID_CELL_SIZE };  // Asumimos tamaño de 32x32 para cada Crate
         SDL_RenderCopy(renderer, box.texture, nullptr, &boxRect);
     }
+
+    for (auto& pair : ducks) {
+        Duck& duck = pair.second;
+        SDL_Rect duckRect = { duck.x, duck.y, GRID_CELL_SIZE * 2, GRID_CELL_SIZE * 3 };  //  tamaño de 40x64 para cada pato
+        SDL_RenderCopy(renderer, duckTexture, nullptr, &duckRect);
+    }
+
+    
 
 
 }
@@ -166,6 +184,13 @@ void LevelEditor::handleEvent(SDL_Event& event, bool& running) {
                     mouseY >= boxY && mouseY <= boxY + GRID_CELL_SIZE) {
                     selectedTexture = boxTexture;
                     currentTool = CREATE_BOX;
+                }
+
+
+                if (mouseX >= duckX && mouseX <= duckX + GRID_CELL_SIZE * 2 &&
+                    mouseY >= duckY && mouseY <= duckY + GRID_CELL_SIZE * 3) {
+                    selectedTexture = boxTexture;
+                    currentTool = CREATE_DUCK;
                 }
 
 
@@ -217,6 +242,29 @@ void LevelEditor::handleEvent(SDL_Event& event, bool& running) {
                     occupancyGrid[gridX][gridY] = true;
                 }
 
+                if (currentTool == CREATE_DUCK && mouseX < WINDOW_WIDTH) {
+
+                    if (ducks.size() > 6) {
+                        break;
+                    }
+
+                    if (occupancyGrid[gridX][gridY] == true ||
+                        occupancyGrid[gridX + 1][gridY] == true ||
+                        occupancyGrid[gridX][gridY + 1] == true ||
+                        occupancyGrid[gridX + 1][gridY + 1] == true ||
+                        occupancyGrid[gridX][gridY + 2] == true ||
+                        occupancyGrid[gridX + 1][gridY + 2] == true
+                    ){
+                        std::cout << "ESTA OCUPADO !!" << std::endl;
+                        break;
+                    }
+                        
+
+                    Duck newDuck = { roundedX, roundedY, selectedTexture };
+                    ducks[generateKey(roundedX, roundedY)] = newDuck;
+                    occupancyGrid[gridX][gridY] = true;
+                }
+
 
             } 
             
@@ -243,12 +291,14 @@ void LevelEditor::deleteElement(std::string key){
     if (crates.find(key) != crates.end()) {
         crates.erase(key);
     } 
-
     if (spawn_places.find(key) != spawn_places.end()) {
         spawn_places.erase(key);
     } 
     if (boxes.find(key) != boxes.end()) {
         boxes.erase(key);
+    } 
+    if (ducks.find(key) != ducks.end()) {
+        ducks.erase(key);
     } 
 
 }
@@ -291,6 +341,7 @@ void LevelEditor::cleanup() {
     if (crateTexture) SDL_DestroyTexture(crateTexture);
     if (spawnPlaceTexture) SDL_DestroyTexture(spawnPlaceTexture);
     if (boxTexture) SDL_DestroyTexture(boxTexture);
+    if (duckTexture) SDL_DestroyTexture(duckTexture);
     if (backgroundTexture) SDL_DestroyTexture(backgroundTexture);
     if (renderer) SDL_DestroyRenderer(renderer);
     if (window) SDL_DestroyWindow(window);
