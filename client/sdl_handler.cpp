@@ -4,7 +4,6 @@
 #include <SDL2/SDL_mixer.h>
 #include <common/message.h>
 
-
 #define DELAY_TIME 60
 
 //using namespace SDL2pp;
@@ -42,7 +41,8 @@ void SDLHandler::loadGame(GameState &game, Queue<Message> &message_queue) {
         {"duck-walking-wings", "duck-walking-wings", 1},
         {"duck-jumping", "duck-jumping", 1},
         {"duck-jumping-wings", "duck-jumping-wings", 1},
-        {"duck-fluttering", "duck-fluttering", 6}
+        {"duck-fluttering", "duck-fluttering", 6},
+        {"duck-laying-down", "duck-laying-down", 1}
     };
 
     // Cargo las texturas
@@ -234,6 +234,7 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
             game->ducks[pos_id].is_moving = message.is_moving;
             game->ducks[pos_id].is_jumping = message.is_jumping;
             game->ducks[pos_id].is_fluttering = message.is_fluttering;
+            game->ducks[pos_id].is_laying_down = message.is_laying_down;
         }
     }
     return message;
