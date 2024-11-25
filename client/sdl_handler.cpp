@@ -3,6 +3,7 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_mixer.h>
 #include <common/message.h>
+#include <map>
 
 
 #define DELAY_TIME 60
@@ -67,6 +68,19 @@ void SDLHandler::loadGame(GameState &game, Queue<Message> &message_queue) {
 
 
 Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queue) {
+
+    //No quise tocar mas el server entonces mapee la municion inicial aca
+    std::map<uint8_t, int> weaponAmmo = {
+            {PEW_PEW_LASER_ID, 12},
+            {LASER_RIFLE_ID, 10},
+            {AK_47_ID, 30},
+            {DUEL_PISTOL_ID, 1},
+            {COWBOY_PISTOL_ID, 6},
+            {MAGNUM_ID, 6},
+            {SHOTGUN_ID, 2},
+            {SNIPER_ID, 3}
+        };
+
     Message message;
     while (message_queue.try_pop(message)) {
 
@@ -89,11 +103,18 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
         }
 
         if(message.type == SHOOT){
+
+            std::cout << "RECIBO SHOOT" << "\n";
+
+            int pos_id = message.player_id - 1;
+            if(game->ducks[pos_id].current_ammo > 0){
+                game->ducks[pos_id].current_ammo -= 1;
+            }
             //si recibo esto es que efectivamente disparé y tengo que reproducir el sonido
             const std::string path = std::string(AUDIO_PATH) + "shoot.wav";
             audioManager->loadSoundEffect(path);
             audioManager->playSoundEffect();
-            audioManager->setSoundEffectVolume(70);
+            audioManager->setSoundEffectVolume(100);
 
         }
 
@@ -130,6 +151,8 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
                 
                 std::cout << "agarre un ARMA A: " << static_cast<int>(message.item_id) << "\n";
                 game->ducks[pos_id].weapon_equiped = message.item_id;
+                game->ducks[pos_id].current_ammo = weaponAmmo[message.item_id];
+
             }            
 
             if(message.item_id == HELMET_ID){
@@ -179,6 +202,7 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
         if(message.type == DROP_WEAPON){
             int pos_id = message.player_id - 1;
             game->ducks[pos_id].weapon_equiped = 0;
+            game->ducks[pos_id].current_ammo = 0;
         }
 
         if(message.type == ARMOR_BROKEN){
@@ -289,7 +313,7 @@ void SDLHandler::run(Queue<Command>& command_queue, uint16_t id, Queue<Message>&
     const std::string path = std::string(AUDIO_PATH) +"ambient-music.wav";
     audioManager->loadMusic(path);
     audioManager->playMusic(-1); //musica en bucle infinitamente
-    audioManager->setMusicVolume(30);
+    audioManager->setMusicVolume(10);
 
     //Renderizo lo estatico
     rendererManager->doRenderStatic(&game);

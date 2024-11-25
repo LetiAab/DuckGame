@@ -132,6 +132,7 @@ void GameInitializer::createDucks(Queue<Message> &message_queue, GameState &game
 
                 duck.armor_equiped = 0;
                 duck.weapon_equiped = 0;
+                duck.current_ammo = 0;
                 duck.helmet_equiped = 0;
                 duck.item_on_hand = 0;
 

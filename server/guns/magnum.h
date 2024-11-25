@@ -20,7 +20,7 @@ public:
     Magnum(int x = 0, int y = 0);
 
     // Métodos
-    void disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) override;
+    bool disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) override;
 
     void mostrarInformacion() const;  
     void update_weapon();

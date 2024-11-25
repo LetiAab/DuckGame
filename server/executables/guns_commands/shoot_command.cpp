@@ -32,8 +32,6 @@ void ShootCommand::execute(Game& game) {
         //si es un arma disparo, simplemente disparo
         if(msg.item_id != ARMOR_ID && msg.item_id != HELMET_ID){
 
-
- 
             if(duck->disparar()){
                 //hago como un handshaking de disparar para saber si tengo que  
                 //reproducir el sonido de la bala
@@ -41,6 +39,8 @@ void ShootCommand::execute(Game& game) {
                 msg2.type = SHOOT; 
                 msg2.player_id = player_id;
                 game.game_broadcast(msg2);
+                std::cout << "Jugador " << player_id << " dispara con su arma le aviso al client\n";
+
             }
         }
     } else {
@@ -52,7 +52,7 @@ void ShootCommand::execute(Game& game) {
             msg3.type = SHOOT; 
             msg3.player_id = player_id;
             game.game_broadcast(msg3);
-            std::cout << "Jugador " << player_id << " dispara con su arma\n";
+            std::cout << "Jugador " << player_id << " dispara con su arma le aviso al client\n";
         } 
     }
 }

@@ -256,6 +256,7 @@ void RendererManager::renderItems(GameState* game) {
     }
 }
 
+
 void RendererManager::renderStats(GameState* game, uint16_t id) {
     if (id == 0 || id > game->ducks_quantity) {
         std::cerr << "ID fuera de rango: " << id << std::endl;
@@ -278,36 +279,43 @@ void RendererManager::renderStats(GameState* game, uint16_t id) {
     SDL_SetTextureColorMod(duck_texture, 255, 255, 255);
 
 
-    SDL_Rect heart_rect = {
-        60, 
-        30,
-        TILE_SIZE * 6,
-        TILE_SIZE * 6 
-    };
     SDL_Texture* heart_texture = texture_handler.getTexture("corazon");
-    SDL_RenderCopyEx(renderer, heart_texture, NULL, &heart_rect, 0, NULL, SDL_FLIP_NONE);
 
-    if (duck.armor_equiped || duck.helmet_equiped){
+    int heart_positions = 1;  
+    if (duck.armor_equiped || duck.helmet_equiped) {
+        heart_positions++;
+    }
+    if (duck.armor_equiped && duck.helmet_equiped) {
+        heart_positions++;
+    }
+
+    for (int i = 0; i < heart_positions; i++) {
         SDL_Rect heart_rect = {
-            85, 
+            60 + (25 * i), 
             30,
             TILE_SIZE * 6,
-            TILE_SIZE * 6 
+            TILE_SIZE * 6
         };
-        SDL_Texture* heart_texture = texture_handler.getTexture("corazon");
         SDL_RenderCopyEx(renderer, heart_texture, NULL, &heart_rect, 0, NULL, SDL_FLIP_NONE);
     }
 
-    if (duck.armor_equiped && duck.helmet_equiped){
-        SDL_Rect heart_rect = {
-            110, 
-            30,
-            TILE_SIZE * 6,
-            TILE_SIZE * 6 
-        };
-        SDL_Texture* heart_texture = texture_handler.getTexture("corazon");
-        SDL_RenderCopyEx(renderer, heart_texture, NULL, &heart_rect, 0, NULL, SDL_FLIP_NONE);
+ 
+
+    renderItem(duck.weapon_equiped, WINDOW_HEIGHT - 10, 50);
+
+
+    SDL_Rect bulletRect = {WINDOW_HEIGHT - 90, 30, 50, 50}; // Tamaño fijo para cadda bala (ajusta según el diseño)
+    SDL_Texture* bulletTexture = texture_handler.getTexture("bullet");
+
+
+
+    for (int i = 0; i < duck.current_ammo; ++i) {
+        // Renderizar la textura de la bala
+        SDL_RenderCopyEx(renderer, bulletTexture, NULL, &bulletRect, 270, NULL, SDL_FLIP_NONE);
+        // Mover la posición para la próxima bala
+        bulletRect.x += 10;
     }
+
 
 }
 
