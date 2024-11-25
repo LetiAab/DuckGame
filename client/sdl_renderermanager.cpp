@@ -318,6 +318,8 @@ void RendererManager::renderStats(GameState* game, uint16_t id) {
         bulletRect.x -= 10;
     }
 
+    
+    
 
 }
 

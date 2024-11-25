@@ -104,8 +104,6 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
 
         if(message.type == SHOOT){
 
-            std::cout << "RECIBO SHOOT" << "\n";
-
             int pos_id = message.player_id - 1;
             if(game->ducks[pos_id].current_ammo > 0){
                 game->ducks[pos_id].current_ammo -= 1;
@@ -115,7 +113,6 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
             audioManager->loadSoundEffect(path);
             audioManager->playSoundEffect();
             audioManager->setSoundEffectVolume(100);
-
         }
 
         if(message.type == BOX_DESTROYED){
@@ -302,8 +299,7 @@ void SDLHandler::run(Queue<Command>& command_queue, uint16_t id, Queue<Message>&
     GameState game{};
     game.renderer = renderer;
     game.command_queue = &command_queue;
-    std::cout << "ID: " << id << "\n";
-
+    game.music = true;
     loadGame(game, message_queue);
 
 
@@ -312,7 +308,7 @@ void SDLHandler::run(Queue<Command>& command_queue, uint16_t id, Queue<Message>&
     const std::string path = std::string(AUDIO_PATH) +"ambient-music.wav";
     audioManager->loadMusic(path);
     audioManager->playMusic(-1); //musica en bucle infinitamente
-    audioManager->setMusicVolume(10);
+    audioManager->setMusicVolume(60);
 
     //Renderizo lo estatico
     rendererManager->doRenderStatic(&game);
@@ -327,7 +323,15 @@ void SDLHandler::run(Queue<Command>& command_queue, uint16_t id, Queue<Message>&
             //pero por ahora funciona... 
             done = eventProcessor.processGameEvents(window, &game, id);
 
+            if(game.music){
+                audioManager->setMusicVolume(60);
+                audioManager->setSoundEffectVolume(100);
+            }
 
+            if(!game.music){
+                audioManager->setMusicVolume(0);
+                audioManager->setSoundEffectVolume(0);
+            }
 
             //LUEGO RECIBO DEL SERVER Y HAGO EL RENDER
             Message message = handleMessages(&game, message_queue);
