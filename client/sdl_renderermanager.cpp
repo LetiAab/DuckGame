@@ -263,6 +263,7 @@ void RendererManager::renderStats(GameState* game, uint16_t id) {
     }
 
     int pos_id = id - 1; 
+    Duck& duck = game->ducks[pos_id];
 
     SDL_Rect duck_rect = {
         10, 
@@ -272,12 +273,42 @@ void RendererManager::renderStats(GameState* game, uint16_t id) {
     };
 
     SDL_Texture* duck_texture = texture_handler.getTexture("duck");
-
     SDL_SetTextureColorMod(duck_texture, colors[pos_id][0], colors[pos_id][1], colors[pos_id][2]);
-
     SDL_RenderCopyEx(renderer, duck_texture, NULL, &duck_rect, 0, NULL, SDL_FLIP_NONE);
-
     SDL_SetTextureColorMod(duck_texture, 255, 255, 255);
+
+
+    SDL_Rect heart_rect = {
+        60, 
+        30,
+        TILE_SIZE * 6,
+        TILE_SIZE * 6 
+    };
+    SDL_Texture* heart_texture = texture_handler.getTexture("corazon");
+    SDL_RenderCopyEx(renderer, heart_texture, NULL, &heart_rect, 0, NULL, SDL_FLIP_NONE);
+
+    if (duck.armor_equiped || duck.helmet_equiped){
+        SDL_Rect heart_rect = {
+            85, 
+            30,
+            TILE_SIZE * 6,
+            TILE_SIZE * 6 
+        };
+        SDL_Texture* heart_texture = texture_handler.getTexture("corazon");
+        SDL_RenderCopyEx(renderer, heart_texture, NULL, &heart_rect, 0, NULL, SDL_FLIP_NONE);
+    }
+
+    if (duck.armor_equiped && duck.helmet_equiped){
+        SDL_Rect heart_rect = {
+            110, 
+            30,
+            TILE_SIZE * 6,
+            TILE_SIZE * 6 
+        };
+        SDL_Texture* heart_texture = texture_handler.getTexture("corazon");
+        SDL_RenderCopyEx(renderer, heart_texture, NULL, &heart_rect, 0, NULL, SDL_FLIP_NONE);
+    }
+
 }
 
 

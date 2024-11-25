@@ -44,6 +44,7 @@ void SDLHandler::loadGame(GameState &game, Queue<Message> &message_queue) {
         {"duck-jumping-wings", "duck-jumping-wings", 1},
         {"duck-fluttering", "duck-fluttering", 6},
         {"duck", "duck", 1},
+        {"corazon", "corazon", 1},
 
     };
 
