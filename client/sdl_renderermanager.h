@@ -10,7 +10,7 @@ class RendererManager {
 public:
     RendererManager(SDL_Renderer* renderer, TextureHandler& texture_handler);
     void doRenderStatic(GameState* game);
-    void doRenderDynamic(GameState* game, Message& message);
+    void doRenderDynamic(GameState* game, Message& message, uint16_t id);
 
 private:
     SDL_Renderer* renderer;
@@ -18,7 +18,7 @@ private:
     void renderBullet(GameState* game,  int size = 20);
     void renderDucks(GameState* game);
     void renderItems(GameState* game);
-    void renderStats(GameState* game);
+    void renderStats(GameState* game, uint16_t id);
 
     void renderBoxes(GameState* game);
 

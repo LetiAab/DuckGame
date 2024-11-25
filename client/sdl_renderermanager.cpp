@@ -256,18 +256,39 @@ void RendererManager::renderItems(GameState* game) {
     }
 }
 
-void RendererManager::renderStats(GameState* game){
-    
+void RendererManager::renderStats(GameState* game, uint16_t id) {
+    if (id == 0 || id > game->ducks_quantity) {
+        std::cerr << "ID fuera de rango: " << id << std::endl;
+        return;
+    }
+
+    int pos_id = id - 1; 
+
+    SDL_Rect duck_rect = {
+        10, 
+        10,
+        TILE_SIZE * DUCK_SIZE_X,
+        TILE_SIZE * DUCK_SIZE_Y 
+    };
+
+    SDL_Texture* duck_texture = texture_handler.getTexture("duck");
+
+    SDL_SetTextureColorMod(duck_texture, colors[pos_id][0], colors[pos_id][1], colors[pos_id][2]);
+
+    SDL_RenderCopyEx(renderer, duck_texture, NULL, &duck_rect, 0, NULL, SDL_FLIP_NONE);
+
+    SDL_SetTextureColorMod(duck_texture, 255, 255, 255);
 }
 
 
-void RendererManager::doRenderDynamic(GameState* game, Message& message) {
+void RendererManager::doRenderDynamic(GameState* game, Message& message, uint16_t id) {
     SDL_RenderCopy(renderer, texture_handler.getTexture("static_scene"), NULL, NULL);
 
 
     renderDucks(game);
     renderItems(game);
     renderBoxes(game);
+    renderStats(game, id);
 
     if (message.type == BULLET_POS_UPDATE){
         renderBullet(game);

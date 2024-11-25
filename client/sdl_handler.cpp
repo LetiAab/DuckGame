@@ -284,9 +284,6 @@ void SDLHandler::run(Queue<Command>& command_queue, uint16_t id, Queue<Message>&
 
 
 
-
-
-
     //Empiezo la musica de fondo
     const std::string path = std::string(AUDIO_PATH) +"ambient-music.wav";
     audioManager->loadMusic(path);
@@ -329,7 +326,7 @@ void SDLHandler::run(Queue<Command>& command_queue, uint16_t id, Queue<Message>&
                 break;
             }
 
-            rendererManager->doRenderDynamic(&game, message);
+            rendererManager->doRenderDynamic(&game, message, id);
 
             SDL_Delay(DELAY_TIME);
         }
