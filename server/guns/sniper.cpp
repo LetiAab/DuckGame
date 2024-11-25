@@ -7,7 +7,7 @@
 Sniper::Sniper(int x, int y)
     : Weapon(SNIPER_ID, "Sniper", 256, 0, 3, x, y) {}  // Inicializar posición
 
-void Sniper::disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) {
+bool Sniper::disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) {
     if (municiones > 0) {
         //la bala debe aparecer fuera del pato, o sino se mata a si mismo
         int bullet_position_x = (looking == LOOKING_RIGHT) ? position_x + DUCK_SIZE_X : position_x -1;
@@ -17,7 +17,7 @@ void Sniper::disparar(int position_x, int position_y, char looking, GameMap* map
         //si donde debe salir la bala hay una pared, no puedo disparar
         if(map->at(bullet_pos)== 'P') {
             std::cout << "No puedo disparar, hay una pared inmediatamente al lado" << std::endl;
-            return;
+            return false;
         }
 
         int direccion_x = (looking == LOOKING_RIGHT) ? 6 : -6;
@@ -31,8 +31,10 @@ void Sniper::disparar(int position_x, int position_y, char looking, GameMap* map
         
         municiones--;
         std::cout << "Disparo realizado. Quedan " << municiones << " municiones." << std::endl;
+        return true;
     } else {
         std::cout << "No hay municiones disponibles." << std::endl;
+        return false;
     }
 }
 

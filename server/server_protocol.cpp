@@ -167,6 +167,7 @@ bool ServerProtocol::send_message(Message& message){
         break;
 
     case SHOOT:
+        std::cout << "sale el mensaje de shoot \n";
         if (!skt.sendall(&message.player_id, sizeof(message.player_id), &was_closed) || was_closed) {
             return false;
         }
@@ -218,7 +219,6 @@ bool ServerProtocol::send_message(Message& message){
 
 
     case BULLET_POS_UPDATE:
-        std::cout << "MANDO LA BULLET" << "\n";
 
         if (!skt.sendall(&message.player_id, sizeof(message.player_id), &was_closed) || was_closed) {
             return false;
@@ -274,6 +274,9 @@ bool ServerProtocol::send_message(Message& message){
         }
 
         if (!skt.sendall(&message.is_fluttering, sizeof(message.is_fluttering), &was_closed) || was_closed) {
+            return false;
+        }
+        if (!skt.sendall(&message.is_laying_down, sizeof(message.is_laying_down), &was_closed) || was_closed) {
             return false;
         }
 
@@ -336,7 +339,7 @@ std::shared_ptr<Executable> ServerProtocol::receive_command(){
     case STOP_UP:
         return std::make_shared<StopJumpCommand>(player_id);
     case STOP_DOWN:
-        return std::make_shared<StopJumpCommand>(player_id);
+        return std::make_shared<StopMoveDownCommand>(player_id);
     case SHOOT:
         return std::make_shared<ShootCommand>(player_id);
     case TAKE_ITEM:

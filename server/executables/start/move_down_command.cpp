@@ -11,7 +11,11 @@ void MoveDownCommand::execute(Game& game) {
     char char_id = static_cast<char>(player_id + '0');
 
     Duck* duck = game.getDuckById(char_id);
-    duck->speed_y ++;
-    duck->is_moving = true;
+    //duck->speed_y ++;
+    //duck->is_moving = true;
+    duck->is_moving = false;
+    duck->is_laying_down = true;
+    duck->is_jumping = false;
+    duck->is_fluttering = false;
 
 }

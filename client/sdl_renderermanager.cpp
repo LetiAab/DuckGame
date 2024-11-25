@@ -85,7 +85,9 @@ void RendererManager::renderDucks(GameState* game) {
 
         SDL_Texture* duck_texture = nullptr;
         SDL_Texture* wings_texture = nullptr;
-        if (duck.is_jumping && !duck.is_fluttering) {
+        if (duck.is_laying_down) {
+            duck_texture = texture_handler.getTexture("duck-laying-down");
+        } else if (duck.is_jumping && !duck.is_fluttering) {
             duck_texture = texture_handler.getTexture("duck-jumping");
             wings_texture = texture_handler.getTexture("duck-jumping-wings");
         } else if (duck.is_fluttering) {
@@ -210,36 +212,41 @@ void RendererManager::renderBoxes(GameState* game){
 
 
 }
-void RendererManager::renderItem(uint8_t item_id, int x, int y){
+void RendererManager::renderItem(uint8_t item_id, int x, int y, int mult){
      SDL_Rect rect;
 
     if (item_id == BASE_WEAPON_ID || item_id == GRANADA_ID || item_id == BANANA_ID) {
-        rect = { x, y - TILE_SIZE * 11, TILE_SIZE * DUCK_SIZE_X, TILE_SIZE * DUCK_SIZE_Y };
+        rect = { x, y - TILE_SIZE * 11, TILE_SIZE * DUCK_SIZE_X * mult, TILE_SIZE * DUCK_SIZE_Y * mult };
         SDL_RenderCopyEx(renderer, texture_handler.getTexture("gun"), NULL, &rect, 0, NULL, SDL_FLIP_NONE);
     } else if (item_id == COWBOY_PISTOL_ID) {
-        rect = { x, y - TILE_SIZE * 11, TILE_SIZE * DUCK_SIZE_X, TILE_SIZE * DUCK_SIZE_Y };
+        rect = { x, y - TILE_SIZE * 11, TILE_SIZE * DUCK_SIZE_X * mult, TILE_SIZE * DUCK_SIZE_Y * mult};
         SDL_RenderCopyEx(renderer, texture_handler.getTexture("cowboy-pistol"), NULL, &rect, 0, NULL, SDL_FLIP_NONE);
     } else if (item_id == LASER_RIFLE_ID) {
-        rect = { x, y - TILE_SIZE * 11, TILE_SIZE * DUCK_SIZE_X, TILE_SIZE * DUCK_SIZE_Y };
+        rect = { x, y - TILE_SIZE * 11, TILE_SIZE * DUCK_SIZE_X * mult, TILE_SIZE * DUCK_SIZE_Y * mult};
         SDL_RenderCopyEx(renderer, texture_handler.getTexture("laser-rifle"), NULL, &rect, 0, NULL, SDL_FLIP_NONE);
     } else if (item_id == MAGNUM_ID) {
-        rect = { x, y - TILE_SIZE * 11, TILE_SIZE * DUCK_SIZE_X, TILE_SIZE * DUCK_SIZE_Y };
+        rect = { x, y - TILE_SIZE * 11, TILE_SIZE * DUCK_SIZE_X * mult, TILE_SIZE * DUCK_SIZE_Y * mult};
         SDL_RenderCopyEx(renderer, texture_handler.getTexture("magnum"), NULL, &rect, 0, NULL, SDL_FLIP_NONE);
     } else if (item_id == PEW_PEW_LASER_ID) {
-        rect = { x, y - TILE_SIZE * 11, TILE_SIZE * DUCK_SIZE_X, TILE_SIZE * DUCK_SIZE_Y };
+        rect = { x, y - TILE_SIZE * 11, TILE_SIZE * DUCK_SIZE_X * mult, TILE_SIZE * DUCK_SIZE_Y * mult};
         SDL_RenderCopyEx(renderer, texture_handler.getTexture("pew-pew-laser"), NULL, &rect, 0, NULL, SDL_FLIP_NONE);
     } else if (item_id == SHOTGUN_ID) {
-        rect = { x, y - TILE_SIZE * 11, TILE_SIZE * DUCK_SIZE_X, TILE_SIZE * DUCK_SIZE_Y };
+        rect = { x, y - TILE_SIZE * 11, TILE_SIZE * DUCK_SIZE_X * mult, TILE_SIZE * DUCK_SIZE_Y * mult };
         SDL_RenderCopyEx(renderer, texture_handler.getTexture("shotgun"), NULL, &rect, 0, NULL, SDL_FLIP_NONE);
     } else if (item_id == AK_47_ID) {
-        rect = { x, y - TILE_SIZE * 11, TILE_SIZE * DUCK_SIZE_X, TILE_SIZE * DUCK_SIZE_Y };
+        rect = { x, y - TILE_SIZE * 11, TILE_SIZE * DUCK_SIZE_X * mult, TILE_SIZE * DUCK_SIZE_Y * mult};
         SDL_RenderCopyEx(renderer, texture_handler.getTexture("AK-47"), NULL, &rect, 0, NULL, SDL_FLIP_NONE);
-    } else if (item_id == SNIPER_ID || item_id == DUEL_PISTOL_ID || item_id == HELMET_ID) {
-        rect = { x, y - TILE_SIZE * 9, (TILE_SIZE * DUCK_SIZE_X / 2) + TILE_SIZE, (TILE_SIZE * DUCK_SIZE_Y / 2) + TILE_SIZE };
-        SDL_RenderCopyEx(renderer, texture_handler.getTexture(
-            item_id == SNIPER_ID ? "sniper" :
-            item_id == DUEL_PISTOL_ID ? "duel-pistol" : "helmet"
-        ), NULL, &rect, 0, NULL, SDL_FLIP_NONE);
+    
+    } else if ( item_id == SNIPER_ID){
+        rect = { x, y - TILE_SIZE * 11, TILE_SIZE * DUCK_SIZE_X * mult, TILE_SIZE * DUCK_SIZE_Y * mult};
+        SDL_RenderCopyEx(renderer, texture_handler.getTexture("sniper"), NULL, &rect, 0, NULL, SDL_FLIP_NONE);
+    
+    } else if (item_id == DUEL_PISTOL_ID){
+        rect = { x, y - TILE_SIZE * 11, TILE_SIZE * DUCK_SIZE_X * mult, TILE_SIZE * DUCK_SIZE_Y * mult};
+        SDL_RenderCopyEx(renderer, texture_handler.getTexture("duel-pistol"), NULL, &rect, 0, NULL, SDL_FLIP_NONE);
+    } else if (item_id == HELMET_ID) {
+        rect = { x, y - TILE_SIZE * 9, ((TILE_SIZE * DUCK_SIZE_X / 2) + TILE_SIZE)*mult, ((TILE_SIZE * DUCK_SIZE_Y / 2) + TILE_SIZE) *mult };
+        SDL_RenderCopyEx(renderer, texture_handler.getTexture("helmet"), NULL, &rect, 0, NULL, SDL_FLIP_NONE);
     } else if (item_id == ARMOR_ID) {
         rect = { x - TILE_SIZE, y - TILE_SIZE * 8, (TILE_SIZE * DUCK_SIZE_X / 2) + TILE_SIZE, (TILE_SIZE * DUCK_SIZE_Y / 2) };
         SDL_RenderCopyEx(renderer, texture_handler.getTexture("armor"), NULL, &rect, 0, NULL, SDL_FLIP_NONE);
@@ -257,14 +264,74 @@ void RendererManager::renderItems(GameState* game) {
 }
 
 
+void RendererManager::renderStats(GameState* game, uint16_t id) {
+    if (id == 0 || id > game->ducks_quantity) {
+        std::cerr << "ID fuera de rango: " << id << std::endl;
+        return;
+    }
 
-void RendererManager::doRenderDynamic(GameState* game, Message& message) {
+    int pos_id = id - 1; 
+    Duck& duck = game->ducks[pos_id];
+
+    SDL_Rect duck_rect = {
+        10, 
+        10,
+        TILE_SIZE * DUCK_SIZE_X,
+        TILE_SIZE * DUCK_SIZE_Y 
+    };
+
+    SDL_Texture* duck_texture = texture_handler.getTexture("duck");
+    SDL_SetTextureColorMod(duck_texture, colors[pos_id][0], colors[pos_id][1], colors[pos_id][2]);
+    SDL_RenderCopyEx(renderer, duck_texture, NULL, &duck_rect, 0, NULL, SDL_FLIP_NONE);
+    SDL_SetTextureColorMod(duck_texture, 255, 255, 255);
+
+
+    SDL_Texture* heart_texture = texture_handler.getTexture("corazon");
+
+    int heart_positions = 1;  
+    if (duck.armor_equiped || duck.helmet_equiped) {
+        heart_positions++;
+    }
+    if (duck.armor_equiped && duck.helmet_equiped) {
+        heart_positions++;
+    }
+
+    for (int i = 0; i < heart_positions; i++) {
+        SDL_Rect heart_rect = {
+            60 + (25 * i), 
+            30,
+            TILE_SIZE * 6,
+            TILE_SIZE * 6
+        };
+        SDL_RenderCopyEx(renderer, heart_texture, NULL, &heart_rect, 0, NULL, SDL_FLIP_NONE);
+    }
+
+ 
+
+    renderItem(duck.weapon_equiped, WINDOW_WIDTH - 90 , 15, 2);
+
+
+    SDL_Rect bulletRect = {WINDOW_WIDTH - 140 , 10, 50, 50};
+    SDL_Texture* bulletTexture = texture_handler.getTexture("bullet");
+
+
+    for (int i = 0; i < duck.current_ammo; ++i) {
+        SDL_RenderCopyEx(renderer, bulletTexture, NULL, &bulletRect, 270, NULL, SDL_FLIP_NONE);
+        bulletRect.x -= 10;
+    }
+
+
+}
+
+
+void RendererManager::doRenderDynamic(GameState* game, Message& message, uint16_t id) {
     SDL_RenderCopy(renderer, texture_handler.getTexture("static_scene"), NULL, NULL);
 
 
     renderDucks(game);
     renderItems(game);
     renderBoxes(game);
+    renderStats(game, id);
 
     if (message.type == BULLET_POS_UPDATE){
         renderBullet(game);

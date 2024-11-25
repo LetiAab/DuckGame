@@ -102,8 +102,6 @@ Message ClientProtocol::receive_message(){
         break;
 
     case DUCK_POS_UPDATE:
-
-
         skt.recvall(&message.player_id, 2, &was_closed);
         skt.recvall(&message.duck_x, sizeof(int), &was_closed);
         skt.recvall(&message.duck_y, sizeof(int), &was_closed);
@@ -111,9 +109,9 @@ Message ClientProtocol::receive_message(){
         skt.recvall(&message.is_moving, sizeof(bool), &was_closed);
         skt.recvall(&message.is_jumping, sizeof(bool), &was_closed);
         skt.recvall(&message.is_fluttering, sizeof(bool), &was_closed);
+        skt.recvall(&message.is_laying_down, sizeof(bool), &was_closed);
 
         break;
-
 
     default:
         skt.recvall(&message.player_id, 2, &was_closed);
@@ -129,13 +127,10 @@ Message ClientProtocol::receive_message(){
         break;
     }
 
-
-
     return message;
 }
 
 bool ClientProtocol::send_command(Command command){
-
     if(command.type == 0){
         return false;
     }
@@ -179,9 +174,6 @@ bool ClientProtocol::send_command(Command command){
         }
         break;
     }
-
-
-
     return true;
 }
 

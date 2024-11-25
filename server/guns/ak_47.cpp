@@ -5,7 +5,7 @@
 Ak47::Ak47(int x, int y)
     : Weapon(AK_47_ID, "Ak 47", 52, 0, 30, x, y) {}
 
-void Ak47::disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) {
+bool Ak47::disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) {
     if (municiones > 0) {
         if (dispersion > 5) {
             dispersion = 0;
@@ -18,7 +18,7 @@ void Ak47::disparar(int position_x, int position_y, char looking, GameMap* map, 
         //si donde debe salir la bala hay una pared, no puedo disparar
         if(map->at(bullet_pos)== 'P') {
             std::cout << "No puedo disparar, hay una pared inmediatamente al lado" << std::endl;
-            return;
+            return false;
         }
 
         int direccion_x = (looking == LOOKING_RIGHT) ? 6 : -6;
@@ -36,8 +36,10 @@ void Ak47::disparar(int position_x, int position_y, char looking, GameMap* map, 
         municiones--;
         dispersion ++;
         std::cout << "Disparo realizado. Quedan " << municiones << " municiones." << std::endl;
+        return true;
     } else {
         std::cout << "No hay municiones disponibles." << std::endl;
+        return false;
     }
 }
 

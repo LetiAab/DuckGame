@@ -7,7 +7,7 @@
 DuelPistol::DuelPistol(int x, int y)
     : Weapon(DUEL_PISTOL_ID, "Duel Pistol", 5, 0, 1, x, y) {}
 
-void DuelPistol::disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) {
+bool DuelPistol::disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) {
     if (municiones > 0) {
         //la bala debe aparecer fuera del pato, o sino se mata a si mismo
         int bullet_position_x = (looking == LOOKING_RIGHT) ? position_x + DUCK_SIZE_X : position_x -1;
@@ -17,7 +17,7 @@ void DuelPistol::disparar(int position_x, int position_y, char looking, GameMap*
         //si donde debe salir la bala hay una pared, no puedo disparar
         if(map->at(bullet_pos)== 'P') {
             std::cout << "No puedo disparar, hay una pared inmediatamente al lado" << std::endl;
-            return;
+            return false;
         }
 
         int direccion_x = (looking == LOOKING_RIGHT) ? 6 : -6;
@@ -38,8 +38,10 @@ void DuelPistol::disparar(int position_x, int position_y, char looking, GameMap*
         
         municiones--;
         std::cout << "Disparo realizado. Quedan " << municiones << " municiones." << std::endl;
+        return true;
     } else {
         std::cout << "No hay municiones disponibles." << std::endl;
+        return false;
     }
 }
 

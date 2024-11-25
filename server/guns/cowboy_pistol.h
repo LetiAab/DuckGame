@@ -17,10 +17,10 @@ public:
     explicit CowboyPistol(int x = 0, int y = 0);
 
     // Métodos
-    void disparar_cowboy_pistol(int position_x, int position_y, char looking, GameMap* map, char id_player);
+    bool disparar_cowboy_pistol(int position_x, int position_y, char looking, GameMap* map, char id_player);
 
-    void disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) override {
-        disparar_cowboy_pistol(position_x, position_y, looking, map, id_player);
+    bool disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) override {
+        return disparar_cowboy_pistol(position_x, position_y, looking, map, id_player);
     }
 
     void mostrarInformacion() const;  
