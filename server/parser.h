@@ -11,7 +11,7 @@
     struct ItemConfig{
         int x;
         int y;
-        int item_id;
+        uint8_t item_id;
     };
 
     struct MapConfig{
@@ -29,6 +29,7 @@ public:
     std::vector<Position> get_spawn_places();
     std::vector<ItemConfig> get_items();
 
+    bool parserFile();
     ~Parser();
 
 private:
@@ -41,7 +42,6 @@ private:
     std::string filePath;
     std::ifstream fileStream;
 
-    bool parserFile();
     void openFile();
     void closeFile();
     std::string readLine();

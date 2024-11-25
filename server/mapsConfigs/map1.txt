@@ -1,24 +1,28 @@
-altura
-ancho
+144
+200
 
 CRATES
-x,y
-x,y
-x,y
+15,134
+16,134
+17,134
+60,52
+62,51
 
 SPAWN PLACE
-x,y
-x,y
+30,130
+100,130
+30,75
+100,75
 
 BOX
-x,y
-
+50,60
 
 ITEMS
-x,y,item_id
-x,y,item_id
+70,80,4
+90,100,5
+110,120,6
 
 SPAWN DUCK
-x,y
-x,y
-x,y
+100,60
+100,90
+

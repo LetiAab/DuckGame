@@ -54,55 +54,76 @@ bool Parser::parserFile() {
             line = readLine();
             if (line.empty()) continue;
 
+            std::cout << "Processing line: " << line << std::endl;
+
             if (line == "CRATES" || line == "SPAWN PLACE" || line == "BOX" ||
                 line == "ITEMS" || line == "SPAWN DUCK") {
                 section = line;
+                std::cout << "Section found: " << section << std::endl;
                 continue;
             }
 
             std::istringstream ss(line);
-            int x, y, item_id;
+            int x, y;
+            uint8_t item_id;
 
             if (section == "CRATES") {
                 if (ss >> x && ss.ignore() && ss >> y) {
                     map.map[y][x] = PLATFORM;
+                    std::cout << "Placed CRATE at (" << x << ", " << y << ")" << std::endl;
+                } else {
+                    std::cerr << "Error parsing CRATES at line: " << line << std::endl;
                 }
             } else if (section == "SPAWN PLACE") {
                 if (ss >> x && ss.ignore() && ss >> y) {
                     spawn_places_positions.emplace_back(x, y);
+                    std::cout << "Spawn place at (" << x << ", " << y << ")" << std::endl;
+                } else {
+                    std::cerr << "Error parsing SPAWN PLACE at line: " << line << std::endl;
                 }
             } else if (section == "BOX") {
                 if (ss >> x && ss.ignore() && ss >> y) {
                     map.map[y][x] = BOX;
+                    std::cout << "Placed BOX at (" << x << ", " << y << ")" << std::endl;
+                } else {
+                    std::cerr << "Error parsing BOX at line: " << line << std::endl;
                 }
             } else if (section == "ITEMS") {
                 if (ss >> x && ss.ignore() && ss >> y && ss.ignore() && ss >> item_id) {
                     items_positions.push_back({x, y, item_id});
+                    std::cout << "Item " << item_id << " placed at (" << x << ", " << y << ")" << std::endl;
+                } else {
+                    std::cerr << "Error parsing ITEM at line: " << line << std::endl;
                 }
             } else if (section == "SPAWN DUCK") {
                 if (ss >> x && ss.ignore() && ss >> y) {
                     ducks_positions.emplace_back(x, y);
+                    std::cout << "Duck spawned at (" << x << ", " << y << ")" << std::endl;
 
-                    // Colocar el pato en el mapa
                     int duck_id = ducks_positions.size();
                     for (int i = x; i < x + DUCK_SIZE_X; ++i) {
                         for (int j = y; j < y + DUCK_SIZE_Y; ++j) {
                             if (i < map.map_width && j < map.map_height) {
                                 map.map[j][i] = '0' + duck_id;
+                                std::cout << "Placed duck " << duck_id << " at (" << i << ", " << j << ")" << std::endl;
                             }
                         }
                     }
+                } else {
+                    std::cerr << "Error parsing SPAWN DUCK at line: " << line << std::endl;
                 }
             }
         }
-    } catch (const std::exception&) {
+    } catch (const std::exception& e) {
+        //std::cerr << "Exception during parsing: " << e.what() << std::endl;
         closeFile();
-        return false;
+        return true;
     }
 
     closeFile();
     return true;
 }
+
 
 MapConfig Parser::getMap() {
     return map;

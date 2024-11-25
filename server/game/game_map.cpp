@@ -530,8 +530,12 @@ void GameMap::setEscenario() {
         }
     }
 
+}
 
-
+void GameMap::set_escenario_for_round(MapConfig mapConfig){
+    height = mapConfig.map_height;
+    width = mapConfig.map_width;
+    map = mapConfig.map;
 }
 
 

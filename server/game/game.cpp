@@ -115,23 +115,27 @@ void Game::set_players(int number_of_players){
 
 
 void Game::run() {
+        std::string filePath = "/home/hilia/Documentos/taller/tp-grupal/server/mapsConfigs/map1.txt";
 
+        Parser parserConfig(filePath);
+        parserConfig.parserFile();
 
-
-        //MANDO LOS MENSAJES CON LA POSICION DE LOS SPAWN PLACES
+        map.set_escenario_for_round(parserConfig.getMap());
+        create_ducks(players, parserConfig.get_ducks_positions());
+        create_spawn_places(parserConfig.get_spawn_places());
 
         //creo el mapa, los patos y los spawn places
-        map.setEscenario();
-        create_ducks(players);
-        create_spawn_places();
-        create_boxes();
+        //map.setEscenario();
+        //create_ducks(players);
+        //create_spawn_places();
+        //create_boxes();
 
 
         //envio al cliente los mensajes
         send_map_message();
         send_initialize_ducks_message();
         send_spawn_place_message();
-        send_boxes_initialize_message();
+        //send_boxes_initialize_message();
   
 
 
@@ -359,6 +363,17 @@ Position Game::get_random_position_for_duck(char duck_id){
         
 }
 
+void Game::create_ducks(int size, std::vector<Position> ducks_positions) {
+        round_manager.initialize_manager(size);
+
+        for(uint16_t id = 1; id <= size; ++id) {
+                char char_id = static_cast<char>(id + '0');
+                Position pos = ducks_positions[id-1];
+
+                ducks.emplace_back(char_id, pos.x, pos.y, &map);
+        }
+}
+
 
 
 void Game::create_ducks(int size) {
@@ -370,6 +385,21 @@ void Game::create_ducks(int size) {
 
                 ducks.emplace_back(char_id, pos.x, pos.y, &map);
         }
+}
+
+void Game::create_spawn_places(std::vector<Position> spawns_positions) {
+    std::cout << "CREO LOS ITEMS" << "\n";
+
+    for (size_t i = 0; i < spawns_positions.size(); ++i) {
+        Position pos = spawns_positions[i];
+        
+        std::unique_ptr<Item> item = std::make_unique<Shotgun>(pos.x, pos.y);
+        
+        spawn_places.emplace_back(std::make_unique<SpawnPlace>(Position(pos.x, pos.y), i, item->getItemId()));
+
+
+        items.push_back(std::move(item));
+    }
 }
 
 void Game::create_spawn_places() {

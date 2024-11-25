@@ -5,6 +5,7 @@
 #include <vector>
 #include "common/position.h"
 #include "common/constants.h"
+#include "../parser.h"
 
 
 class GameMap {
@@ -30,6 +31,8 @@ public:
     void clear_map();
 
     void setEscenario();
+
+    void set_escenario_for_round(MapConfig mapConfig);
 
     bool canMoveDuckTo(int x, int y, char duck_id);
 
