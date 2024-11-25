@@ -119,12 +119,12 @@ int Client::start(){
     std::cout << "My DUCK ID is: " << duck_id  << std::endl;
 
 
-    std::cout << "Inicializacion del mapa" << std::endl;
-    Message message = message_queue.pop();
+    //std::cout << "Inicializacion del mapa" << std::endl;
+    //Message message = message_queue.pop();
     //printMap(message.map);
 
     sdl_handler = std::make_unique<SDLHandler>();
-    sdl_handler->run(message.map, sender->get_queue(), duck_id, message_queue);
+    sdl_handler->run(sender->get_queue(), duck_id, message_queue);
 
     //---------------------------------------------------------
     //hacer un cierre mas prolijo

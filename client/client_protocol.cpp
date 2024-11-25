@@ -18,6 +18,15 @@ Message ClientProtocol::receive_message(){
     switch (message.type)
 
     {
+    case END_GAME:
+        skt.recvall(&message.duck_winner, sizeof(message.duck_winner), &was_closed);
+        break;
+
+    case END_ROUND:
+
+        skt.recvall(&message.duck_winner, sizeof(message.duck_winner), &was_closed);
+        break;
+
     case FIRST_GAME_MESSAGE:
         //recibo el nuevo id del jugador
         skt.recvall(&message.player_id, 2, &was_closed);
@@ -28,6 +37,24 @@ Message ClientProtocol::receive_message(){
         for (size_t i = 0; i < MATRIX_N; ++i) { 
             skt.recvall(message.map[i].data(), MATRIX_M * sizeof(char), &was_closed); // Recibir cada fila
         }
+        break;
+
+    case BOX_DESTROYED:        
+        skt.recvall(&message.box_id, sizeof(uint8_t), &was_closed);
+        skt.recvall(&message.item_id, sizeof(uint8_t), &was_closed);
+        break;
+
+    case BOX_POSITION:
+
+        skt.recvall(&message.box_id, sizeof(uint8_t), &was_closed);
+        skt.recvall(&message.box_x, sizeof(int), &was_closed);
+        skt.recvall(&message.box_y, sizeof(int), &was_closed);
+        skt.recvall(&message.item_id, sizeof(uint8_t), &was_closed);
+        break;
+    
+
+    case DUCKS_INICIALIZATION:
+        skt.recvall(&message.ducks_quantity, sizeof(message.ducks_quantity), &was_closed);
         break;
 
     case ITEM_POSITION:

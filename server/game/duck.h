@@ -71,6 +71,7 @@ public:
     bool is_in_air();
 
     bool get_duck_position_message(Message& msg);
+    bool get_duck_initialize_message(Message& msg);
 
     bool get_duck_dead_message(Message& msg);
 
@@ -91,6 +92,8 @@ public:
     std::shared_ptr<Item> getItemOnHand() const;
 
     bool disparar();
+
+    void reset_for_round(Position pos);
 
     Position getPosition();
 

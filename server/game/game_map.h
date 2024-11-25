@@ -27,6 +27,8 @@ public:
 
     char duck_in_position(int x, int y, int size_x, int size_y);
 
+    void clear_map();
+
     void setEscenario();
 
     bool canMoveDuckTo(int x, int y, char duck_id);
@@ -73,6 +75,12 @@ public:
     void printMap() const;
 
     void tellMap() const;
+
+    void placeBox(Position pos);
+    void removeBox(Position pos);
+    bool isCollisionWithBox(Position pos, int size_x, int size_y);
+    bool boxIsOverBullet(Position position);
+
 
 };
 

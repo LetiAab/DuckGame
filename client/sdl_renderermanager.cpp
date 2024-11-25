@@ -194,102 +194,75 @@ void RendererManager::renderDucks(GameState* game) {
     }
 }
 
+void RendererManager::renderBoxes(GameState* game){
+        for (auto& box : game->boxes) {
+    
+            if(!box.destroyed){
+
+
+                SDL_Rect box_rect = { 
+                    box.x, 
+                    box.y, 
+                    TILE_SIZE * BOX_SIZE_X, 
+                    TILE_SIZE * BOX_SIZE_Y 
+                };
+            
+                SDL_RenderCopyEx(renderer, texture_handler.getTexture("box"), NULL, &box_rect, 0, NULL, SDL_FLIP_NONE);
+
+            } else if (!box.item_taked) {
+                renderItem(box.item_id, box.x, box.y + 20);
+            }
+
+        }
+
+
+}
+void RendererManager::renderItem(uint8_t item_id, int x, int y){
+     SDL_Rect rect;
+
+    if (item_id == BASE_WEAPON_ID || item_id == GRANADA_ID || item_id == BANANA_ID) {
+        rect = { x, y - TILE_SIZE * 11, TILE_SIZE * DUCK_SIZE_X, TILE_SIZE * DUCK_SIZE_Y };
+        SDL_RenderCopyEx(renderer, texture_handler.getTexture("gun"), NULL, &rect, 0, NULL, SDL_FLIP_NONE);
+    } else if (item_id == COWBOY_PISTOL_ID) {
+        rect = { x, y - TILE_SIZE * 11, TILE_SIZE * DUCK_SIZE_X, TILE_SIZE * DUCK_SIZE_Y };
+        SDL_RenderCopyEx(renderer, texture_handler.getTexture("cowboy-pistol"), NULL, &rect, 0, NULL, SDL_FLIP_NONE);
+    } else if (item_id == LASER_RIFLE_ID) {
+        rect = { x, y - TILE_SIZE * 11, TILE_SIZE * DUCK_SIZE_X, TILE_SIZE * DUCK_SIZE_Y };
+        SDL_RenderCopyEx(renderer, texture_handler.getTexture("laser-rifle"), NULL, &rect, 0, NULL, SDL_FLIP_NONE);
+    } else if (item_id == MAGNUM_ID) {
+        rect = { x, y - TILE_SIZE * 11, TILE_SIZE * DUCK_SIZE_X, TILE_SIZE * DUCK_SIZE_Y };
+        SDL_RenderCopyEx(renderer, texture_handler.getTexture("magnum"), NULL, &rect, 0, NULL, SDL_FLIP_NONE);
+    } else if (item_id == PEW_PEW_LASER_ID) {
+        rect = { x, y - TILE_SIZE * 11, TILE_SIZE * DUCK_SIZE_X, TILE_SIZE * DUCK_SIZE_Y };
+        SDL_RenderCopyEx(renderer, texture_handler.getTexture("pew-pew-laser"), NULL, &rect, 0, NULL, SDL_FLIP_NONE);
+    } else if (item_id == SHOTGUN_ID) {
+        rect = { x, y - TILE_SIZE * 11, TILE_SIZE * DUCK_SIZE_X, TILE_SIZE * DUCK_SIZE_Y };
+        SDL_RenderCopyEx(renderer, texture_handler.getTexture("shotgun"), NULL, &rect, 0, NULL, SDL_FLIP_NONE);
+    } else if (item_id == AK_47_ID) {
+        rect = { x, y - TILE_SIZE * 11, TILE_SIZE * DUCK_SIZE_X, TILE_SIZE * DUCK_SIZE_Y };
+        SDL_RenderCopyEx(renderer, texture_handler.getTexture("AK-47"), NULL, &rect, 0, NULL, SDL_FLIP_NONE);
+    } else if (item_id == SNIPER_ID || item_id == DUEL_PISTOL_ID || item_id == HELMET_ID) {
+        rect = { x, y - TILE_SIZE * 9, (TILE_SIZE * DUCK_SIZE_X / 2) + TILE_SIZE, (TILE_SIZE * DUCK_SIZE_Y / 2) + TILE_SIZE };
+        SDL_RenderCopyEx(renderer, texture_handler.getTexture(
+            item_id == SNIPER_ID ? "sniper" :
+            item_id == DUEL_PISTOL_ID ? "duel-pistol" : "helmet"
+        ), NULL, &rect, 0, NULL, SDL_FLIP_NONE);
+    } else if (item_id == ARMOR_ID) {
+        rect = { x - TILE_SIZE, y - TILE_SIZE * 8, (TILE_SIZE * DUCK_SIZE_X / 2) + TILE_SIZE, (TILE_SIZE * DUCK_SIZE_Y / 2) };
+        SDL_RenderCopyEx(renderer, texture_handler.getTexture("armor"), NULL, &rect, 0, NULL, SDL_FLIP_NONE);
+    }
+}
+
+
 void RendererManager::renderItems(GameState* game) {
 
 
     for (auto& spawn_place : game->spawn_places) {
         // Acá reemplazar con los ids de las otras armas cuando tengas los renders de las mismas
-        if ((spawn_place.item_id == BASE_WEAPON_ID)|| (spawn_place.item_id == GRANADA_ID) || (spawn_place.item_id == BANANA_ID)) {
-            SDL_Rect gun_rect = { 
-                spawn_place.x, 
-                spawn_place.y - TILE_SIZE * 11, 
-                TILE_SIZE * DUCK_SIZE_X, 
-                TILE_SIZE * DUCK_SIZE_Y 
-            };
-            SDL_RenderCopyEx(renderer, texture_handler.getTexture("gun"), NULL, &gun_rect, 0, NULL, SDL_FLIP_NONE);
-        } else if (spawn_place.item_id == COWBOY_PISTOL_ID) {
-            SDL_Rect gun_rect = { 
-                spawn_place.x, 
-                spawn_place.y - TILE_SIZE * 11, 
-                TILE_SIZE * DUCK_SIZE_X, 
-                TILE_SIZE * DUCK_SIZE_Y 
-            };
-            SDL_RenderCopyEx(renderer, texture_handler.getTexture("cowboy-pistol"), NULL, &gun_rect, 0, NULL, SDL_FLIP_NONE);
-        } else if (spawn_place.item_id == LASER_RIFLE_ID) {
-            SDL_Rect gun_rect = { 
-                spawn_place.x, 
-                spawn_place.y - TILE_SIZE * 11, 
-                TILE_SIZE * DUCK_SIZE_X, 
-                TILE_SIZE * DUCK_SIZE_Y 
-            };
-            SDL_RenderCopyEx(renderer, texture_handler.getTexture("laser-rifle"), NULL, &gun_rect, 0, NULL, SDL_FLIP_NONE);
-        } else if (spawn_place.item_id == MAGNUM_ID) {
-            SDL_Rect gun_rect = { 
-                spawn_place.x, 
-                spawn_place.y - TILE_SIZE * 11, 
-                TILE_SIZE * DUCK_SIZE_X, 
-                TILE_SIZE * DUCK_SIZE_Y 
-            };
-            SDL_RenderCopyEx(renderer, texture_handler.getTexture("magnum"), NULL, &gun_rect, 0, NULL, SDL_FLIP_NONE);
-        } else if (spawn_place.item_id == PEW_PEW_LASER_ID) {
-            SDL_Rect gun_rect = { 
-                spawn_place.x, 
-                spawn_place.y - TILE_SIZE * 11, 
-                TILE_SIZE * DUCK_SIZE_X, 
-                TILE_SIZE * DUCK_SIZE_Y 
-            };
-            SDL_RenderCopyEx(renderer, texture_handler.getTexture("pew-pew-laser"), NULL, &gun_rect, 0, NULL, SDL_FLIP_NONE);
-        } else if (spawn_place.item_id == SHOTGUN_ID) {
-            SDL_Rect gun_rect = { 
-                spawn_place.x, 
-                spawn_place.y - TILE_SIZE * 11, 
-                TILE_SIZE * DUCK_SIZE_X, 
-                TILE_SIZE * DUCK_SIZE_Y 
-            };
-            SDL_RenderCopyEx(renderer, texture_handler.getTexture("shotgun"), NULL, &gun_rect, 0, NULL, SDL_FLIP_NONE);
-        } else if (spawn_place.item_id == AK_47_ID) {
-            SDL_Rect gun_rect = { 
-                spawn_place.x, 
-                spawn_place.y - TILE_SIZE * 11, 
-                TILE_SIZE * DUCK_SIZE_X, 
-                TILE_SIZE * DUCK_SIZE_Y 
-            };
-            SDL_RenderCopyEx(renderer, texture_handler.getTexture("AK-47"), NULL, &gun_rect, 0, NULL, SDL_FLIP_NONE);
-        } else if (spawn_place.item_id == SNIPER_ID) {
-            SDL_Rect helmet_rect = {
-                spawn_place.x,
-                spawn_place.y - TILE_SIZE * 9,
-                (TILE_SIZE * DUCK_SIZE_X / 2) + TILE_SIZE,
-                (TILE_SIZE * DUCK_SIZE_Y / 2) + TILE_SIZE
-            };
-            SDL_RenderCopyEx(renderer, texture_handler.getTexture("sniper"), NULL, &helmet_rect, 0, NULL, SDL_FLIP_NONE);
-        } else if (spawn_place.item_id == DUEL_PISTOL_ID) {
-            SDL_Rect helmet_rect = {
-                spawn_place.x,
-                spawn_place.y - TILE_SIZE * 9,
-                (TILE_SIZE * DUCK_SIZE_X / 2) + TILE_SIZE,
-                (TILE_SIZE * DUCK_SIZE_Y / 2) + TILE_SIZE
-            };
-            SDL_RenderCopyEx(renderer, texture_handler.getTexture("duel-pistol"), NULL, &helmet_rect, 0, NULL, SDL_FLIP_NONE);
-        } else if (spawn_place.item_id == HELMET_ID) {
-            SDL_Rect helmet_rect = {
-                spawn_place.x,
-                spawn_place.y - TILE_SIZE * 9,
-                (TILE_SIZE * DUCK_SIZE_X / 2) + TILE_SIZE,
-                (TILE_SIZE * DUCK_SIZE_Y / 2) + TILE_SIZE
-            };
-            SDL_RenderCopyEx(renderer, texture_handler.getTexture("helmet"), NULL, &helmet_rect, 0, NULL, SDL_FLIP_NONE);
-        } else if (spawn_place.item_id == ARMOR_ID) {
-            SDL_Rect armor_rect = {
-                spawn_place.x - TILE_SIZE,
-                spawn_place.y - TILE_SIZE * 8,
-                (TILE_SIZE * DUCK_SIZE_X / 2) + TILE_SIZE,
-                (TILE_SIZE * DUCK_SIZE_Y / 2)
-            };
-            SDL_RenderCopyEx(renderer, texture_handler.getTexture("armor"), NULL, &armor_rect, 0, NULL, SDL_FLIP_NONE);
-        }
+        renderItem(spawn_place.item_id, spawn_place.x, spawn_place.y);
     }
 }
+
 
 
 void RendererManager::doRenderDynamic(GameState* game, Message& message) {
@@ -298,6 +271,7 @@ void RendererManager::doRenderDynamic(GameState* game, Message& message) {
 
     renderDucks(game);
     renderItems(game);
+    renderBoxes(game);
 
     if (message.type == BULLET_POS_UPDATE){
         renderBullet(game);

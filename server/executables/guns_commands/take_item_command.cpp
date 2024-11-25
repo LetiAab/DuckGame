@@ -8,28 +8,40 @@ void TakeItemCommand::execute(Game& game) {
 
     std::cout << "Jugador " << player_id << " quiere agarrar item\n";
 
-    //Refactor! No creo que haga falta buscar el spawn place y el item
+    //Refactor! Estamos buscando demasiadas cosas cuando queremos hacer un pickup
     char char_id = static_cast<char>(player_id + '0');
     Duck* duck = game.getDuckById(char_id);
     std::shared_ptr<Item> item = game.getItemByPosition(duck->getPosition());
     SpawnPlace* spawn = game.getSpawnPlaceByPosition(duck->getPosition());
+    Box* box = game.getBoxByPosition(duck->getPosition());
+
 
     //No se bien donde mandar el mensaje de PATO_ID agarro ITEM_ID (lo puse aca)
     //si agarre algo aviso!
     if(duck->pickUpItem(item)){
 
         //le aviso al spawn place que ahora tiene el item con id 0 (ninguno)
-        Message msg1;
-        spawn->setItemId(0);
-        spawn->getSpawnPlaceItemUpdateMessage(msg1);
-        game.game_broadcast(msg1);
+        if(spawn != nullptr){
+            //pongo la condicion porque puede haber item y no haber spawn
+            Message msg1;
+            spawn->setItemId(0);
+            spawn->getSpawnPlaceItemUpdateMessage(msg1);
+            game.game_broadcast(msg1);
+        }
+
+        if(box != nullptr){
+            Message msg2;
+            box->setItemId(0);
+            box->getBoxMessage(msg2);
+            game.game_broadcast(msg2);
+        }
 
         //le aviso al jugador que agarro un item y ahora lo tiene que tener en la mano
-        Message msg2; 
-        msg2.type = DUCK_PICKUP_ITEM;
-        msg2.player_id = player_id;
-        msg2.item_id = item->getItemId();
-        game.game_broadcast(msg2);
+        Message msg3; 
+        msg3.type = DUCK_PICKUP_ITEM;
+        msg3.player_id = player_id;
+        msg3.item_id = item->getItemId();
+        game.game_broadcast(msg3);
     
     }
 

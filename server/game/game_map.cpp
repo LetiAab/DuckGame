@@ -14,6 +14,8 @@ const char ITEM = 'I';
 
 const char VOID = 'V'; //VACIO
 
+const char BOX = 'B';
+
 
 const char BULLET = '*';
 
@@ -73,6 +75,15 @@ Position GameMap::try_move_bullet_to(Position old_position, Position new_positio
                     // Caso 1: choque con una plataforma
                     hit_something = true;
                     return Position(final_x, final_y);  // devuelvo la posición actual
+                }
+                else if (map[y][x] == BOX) {
+                   std::cout << "bala choca con una caja \n";
+
+                   hit_something = true;
+                   // avanzo una posición más para que la bala quede "dentro" del pato
+                   final_x = next_x;
+                   final_y = next_y;
+                   return Position(final_x, final_y);
                 }
                 else if (bullet_hit_other_duck(map[y][x], duck_id)) {
                     // Caso 2: choque con otro pato
@@ -159,6 +170,15 @@ Position GameMap::try_move_bouncing_laser_to(Position old_position, Position new
                         hit_x = false;
                     }
                     return Position(final_x, final_y);  // devuelvo la posición actual
+                }
+                else if (map[y][x] == BOX) {
+                    std::cout << "el laser choca con una caja \n";
+
+                   hit_something = true;
+                   // avanzo una posición más para que la bala quede "dentro" del pato
+                   final_x = next_x;
+                   final_y = next_y;
+                   return Position(final_x, final_y);
                 }
                 else if (bullet_hit_other_duck(map[y][x], duck_id)) {
                     std::cout << "Choco con un pato (no el owner) \n";
@@ -262,7 +282,6 @@ bool GameMap::duckIsOverBullet(Position position) {
     for (int i = position.x; i < position.x + DUCK_SIZE_X; ++i) {
         for (int j = position.y; j < position.y + DUCK_SIZE_Y; ++j) {
             if (map[j][i] == BULLET) {
-                std::cout << "ME DIERON!" << "\n";
                 return true;
             }
         }
@@ -286,6 +305,16 @@ bool GameMap::canMoveDuckTo(int x, int y, char duck_id) {
             }
         }
     }
+
+    //Verifica que no colisione con una BOX
+    for (int i = x; i < x + DUCK_SIZE_X; ++i) {
+        for (int j = y; j < y + DUCK_SIZE_Y; ++j) {
+            if (map[j][i] == BOX) {
+                return false;
+            }
+        }
+    }
+
 
     // Verifica que el movimiento no colisione con el vacio, porque lo borraria
     for (int i = x; i < x + DUCK_SIZE_X; ++i) {
@@ -435,6 +464,14 @@ char GameMap::duck_in_position(int x, int y, int size_x, int size_y) {
         }
     }
     return 0;
+}
+
+void GameMap::clear_map() {
+    for (int y = 0; y < height; ++y) {
+        for (int x = 0; x < width; ++x) {
+            map[y][x] = EMPTY;
+        }
+    }
 }
 
 void GameMap::setEscenario() {
@@ -599,3 +636,50 @@ std::vector<std::vector<char>> GameMap::getMap(){
     return map;
 }
 
+
+
+void GameMap::placeBox(Position pos) {
+    for (int y = pos.y; y < pos.y + BOX_SIZE_Y; ++y) {
+        for (int x = pos.x; x < pos.x + BOX_SIZE_X; ++x) {
+            if (x >= 0 && x < width && y >= 0 && y < height) {
+                map[y][x] = BOX;
+            }
+        }
+    }
+}
+
+bool GameMap::isCollisionWithBox(Position pos, int size_x, int size_y) {
+    for (int y = pos.y; y < pos.y + size_y; ++y) {
+        for (int x = pos.x; x < pos.x + size_x; ++x) {
+            if (x >= 0 && x < width && y >= 0 && y < height && map[y][x] == BOX) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+
+bool GameMap::boxIsOverBullet(Position position) {
+
+    // Verifica si la caja fue golpeado por una bala
+    for (int i = position.x; i < position.x + BOX_SIZE_X; ++i) {
+        for (int j = position.y; j < position.y + BOX_SIZE_Y; ++j) {
+            if (map[j][i] == BULLET) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+void GameMap::removeBox(Position pos) {
+    for (int y = pos.y; y < pos.y + BOX_SIZE_Y; ++y) {
+        for (int x = pos.x; x < pos.x + BOX_SIZE_X; ++x) {
+            if (x >= 0 && x < width && y >= 0 && y < height) {
+                map[y][x] = EMPTY;
+            }
+        }
+    }
+}

@@ -19,6 +19,9 @@ private:
     void renderDucks(GameState* game);
     void renderItems(GameState* game);
 
+    void renderBoxes(GameState* game);
+
+    void renderItem(uint8_t item_id, int x, int y);    
 
 };
 

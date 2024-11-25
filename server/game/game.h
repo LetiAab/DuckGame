@@ -14,6 +14,8 @@
 #include "item.h"
 #include "../guns/weapon.h"
 #include "spawn_place.h"
+#include "box.h"
+#include "round_manager.h"
 
 
 #include <cstdlib>
@@ -38,9 +40,6 @@ typedef struct update
 //se me genera una dependencia circular entre game y executable
 class Executable;
 
-struct EndGame: public std::runtime_error {
-    EndGame(): std::runtime_error("END GAME!") {}
-};
 
 class Game: public Thread {
 
@@ -49,15 +48,39 @@ private:
         GameQueueMonitor& monitor;
         bool& is_over;
         bool is_running;
+        RoundManager round_manager;
         Queue<std::shared_ptr<Executable>> game_queue;
+        int players; //cantidad de jugadores
         std::vector<Update> updates;
         //std::vector<std::unique_ptr<Proyectil>> projectiles;
+
+
+        void send_updates();
+        void initialize_round();
+        void initialize_ducks();
+        Position get_random_position_for_duck(char duck_id);
+        void create_ducks(int size);
+        void create_items();
+        void create_spawn_places();
+        void refreshDuckPositions();
+        void simulate_round();
+        bool check_end_game();
+        bool check_end_of_round();
+        void notify_players_end_game();
+        void notify_players_end_round();
+        void send_spawn_place_message();
+        void send_map_message();
+        void send_initialize_ducks_message();
+        void send_boxes_initialize_message();
+
 
 public:
         GameMap map;
         std::vector<Duck> ducks;
         std::vector<std::shared_ptr<Item>> items;
         std::vector<std::unique_ptr<SpawnPlace>> spawn_places;
+        std::vector<std::unique_ptr<Box>> boxes;
+
 
 
 
@@ -65,13 +88,10 @@ explicit Game(uint16_t match_id, GameQueueMonitor& monitor, bool& is_over);
 
 Queue<std::shared_ptr<Executable>>& get_game_queue();
 
-void inicializate_map();
 
-void create_ducks(int size);
+void set_players(int number_of_players);
 
-void create_spawn_places();
-
-void refreshDuckPositions();
+//void inicializate_map();
 
 Duck* getDuckByPosition(Position position);
 
@@ -81,23 +101,24 @@ std::shared_ptr<Item> getItemByPosition(Position position);
 
 SpawnPlace* getSpawnPlaceByPosition(Position position);
 
+Box* getBoxByPosition(Position position);
+
 
 void game_broadcast(Message message);
 
-void simulate_round();
-
 //void add_projectile(std::unique_ptr<Proyectil> projectile);
-
-bool check_end_game();
 
 void run() override;
 
 void stop() override;
 
-void notify_players_end_game();
+
+void create_boxes();
 
 Game(const Game&) = delete;
 Game& operator=(const Game&) = delete;
+
+
 };
 
 #endif  // GAME_H
