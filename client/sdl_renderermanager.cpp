@@ -85,7 +85,9 @@ void RendererManager::renderDucks(GameState* game) {
 
         SDL_Texture* duck_texture = nullptr;
         SDL_Texture* wings_texture = nullptr;
-        if (duck.is_jumping && !duck.is_fluttering) {
+        if (duck.is_laying_down) {
+            duck_texture = texture_handler.getTexture("duck-laying-down");
+        } else if (duck.is_jumping && !duck.is_fluttering) {
             duck_texture = texture_handler.getTexture("duck-jumping");
             wings_texture = texture_handler.getTexture("duck-jumping-wings");
         } else if (duck.is_fluttering) {

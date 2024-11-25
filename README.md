@@ -37,10 +37,12 @@ Para levantar el cliente
 # Como jugar
 
 Para el modo un jugador:
-Usar las teclas WASD para el movimiento: Se salta con la tecla W y si se vuelve a tocar se aletea. (la tecla A es para tirarse al suelo pero no esta implementado aun)
-La tecla E para agarrar un arma
-La tecla F para disparar y equipar un casco/armadura que se haya agarrado antes
-La tecla Q para descartar un arma.
+Usar las teclas WASD para el movimiento
+- Se salta con la tecla W y si se vuelve a tocar se aletea.
+- La tecla S es para tirarse al suelo.
+- La tecla E para agarrar un arma.
+- La tecla F para disparar y equipar un casco/armadura que se haya agarrado antes.
+- La tecla Q para descartar un arma.
 
 
 # Status hasta la fecha

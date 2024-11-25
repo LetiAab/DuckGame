@@ -2,11 +2,9 @@
 #include <iostream>
 #include <typeinfo>
 
-
 const int HELMET_BROKE = 0;
 const int ARMOR_BROKE = 1;
 const int DEAD = 2;
-
 
 Duck::Duck(char id, int x, int y, GameMap* map) :
     id_player(id),
@@ -19,6 +17,8 @@ Duck::Duck(char id, int x, int y, GameMap* map) :
     looking(LOOKING_RIGHT),
     is_jumping(false),
     is_fluttering(false),
+    is_laying_down(false),
+    was_laying_down(false),
     is_slippy(false),
     life_points(1),
     stop_notificated(false),
@@ -33,8 +33,6 @@ bool Duck::is_in_air(){
 }
 
 bool Duck::pickUpItem(std::shared_ptr<Item> item) {
-
-    
     if (item != nullptr){
         std::cout << "Agarro el item de ID " << item->getItemId() << "\n";
         if (onHand == nullptr)
@@ -89,7 +87,7 @@ void Duck::check_gravity(){
 }
 
 int Duck::update_life(){
-//Esta funcion tiene que avisar que le sacaron el casco, le sacaron el armor, o que murio
+    //Esta funcion tiene que avisar que le sacaron el casco, le sacaron el armor, o que murio
 
     if(map->duckIsOverVoid(position.x, position.y)){
         is_dead = true;
@@ -127,15 +125,12 @@ int Duck::update_life(){
 }
 
 void Duck::update_position() {
-
     if(is_dead){return;}
 
     check_gravity();
     
     int delta_x = position.x + speed_x;
     int delta_y = position.y + speed_y;
-
-
 
     Position new_pos(delta_x, delta_y);
     old_position = position;
@@ -153,9 +148,8 @@ void Duck::update_position() {
     if(!is_in_air()){
         speed_y = 0;
     }
-    
-
 }
+
 void Duck::update_weapon(){
     if(is_dead){return;}
     
@@ -197,13 +191,20 @@ void Duck::form_position_message(Message& msg){
     msg.is_moving = is_moving;
     msg.is_jumping = is_jumping;
     msg.is_fluttering = is_fluttering;
+    msg.is_laying_down = is_laying_down;
 }
 
 bool Duck::get_duck_position_message(Message& msg){
     if(is_dead){return false;}
 
-//    std::cout << "Chequeo del mensaje, old position es x: " << old_position.x << " y: " << old_position.y << 
-//            "y position es x: " << position.x << " y: " << position.y << "\n";
+    if (is_laying_down != was_laying_down) {
+        form_position_message(msg);
+        was_laying_down = is_laying_down;
+        return true;
+    }
+
+    //    std::cout << "Chequeo del mensaje, old position es x: " << old_position.x << " y: " << old_position.y <<
+    //            "y position es x: " << position.x << " y: " << position.y << "\n";
             
     if (old_position.x == position.x && old_position.y == position.y){
         if(stop_notificated){
@@ -229,12 +230,9 @@ bool Duck::get_duck_initialize_message(Message& msg){
     return true;
 }
 
-
 char Duck::get_id() const {
     return id_player;
 }
-
-
 
 void Duck::setWeapon(std::shared_ptr<Weapon> new_weapon) {
     std::cout << "ASIGNO NUEVA ARMA" << "\n";
@@ -342,6 +340,8 @@ void Duck::reset_for_round(Position pos){
     looking = LOOKING_RIGHT;
     is_jumping = false;
     is_fluttering= false;
+    is_laying_down= false;
+    was_laying_down= false;
     is_slippy= false;
     life_points = 1;
     stop_notificated = false;

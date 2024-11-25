@@ -25,14 +25,10 @@
 #include "../guns/shotgun.h"
 #include "../guns/sniper.h"
 
-
-
 class GameMap;
 class Item;
 class Weapon;
 class Bullet;
-
-
 
 class Duck {
 private:
@@ -53,6 +49,8 @@ public:
     char looking;
     bool is_jumping;
     bool is_fluttering;
+    bool is_laying_down;
+    bool was_laying_down;
     bool is_slippy;
     int life_points;
     bool stop_notificated;

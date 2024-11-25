@@ -19,6 +19,7 @@ struct Message {
     bool is_moving;
     bool is_jumping;
     bool is_fluttering;
+    bool is_laying_down;
 
     int bullet_x;
     int bullet_y;
