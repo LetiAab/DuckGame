@@ -95,6 +95,7 @@ void ScreenManager::renderStaticLobby() {
     SDL_Rect start_button_rect = {start.x, start.y, start.w, start.h};
     SDL_RenderCopy(renderer, getTexture("start-button"), NULL, &start_button_rect);
 
+
     Button new_match = {NEW_MATCH_CODE, 80, t_size.y+80, BUTTON_W, BUTTON_H};
     buttons.push_back(new_match);
     SDL_Rect new_match_button_rect = {new_match.x, new_match.y, new_match.w, new_match.h};
@@ -104,6 +105,8 @@ void ScreenManager::renderStaticLobby() {
     buttons.push_back(join);
     SDL_Rect join_button_rect = {join.x, join.y, join.w, join.h};
     SDL_RenderCopy(renderer, getTexture("join-button"), NULL, &join_button_rect);
+
+
 
     SDL_SetRenderTarget(renderer, NULL);
     lobby_textures["static_scene"] = static_scene;
