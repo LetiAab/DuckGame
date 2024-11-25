@@ -115,7 +115,7 @@ void Game::set_players(int number_of_players){
 
 
 void Game::run() {
-        std::string filePath = "/home/hilia/Documentos/taller/tp-grupal/server/mapsConfigs/map1.txt";
+        std::string filePath = "../mapConfigs/map1.txt";
 
         Parser parserConfig(filePath);
         parserConfig.parserFile();
@@ -296,12 +296,19 @@ void Game::stop() {
 }
 
 void Game::initialize_round() {
-        //TODO: MAPA Y LOS OBJETOS ESTAN TODOS HARDCODEADO Y ES SIEMPRE IGUAL
-        //cuando cambia la ronda deberia aparecer un mapa nuevo al azar
-        map.clear_map();
-        map.setEscenario();
-        initialize_ducks(); //reseteo los patos para que revivan y pierdan sus armas
-        create_spawn_places();
+        std::string filePath = "";
+        if(round_manager.get_round() % 2 == 0){
+                filePath = "../mapConfigs/map2.txt";
+        } else {
+                filePath = "../mapConfigs/map1.txt";
+        }
+
+        Parser parserConfig(filePath);
+        parserConfig.parserFile();
+
+        map.set_escenario_for_round(parserConfig.getMap());
+        initialize_ducks(parserConfig.get_ducks_positions());
+        create_spawn_places(parserConfig.get_spawn_places());
 
 }
 
@@ -314,7 +321,7 @@ void Game::create_boxes(){
 
 }
 
-//TODO: Esto solo sirve para dos patos y siempre tiene en cuenta que es el mismo distribucion de obstaculos
+
 void Game::send_initialize_ducks_message(){
         //podria mandar todo en un solo mensaje pero primero necesito saber si anda
         Message ducks_message;
@@ -332,11 +339,14 @@ void Game::send_initialize_ducks_message(){
         }
 }
 
-void Game::initialize_ducks(){
-        for (Duck& duck : ducks) {
-                Position pos = get_random_position_for_duck(duck.get_id());
-                duck.reset_for_round(pos);
+
+void Game::initialize_ducks(std::vector<Position> ducks_positions){
+
+        for (std::size_t i = 0; i < ducks.size(); ++i) {
+                Position pos = ducks_positions[i];
+                ducks[i].reset_for_round(pos);
         }
+
 }
 
 //TODO: Esto solo sirve para la  distribucion de obstaculos hardcodeados
@@ -376,17 +386,6 @@ void Game::create_ducks(int size, std::vector<Position> ducks_positions) {
 
 
 
-void Game::create_ducks(int size) {
-        round_manager.initialize_manager(size);
-
-        for(uint16_t id= 1; id <= size; ++id) {
-                char char_id = static_cast<char>(id + '0');
-                Position pos = get_random_position_for_duck(char_id);
-
-                ducks.emplace_back(char_id, pos.x, pos.y, &map);
-        }
-}
-
 void Game::create_spawn_places(std::vector<Position> spawns_positions) {
     std::cout << "CREO LOS ITEMS" << "\n";
 
@@ -400,33 +399,6 @@ void Game::create_spawn_places(std::vector<Position> spawns_positions) {
 
         items.push_back(std::move(item));
     }
-}
-
-void Game::create_spawn_places() {
-    //CREO ITEMS PARA METER EN LOS SPAWN PLACES
-    std::cout << "CREO LOS ITEMS" << "\n";
-
-
-    std::unique_ptr<Item> item1 = std::make_unique<Shotgun>(30, 130);
-    std::unique_ptr<Item> item2 = std::make_unique<Armor>(100, 130);
-    std::unique_ptr<Item> item3 = std::make_unique<PewPewLaser>(30, 75);
-    std::unique_ptr<Item> item4 = std::make_unique<Helmet>(100, 75);
-
-    //seteo N spawn places (4)
-    std::cout << "CREO LOS SPAWN PLACES" << "\n";
-
-    spawn_places.emplace_back(std::make_unique<SpawnPlace>(Position(30, 130), 0, item1->getItemId()));  
-    spawn_places.emplace_back(std::make_unique<SpawnPlace>(Position(100, 130), 1, item2->getItemId()));  
-    spawn_places.emplace_back(std::make_unique<SpawnPlace>(Position(30, 75), 2, item3->getItemId()));  
-    spawn_places.emplace_back(std::make_unique<SpawnPlace>(Position(100, 75), 3, item4->getItemId()));
-
-
-    //guardo los items en el vector de items despues de acceder a su item id, porque sino ya no tengo la refe
-    items.push_back(std::move(item1));
-    items.push_back(std::move(item2));
-    items.push_back(std::move(item3));
-    items.push_back(std::move(item4));
-
 }
 
 void Game::send_boxes_initialize_message(){

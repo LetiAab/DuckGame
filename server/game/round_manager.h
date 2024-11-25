@@ -40,6 +40,8 @@ public:
 
     char get_duck_round_winner();
 
+    int get_round();
+
 
 };
 

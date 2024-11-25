@@ -57,14 +57,12 @@ private:
 
         void send_updates();
         void initialize_round();
-        void initialize_ducks();
+        void initialize_ducks(std::vector<Position> ducks_positions);
         Position get_random_position_for_duck(char duck_id);
 
-        void create_ducks(int size);
         void create_ducks(int size, std::vector<Position> ducks_positions);
         void create_items();
 
-        void create_spawn_places();
         void create_spawn_places(std::vector<Position> spawns_positions);
         void refreshDuckPositions();
         void simulate_round();
