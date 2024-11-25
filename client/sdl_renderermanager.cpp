@@ -256,6 +256,9 @@ void RendererManager::renderItems(GameState* game) {
     }
 }
 
+void RendererManager::renderStats(GameState* game){
+    
+}
 
 
 void RendererManager::doRenderDynamic(GameState* game, Message& message) {

@@ -18,6 +18,7 @@ private:
     void renderBullet(GameState* game,  int size = 20);
     void renderDucks(GameState* game);
     void renderItems(GameState* game);
+    void renderStats(GameState* game);
 
     void renderBoxes(GameState* game);
 

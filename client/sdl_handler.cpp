@@ -42,7 +42,9 @@ void SDLHandler::loadGame(GameState &game, Queue<Message> &message_queue) {
         {"duck-walking-wings", "duck-walking-wings", 1},
         {"duck-jumping", "duck-jumping", 1},
         {"duck-jumping-wings", "duck-jumping-wings", 1},
-        {"duck-fluttering", "duck-fluttering", 6}
+        {"duck-fluttering", "duck-fluttering", 6},
+        {"duck", "duck", 1},
+
     };
 
     // Cargo las texturas
