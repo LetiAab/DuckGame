@@ -17,6 +17,8 @@ struct Duck {
 
     //EL pato tiene los ids de las armas/armaduras que tiene. Si es 0 no tiene ninguna
     uint8_t weapon_equiped;
+    int current_ammo;
+
     uint8_t helmet_equiped;
     uint8_t armor_equiped;
 
@@ -26,6 +28,7 @@ struct Duck {
     int current_frame_index; // Índice del fotograma actual en el *sprite sheet*
     int frame_width;
     int frame_height;
+
 };
 
 struct Bullet {
@@ -77,6 +80,7 @@ struct GameState {
     ClientGameMap client_game_map;
     Queue<Command>* command_queue;
     std::vector<Projectile> projectiles;
+    bool music;
 
 
     // Constructor para inicializar client_game_map

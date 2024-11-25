@@ -377,10 +377,10 @@ void Game::create_spawn_places() {
     std::cout << "CREO LOS ITEMS" << "\n";
 
 
-    std::unique_ptr<Item> item1 = std::make_unique<Shotgun>(30, 130);
-    std::unique_ptr<Item> item2 = std::make_unique<Armor>(100, 130);
-    std::unique_ptr<Item> item3 = std::make_unique<PewPewLaser>(30, 75);
-    std::unique_ptr<Item> item4 = std::make_unique<Helmet>(100, 75);
+    std::unique_ptr<Item> item1 = std::make_unique<DuelPistol>(30, 130);
+    std::unique_ptr<Item> item2 = std::make_unique<PewPewLaser>(100, 130);
+    std::unique_ptr<Item> item3 = std::make_unique<Armor>(30, 75);
+    std::unique_ptr<Item> item4 = std::make_unique<Sniper>(100, 75);
 
     //seteo N spawn places (4)
     std::cout << "CREO LOS SPAWN PLACES" << "\n";

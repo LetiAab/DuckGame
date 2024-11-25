@@ -68,6 +68,8 @@ const uint8_t DUCK_EQUIP_ITEM = 0x37;
 
 const uint8_t DROP_WEAPON = 0X38;
 
+const uint8_t MUTE = 0X39;
+
 const uint8_t HELMET_BROKEN = 0X77;
 const uint8_t ARMOR_BROKEN = 0X78;
 

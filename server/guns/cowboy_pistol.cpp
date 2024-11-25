@@ -7,7 +7,9 @@
 CowboyPistol::CowboyPistol(int x, int y)
     : Weapon(COWBOY_PISTOL_ID, "Cowboy Pistol", 80, 0, 6, x, y) {}
 
-void CowboyPistol::disparar_cowboy_pistol(int position_x, int position_y, char looking, GameMap* map, char id_player) {
+
+//POR QUE SE LLAMA ASI LA FUNCION??????
+bool CowboyPistol::disparar_cowboy_pistol(int position_x, int position_y, char looking, GameMap* map, char id_player) {
     if (municiones > 0) {
         //la bala debe aparecer fuera del pato, o sino se mata a si mismo
         int bullet_position_x = (looking == LOOKING_RIGHT) ? position_x + DUCK_SIZE_X : position_x -1;
@@ -17,7 +19,7 @@ void CowboyPistol::disparar_cowboy_pistol(int position_x, int position_y, char l
         //si donde debe salir la bala hay una pared, no puedo disparar
         if(map->at(bullet_pos)== 'P') {
             std::cout << "No puedo disparar, hay una pared inmediatamente al lado" << std::endl;
-            return;
+            return false;
         }
 
         int direccion_x = (looking == LOOKING_RIGHT) ? 6 : -6;
@@ -31,8 +33,10 @@ void CowboyPistol::disparar_cowboy_pistol(int position_x, int position_y, char l
         
         municiones--;
         std::cout << "Disparo realizado. Quedan " << municiones << " municiones." << std::endl;
+        return true;
     } else {
         std::cout << "No hay municiones disponibles." << std::endl;
+        return false;
     }
 }
 

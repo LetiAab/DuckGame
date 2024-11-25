@@ -294,7 +294,10 @@ bool Duck::disparar() {
     if (weapon != nullptr) {
         std::cout << "Soy pato, disparo desde x: " << position.x << " y: " << position.y << "\n";
         bool habia_municiones = (weapon->getMuniciones() > 0);
-        weapon->disparar(position.x, position.y, looking, map, id_player);
+        if(!(weapon->disparar(position.x, position.y, looking, map, id_player))){
+            //si no pude disparar devuevlo false
+            return false;
+        }
 
 
         if (habia_municiones && (weapon->getItemId() == AK_47_ID || weapon->getItemId() == MAGNUM_ID)) {
@@ -313,6 +316,10 @@ bool Duck::disparar() {
             
             // Un problema de esto es que el retroceso no se notifica si el usuario no se mueve en la ronda
             // Esto porque no tengo el monitor a mano ni el game, solo el map, y no puedo notificarlo
+        }
+
+        if (habia_municiones){
+            return true;
         }
 
     }
