@@ -37,6 +37,10 @@ void SDLHandler::loadGame(GameState* game) {
         {"armor", "armor/armor", 1},
         {"bullet", "ammo/bullet", 1},
         {"laser", "ammo/laser_flare", 2},
+        {"grenade-pin", "grenades/grenade_with_pin", 1},
+        {"grenade", "grenades/grenade_empty", 1},
+        {"banana", "bananas/banana", 1},
+        {"banana-floor", "bananas/banana_floor", 1},
         {"duck-walking", "duck-walking", 6},
         {"duck-walking-wings", "duck-walking-wings", 1},
         {"duck-jumping", "duck-jumping", 1},
@@ -96,19 +100,26 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
             game.items.push_back(item);*/
         }
 
+/*
+         if(message.type == THROWABLE_ITEM){
+            ThrowedItem item;
+            item.current_x = message.item_x * TILE_SIZE;
+            item.current_y = message.item_y * TILE_SIZE;
+            item.type = message.item_id;
+            item.used = message.item_used;
+            game->throwed_items.push_back(item);
+            std::cout << "Llega un throwable item de pos x: " << item.current_x << " y: " << 
+            item.current_y << " y un id " << item.type << ", lo meto a la lista \n";
+        } 
+*/
+
         if(message.type == DUCK_PICKUP_ITEM){
             int pos_id = message.player_id - 1;
 
-            // Acá reemplazar con los ids de las otras armas cuando tengas los renders de las mismas
-            if((message.item_id == BASE_WEAPON_ID)|| (message.item_id == GRENADE_ID) || (message.item_id == BANANA_ID)){
-                //game->ducks[pos_id].weapon_equiped = message.item_id;
-                game->ducks[pos_id].weapon_equiped = BASE_WEAPON_ID;
-            }
-
             if((message.item_id == PEW_PEW_LASER_ID) || (message.item_id == LASER_RIFLE_ID) || (message.item_id == AK_47_ID) || 
             (message.item_id == COWBOY_PISTOL_ID) || (message.item_id == MAGNUM_ID) || (message.item_id == SHOTGUN_ID) ||
-            (message.item_id == DUEL_PISTOL_ID) || (message.item_id == SNIPER_ID)){
-                
+            (message.item_id == DUEL_PISTOL_ID) || (message.item_id == SNIPER_ID)|| (message.item_id == GRENADE_ID)
+             || (message.item_id == BANANA_ID) || (message.item_id == BASE_WEAPON_ID)){
                 std::cout << "agarre un ARMA A: " << static_cast<int>(message.item_id) << "\n";
                 game->ducks[pos_id].weapon_equiped = message.item_id;
             }            
@@ -130,17 +141,10 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
             int pos_id = message.player_id - 1;
             game->ducks[pos_id].item_on_hand = 0;
 
-
-            // si es un arma la equipo como arma
-            // Acá reemplazar con los ids de las otras armas cuando tengas los renders de las mismas
-            if((message.item_id == BASE_WEAPON_ID)|| (message.item_id == GRENADE_ID) || (message.item_id == BANANA_ID)){
-                //game->ducks[pos_id].weapon_equiped = message.item_id;
-                game->ducks[pos_id].weapon_equiped = BASE_WEAPON_ID;
-            }
-
             if((message.item_id == PEW_PEW_LASER_ID) || (message.item_id == LASER_RIFLE_ID) || (message.item_id == AK_47_ID) || 
             (message.item_id == COWBOY_PISTOL_ID) || (message.item_id == MAGNUM_ID) || (message.item_id == SHOTGUN_ID) ||
-            (message.item_id == DUEL_PISTOL_ID) || (message.item_id == SNIPER_ID)){
+            (message.item_id == DUEL_PISTOL_ID) || (message.item_id == SNIPER_ID)|| (message.item_id == GRENADE_ID)
+             || (message.item_id == BANANA_ID) || (message.item_id == BASE_WEAPON_ID)){
                 game->ducks[pos_id].weapon_equiped = message.item_id;
             }            
 

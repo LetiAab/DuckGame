@@ -51,6 +51,13 @@ Message ClientProtocol::receive_message(){
         skt.recvall(&message.item_id, sizeof(uint8_t), &was_closed);
         break;
     
+    case THROWABLE_ITEM:
+        skt.recvall(&message.item_id, sizeof(uint8_t), &was_closed);
+        skt.recvall(&message.item_x, sizeof(int), &was_closed);
+        skt.recvall(&message.item_y, sizeof(int), &was_closed);
+        skt.recvall(&message.item_used, sizeof(bool), &was_closed);
+        break;
+
     case DUCK_PICKUP_ITEM:
     case DUCK_EQUIP_ITEM:
         skt.recvall(&message.player_id, 2, &was_closed);

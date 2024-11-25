@@ -53,6 +53,15 @@ struct Projectile {
     int times_repeated;
 };
 
+struct ThrowedItem {
+    int current_x;
+    int current_y;
+    int old_x;
+    int old_y;
+    int type;
+    bool used;
+};
+
 struct Crate {
     int x, y;
 };
@@ -71,6 +80,7 @@ struct GameState {
     ClientGameMap client_game_map;
     Queue<Command>* command_queue;
     std::vector<Projectile> projectiles;
+    std::vector<ThrowedItem> throwed_items;
 
 
     // Constructor para inicializar client_game_map

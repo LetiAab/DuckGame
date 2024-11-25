@@ -101,7 +101,7 @@ void RendererManager::renderDucks(GameState* game) {
         SDL_SetTextureColorMod(duck_texture, 255, 255, 255); //reseteo el color
 
         if(duck.weapon_equiped != 0){
-            //por ahora siempre renderiza el mismo arma. Hay que valdiar contra los diferentes ids de armas que no existen aun;
+            // Para renderizar el arma en la mano del pato
             if (duck.weapon_equiped == COWBOY_PISTOL_ID) {
                 SDL_RenderCopyEx(renderer, texture_handler.getTexture("cowboy-pistol"), NULL, &gun_rect, 0, NULL, duck.flipType);
             } else if (duck.weapon_equiped == LASER_RIFLE_ID) {
@@ -118,6 +118,10 @@ void RendererManager::renderDucks(GameState* game) {
                 SDL_RenderCopyEx(renderer, texture_handler.getTexture("sniper"), NULL, &gun_rect, 0, NULL, duck.flipType);
             } else if (duck.weapon_equiped == DUEL_PISTOL_ID) {
                 SDL_RenderCopyEx(renderer, texture_handler.getTexture("duel-pistol"), NULL, &gun_rect, 0, NULL, duck.flipType);
+            } else if (duck.weapon_equiped == GRENADE_ID) {
+                SDL_RenderCopyEx(renderer, texture_handler.getTexture("grenade-pin"), NULL, &gun_rect, 0, NULL, duck.flipType);
+            } else if (duck.weapon_equiped == BANANA_ID) {
+                SDL_RenderCopyEx(renderer, texture_handler.getTexture("banana"), NULL, &gun_rect, 0, NULL, duck.flipType);
             } else {
                 SDL_RenderCopyEx(renderer, texture_handler.getTexture("gun"), NULL, &gun_rect, 0, NULL, duck.flipType);
             }
@@ -191,8 +195,8 @@ void RendererManager::renderItems(GameState* game) {
 
 
     for (auto& spawn_place : game->spawn_places) {
-        // Acá reemplazar con los ids de las otras armas cuando tengas los renders de las mismas
-        if ((spawn_place.item_id == BASE_WEAPON_ID)|| (spawn_place.item_id == GRENADE_ID) || (spawn_place.item_id == BANANA_ID)) {
+        // Para renderizar en el spawn_place
+        if (spawn_place.item_id == BASE_WEAPON_ID) {
             SDL_Rect gun_rect = { 
                 spawn_place.x, 
                 spawn_place.y - TILE_SIZE * 11, 
@@ -264,6 +268,22 @@ void RendererManager::renderItems(GameState* game) {
                 (TILE_SIZE * DUCK_SIZE_Y / 2) + TILE_SIZE
             };
             SDL_RenderCopyEx(renderer, texture_handler.getTexture("duel-pistol"), NULL, &helmet_rect, 0, NULL, SDL_FLIP_NONE);
+        } else if (spawn_place.item_id == GRENADE_ID) {
+            SDL_Rect helmet_rect = {
+                spawn_place.x,
+                spawn_place.y - TILE_SIZE * 9,
+                (TILE_SIZE * DUCK_SIZE_X / 2) + TILE_SIZE,
+                (TILE_SIZE * DUCK_SIZE_Y / 2) + TILE_SIZE
+            };
+            SDL_RenderCopyEx(renderer, texture_handler.getTexture("grenade-pin"), NULL, &helmet_rect, 0, NULL, SDL_FLIP_NONE);
+        } else if (spawn_place.item_id == BANANA_ID) {
+            SDL_Rect helmet_rect = {
+                spawn_place.x,
+                spawn_place.y - TILE_SIZE * 9,
+                (TILE_SIZE * DUCK_SIZE_X / 2) + TILE_SIZE,
+                (TILE_SIZE * DUCK_SIZE_Y / 2) + TILE_SIZE
+            };
+            SDL_RenderCopyEx(renderer, texture_handler.getTexture("banana"), NULL, &helmet_rect, 0, NULL, SDL_FLIP_NONE);
         } else if (spawn_place.item_id == HELMET_ID) {
             SDL_Rect helmet_rect = {
                 spawn_place.x,
@@ -285,12 +305,51 @@ void RendererManager::renderItems(GameState* game) {
 }
 
 
+/* 
+void RendererManager::renderThrowed(GameState* game) {
+    // Saco las balas y laseres que repitieron posición en el mapa
+    for (auto it = game->throwed_items.begin(); it != game->throwed_items.end();) {
+        if ((it->used == true && it->current_x == it->old_x && it->current_y == it->old_y) || (it->used = false)) {
+            it = game->throwed_items.erase(it);
+        } else {
+            ++it; // Solo avanzas si no eliminaste
+        }
+    }
+
+    for (auto& throwed_item : game->throwed_items) {
+        //if (throwed_item.used)
+        //    continue;
+        // Para renderizar en el spawn_place
+        if (throwed_item.type == GRENADE_ID) {
+            SDL_Rect helmet_rect = {
+                throwed_item.current_x,
+                throwed_item.current_y - TILE_SIZE * 9,
+                (TILE_SIZE * DUCK_SIZE_X / 2) + TILE_SIZE,
+                (TILE_SIZE * DUCK_SIZE_Y / 2) + TILE_SIZE
+            };
+            SDL_RenderCopyEx(renderer, texture_handler.getTexture("grenade"), NULL, &helmet_rect, 0, NULL, SDL_FLIP_NONE);
+        }
+        if (throwed_item.type == BANANA_ID) {
+            SDL_Rect helmet_rect = {
+                throwed_item.current_x,
+                throwed_item.current_y - TILE_SIZE * 9,
+                (TILE_SIZE * DUCK_SIZE_X / 2) + TILE_SIZE,
+                (TILE_SIZE * DUCK_SIZE_Y / 2) + TILE_SIZE
+            };
+            SDL_RenderCopyEx(renderer, texture_handler.getTexture("banana-floor"), NULL, &helmet_rect, 0, NULL, SDL_FLIP_NONE);
+        }
+    }
+}
+ */
+
 void RendererManager::doRenderDynamic(GameState* game, Message& message) {
     SDL_RenderCopy(renderer, texture_handler.getTexture("static_scene"), NULL, NULL);
 
 
     renderDucks(game);
     renderItems(game);
+
+//    renderThrowed(game);
 
     if (message.type == BULLET_POS_UPDATE){
         renderBullet(game);
