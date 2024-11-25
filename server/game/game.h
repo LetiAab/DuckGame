@@ -16,7 +16,7 @@
 #include "spawn_place.h"
 #include "box.h"
 #include "round_manager.h"
-#include "../parser.h"
+#include "../level_manager.h"
 
 #include <cstdlib>
 #include <ctime>
@@ -51,6 +51,7 @@ private:
         RoundManager round_manager;
         Queue<std::shared_ptr<Executable>> game_queue;
         int players; //cantidad de jugadores
+        LevelManager level_manager;
         std::vector<Update> updates;
         //std::vector<std::unique_ptr<Proyectil>> projectiles;
 

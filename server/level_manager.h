@@ -5,8 +5,8 @@
 #include "common/position.h"
 #include <fstream> 
 
-#ifndef PARSER_H
-#define PARSER_H
+#ifndef LEVEL_MANAGER_H
+#define LEVEL_MANAGER_H
 
     struct ItemConfig{
         int x;
@@ -20,17 +20,18 @@
         std::vector<std::vector<char>> map;
     };
 
-class Parser {
+class LevelManager {
 public:
-    Parser(const std::string& filePath);
+    LevelManager();
 
     MapConfig getMap();
     std::vector<Position> get_ducks_positions();
     std::vector<Position> get_spawn_places();
     std::vector<ItemConfig> get_items();
 
-    bool parserFile();
-    ~Parser();
+    void choose_level();
+
+    ~LevelManager();
 
 private:
 
@@ -41,10 +42,14 @@ private:
 
     std::string filePath;
     std::ifstream fileStream;
+    std::vector<std::string> level_paths;
+    int counter;
 
     void openFile();
     void closeFile();
     std::string readLine();
+    void clear_old_level();
+    bool parserFile();
 
 };
 

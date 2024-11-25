@@ -115,14 +115,12 @@ void Game::set_players(int number_of_players){
 
 
 void Game::run() {
-        std::string filePath = "../editor/levels/map1.txt";
 
-        Parser parserConfig(filePath);
-        parserConfig.parserFile();
+        level_manager.choose_level();
 
-        map.set_escenario_for_round(parserConfig.getMap());
-        create_ducks(players, parserConfig.get_ducks_positions());
-        create_spawn_places(parserConfig.get_spawn_places());
+        map.set_escenario_for_round(level_manager.getMap());
+        create_ducks(players, level_manager.get_ducks_positions());
+        create_spawn_places(level_manager.get_spawn_places());
 
         //creo el mapa, los patos y los spawn places
         //map.setEscenario();
@@ -296,19 +294,11 @@ void Game::stop() {
 }
 
 void Game::initialize_round() {
-        std::string filePath = "";
-        if(round_manager.get_round() % 2 == 0){
-                filePath = "../editor/levels/map2.txt";
-        } else {
-                filePath = "../editor/levels/map1.txt";
-        }
+        level_manager.choose_level();
 
-        Parser parserConfig(filePath);
-        parserConfig.parserFile();
-
-        map.set_escenario_for_round(parserConfig.getMap());
-        initialize_ducks(parserConfig.get_ducks_positions());
-        create_spawn_places(parserConfig.get_spawn_places());
+        map.set_escenario_for_round(level_manager.getMap());
+        initialize_ducks(level_manager.get_ducks_positions());
+        create_spawn_places(level_manager.get_spawn_places());
 
 }
 
@@ -396,13 +386,12 @@ void Game::create_spawn_places(std::vector<Position> spawns_positions) {
         
         spawn_places.emplace_back(std::make_unique<SpawnPlace>(Position(pos.x, pos.y), i, item->getItemId()));
 
-
         items.push_back(std::move(item));
     }
 }
 
 void Game::send_boxes_initialize_message(){
-    for (int i = 0; i < N_BOXES; i++){
+    for (size_t i = 0; i < boxes.size(); ++i){
         Message box_position_message;
         boxes[i]->getBoxPositionMessage(box_position_message);
         monitor.broadcast(box_position_message);
@@ -411,7 +400,7 @@ void Game::send_boxes_initialize_message(){
 
 
 void Game::send_spawn_place_message(){
-        for (int i = 0; i < N_SPAWN_PLACES; i++){
+        for (size_t i = 0; i < spawn_places.size(); ++i){
                 Message spawn_place_position_message;
                 spawn_places[i]->getSpawnPlacePositionMessage(spawn_place_position_message);
                 monitor.broadcast(spawn_place_position_message);

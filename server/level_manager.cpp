@@ -1,4 +1,4 @@
-#include "parser.h"
+#include "level_manager.h"
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
@@ -9,31 +9,54 @@ const char PLATFORM = 'P';
 const char BOX = 'B';
 const char EMPTY = ' ';
 
-Parser::Parser(const std::string& filePath)
-    : filePath(filePath) {
-    if (!parserFile()) {
-        throw std::runtime_error("Error al parsear el archivo: " + filePath);
-    }
+LevelManager::LevelManager() : filePath("../editor/levels/map1.txt"), counter(0) {
+    //cargo los niveles
+    //si los archivos no son modificables, deberia poder leer los que estan disponibles
+    level_paths.emplace_back("../editor/levels/map1.txt");
+    level_paths.emplace_back("../editor/levels/map2.txt");
 }
 
-Parser::~Parser() {
+LevelManager::~LevelManager() {
     closeFile();
 }
 
-void Parser::openFile() {
+void LevelManager::choose_level(){
+    clear_old_level();
+
+    //los voy intercalando, pero podria ser random
+    if(counter % 2 == 0){
+        filePath = level_paths[1];
+    }else {
+        filePath = level_paths[0];
+    }
+
+    parserFile();
+    counter++;
+
+}
+
+void LevelManager::clear_old_level(){
+    map.map.clear();
+    ducks_positions.clear();
+    spawn_places_positions.clear();
+    items_positions.clear();
+
+}
+
+void LevelManager::openFile() {
     fileStream.open(filePath);
     if (!fileStream.is_open()) {
         throw std::runtime_error("No se pudo abrir el archivo: " + filePath);
     }
 }
 
-void Parser::closeFile() {
+void LevelManager::closeFile() {
     if (fileStream.is_open()) {
         fileStream.close();
     }
 }
 
-std::string Parser::readLine() {
+std::string LevelManager::readLine() {
     std::string line;
     if (std::getline(fileStream, line)) {
         return line;
@@ -41,7 +64,7 @@ std::string Parser::readLine() {
     throw std::runtime_error("Error al leer línea del archivo: " + filePath);
 }
 
-bool Parser::parserFile() {
+bool LevelManager::parserFile() {
     openFile();
 
     try {
@@ -125,19 +148,19 @@ bool Parser::parserFile() {
 }
 
 
-MapConfig Parser::getMap() {
+MapConfig LevelManager::getMap() {
     return map;
 }
 
-std::vector<Position> Parser::get_ducks_positions() {
+std::vector<Position> LevelManager::get_ducks_positions() {
     return ducks_positions;
 }
 
-std::vector<Position> Parser::get_spawn_places() {
+std::vector<Position> LevelManager::get_spawn_places() {
     return spawn_places_positions;
 }
 
-std::vector<ItemConfig> Parser::get_items() {
+std::vector<ItemConfig> LevelManager::get_items() {
     return items_positions;
 }
 

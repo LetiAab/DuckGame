@@ -5,7 +5,7 @@
 #include <vector>
 #include "common/position.h"
 #include "common/constants.h"
-#include "../parser.h"
+#include "../level_manager.h"
 
 
 class GameMap {
