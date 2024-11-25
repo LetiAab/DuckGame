@@ -308,6 +308,13 @@ void LevelEditor::handleEvent(SDL_Event& event, bool& running) {
             running = false;
             break;
 
+        case SDL_KEYDOWN:
+            if (event.key.keysym.sym == SDLK_s) {
+                saveLevel(); 
+            }
+            break;
+
+
         case SDL_MOUSEBUTTONDOWN:
             if (event.button.button == SDL_BUTTON_LEFT) {
                 int mouseX = event.button.x;
@@ -469,9 +476,22 @@ void LevelEditor::handleEvent(SDL_Event& event, bool& running) {
 
                 if (currentTool == CREATE_BOX && mouseX < WINDOW_WIDTH) {
 
+                    if (occupancyGrid[gridX][gridY] == true ||
+                        occupancyGrid[gridX + 1][gridY] == true ||
+                        occupancyGrid[gridX][gridY + 1] == true ||
+                        occupancyGrid[gridX + 1][gridY + 1] == true
+                    ){
+                        std::cout << "ESTA OCUPADO !!" << std::endl;
+                        break;
+                    }
+
                     Box newBox = { roundedX, roundedY, selectedTexture };
                     boxes[generateKey(roundedX, roundedY)] = newBox;
                     occupancyGrid[gridX][gridY] = true;
+                    occupancyGrid[gridX + 1][gridY] = true;
+                    occupancyGrid[gridX][gridY + 1] = true;
+                    occupancyGrid[gridX + 1][gridY + 1] = true;
+
                 }
 
                 if (currentTool == CREATE_DUCK && mouseX < WINDOW_WIDTH) {
@@ -745,28 +765,55 @@ void LevelEditor::handleEvent(SDL_Event& event, bool& running) {
                 int roundedX = (mouseX / (GRID_CELL_SIZE)) * (GRID_CELL_SIZE); 
                 int roundedY = (mouseY / (GRID_CELL_SIZE)) * (GRID_CELL_SIZE);
 
+                int gridX = roundedX / GRID_CELL_SIZE;
+                int gridY = roundedY / GRID_CELL_SIZE;
+
+
                  std::string key = generateKey(roundedX, roundedY);
 
-                deleteElement(key);
+                deleteElement(key, gridX, gridY);
 
             }
             break;
     }
 }
 
-void LevelEditor::deleteElement(std::string key){
+void LevelEditor::deleteElement(std::string key, int gridX, int gridY){
 
     if (crates.find(key) != crates.end()) {
         crates.erase(key);
+        occupancyGrid[gridX][gridY] = false;        
     } 
     if (spawn_places.find(key) != spawn_places.end()) {
         spawn_places.erase(key);
+        occupancyGrid[gridX][gridY] = false;        
     } 
     if (boxes.find(key) != boxes.end()) {
         boxes.erase(key);
+        occupancyGrid[gridX][gridY] = false;
+        occupancyGrid[gridX + 1][gridY] = false;
+        occupancyGrid[gridX][gridY + 1] = false;
+        occupancyGrid[gridX + 1][gridY + 1] = false;
     } 
     if (ducks.find(key) != ducks.end()) {
         ducks.erase(key);
+        occupancyGrid[gridX][gridY] = false ;
+        occupancyGrid[gridX + 1][gridY] = false;
+        occupancyGrid[gridX][gridY + 1] = false ;
+        occupancyGrid[gridX + 1][gridY + 1] = false;
+        occupancyGrid[gridX][gridY + 2] = false;
+        occupancyGrid[gridX + 1][gridY + 2] = false;
+    } 
+
+    if (items.find(key) != items.end()) {
+        items.erase(key);
+        if (boxes.find(key) != boxes.end()) {
+        boxes.erase(key);
+        occupancyGrid[gridX][gridY] = false;
+        occupancyGrid[gridX + 1][gridY] = false;
+        occupancyGrid[gridX][gridY + 1] = false;
+        occupancyGrid[gridX + 1][gridY + 1] = false;
+        } 
     } 
 
 }
@@ -803,6 +850,52 @@ void LevelEditor::run() {
         SDL_RenderPresent(renderer);
     }
 }
+
+
+void LevelEditor::saveLevel() {
+    std::ofstream levelFile("../editor/levels/level.txt");
+    if (!levelFile.is_open()) {
+        std::cerr << "Error: no se pudo abrir el archivo para guardar el nivel." << std::endl;
+        return;
+    }
+
+    levelFile << "CRATES\n";
+    for (const auto& [key, crate] : crates) {
+        levelFile << crate.x << "," << crate.y << "\n";
+    }
+    levelFile << "\n";
+
+    levelFile << "SPAWNPLACE\n";
+    for (const auto& [key, spawnPlace] : spawn_places) {
+        levelFile << spawnPlace.x << "," << spawnPlace.y << "\n";
+    }
+    levelFile << "\n";
+
+    levelFile << "BOX\n";
+    for (const auto& [key, box] : boxes) {
+        levelFile << box.x << "," << box.y << "\n";
+    }
+    levelFile << "\n";
+
+    levelFile << "ITEM\n";
+    for (const auto& [key, item] : items) {
+        levelFile << std::dec // Fuerza formato decimal para x e y
+                    << item.x << "," << item.y << ",0x"
+                    << std::hex << std::uppercase // Fuerza formato hexadecimal para item_id
+                    << static_cast<int>(item.item_id) << "\n";
+    }
+    levelFile << "\n";
+
+    levelFile << "SPAWN DUCK\n";
+    for (const auto& [key, duck] : ducks) {
+        levelFile << duck.x << "," << duck.y << "\n";
+    }
+    levelFile << "\n";
+
+    levelFile.close();
+    std::cout << "Nivel guardado exitosamente en level.txt" << std::endl;
+}
+
 
 
 void LevelEditor::cleanup() {

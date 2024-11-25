@@ -10,6 +10,10 @@
 #include "common/constants.h"
 #include <unordered_map>
 #include <string>
+#include <SDL_ttf.h>
+
+#include <fstream>
+#include <iostream>
 
 struct Crate {
     int x, y;
@@ -50,7 +54,9 @@ public:
     void drawDottedGrid();
     void renderToolArea();
     void renderElements();
-    void deleteElement(std::string key);
+    void deleteElement(std::string key, int gridX, int gridY);
+    void saveLevel();
+
 
 
 private:
@@ -58,6 +64,7 @@ private:
     SDL_Window* window;
     SDL_Renderer* renderer;
     SDL_Texture* backgroundTexture;
+    TTF_Font* font;
 
     SDL_Texture* crateTexture;
     SDL_Texture* spawnPlaceTexture;
