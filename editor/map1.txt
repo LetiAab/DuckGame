@@ -1,0 +1,27 @@
+CRATES
+x,y
+x,y
+x,y
+
+SPAWNPLACE
+x,y
+x,y
+x,y
+x,y
+
+BOX
+x,y
+x,y
+
+ITEM
+x,y, id_del_item
+x,y, id_del_item
+x,y, id_del_item
+
+SPAWN DUCK
+x,y
+x,y
+x,y
+x,y
+x,y
+x,y
