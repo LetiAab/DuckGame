@@ -536,6 +536,12 @@ void GameMap::set_escenario_for_round(MapConfig mapConfig){
     height = mapConfig.map_height;
     width = mapConfig.map_width;
     map = mapConfig.map;
+
+    //hago que la ultima fila sea VACIO
+    for (int x = 0; x < width; ++x) {
+        map[height - 1][x] = VOID;
+    }
+
 }
 
 
