@@ -115,7 +115,7 @@ void Game::set_players(int number_of_players){
 
 
 void Game::run() {
-        std::string filePath = "../mapConfigs/map1.txt";
+        std::string filePath = "../editor/levels/map1.txt";
 
         Parser parserConfig(filePath);
         parserConfig.parserFile();
@@ -298,9 +298,9 @@ void Game::stop() {
 void Game::initialize_round() {
         std::string filePath = "";
         if(round_manager.get_round() % 2 == 0){
-                filePath = "../mapConfigs/map2.txt";
+                filePath = "../editor/levels/map2.txt";
         } else {
-                filePath = "../mapConfigs/map1.txt";
+                filePath = "../editor/levels/map1.txt";
         }
 
         Parser parserConfig(filePath);
