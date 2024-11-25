@@ -219,7 +219,6 @@ bool ServerProtocol::send_message(Message& message){
 
 
     case BULLET_POS_UPDATE:
-        std::cout << "MANDO LA BULLET" << "\n";
 
         if (!skt.sendall(&message.player_id, sizeof(message.player_id), &was_closed) || was_closed) {
             return false;

@@ -29,6 +29,7 @@ struct Duck {
     int current_frame_index; // Índice del fotograma actual en el *sprite sheet*
     int frame_width;
     int frame_height;
+    
 
 
 

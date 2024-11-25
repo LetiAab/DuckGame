@@ -99,6 +99,8 @@ void GameInitializer::initializeDucks(GameState &game, Queue<Message> &message_q
                         game.ducks[pos_id].weapon_equiped = 0;
                         game.ducks[pos_id].helmet_equiped = 0;
                         game.ducks[pos_id].item_on_hand = 0;
+                        game.ducks[pos_id].current_ammo = 0;
+
 
                         game.ducks[pos_id].current_frame_index = 0;
                         game.ducks[pos_id].animation_frame = 0;

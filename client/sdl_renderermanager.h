@@ -22,7 +22,7 @@ private:
 
     void renderBoxes(GameState* game);
 
-    void renderItem(uint8_t item_id, int x, int y);    
+    void renderItem(uint8_t item_id, int x, int y, int mult = 1);    
 
 };
 
