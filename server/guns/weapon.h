@@ -26,6 +26,8 @@ public:
     double getDispersion() const;
     int getMuniciones() const;
 
+    bool get_throwed_position_message(Message& throwed_message);
+
     virtual void disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) = 0;
     virtual ~Weapon() = default;  // Destructor virtual
 
@@ -34,6 +36,7 @@ protected:
     double alcance;
     int dispersion;
     int municiones;
+    bool used;
 };
 
 #endif  // WEAPON_H

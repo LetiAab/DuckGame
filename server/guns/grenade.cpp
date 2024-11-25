@@ -5,19 +5,20 @@
 
 // 6 balas, Alcance: medio (15 tiles (15 x TILE_SIZE = 60))
 Grenade::Grenade(int x, int y)
-    : Weapon(GRENADE_ID, "Grenade", 60, 0, 1, x, y), activated(false), ticks_counter(0), exploded(false) {}
+    : Weapon(GRENADE_ID, "Grenade", 60, 0, 1, x, y), activated(false), ticks_counter(0), exploded(false), speed(4, -4) {}
 
 void Grenade::disparar_grenade(int position_x, int position_y, char looking, GameMap* map, char id_player) {
+        used = false;
         if (!map) {
                 std::cout << "Position x: " << position_x << ", y: " << position_y
                  << ", looking: " << looking << ", id_player: " << static_cast<uint16_t>(id_player) << std::endl;
         }
-    if (!activated) {
-        activated = true;
-        std::cout << "Se activó la granada" << std::endl;
-    } else {
-        std::cout << "La granada ya está activada" << std::endl;
-    }
+        if (!activated) {
+                activated = true;
+                std::cout << "Se activó la granada" << std::endl;
+        } else {
+                std::cout << "La granada ya está activada" << std::endl;
+        }
 }
 
 void Grenade::mostrarInformacion() const {
@@ -46,6 +47,12 @@ int Grenade::getMuniciones() const {
 // Devuelve true cuando ya no le quedan proyectiles
 bool Grenade::update_weapon(int position_x, int position_y, char looking, GameMap* map, char id_player){
         ticks_counter++;
+
+        // Uso la de banana pq hace lo mismo
+        position = map->try_move_banana(position, speed);
+        if (speed.y < 3) {
+                speed.y++;
+        }
 
         if (exploded) {
                 for(auto it = projectiles.begin(); it != projectiles.end(); ) {
@@ -97,6 +104,7 @@ bool Grenade::update_weapon(int position_x, int position_y, char looking, GameMa
                         }
 
                         exploded = true;
+                        used = true;
                 } else {
                         std::cout << "Pasó un tick, quedan " << ticks_counter - 20 << std::endl;
                 }

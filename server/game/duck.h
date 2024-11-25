@@ -25,6 +25,7 @@
 #include "../guns/shotgun.h"
 #include "../guns/sniper.h"
 #include "../guns/grenade.h"
+#include "../guns/banana.h"
 
 
 

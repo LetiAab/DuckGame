@@ -241,6 +241,9 @@ void Duck::setWeapon(std::shared_ptr<Weapon> new_weapon) {
     std::cout << "ASIGNO NUEVA ARMA" << "\n";
 
     switch (new_weapon->getItemId()) {
+        case BANANA_ID:
+            weapon = std::make_shared<Banana>();
+            break;
         case GRENADE_ID:
             weapon = std::make_shared<Grenade>();
             break;
@@ -342,6 +345,7 @@ Weapon* Duck::dropWeapon() {
         Weapon* weapon_to_drop = weapon.get();
         weapon = nullptr;
 
+        // Le asigno la posicion del pato al arma como posicion inicial
         Position self_position = getPosition();
         weapon_to_drop->setPosition(self_position.x, self_position.y);
 

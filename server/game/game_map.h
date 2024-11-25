@@ -71,6 +71,11 @@ public:
 
     void tellMap() const;
 
+    Position try_move_banana(Position old_position, Position speed);
+
+    bool is_throwable_touching_floor(Position position, int size_x, int size_y);
+
+
 };
 
 #endif

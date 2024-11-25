@@ -13,7 +13,7 @@ void DropWeaponCommand::execute(Game& game) {
     Weapon* dropped_gun = duck->dropWeapon();
     if(dropped_gun){
 
-        if (dropped_gun->getItemId() == GRENADE_ID) {
+        if (dropped_gun->getItemId() == GRENADE_ID || dropped_gun->getItemId() == BANANA_ID) {
             game.add_throwed_weapon(dropped_gun);
         }
 

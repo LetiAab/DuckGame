@@ -192,6 +192,80 @@ Position GameMap::try_move_bouncing_laser_to(Position old_position, Position new
 
 }
 
+bool GameMap::is_throwable_touching_floor(Position position, int size_x, int size_y) {
+    // Verifica que el pato no tenga plataformas en el piso
+    int j = position.y + size_y;
+    for (int i = position.x; i < position.x + size_x; ++i) {
+        if (map[j][i] == PLATFORM) {
+            return true;
+        }
+    }
+    
+    return false;
+}
+
+// La idea es, muevo a la banana como parabola, y después si cae al piso ya no se mueve
+Position GameMap::try_move_banana(Position old_position, Position speed) {
+    // Si está tocando el piso ya no se mueve más
+    if (is_throwable_touching_floor(old_position, 1, 1)) {
+        return old_position;
+    }
+    int final_x = old_position.x;
+    int final_y = old_position.y;
+
+    //determino la direccion del movimiento
+    int dx = (speed.x > 0) ? 1 : ((speed.x < 0) ? -1 : 0);
+    int dy = (speed.y > 0) ? 1 : ((speed.y < 0) ? -1 : 0);
+
+    Position new_position(old_position.x + speed.x, old_position.y + speed.y);
+
+    //itero hasta llegar a la posición final, encontrar un obstaculo o pegarle a un pato
+    while (final_x != new_position.x || final_y != new_position.y) {
+        //std::cout << "dx es " << dx << " y dy es " << dy << std::endl;
+        
+        int next_x = final_x + dx;
+        int next_y = final_y + dy;
+
+        //verifico si la nueva posición está dentro de los límites del mapa
+        if (next_x < 0 || next_x + BULLET_SIZE_X > width || next_y < 0 || next_y + BULLET_SIZE_Y > height) {
+            break;
+        }
+
+        
+        for (int y = next_y; y < next_y + BULLET_SIZE_Y; ++y) {
+            for (int x = next_x; x < next_x + BULLET_SIZE_X; ++x) {
+
+                if (map[y][x] == PLATFORM) {
+                    // Caso 1: choque con una plataforma
+                    return Position(final_x, final_y);  // devuelvo la posición actual
+                }
+                else if (bullet_hit_other_duck(map[y][x], '0')) {
+                    // Caso 2: choque con otro pato
+                    // avanzo una posición más para que la bala quede "dentro" del pato
+                    final_x = next_x;
+                    final_y = next_y;
+                    return Position(final_x, final_y);
+                }
+            }
+        }
+
+        if (next_x == new_position.x){
+            dx = 0;
+        }
+
+        if (next_y == new_position.y){
+            dy = 0;
+        }
+
+        //si el área está libre, actualizo la posición final
+        final_x = next_x;
+        final_y = next_y;
+        
+    }
+
+    return Position(final_x, final_y);
+}
+
 Position GameMap::move_duck_to(Position old_position, Position new_position, char duck_id) {
     int final_x = old_position.x;
     int final_y = old_position.y;

@@ -2,7 +2,7 @@
 #include <iostream>
 
 Weapon::Weapon(uint16_t item_id, const std::string& nombre, double alcance, int dispersion, int municiones, int x, int y)
-    : Item(item_id,x, y), nombre(nombre), alcance(alcance), dispersion(dispersion), municiones(municiones) {}  // Inicializar posición
+    : Item(item_id,x, y), nombre(nombre), alcance(alcance), dispersion(dispersion), municiones(municiones), used(true) {}  // Inicializar posición
 
 
 void Weapon::mostrarInformacion() const {
@@ -26,6 +26,19 @@ double Weapon::getDispersion() const {
 
 int Weapon::getMuniciones() const {
     return municiones;
+}
+
+bool Weapon::get_throwed_position_message(Message& msg) {
+    //TODO: Esto se tendria que implementar en las hijas àra saner que item id mandar
+    std::cout << "LE PASO EL SPAWN CON x: " << position.x << " y: " << position.y << "\n";
+
+    msg.type = THROWABLE_ITEM;
+    msg.item_x = position.x;
+    msg.item_y = position.y;
+    msg.item_id = item_id;
+    msg.item_used = used;
+
+    return true;
 }
 
 void Weapon::update_weapon(){

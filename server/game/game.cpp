@@ -42,6 +42,9 @@ void Game::add_throwed_weapon(Weapon* throwed_weapon) {
         if (throwed_weapon->getItemId() == GRENADE_ID) {
                 auto shared_throwed_weapon = std::shared_ptr<Grenade>((Grenade*)throwed_weapon);
                 throwed_weapons.push_back(shared_throwed_weapon);
+        } else if (throwed_weapon->getItemId() == BANANA_ID) {
+                auto shared_throwed_weapon = std::shared_ptr<Banana>((Banana*)throwed_weapon);
+                throwed_weapons.push_back(shared_throwed_weapon);
         } else {
                 std::cout << "Este arma no debería ser agregada! \n";
         }
@@ -67,7 +70,13 @@ void Game::simulate_round() {
                         Position current_position = throwed_grenade->getPosition();
 
                         throwed_grenade->update_weapon(current_position.x, current_position.y, LOOKING_LEFT, &map, 0);
+                } else if (throwed_weapon->getItemId() == BANANA_ID) {
+                        Banana* throwed_banana = (Banana*)throwed_weapon;
+                        // Position current_position = throwed_banana->getPosition();
+
+                        throwed_banana->update_weapon(map);
                 }
+                
                 ++it;
         }
 
@@ -178,6 +187,14 @@ void Game::run() {
 
                 // actualizo la posición de las balas de la granada
                 for (auto& throwed_weapon: throwed_weapons) {
+                        
+                        Message throwed_message;
+                        
+                        if (throwed_weapon->get_throwed_position_message(throwed_message)){
+                                monitor.broadcast(throwed_message);
+                        } 
+
+
                         for (auto& unique_proyectile : throwed_weapon->projectiles) {
                                 Projectile* projectile = unique_proyectile.get();
                                 Message projectile_message;
@@ -270,7 +287,7 @@ void Game::create_spawn_places() {
 
     std::unique_ptr<Item> item1 = std::make_unique<Grenade>(30, 130);
     std::unique_ptr<Item> item2 = std::make_unique<Armor>(100, 130);
-    std::unique_ptr<Item> item3 = std::make_unique<PewPewLaser>(30, 75);
+    std::unique_ptr<Item> item3 = std::make_unique<Banana>(30, 75);
     std::unique_ptr<Item> item4 = std::make_unique<Helmet>(100, 75);
 
 

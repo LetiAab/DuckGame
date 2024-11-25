@@ -1,5 +1,5 @@
-#ifndef GRENADE_H
-#define GRENADE_H
+#ifndef BANANA_H
+#define BANANA_H
 
 #include <string>
 #include <vector>
@@ -10,25 +10,23 @@
 
 class GameMap; // Declaración anticipada de la clase GameMap
 
-class Grenade : public Weapon {  // Herencia de Item
+class Banana : public Weapon {  // Herencia de Item
 public:
-    bool activated;
-    int ticks_counter;
-    bool exploded;
+    bool peeled;
     Position speed;
 
     // Constructor que inicializa la posición
-    explicit Grenade(int x = 0, int y = 0);
+    explicit Banana(int x = 0, int y = 0);
 
     // Métodos
-    void disparar_grenade(int position_x, int position_y, char looking, GameMap* map, char id_player);
+    void disparar_banana(int position_x, int position_y, char looking, GameMap* map, char id_player);
 
     void disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) override {
-        disparar_grenade(position_x, position_y, looking, map, id_player);
+        disparar_banana(position_x, position_y, looking, map, id_player);
     }
 
     void mostrarInformacion() const;  
-    bool update_weapon(int position_x, int position_y, char looking, GameMap* map, char id_player);
+//    bool update_weapon(int position_x, int position_y, char looking, GameMap* map, char id_player);
 
     // Getters
     std::string getNombre() const;
@@ -36,7 +34,9 @@ public:
     double getDispersion() const;
     int getMuniciones() const;
 
-    virtual ~Grenade() = default;  // Destructor virtual
+    void update_weapon(GameMap& map);
+
+    virtual ~Banana() = default;  // Destructor virtual
 };
 
-#endif  // GRENADE_H
+#endif  // BANANA_H
