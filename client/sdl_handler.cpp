@@ -308,7 +308,7 @@ void SDLHandler::run(Queue<Command>& command_queue, uint16_t id, Queue<Message>&
     const std::string path = std::string(AUDIO_PATH) +"ambient-music.wav";
     audioManager->loadMusic(path);
     audioManager->playMusic(-1); //musica en bucle infinitamente
-    audioManager->setMusicVolume(60);
+    audioManager->setMusicVolume(30);
 
     //Renderizo lo estatico
     rendererManager->doRenderStatic(&game);
@@ -324,7 +324,7 @@ void SDLHandler::run(Queue<Command>& command_queue, uint16_t id, Queue<Message>&
             done = eventProcessor.processGameEvents(window, &game, id);
 
             if(game.music){
-                audioManager->setMusicVolume(60);
+                audioManager->setMusicVolume(30);
                 audioManager->setSoundEffectVolume(100);
             }
 
