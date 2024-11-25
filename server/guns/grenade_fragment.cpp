@@ -35,7 +35,7 @@ void GrenadeFragment::update_position() {
         position = map->try_move_projectile_to(position, delta, GRENADE_FRAGMENT_SIZE_X, GRENADE_FRAGMENT_SIZE_Y, duck_id, impacto);
         
         map->clean_projectile_old_position(old_position, GRENADE_FRAGMENT_SIZE_X, GRENADE_FRAGMENT_SIZE_Y);
-        map->set_projectile_new_position(position, GRENADE_FRAGMENT_SIZE_X, GRENADE_FRAGMENT_SIZE_Y);
+        map->set_projectile_new_position(position, GRENADE_FRAGMENT_SIZE_X, GRENADE_FRAGMENT_SIZE_Y, '*');
         
         alcance -= (std::abs(speed.x) + std::abs(speed.y));
     }

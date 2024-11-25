@@ -53,7 +53,7 @@ public:
 
     void clean_projectile_old_position(Position position, int size_x, int size_y);
 
-    void set_projectile_new_position(Position position,  int size_x, int size_y);
+    void set_projectile_new_position(Position position,  int size_x, int size_y, char letter);
 
     Position try_move_projectile_to(Position old_position, Position new_position, int size_x, int size_y, char duck_id, bool& hit_something);
 
@@ -66,12 +66,16 @@ public:
 
     bool duckIsOverBullet(Position position);
 
+    bool duckIsOverBanana(Position position);
+
     //METODO TEMPORAL: Imprime el mapa en la consola
     void printMap() const;
 
     void tellMap() const;
 
-    Position try_move_banana(Position old_position, Position speed);
+    Position try_move_banana(Position old_position, Position speed, bool& hit_duck);
+
+    Position try_move_grenade(Position old_position, Position speed);
 
     bool is_throwable_touching_floor(Position position, int size_x, int size_y);
 

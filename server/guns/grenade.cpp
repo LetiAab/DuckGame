@@ -48,11 +48,16 @@ int Grenade::getMuniciones() const {
 bool Grenade::update_weapon(int position_x, int position_y, char looking, GameMap* map, char id_player){
         ticks_counter++;
 
+        bool impacto = false;
         // Uso la de banana pq hace lo mismo
-        position = map->try_move_banana(position, speed);
+        Position old_position = position;
+        position = map->try_move_banana(position, speed, impacto);
         if (speed.y < 3) {
                 speed.y++;
         }
+        
+        map->clean_projectile_old_position(old_position, 1, 1);
+        map->set_projectile_new_position(position, 1, 1, '*');
 
         if (exploded) {
                 for(auto it = projectiles.begin(); it != projectiles.end(); ) {

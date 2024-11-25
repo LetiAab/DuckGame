@@ -75,6 +75,8 @@ public:
 
     bool is_in_air();
 
+    bool next_to_wall();
+
     bool get_duck_position_message(Message& msg);
 
     bool get_duck_dead_message(Message& msg);

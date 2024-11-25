@@ -5,7 +5,7 @@
 
 // 6 balas, Alcance: medio (15 tiles (15 x TILE_SIZE = 60))
 Banana::Banana(int x, int y)
-    : Weapon(BANANA_ID, "Banana", 60, 0, 1, x, y), peeled(false), speed(4, -4) {}
+    : Weapon(BANANA_ID, "Banana", 60, 0, 1, x, y), peeled(false), speed(4, -4), impacto(false) {}
 
 void Banana::disparar_banana(int position_x, int position_y, char looking, GameMap* map, char id_player) {
         if (!map) {
@@ -43,13 +43,22 @@ int Banana::getMuniciones() const {
     return municiones;
 }
 
+
+
 void Banana::update_weapon(GameMap& map){
+        if(impacto){
+            //si empacte con algo debo eliminar la bala luego de mandar el mensaje
+            map.clean_projectile_old_position(position, 1, 1);
+            // should_erase = true;
+        }
 
         // Mover a la banana en el mapa. Mi idea es, tiene una velocidad de -4 en y, y le voy sumando 1 cada vez que pasa una iteración
-
-        position = map.try_move_banana(position, speed);
+        Position old_position = position;
+        position = map.try_move_banana(position, speed, impacto);
         if (speed.y < 3) {
                 speed.y++;
         }
-
+        
+        map.clean_projectile_old_position(old_position, 1, 1);
+        map.set_projectile_new_position(position, 1, 1, 'B');
 }

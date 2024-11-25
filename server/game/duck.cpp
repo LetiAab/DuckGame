@@ -32,6 +32,10 @@ bool Duck::is_in_air(){
     return map->canMoveDuckTo(position.x, position.y + 1, id_player);
 }
 
+bool Duck::next_to_wall(){
+    return (!map->canMoveDuckTo(position.x + 1, position.y, id_player) || !map->canMoveDuckTo(position.x - 1, position.y, id_player));
+}
+
 bool Duck::pickUpItem(std::shared_ptr<Item> item) {
 
     
@@ -95,6 +99,10 @@ int Duck::update_life(){
         is_dead = true;
     }
 
+    if (map->duckIsOverBanana(position)) {
+        is_slippy = true;
+    }
+
     if(map->duckIsOverBullet(position)){
 
         if (helmet != nullptr){ //si tengo helmet me saca el helmet (TENGO QUE AVISAR)
@@ -132,16 +140,27 @@ void Duck::update_position() {
 
     check_gravity();
     
-    int delta_x = position.x + speed_x;
-    int delta_y = position.y + speed_y;
+    int delta_x = position.x;
+    int delta_y = position.y;
 
-
+    if (is_slippy) {
+        int slippery_vec = (LOOKING_RIGHT) ? 1 : -1;
+        delta_x += 4*slippery_vec;
+        delta_y += speed_y;
+    } else {
+        delta_x += speed_x;
+        delta_y += speed_y;
+    }
 
     Position new_pos(delta_x, delta_y);
     old_position = position;
     //mueve al pato a la nueva posicion si esta libre o a la que este libre inmediatamente antes
     position = map->move_duck_to(position, new_pos, id_player);
 
+    // Ver si tiene una pared al lado
+    if (next_to_wall()) {
+        is_slippy = false;
+    }
 
     if ((is_jumping || is_fluttering) && !is_in_air()){
         //si esta saltando o aleteando pero no esta en el aire, significa que aterrizo
@@ -153,9 +172,10 @@ void Duck::update_position() {
     if(!is_in_air()){
         speed_y = 0;
     }
-    
 
 }
+
+
 void Duck::update_weapon(){
     //if(is_dead){return;}
     

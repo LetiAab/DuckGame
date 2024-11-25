@@ -75,6 +75,10 @@ void Game::simulate_round() {
                         // Position current_position = throwed_banana->getPosition();
 
                         throwed_banana->update_weapon(map);
+
+                        if (throwed_banana->impacto) {
+                              it = throwed_weapons.erase(it);
+                        }
                 }
                 
                 ++it;

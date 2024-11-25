@@ -14,6 +14,7 @@ class Banana : public Weapon {  // Herencia de Item
 public:
     bool peeled;
     Position speed;
+    bool impacto;
 
     // Constructor que inicializa la posición
     explicit Banana(int x = 0, int y = 0);
