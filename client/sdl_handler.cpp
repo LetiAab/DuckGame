@@ -100,18 +100,22 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
             game.items.push_back(item);*/
         }
 
-/*
+
          if(message.type == THROWABLE_ITEM){
-            ThrowedItem item;
-            item.current_x = message.item_x * TILE_SIZE;
-            item.current_y = message.item_y * TILE_SIZE;
-            item.type = message.item_id;
-            item.used = message.item_used;
+            ThrowedItem item = ThrowedItem {
+                message.item_x * TILE_SIZE,
+                message.item_y * TILE_SIZE,
+                message.item_x * TILE_SIZE,
+                message.item_y * TILE_SIZE,
+                message.item_id,
+                message.item_used,
+                message.item_touching_floor,
+            };
             game->throwed_items.push_back(item);
             std::cout << "Llega un throwable item de pos x: " << item.current_x << " y: " << 
             item.current_y << " y un id " << item.type << ", lo meto a la lista \n";
         } 
-*/
+
 
         if(message.type == DUCK_PICKUP_ITEM){
             int pos_id = message.player_id - 1;

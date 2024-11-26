@@ -56,6 +56,7 @@ Message ClientProtocol::receive_message(){
         skt.recvall(&message.item_x, sizeof(int), &was_closed);
         skt.recvall(&message.item_y, sizeof(int), &was_closed);
         skt.recvall(&message.item_used, sizeof(bool), &was_closed);
+        skt.recvall(&message.item_touching_floor, sizeof(bool), &was_closed);
         break;
 
     case DUCK_PICKUP_ITEM:

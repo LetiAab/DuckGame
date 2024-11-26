@@ -179,6 +179,10 @@ bool ServerProtocol::send_message(Message& message){
             return false;
         }    
 
+        if (!skt.sendall(&message.item_touching_floor, sizeof(message.item_touching_floor), &was_closed) || was_closed) {
+            return false;
+        }    
+
         break;
 
     case BULLET_POS_UPDATE:

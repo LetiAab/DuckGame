@@ -99,7 +99,8 @@ int Duck::update_life(){
         is_dead = true;
     }
 
-    if (map->duckIsOverBanana(position)) {
+    Position banana_position {0, 0};
+    if (map->duckIsOverBanana(position, banana_position)) {
         is_slippy = true;
     }
 

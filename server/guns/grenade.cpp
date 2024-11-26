@@ -8,7 +8,6 @@ Grenade::Grenade(int x, int y)
     : Weapon(GRENADE_ID, "Grenade", 60, 0, 1, x, y), activated(false), ticks_counter(0), exploded(false), speed(4, -4) {}
 
 void Grenade::disparar_grenade(int position_x, int position_y, char looking, GameMap* map, char id_player) {
-        used = false;
         if (!map) {
                 std::cout << "Position x: " << position_x << ", y: " << position_y
                  << ", looking: " << looking << ", id_player: " << static_cast<uint16_t>(id_player) << std::endl;
@@ -48,16 +47,19 @@ int Grenade::getMuniciones() const {
 bool Grenade::update_weapon(int position_x, int position_y, char looking, GameMap* map, char id_player){
         ticks_counter++;
 
-        bool impacto = false;
         // Uso la de banana pq hace lo mismo
         Position old_position = position;
-        position = map->try_move_banana(position, speed, impacto);
+        position = map->try_move_grenade(position, speed);
         if (speed.y < 3) {
                 speed.y++;
         }
         
         map->clean_projectile_old_position(old_position, 1, 1);
         map->set_projectile_new_position(position, 1, 1, '*');
+
+        if (map->is_throwable_touching_floor(position, 1, 1)) {
+                touching_floor = true;
+        }
 
         if (exploded) {
                 for(auto it = projectiles.begin(); it != projectiles.end(); ) {

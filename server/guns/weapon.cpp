@@ -2,7 +2,7 @@
 #include <iostream>
 
 Weapon::Weapon(uint16_t item_id, const std::string& nombre, double alcance, int dispersion, int municiones, int x, int y)
-    : Item(item_id,x, y), nombre(nombre), alcance(alcance), dispersion(dispersion), municiones(municiones), used(true) {}  // Inicializar posición
+    : Item(item_id,x, y), nombre(nombre), alcance(alcance), dispersion(dispersion), municiones(municiones), used(false), touching_floor(false) {}  // Inicializar posición
 
 
 void Weapon::mostrarInformacion() const {
@@ -37,6 +37,7 @@ bool Weapon::get_throwed_position_message(Message& msg) {
     msg.item_y = position.y;
     msg.item_id = item_id;
     msg.item_used = used;
+    msg.item_touching_floor = touching_floor;
 
     return true;
 }

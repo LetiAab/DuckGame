@@ -66,7 +66,7 @@ public:
 
     bool duckIsOverBullet(Position position);
 
-    bool duckIsOverBanana(Position position);
+    bool duckIsOverBanana(Position position, Position &banana_position);
 
     //METODO TEMPORAL: Imprime el mapa en la consola
     void printMap() const;

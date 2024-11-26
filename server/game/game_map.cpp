@@ -408,12 +408,13 @@ bool GameMap::duckIsOverBullet(Position position) {
     return false;
 }
 
-bool GameMap::duckIsOverBanana(Position position) {
+bool GameMap::duckIsOverBanana(Position position, Position &banana_position) {
     // Verifica si el pato pisa una banana
     for (int i = position.x; i < position.x + DUCK_SIZE_X; ++i) {
         for (int j = position.y; j < position.y + DUCK_SIZE_Y; ++j) {
             if (map[j][i] == 'B') {
                 std::cout << "PISÉ UNA BANANA!" << "\n";
+                banana_position = Position {i, j};
                 return true;
             }
         }

@@ -305,17 +305,8 @@ void RendererManager::renderItems(GameState* game) {
 }
 
 
-/* 
-void RendererManager::renderThrowed(GameState* game) {
-    // Saco las balas y laseres que repitieron posición en el mapa
-    for (auto it = game->throwed_items.begin(); it != game->throwed_items.end();) {
-        if ((it->used == true && it->current_x == it->old_x && it->current_y == it->old_y) || (it->used = false)) {
-            it = game->throwed_items.erase(it);
-        } else {
-            ++it; // Solo avanzas si no eliminaste
-        }
-    }
 
+void RendererManager::renderThrowed(GameState* game) {
     for (auto& throwed_item : game->throwed_items) {
         //if (throwed_item.used)
         //    continue;
@@ -339,8 +330,15 @@ void RendererManager::renderThrowed(GameState* game) {
             SDL_RenderCopyEx(renderer, texture_handler.getTexture("banana-floor"), NULL, &helmet_rect, 0, NULL, SDL_FLIP_NONE);
         }
     }
+
+    for (auto it = game->throwed_items.begin(); it != game->throwed_items.end();) {
+        if ((it->used == true) || (!it->touching_floor && (it->current_x == it->old_x && it->current_y == it->old_y))) {
+            it = game->throwed_items.erase(it);
+        } else {
+            ++it; // Solo avanzas si no eliminaste
+        }
+    }
 }
- */
 
 void RendererManager::doRenderDynamic(GameState* game, Message& message) {
     SDL_RenderCopy(renderer, texture_handler.getTexture("static_scene"), NULL, NULL);
@@ -349,11 +347,11 @@ void RendererManager::doRenderDynamic(GameState* game, Message& message) {
     renderDucks(game);
     renderItems(game);
 
-//    renderThrowed(game);
-
     if (message.type == BULLET_POS_UPDATE){
         renderBullet(game);
     }
+
+    renderThrowed(game);
 
     SDL_RenderPresent(renderer);
     SDL_RenderClear(renderer);

@@ -37,6 +37,7 @@ protected:
     int dispersion;
     int municiones;
     bool used;
+    bool touching_floor;
 };
 
 #endif  // WEAPON_H

@@ -60,6 +60,7 @@ struct ThrowedItem {
     int old_y;
     int type;
     bool used;
+    bool touching_floor;
 };
 
 struct Crate {
