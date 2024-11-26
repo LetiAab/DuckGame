@@ -96,6 +96,7 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
 
         if(message.type == END_GAME){
             std::cout << "SE TERMINO LA PARTIDA "<< "\n";
+            //TODO: Mostrar el mensaje del final de la partida
         }
 
         if(message.type == SPAWN_PLACE_ITEM_UPDATE){

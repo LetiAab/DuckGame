@@ -27,6 +27,7 @@ public:
     MapConfig getMap();
     std::vector<Position> get_ducks_positions();
     std::vector<Position> get_spawn_places();
+    std::vector<Position> get_boxes();
     std::vector<ItemConfig> get_items();
 
     void choose_level();
@@ -38,6 +39,7 @@ private:
     MapConfig map;
     std::vector<Position> ducks_positions;
     std::vector<Position> spawn_places_positions;
+    std::vector<Position> boxes_positions;
     std::vector<ItemConfig> items_positions;
 
     std::string filePath;

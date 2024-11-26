@@ -12,7 +12,6 @@ public:
     void doRenderStatic(GameState* game);
     void doRenderDynamic(GameState* game, Message& message, uint16_t id);
 
-    void refreshStatic(GameState* game);
 
 private:
     SDL_Renderer* renderer;

@@ -13,7 +13,7 @@ LevelManager::LevelManager() : filePath("../editor/levels/map1.txt"), counter(0)
     //cargo los niveles
     //si los archivos no son modificables, deberia poder leer los que estan disponibles
     level_paths.emplace_back("../editor/levels/level1.txt");
-    level_paths.emplace_back("../editor/levels/map2.txt");
+    level_paths.emplace_back("../editor/levels/level2.txt");
 }
 
 LevelManager::~LevelManager() {
@@ -113,8 +113,16 @@ bool LevelManager::parserFile() {
                 }
             } else if (section == "BOX") {
                 if (ss >> x && ss.ignore() && ss >> y) {
-                    map.map[y][x] = BOX;
                     std::cout << "Placed BOX at (" << x << ", " << y << ")" << std::endl;
+
+                    for (int i = x; i < x + BOX_SIZE_X; ++i) {
+                        for (int j = y; j < y + BOX_SIZE_Y; ++j) {
+                            if (i < map.map_width && j < map.map_height) {
+                                map.map[j][i] = BOX;
+                            }
+                        }
+                    }
+
                 } else {
                     std::cerr << "Error parsing BOX at line: " << line << std::endl;
                 }
@@ -165,6 +173,10 @@ std::vector<Position> LevelManager::get_ducks_positions() {
 
 std::vector<Position> LevelManager::get_spawn_places() {
     return spawn_places_positions;
+}
+
+std::vector<Position> LevelManager::get_boxes() {
+    return boxes_positions;
 }
 
 std::vector<ItemConfig> LevelManager::get_items() {

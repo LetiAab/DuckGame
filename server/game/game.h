@@ -65,6 +65,8 @@ private:
         void create_items();
 
         void create_spawn_places(std::vector<Position> spawns_positions);
+        void create_boxes(std::vector<Position> boxes_positions);
+        
         void refreshDuckPositions();
         void simulate_round();
         bool check_end_game();
@@ -115,8 +117,6 @@ void run() override;
 
 void stop() override;
 
-
-void create_boxes();
 
 Game(const Game&) = delete;
 Game& operator=(const Game&) = delete;

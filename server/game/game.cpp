@@ -121,7 +121,7 @@ void Game::run() {
         map.set_escenario_for_round(level_manager.getMap());
         create_ducks(players, level_manager.get_ducks_positions());
         create_spawn_places(level_manager.get_spawn_places());
-        create_boxes(); //esto no se lee del archivo aun
+        create_boxes(level_manager.get_boxes());
 
         //envio al cliente los mensajes
         send_map_message();
@@ -295,16 +295,7 @@ void Game::initialize_round() {
         map.set_escenario_for_round(level_manager.getMap());
         initialize_ducks(level_manager.get_ducks_positions());
         create_spawn_places(level_manager.get_spawn_places());
-        create_boxes();
-
-}
-
-void Game::create_boxes(){
-        boxes.clear();
-        Position boxPosition(MATRIX_M / 3 - BOX_SIZE_X, MATRIX_N / 2 + BOX_SIZE_Y + 5 );
-        map.placeBox(boxPosition);
-
-        boxes.emplace_back(std::make_unique<Box>(boxPosition ,0,&map));
+        create_boxes(level_manager.get_boxes());
 
 }
 
@@ -374,7 +365,7 @@ void Game::create_ducks(int size, std::vector<Position> ducks_positions) {
 
 
 void Game::create_spawn_places(std::vector<Position> spawns_positions) {
-    std::cout << "CREO LOS ITEMS" << "\n";
+    std::cout << "CREO LOS SPAWN PLACES" << "\n";
 
     spawn_places.clear();
 
@@ -387,6 +378,19 @@ void Game::create_spawn_places(std::vector<Position> spawns_positions) {
 
         items.push_back(std::move(item));
     }
+}
+
+void Game::create_boxes(std::vector<Position> boxes_positions){
+        std::cout << "CREO LAS BOXES" << "\n";
+        boxes.clear();
+
+        for (size_t i = 0; i < boxes_positions.size(); ++i) {
+                Position pos = boxes_positions[i];
+                
+                boxes.emplace_back(std::make_unique<Box>(pos, 0, &map));
+        }
+
+
 }
 
 void Game::send_boxes_initialize_message(){
