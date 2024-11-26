@@ -40,7 +40,7 @@ void LevelManager::clear_old_level(){
     ducks_positions.clear();
     spawn_places_positions.clear();
     items_positions.clear();
-
+    boxes_positions.clear();
 }
 
 void LevelManager::openFile() {
@@ -111,8 +111,10 @@ bool LevelManager::parserFile() {
                 } else {
                     std::cerr << "Error parsing SPAWN PLACE at line: " << line << std::endl;
                 }
+
             } else if (section == "BOX") {
                 if (ss >> x && ss.ignore() && ss >> y) {
+                    boxes_positions.emplace_back(x, y);
                     std::cout << "Placed BOX at (" << x << ", " << y << ")" << std::endl;
 
                     for (int i = x; i < x + BOX_SIZE_X; ++i) {
@@ -126,6 +128,7 @@ bool LevelManager::parserFile() {
                 } else {
                     std::cerr << "Error parsing BOX at line: " << line << std::endl;
                 }
+
             } else if (section == "ITEMS") {
                 if (ss >> x && ss.ignore() && ss >> y && ss.ignore() && ss >> item_id) {
                     items_positions.push_back({x, y, item_id});
@@ -133,6 +136,7 @@ bool LevelManager::parserFile() {
                 } else {
                     std::cerr << "Error parsing ITEM at line: " << line << std::endl;
                 }
+
             } else if (section == "SPAWN DUCK") {
                 if (ss >> x && ss.ignore() && ss >> y) {
                     ducks_positions.emplace_back(x, y);
@@ -143,7 +147,7 @@ bool LevelManager::parserFile() {
                         for (int j = y; j < y + DUCK_SIZE_Y; ++j) {
                             if (i < map.map_width && j < map.map_height) {
                                 map.map[j][i] = '0' + duck_id;
-                                std::cout << "Placed duck " << duck_id << " at (" << i << ", " << j << ")" << std::endl;
+                                //std::cout << "Placed duck " << duck_id << " at (" << i << ", " << j << ")" << std::endl;
                             }
                         }
                     }

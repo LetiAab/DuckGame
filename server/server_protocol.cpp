@@ -130,9 +130,6 @@ bool ServerProtocol::send_message(Message& message){
 
     case BOX_POSITION:
 
-        std::cout << "MANDO LA CAJA" << "\n";
-
-
         if (!skt.sendall(&message.box_id, sizeof(message.box_id), &was_closed) || was_closed) {
             return false;
         }

@@ -197,7 +197,7 @@ void Game::run() {
 
                 }
 
-                std::this_thread::sleep_for(std::chrono::milliseconds(60));
+                std::this_thread::sleep_for(std::chrono::milliseconds(80));
         }
 
 
@@ -381,7 +381,7 @@ void Game::create_spawn_places(std::vector<Position> spawns_positions) {
 }
 
 void Game::create_boxes(std::vector<Position> boxes_positions){
-        std::cout << "CREO LAS BOXES" << "\n";
+        std::cout << "CREO " << boxes_positions.size() << " BOXES" << "\n";
         boxes.clear();
 
         for (size_t i = 0; i < boxes_positions.size(); ++i) {
@@ -389,8 +389,6 @@ void Game::create_boxes(std::vector<Position> boxes_positions){
                 
                 boxes.emplace_back(std::make_unique<Box>(pos, 0, &map));
         }
-
-
 }
 
 void Game::send_boxes_initialize_message(){
