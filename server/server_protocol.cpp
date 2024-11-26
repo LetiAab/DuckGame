@@ -84,6 +84,20 @@ bool ServerProtocol::send_message(Message& message){
         }
 
         break;
+    
+    case SPAWN_PLACES_INICIALIZATION:
+        if (!skt.sendall(&message.spawn_places_quantity, sizeof(message.spawn_places_quantity), &was_closed) || was_closed) {
+            return false;
+        }
+
+        break;
+
+    case BOXES_INICIALIZATION:
+        if (!skt.sendall(&message.boxes_quantity, sizeof(message.boxes_quantity), &was_closed) || was_closed) {
+            return false;
+        }
+
+        break;
 
     case DUCKS_INICIALIZATION:
         // Enviar la cantidad de patos

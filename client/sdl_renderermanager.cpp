@@ -5,7 +5,7 @@ RendererManager::RendererManager(SDL_Renderer* renderer, TextureHandler& texture
 
 //** Estatico **//
 void RendererManager::doRenderStatic(GameState* game) {
-    SDL_Texture* static_scene = texture_handler.createRenderTarget("static_scene", WINDOW_WIDTH, WINDOW_HEIGHT);
+    static_scene = texture_handler.createRenderTarget("static_scene", WINDOW_WIDTH, WINDOW_HEIGHT);
     SDL_SetRenderTarget(renderer, static_scene);
 
     // Renderizo los objetos estaticos
@@ -27,6 +27,26 @@ void RendererManager::doRenderStatic(GameState* game) {
     SDL_SetRenderTarget(renderer, NULL);
 }
 
+void RendererManager::refreshStatic(GameState* game) {
+    // Limpiar y volver a renderizar elementos estáticos
+    SDL_SetRenderTarget(renderer, static_scene); // Cambiar a la textura estática
+    SDL_RenderClear(renderer);                  // Limpiar lo anterior
+
+    // Dibujar los elementos estáticos
+    SDL_RenderCopy(renderer, texture_handler.getTexture("forest"), NULL, NULL);
+
+    for (auto &crate : game->crates) {
+        SDL_Rect crate_rect = {crate.x, crate.y, TILE_SIZE, TILE_SIZE};
+        SDL_RenderCopy(renderer, texture_handler.getTexture("crate"), NULL, &crate_rect);
+    }
+
+    for (auto &spawn_place : game->spawn_places) {
+        SDL_Rect spawn_rect = {spawn_place.x, spawn_place.y, TILE_SIZE * 6, TILE_SIZE * 4};
+        SDL_RenderCopy(renderer, texture_handler.getTexture("spawn"), NULL, &spawn_rect);
+    }
+
+    SDL_SetRenderTarget(renderer, NULL); // Restaurar la ventana como render target
+}
 
 //** Dinamico **//
 void RendererManager::renderBullet(GameState* game, const int size) {

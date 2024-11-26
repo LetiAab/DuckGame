@@ -84,6 +84,9 @@ const uint8_t BOX_POSITION = 0X82;
 const uint8_t END_ROUND = 0X83;
 const uint8_t END_GAME = 0x84;
 const uint8_t DUCKS_INICIALIZATION = 0x85;
+const uint8_t SPAWN_PLACES_INICIALIZATION = 0x86;
+const uint8_t BOXES_INICIALIZATION = 0x87;
+
 
 const int N_SPAWN_PLACES = 4;
 const int N_BOXES = 1;
