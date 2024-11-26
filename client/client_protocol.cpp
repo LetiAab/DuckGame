@@ -59,6 +59,14 @@ Message ClientProtocol::receive_message(){
         skt.recvall(&message.ducks_quantity, sizeof(message.ducks_quantity), &was_closed);
         break;
 
+    case SPAWN_PLACES_INICIALIZATION:
+        skt.recvall(&message.spawn_places_quantity, sizeof(message.spawn_places_quantity), &was_closed);
+        break;
+
+    case BOXES_INICIALIZATION:
+        skt.recvall(&message.boxes_quantity, sizeof(message.boxes_quantity), &was_closed);
+        break;
+
     case ITEM_POSITION:
         skt.recvall(&message.item_id, sizeof(uint8_t), &was_closed);
         skt.recvall(&message.item_x, sizeof(int), &was_closed);

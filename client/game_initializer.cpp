@@ -10,6 +10,8 @@ void GameInitializer::initialize_new_round(GameState &game, Queue<Message> &mess
     initializeDucks(game, message_queue);
 
     initializeSpawnPlaces(game, message_queue);
+
+    initializeBoxes(game, message_queue);
     
 }
 
@@ -40,9 +42,11 @@ void GameInitializer::initializeMap(GameState& game, Queue<Message> &message_que
 
 void GameInitializer::initializeSpawnPlaces(GameState& game, Queue<Message> &message_queue){
     game.spawn_places.clear(); // borro los anteriores si habia
+    Message msg_quantity = message_queue.pop();
 
-    std::cout << "INICIALIZO LOS SPAWNS" << "\n";
-    for (int i = 0; i < N_SPAWN_PLACES; i++){
+
+    std::cout << "INICIALIZO "<<  msg_quantity.spawn_places_quantity <<" SPAWNS" << "\n";
+    for (int i = 0; i < msg_quantity.spawn_places_quantity; i++){
 
         Message message = message_queue.pop();
 
@@ -55,7 +59,11 @@ void GameInitializer::initializeSpawnPlaces(GameState& game, Queue<Message> &mes
 void GameInitializer::initializeBoxes(GameState& game, Queue<Message> &message_queue){
     game.boxes.clear(); // borro los anteriores si habia
 
-    for (int i = 0; i < N_BOXES; i++){
+    Message msg_quantity = message_queue.pop();
+
+    std::cout << "INICIALIZO "<<  msg_quantity.boxes_quantity <<" BOXES" << "\n";
+
+    for (int i = 0; i < msg_quantity.boxes_quantity ; i++){
         Message message = message_queue.pop();
 
         if(message.type == BOX_POSITION){

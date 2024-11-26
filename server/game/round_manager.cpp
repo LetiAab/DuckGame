@@ -26,6 +26,8 @@ void RoundManager::declare_round_winner(char duck_id) {
 
 }
 
+int RoundManager::get_round(){return rounds;}
+
 int RoundManager::check_match_status(){
     if(check_end_of_match()){
         return MATCH_HAS_WINNER;

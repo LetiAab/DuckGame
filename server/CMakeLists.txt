@@ -12,6 +12,7 @@ target_sources(taller_server
     lobby/lobby_player.cpp
     receiver.cpp
     sender.cpp
+    level_manager.cpp
     game/game.cpp
     game/game_queue_monitor.cpp
     game/game_map.cpp
@@ -62,6 +63,7 @@ target_sources(taller_server
     lobby/lobby_player.h
     receiver.h
     sender.h
+    level_manager.h
     game/game.h
     game/game_queue_monitor.h
     game/game_map.h

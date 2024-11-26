@@ -116,16 +116,12 @@ void Game::set_players(int number_of_players){
 
 void Game::run() {
 
+        level_manager.choose_level();
 
-
-        //MANDO LOS MENSAJES CON LA POSICION DE LOS SPAWN PLACES
-
-        //creo el mapa, los patos y los spawn places
-        map.setEscenario();
-        create_ducks(players);
-        create_spawn_places();
-        create_boxes();
-
+        map.set_escenario_for_round(level_manager.getMap());
+        create_ducks(players, level_manager.get_ducks_positions());
+        create_spawn_places(level_manager.get_spawn_places());
+        create_boxes(level_manager.get_boxes());
 
         //envio al cliente los mensajes
         send_map_message();
@@ -167,6 +163,7 @@ void Game::run() {
                                 send_map_message();
                                 send_initialize_ducks_message();
                                 send_spawn_place_message();
+                                send_boxes_initialize_message();
                                 
                                 //vaciar la queue del juego para descartar cualquier comando viejo?)
                                 break;
@@ -182,6 +179,7 @@ void Game::run() {
                                 send_map_message();
                                 send_initialize_ducks_message();
                                 send_spawn_place_message();
+                                send_boxes_initialize_message();
                                 
                                 //vaciar la queue del juego para descartar cualquier comando viejo?)
                                 break;
@@ -199,7 +197,7 @@ void Game::run() {
 
                 }
 
-                std::this_thread::sleep_for(std::chrono::milliseconds(60));
+                std::this_thread::sleep_for(std::chrono::milliseconds(80));
         }
 
 
@@ -292,25 +290,16 @@ void Game::stop() {
 }
 
 void Game::initialize_round() {
-        //TODO: MAPA Y LOS OBJETOS ESTAN TODOS HARDCODEADO Y ES SIEMPRE IGUAL
-        //cuando cambia la ronda deberia aparecer un mapa nuevo al azar
-        map.clear_map();
-        map.setEscenario();
-        initialize_ducks(); //reseteo los patos para que revivan y pierdan sus armas
-        create_spawn_places();
+        level_manager.choose_level();
+
+        map.set_escenario_for_round(level_manager.getMap());
+        initialize_ducks(level_manager.get_ducks_positions());
+        create_spawn_places(level_manager.get_spawn_places());
+        create_boxes(level_manager.get_boxes());
 
 }
 
-void Game::create_boxes(){
 
-    Position boxPosition(MATRIX_M / 3 - BOX_SIZE_X, MATRIX_N / 2 + BOX_SIZE_Y + 5 );
-    map.placeBox(boxPosition);
-
-    boxes.emplace_back(std::make_unique<Box>(boxPosition ,0,&map));
-
-}
-
-//TODO: Esto solo sirve para dos patos y siempre tiene en cuenta que es el mismo distribucion de obstaculos
 void Game::send_initialize_ducks_message(){
         //podria mandar todo en un solo mensaje pero primero necesito saber si anda
         Message ducks_message;
@@ -328,11 +317,14 @@ void Game::send_initialize_ducks_message(){
         }
 }
 
-void Game::initialize_ducks(){
-        for (Duck& duck : ducks) {
-                Position pos = get_random_position_for_duck(duck.get_id());
-                duck.reset_for_round(pos);
+
+void Game::initialize_ducks(std::vector<Position> ducks_positions){
+
+        for (std::size_t i = 0; i < ducks.size(); ++i) {
+                Position pos = ducks_positions[i];
+                ducks[i].reset_for_round(pos);
         }
+
 }
 
 //TODO: Esto solo sirve para la  distribucion de obstaculos hardcodeados
@@ -359,48 +351,53 @@ Position Game::get_random_position_for_duck(char duck_id){
         
 }
 
-
-
-void Game::create_ducks(int size) {
+void Game::create_ducks(int size, std::vector<Position> ducks_positions) {
         round_manager.initialize_manager(size);
 
-        for(uint16_t id= 1; id <= size; ++id) {
+        for(uint16_t id = 1; id <= size; ++id) {
                 char char_id = static_cast<char>(id + '0');
-                Position pos = get_random_position_for_duck(char_id);
+                Position pos = ducks_positions[id-1];
 
                 ducks.emplace_back(char_id, pos.x, pos.y, &map);
         }
 }
 
-void Game::create_spawn_places() {
-    //CREO ITEMS PARA METER EN LOS SPAWN PLACES
-    std::cout << "CREO LOS ITEMS" << "\n";
 
 
-    std::unique_ptr<Item> item1 = std::make_unique<DuelPistol>(30, 130);
-    std::unique_ptr<Item> item2 = std::make_unique<PewPewLaser>(100, 130);
-    std::unique_ptr<Item> item3 = std::make_unique<Armor>(30, 75);
-    std::unique_ptr<Item> item4 = std::make_unique<Sniper>(100, 75);
-
-    //seteo N spawn places (4)
+void Game::create_spawn_places(std::vector<Position> spawns_positions) {
     std::cout << "CREO LOS SPAWN PLACES" << "\n";
 
-    spawn_places.emplace_back(std::make_unique<SpawnPlace>(Position(30, 130), 0, item1->getItemId()));  
-    spawn_places.emplace_back(std::make_unique<SpawnPlace>(Position(100, 130), 1, item2->getItemId()));  
-    spawn_places.emplace_back(std::make_unique<SpawnPlace>(Position(30, 75), 2, item3->getItemId()));  
-    spawn_places.emplace_back(std::make_unique<SpawnPlace>(Position(100, 75), 3, item4->getItemId()));
+    spawn_places.clear();
 
+    for (size_t i = 0; i < spawns_positions.size(); ++i) {
+        Position pos = spawns_positions[i];
+        
+        std::unique_ptr<Item> item = std::make_unique<Shotgun>(pos.x, pos.y);
+        
+        spawn_places.emplace_back(std::make_unique<SpawnPlace>(Position(pos.x, pos.y), i, item->getItemId()));
 
-    //guardo los items en el vector de items despues de acceder a su item id, porque sino ya no tengo la refe
-    items.push_back(std::move(item1));
-    items.push_back(std::move(item2));
-    items.push_back(std::move(item3));
-    items.push_back(std::move(item4));
+        items.push_back(std::move(item));
+    }
+}
 
+void Game::create_boxes(std::vector<Position> boxes_positions){
+        std::cout << "CREO " << boxes_positions.size() << " BOXES" << "\n";
+        boxes.clear();
+
+        for (size_t i = 0; i < boxes_positions.size(); ++i) {
+                Position pos = boxes_positions[i];
+                
+                boxes.emplace_back(std::make_unique<Box>(pos, 0, &map));
+        }
 }
 
 void Game::send_boxes_initialize_message(){
-    for (int i = 0; i < N_BOXES; i++){
+        Message msg;
+        msg.type = BOXES_INICIALIZATION;
+        msg.boxes_quantity = boxes.size();
+        monitor.broadcast(msg);
+
+    for (size_t i = 0; i < boxes.size(); ++i){
         Message box_position_message;
         boxes[i]->getBoxPositionMessage(box_position_message);
         monitor.broadcast(box_position_message);
@@ -409,7 +406,12 @@ void Game::send_boxes_initialize_message(){
 
 
 void Game::send_spawn_place_message(){
-        for (int i = 0; i < N_SPAWN_PLACES; i++){
+        Message msg;
+        msg.type = SPAWN_PLACES_INICIALIZATION;
+        msg.spawn_places_quantity = spawn_places.size();
+        monitor.broadcast(msg);
+
+        for (size_t i = 0; i < spawn_places.size(); ++i){
                 Message spawn_place_position_message;
                 spawn_places[i]->getSpawnPlacePositionMessage(spawn_place_position_message);
                 monitor.broadcast(spawn_place_position_message);

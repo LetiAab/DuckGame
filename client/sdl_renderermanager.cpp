@@ -5,7 +5,7 @@ RendererManager::RendererManager(SDL_Renderer* renderer, TextureHandler& texture
 
 //** Estatico **//
 void RendererManager::doRenderStatic(GameState* game) {
-    SDL_Texture* static_scene = texture_handler.createRenderTarget("static_scene", WINDOW_WIDTH, WINDOW_HEIGHT);
+    static_scene = texture_handler.createRenderTarget("static_scene", WINDOW_WIDTH, WINDOW_HEIGHT);
     SDL_SetRenderTarget(renderer, static_scene);
 
     // Renderizo los objetos estaticos
@@ -26,7 +26,6 @@ void RendererManager::doRenderStatic(GameState* game) {
 
     SDL_SetRenderTarget(renderer, NULL);
 }
-
 
 //** Dinamico **//
 void RendererManager::renderBullet(GameState* game, const int size) {

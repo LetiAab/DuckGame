@@ -858,43 +858,47 @@ void LevelEditor::saveLevel() {
         std::cerr << "Error: no se pudo abrir el archivo para guardar el nivel." << std::endl;
         return;
     }
+    levelFile << MATRIX_N << "\n";
+    levelFile << MATRIX_M << "\n";
+    levelFile << "\n";
 
     levelFile << "CRATES\n";
     for (const auto& [key, crate] : crates) {
-        levelFile << crate.x << "," << crate.y << "\n";
+        levelFile << crate.x / 4 << "," << crate.y / 4 << "\n";
     }
     levelFile << "\n";
 
-    levelFile << "SPAWNPLACE\n";
+    levelFile << "SPAWN PLACE\n";
     for (const auto& [key, spawnPlace] : spawn_places) {
-        levelFile << spawnPlace.x << "," << spawnPlace.y << "\n";
+        levelFile << spawnPlace.x / 4 << "," << spawnPlace.y / 4 << "\n";
     }
     levelFile << "\n";
 
     levelFile << "BOX\n";
     for (const auto& [key, box] : boxes) {
-        levelFile << box.x << "," << box.y << "\n";
+        levelFile << box.x / 4 << "," << box.y / 4 << "\n";
     }
     levelFile << "\n";
 
     levelFile << "ITEM\n";
     for (const auto& [key, item] : items) {
         levelFile << std::dec // Fuerza formato decimal para x e y
-                    << item.x << "," << item.y << ",0x"
-                    << std::hex << std::uppercase // Fuerza formato hexadecimal para item_id
-                    << static_cast<int>(item.item_id) << "\n";
+                  << item.x / 4 << "," << item.y / 4 << ",0x"
+                  << std::hex << std::uppercase // Fuerza formato hexadecimal para item_id
+                  << static_cast<int>(item.item_id) << "\n";
     }
     levelFile << "\n";
 
     levelFile << "SPAWN DUCK\n";
     for (const auto& [key, duck] : ducks) {
-        levelFile << duck.x << "," << duck.y << "\n";
+        levelFile << duck.x / 4 << "," << duck.y / 4 << "\n";
     }
     levelFile << "\n";
 
     levelFile.close();
     std::cout << "Nivel guardado exitosamente en level.txt" << std::endl;
 }
+
 
 
 

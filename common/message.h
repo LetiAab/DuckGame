@@ -41,6 +41,8 @@ struct Message {
 
     char duck_winner;
     int ducks_quantity;
+    int spawn_places_quantity;
+    int boxes_quantity;
 
 };
 

@@ -16,7 +16,7 @@
 #include "spawn_place.h"
 #include "box.h"
 #include "round_manager.h"
-
+#include "../level_manager.h"
 
 #include <cstdlib>
 #include <ctime>
@@ -51,17 +51,22 @@ private:
         RoundManager round_manager;
         Queue<std::shared_ptr<Executable>> game_queue;
         int players; //cantidad de jugadores
+        LevelManager level_manager;
         std::vector<Update> updates;
         //std::vector<std::unique_ptr<Proyectil>> projectiles;
 
 
         void send_updates();
         void initialize_round();
-        void initialize_ducks();
+        void initialize_ducks(std::vector<Position> ducks_positions);
         Position get_random_position_for_duck(char duck_id);
-        void create_ducks(int size);
+
+        void create_ducks(int size, std::vector<Position> ducks_positions);
         void create_items();
-        void create_spawn_places();
+
+        void create_spawn_places(std::vector<Position> spawns_positions);
+        void create_boxes(std::vector<Position> boxes_positions);
+        
         void refreshDuckPositions();
         void simulate_round();
         bool check_end_game();
@@ -112,8 +117,6 @@ void run() override;
 
 void stop() override;
 
-
-void create_boxes();
 
 Game(const Game&) = delete;
 Game& operator=(const Game&) = delete;
