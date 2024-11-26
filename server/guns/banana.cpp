@@ -48,7 +48,9 @@ int Banana::getMuniciones() const {
 void Banana::update_weapon(GameMap& map){
         if(pisada){
             //si empacte con algo debo eliminar la bala luego de mandar el mensaje
+            std::cout << "PISADA ES TRUEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE" << std::endl;
             map.clean_projectile_old_position(position, 1, 1);
+            used = true;
             // should_erase = true;
         }
 
@@ -61,6 +63,7 @@ void Banana::update_weapon(GameMap& map){
 
         if (pisada) {
             used = true;
+            return;
         }
         
         map.clean_projectile_old_position(old_position, 1, 1);

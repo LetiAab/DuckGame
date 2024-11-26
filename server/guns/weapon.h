@@ -25,6 +25,8 @@ public:
     double getAlcance() const;
     double getDispersion() const;
     int getMuniciones() const;
+    bool isUsed();
+    void setUsed(bool new_used);
 
     bool get_throwed_position_message(Message& throwed_message);
 

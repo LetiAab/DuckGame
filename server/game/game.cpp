@@ -76,9 +76,9 @@ void Game::simulate_round() {
 
                         throwed_banana->update_weapon(map);
 
-                        if (throwed_banana->pisada) {
+/*                         if (throwed_banana->pisada) {
                               it = throwed_weapons.erase(it);
-                        }
+                        } */
 
                         std::cout << "Banana en pos x: " << throwed_banana->getPosition().x << " y: " << throwed_banana->getPosition().y << std::endl;
                 }
@@ -96,19 +96,26 @@ void Game::simulate_round() {
 
                 int notification = duck.update_life();
                 duck.update_position();
-                Position banana_position = Position {0,0};
-                std::cout << "El pato está en la posicion x: " << duck.getPosition().x << " y: " << duck.getPosition().y << std::endl;
-                if (map.duckIsOverBanana(duck.getPosition(), banana_position)){
-                        for (auto& throwed_weapon: throwed_weapons) {
-                                if (throwed_weapon->getItemId() == BANANA_ID) {
-                                        Position throwed_pos = throwed_weapon->getPosition();
-                                        if (throwed_pos.x == banana_position.x && throwed_pos.y == banana_position.y) {
-                                                Banana* throwed_banana = (Banana*) throwed_weapon.get();
+
+                for (auto& throwed_weapon: throwed_weapons) {
+                        if (throwed_weapon->getItemId() == BANANA_ID) {
+                                Banana* throwed_banana = (Banana*) throwed_weapon.get();
+                                if (!throwed_banana->pisada) {
+                                        Position throwed_pos = throwed_banana->getPosition();
+                                        if (map.bullet_hit_other_duck(map.at(throwed_pos), 'z')) {
+                                                std::cout << "Pisada ahora es true \n";
                                                 throwed_banana->pisada = true;
+                                                throwed_banana->setUsed(true);
+                                                Message throwed_message;
+                                                if (throwed_weapon->get_throwed_position_message(throwed_message)){
+                                                        monitor.broadcast(throwed_message);
+                                                } 
                                         }
                                 }
+
                         }
                 }
+
                 duck.update_weapon();
 
                 // std::cout << "Despues de mover las balas \n";

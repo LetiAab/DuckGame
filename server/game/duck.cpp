@@ -99,10 +99,6 @@ int Duck::update_life(){
         is_dead = true;
     }
 
-    Position banana_position {0, 0};
-    if (map->duckIsOverBanana(position, banana_position)) {
-        is_slippy = true;
-    }
 
     if(map->duckIsOverBullet(position)){
 
@@ -155,8 +151,16 @@ void Duck::update_position() {
 
     Position new_pos(delta_x, delta_y);
     old_position = position;
+
+    Position banana_position {0, 0};
+    if (map->duckIsOverBanana(new_pos, banana_position)) {
+        is_slippy = true;
+    }
+
+    std::cout << "Antes de move duck tiene x: " << position.x << " y: " << position.y << std::endl;
     //mueve al pato a la nueva posicion si esta libre o a la que este libre inmediatamente antes
     position = map->move_duck_to(position, new_pos, id_player);
+    std::cout << "Después de move duck tiene x: " << position.x << " y: " << position.y << std::endl;
 
     // Ver si tiene una pared al lado
     if (next_to_wall()) {

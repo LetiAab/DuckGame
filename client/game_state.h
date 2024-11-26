@@ -56,8 +56,6 @@ struct Projectile {
 struct ThrowedItem {
     int current_x;
     int current_y;
-    int old_x;
-    int old_y;
     int type;
     bool used;
     bool touching_floor;

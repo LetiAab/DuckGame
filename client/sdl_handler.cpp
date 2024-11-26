@@ -101,19 +101,27 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
         }
 
 
-         if(message.type == THROWABLE_ITEM){
-            ThrowedItem item = ThrowedItem {
-                message.item_x * TILE_SIZE,
-                message.item_y * TILE_SIZE,
-                message.item_x * TILE_SIZE,
-                message.item_y * TILE_SIZE,
-                message.item_id,
-                message.item_used,
-                message.item_touching_floor,
-            };
-            game->throwed_items.push_back(item);
-            std::cout << "Llega un throwable item de pos x: " << item.current_x << " y: " << 
-            item.current_y << " y un id " << item.type << ", lo meto a la lista \n";
+         if(message.type == THROWABLE_ITEM) {
+            std::cout << "Llega un throwable item de pos x: " << message.item_x << " y: " << 
+            message.item_y << " y un id " << message.item_id << ", lo meto a la lista \n";
+
+            bool includes = false;
+            for (ThrowedItem& throwed: game->throwed_items) {
+                if (throwed.current_x == message.item_x && throwed.current_y == message.item_y) {
+                    includes = true;
+                    throwed.current_x = message.item_x;
+                    throwed.current_y = message.item_y;
+                    throwed.type = message.item_id;
+                    throwed.touching_floor = message.item_touching_floor;
+                    throwed.used = message.item_used;
+                    std::cout << "Ya tenia esa pos, lo actualizo \n";
+                }
+            }
+            if (!includes) {
+                ThrowedItem item = ThrowedItem { message.item_x * TILE_SIZE, message.item_y * TILE_SIZE, message.item_id, message.item_used, message.item_touching_floor};
+                game->throwed_items.push_back(item);
+                std::cout << "No tenia esa pos, lo meto \n";
+            }
         } 
 
 

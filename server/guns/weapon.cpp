@@ -29,7 +29,10 @@ int Weapon::getMuniciones() const {
 }
 
 bool Weapon::get_throwed_position_message(Message& msg) {
-    //TODO: Esto se tendria que implementar en las hijas àra saner que item id mandar
+
+    if (used) {
+        return false;
+    }
     std::cout << "LE PASO EL SPAWN CON x: " << position.x << " y: " << position.y << "\n";
 
     msg.type = THROWABLE_ITEM;
@@ -59,4 +62,12 @@ void Weapon::update_weapon(){
         //std::cout << "Despues de chequear que debería borrar una bala \n";
     }
 
+}
+
+bool Weapon::isUsed() {
+    return used;
+}
+
+void Weapon::setUsed(bool new_used) {
+    used = new_used;
 }
