@@ -127,17 +127,17 @@ const int MIN_PLAYERS = 2;
 const int MATRIX_N = 144;
 const int MATRIX_M = 200;
 
-const int PLATFORM_SIZE_X = 2;
+const int PLATFORM_SIZE_X = 4;
 const int PLATFORM_SIZE_Y = 2;
 
-const int DUCK_SIZE_X = 10;
-const int DUCK_SIZE_Y = 14;
-const int DUCK_TOTAL_SIZE = 140; //Cantidad total de cuadrados que ocupa el pato 9X13
+const int DUCK_SIZE_X = 8;
+const int DUCK_SIZE_Y = 12;
+const int DUCK_TOTAL_SIZE = 96; //Cantidad total de cuadrados que ocupa el pato 9
 
 
-const int BOX_SIZE_X = 5;
-const int BOX_SIZE_Y = 5;
-const int BOX_TOTAL_SIZE = 25;
+const int BOX_SIZE_X = 4;
+const int BOX_SIZE_Y = 4;
+const int BOX_TOTAL_SIZE = 16;
 
 
 const int BULLET_SIZE_Y = 1;

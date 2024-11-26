@@ -12,7 +12,7 @@ const char EMPTY = ' ';
 LevelManager::LevelManager() : filePath("../editor/levels/map1.txt"), counter(0) {
     //cargo los niveles
     //si los archivos no son modificables, deberia poder leer los que estan disponibles
-    level_paths.emplace_back("../editor/levels/map1.txt");
+    level_paths.emplace_back("../editor/levels/level1.txt");
     level_paths.emplace_back("../editor/levels/map2.txt");
 }
 
@@ -80,7 +80,7 @@ bool LevelManager::parserFile() {
             std::cout << "Processing line: " << line << std::endl;
 
             if (line == "CRATES" || line == "SPAWN PLACE" || line == "BOX" ||
-                line == "ITEMS" || line == "SPAWN DUCK") {
+                line == "ITEM" || line == "SPAWN DUCK") {
                 section = line;
                 std::cout << "Section found: " << section << std::endl;
                 continue;
@@ -92,8 +92,15 @@ bool LevelManager::parserFile() {
 
             if (section == "CRATES") {
                 if (ss >> x && ss.ignore() && ss >> y) {
-                    map.map[y][x] = PLATFORM;
                     std::cout << "Placed CRATE at (" << x << ", " << y << ")" << std::endl;
+
+                    for (int i = x; i < x + PLATFORM_SIZE_X; ++i) {
+                        for (int j = y; j < y + PLATFORM_SIZE_Y; ++j) {
+                            if (i < map.map_width && j < map.map_height) {
+                                map.map[j][i] = PLATFORM;
+                            }
+                        }
+                    }
                 } else {
                     std::cerr << "Error parsing CRATES at line: " << line << std::endl;
                 }
