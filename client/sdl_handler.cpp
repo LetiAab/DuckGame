@@ -273,7 +273,17 @@ int SDLHandler::waitForStartGame() {
     int id_match = 1;
 
     while (!start_game && !done) {
+        const auto start = std::chrono::high_resolution_clock::now();
+
         done = eventProcessor.processLobbyEvents(screenManager.get(), start_game, id_match);
+
+        const auto end = std::chrono::high_resolution_clock::now();
+        auto loop_duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+        auto sleep_duration = DELAY_TIME - loop_duration;
+
+        if (sleep_duration > 0) {
+            SDL_Delay(sleep_duration);
+        }
     }
     return done;
 }
