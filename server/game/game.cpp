@@ -7,8 +7,6 @@
 #include <random>
 #include <utility>
 
-
-
 const char DUCK_1 = '1';
 const char DUCK_2 = '2';
 const char DUCK_3 = '3';
@@ -17,7 +15,6 @@ const char DUCK_5 = '5';
 const char DUCK_6 = '6';
 
 const int NUM_ITEMS = 10;
-
 
 //TODO: Tamanio del mapa hardcodeado
 Game::Game(uint16_t match_id, GameQueueMonitor& monitor,  bool& is_over):
@@ -128,10 +125,9 @@ void Game::run() {
         send_initialize_ducks_message();
         send_spawn_place_message();
         send_boxes_initialize_message();
-  
-
 
         while (is_running) {
+                const auto start = std::chrono::high_resolution_clock::now();
 
                 // saco de 10 comandos de la queue y los ejecuto
                 std::shared_ptr<Executable> command;
@@ -194,10 +190,15 @@ void Game::run() {
 
                                 break;
                         }
-
                 }
 
-                std::this_thread::sleep_for(std::chrono::milliseconds(80));
+                const auto end = std::chrono::high_resolution_clock::now();
+                auto loop_duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+                auto sleep_duration = GAME_TIME_SLEEP - loop_duration;
+
+                if (sleep_duration > 0) {
+                        std::this_thread::sleep_for(std::chrono::milliseconds(sleep_duration));
+                }
         }
 
 

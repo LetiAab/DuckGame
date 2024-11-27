@@ -5,8 +5,6 @@
 #include <common/message.h>
 #include <map>
 
-#define DELAY_TIME 60
-
 //using namespace SDL2pp;
 
 SDLHandler::SDLHandler(): handle_textures(nullptr) {
@@ -322,6 +320,8 @@ void SDLHandler::run(Queue<Command>& command_queue, uint16_t id, Queue<Message>&
     int done = SUCCESS;
     try{
         while (!done) {
+            const auto start = std::chrono::high_resolution_clock::now();
+
             //PRIMERO MANDO AL SERVER
             
             //no se si pasar el audio manager aca para reproducir el sonido del disparo es lo mejor 
@@ -360,7 +360,14 @@ void SDLHandler::run(Queue<Command>& command_queue, uint16_t id, Queue<Message>&
 
             rendererManager->doRenderDynamic(&game, message, id);
 
-            SDL_Delay(DELAY_TIME);
+            //SDL_Delay(DELAY_TIME);
+            const auto end = std::chrono::high_resolution_clock::now();
+            auto loop_duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+            auto sleep_duration = DELAY_TIME - loop_duration;
+
+            if (sleep_duration > 0) {
+                SDL_Delay(sleep_duration);
+            }
         }
     } catch (const ClosedQueue& e){
         done = ERROR;

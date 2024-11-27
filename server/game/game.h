@@ -23,7 +23,6 @@
 #include <list>
 #include <vector>
 
-#define GAME_TIME_SLEEP 100
 // En gun.h tengo la misma variable, cambiar también ahí o mejorar el import
 
 typedef struct update
