@@ -880,19 +880,19 @@ void LevelEditor::saveLevel() {
 
     levelFile << "CRATES\n";
     for (const auto& [key, crate] : crates) {
-        levelFile << crate.x / 4 << "," << crate.y / 4 << "\n";
+        levelFile << std::dec << crate.x / 4 << "," << crate.y / 4 << "\n";
     }
     levelFile << "\n";
 
     levelFile << "SPAWN PLACE\n";
     for (const auto& [key, spawnPlace] : spawn_places) {
-        levelFile << spawnPlace.x / 4 << "," << spawnPlace.y / 4 << "\n";
+        levelFile << std::dec << spawnPlace.x / 4 << "," << spawnPlace.y / 4 << "\n";
     }
     levelFile << "\n";
 
     levelFile << "BOX\n";
     for (const auto& [key, box] : boxes) {
-        levelFile << box.x / 4 << "," << box.y / 4 << "\n";
+        levelFile << std::dec << box.x / 4 << "," << box.y / 4 << "\n";
     }
     levelFile << "\n";
 
@@ -906,7 +906,7 @@ void LevelEditor::saveLevel() {
 
     levelFile << "SPAWN DUCK\n";
     for (const auto& [key, duck] : ducks) {
-        levelFile << duck.x / 4 << "," << duck.y / 4 << "\n";
+        levelFile << std::dec << duck.x / 4 << "," << duck.y / 4 << "\n";
     }
     levelFile << "\n";
 

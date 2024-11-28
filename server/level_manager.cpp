@@ -25,9 +25,10 @@ std::unordered_map<std::string, uint8_t> item_map = {
     {"SNIPER_ID", SNIPER_ID}
 };
 
-LevelManager::LevelManager() : filePath("../editor/levels/map1.txt"), counter(0) {
+LevelManager::LevelManager() : filePath("../editor/levels/level.txt"), counter(0) {
     //cargo los niveles
     //si los archivos no son modificables, deberia poder leer los que estan disponibles
+    level_paths.emplace_back("../editor/levels/level.txt");
     level_paths.emplace_back("../editor/levels/level1.txt");
     level_paths.emplace_back("../editor/levels/level2.txt");
 }
@@ -39,16 +40,15 @@ LevelManager::~LevelManager() {
 void LevelManager::choose_level(){
     clear_old_level();
 
-    //los voy intercalando, pero podria ser random
-    if(counter % 2 == 0){
-        filePath = level_paths[1];
-    }else {
-        filePath = level_paths[0];
+    if(counter == static_cast<int>(level_paths.size())) {
+        counter = 0;
     }
-
-    parserFile();
+    //los voy intercalando, pero podria ser random
+    filePath = level_paths[counter];
     counter++;
-
+    
+    
+    parserFile();
 }
 
 void LevelManager::clear_old_level(){
