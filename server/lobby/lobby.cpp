@@ -19,7 +19,7 @@ Lobby::Lobby(): is_alive(true), lobby_players(), matches(), lobby_queue(), match
 void Lobby::run() {
     try {
         while (is_alive) {
-            LobbyCommand cmd = lobby_queue.pop(); // OJO: bloqueante, quizás tengamos que usar try_pop + sleep
+            LobbyCommand cmd = lobby_queue.pop(); //bloqueante
             std::cout << "Lobby: saque un comando de mi queue"  << std::endl;
             if(cmd.type == START_MATCH_CODE) {
                 process_start_match_command(cmd);
@@ -53,10 +53,17 @@ void Lobby::clean_finished_matches() {
                              });
 
     matches.erase(it, matches.end());
-    std::cout << "Lobby: borre el partido "  << std::endl;
+    //std::cout << "Lobby: borre el partido "  << std::endl;
 }
 
 void Lobby::clean_disconnected_players() {
+    for (const auto& player : lobby_players) {
+        if (!player->is_connected()) {
+            std::cout << "Lobby: un jugador se desconecto"  << std::endl;
+            player->stop();
+        }
+    }
+
     lobby_players.remove_if([](const std::shared_ptr<LobbyPlayer>& player) {
         return !player->is_connected();
     });

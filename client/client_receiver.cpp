@@ -22,6 +22,7 @@ void ClientReceiver::run() {
 
     } catch (const LibError& e) {
         is_alive = false;
+        message_queue.close();
 
     } catch (const std::exception& e) {
         is_alive = false;

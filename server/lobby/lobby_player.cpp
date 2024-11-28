@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <utility>
+#include "common/liberror.h"
 
 
 
@@ -14,9 +15,17 @@ LobbyPlayer::LobbyPlayer(Socket&& socket, const uint16_t id, Queue<LobbyCommand>
         match_id(0) {}
 
 bool LobbyPlayer::send_lobby_message(const LobbyMessage& msg) {
+    try{
         protocol.send_lobby_message(msg);
         std::cout << "Lobby Player: mande el mensaje del lobby"  << std::endl;
         return true;
+
+    } catch(const LibError& e){
+        connected = false;
+        protocol.shutdown();
+        stop();
+        return false;
+    }
 }
 
 void LobbyPlayer::start() {

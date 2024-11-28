@@ -299,16 +299,20 @@ bool ServerProtocol::send_message(Message& message){
 }
 
 
-LobbyCommand ServerProtocol::get_lobby_command(){
-
+LobbyCommand ServerProtocol::get_lobby_command() {
     uint16_t player_id = 0;
     uint8_t type = 0;
     uint16_t match_id = 0;
     bool was_closed = false;
 
     skt.recvall(&type, sizeof(type), &was_closed);
+    if (was_closed) throw LibError(errno, CLOSED_SOCKET);
+
     skt.recvall(&player_id, sizeof(player_id), &was_closed);
+    if (was_closed) throw LibError(errno, CLOSED_SOCKET);
+
     skt.recvall(&match_id, sizeof(match_id), &was_closed);
+    if (was_closed) throw LibError(errno, CLOSED_SOCKET);
 
     LobbyCommand cmd(player_id, type, match_id);
 
