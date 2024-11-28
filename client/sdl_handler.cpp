@@ -247,8 +247,9 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
         if(message.type == KILL_DUCK){
             int pos_id = message.player_id - 1;
             //NO LO ELIMINO DE LA LISTA PORQUE ALTO KILOMBO ASI QUE MUEVO EL DIBUJO AFUERA DE LA PANTALLA
-            game->ducks[pos_id].x = 400 * TILE_SIZE;
-            game->ducks[pos_id].y = 400 * TILE_SIZE;
+            //game->ducks[pos_id].x = 400 * TILE_SIZE;
+            //game->ducks[pos_id].y = 400 * TILE_SIZE;
+            game->ducks[pos_id].is_dead = true;
         }
 
         if (message.type == DUCK_POS_UPDATE){

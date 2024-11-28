@@ -57,6 +57,10 @@ void RendererManager::renderDucks(GameState* game) {
     for (int i = 0; i < game->ducks_quantity; i++) {
         Duck& duck = game->ducks[i];
 
+        if(duck.is_dead){
+            duck.is_laying_down = true;
+        }
+
         // Cambiar el fotograma de animación si el pato está en movimiento
         if ((duck.is_moving && !duck.is_jumping) || duck.is_fluttering) {
             duck.current_frame_index = (duck.current_frame_index + 1) % 6;  // Ciclar entre 6 fotogramas

@@ -14,6 +14,7 @@ struct Duck {
     bool is_jumping;
     bool is_fluttering;
     bool is_laying_down;
+    bool is_dead;
 
     //EL pato tiene los ids de las armas/armaduras que tiene. Si es 0 no tiene ninguna
     uint8_t weapon_equiped;
