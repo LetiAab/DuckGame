@@ -58,14 +58,16 @@ void Lobby::clean_finished_matches() {
 
 void Lobby::clean_disconnected_players() {
     for (const auto& player : lobby_players) {
-        if (!player->is_connected()) {
-            std::cout << "Lobby: un jugador se desconecto"  << std::endl;
+        if (player->is_playing()) {
+            std::cout << "Lobby: el jugador " << player->get_player_id() <<" esta en partida, voy a eliminarlo"  << std::endl;
+        }else if (!player->is_connected()) {
+            std::cout << "Lobby: el jugador " << player->get_player_id() <<" se desconecto, voy a  eliminarlo"  << std::endl;
             player->stop();
         }
     }
 
     lobby_players.remove_if([](const std::shared_ptr<LobbyPlayer>& player) {
-        return !player->is_connected();
+        return (!player->is_connected() || player->is_playing());
     });
 }
 

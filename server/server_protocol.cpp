@@ -328,7 +328,10 @@ std::shared_ptr<Executable> ServerProtocol::receive_command(){
     bool was_closed = false;
 
     skt.recvall(&type, sizeof(type), &was_closed);
+    if (was_closed) throw LibError(errno, CLOSED_SOCKET);
+    
     skt.recvall(&player_id, sizeof(player_id), &was_closed);
+    if (was_closed) throw LibError(errno, CLOSED_SOCKET);
     
     //aca deberia fijarme el type y devolver el comando que corresponda
 
