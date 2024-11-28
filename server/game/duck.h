@@ -98,6 +98,8 @@ public:
 
     Position getPosition();
 
+    uint8_t getWeaponId();
+
 };
 
 #endif // DUCK_H
