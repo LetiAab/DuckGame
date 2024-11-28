@@ -126,14 +126,23 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
 
         }
 
-        if(message.type == ITEM_POSITION){
-            //RENDERIZAR LOS ITEMS QUE ESTAN EN EL PISO
+        if (message.type == ITEM_ON_FLOOR_UPDATE) {
+            int x = message.item_x * TILE_SIZE;
+            int y = message.item_y * TILE_SIZE;
+
+            std::cout << "AGARRE EL ITEM QUE ESTA EN X: "<< x << " Y: "<< y << "\n";
 
 
-            /*Item item;
-            item.x = message.item_x * TILE_SIZE;
-            item.y = message.item_y * TILE_SIZE;
-            game.items.push_back(item);*/
+            // Recorrer la lista de items en el suelo hasta encontrar el que matchea con la pos que me llegó
+            for (auto& item_on_floor : game->items_on_floor) {
+                std::cout << "RECORRO LA LISTA DE ITEMS EN EL SUELO X: "<< item_on_floor.x << " Y: "<< item_on_floor.y << "\n";
+                
+                if (item_on_floor.x == x && item_on_floor.y == y) {
+                    std::cout << "Item found at (" << x << ", " << y << ") with ID: " << static_cast<int>(item_on_floor.item_id) << std::endl;
+
+                    item_on_floor.item_id = 0;
+                }
+            }
         }
 
         if(message.type == DUCK_PICKUP_ITEM){

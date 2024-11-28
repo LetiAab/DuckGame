@@ -22,3 +22,11 @@ bool Item::getItemPositionMessage(Message& msg){
     return true;
 
 }
+
+//para avisar que no se renderice mas en el piso
+void Item::getItemUpdate(Message& msg){
+    msg.type = ITEM_ON_FLOOR_UPDATE;
+    msg.item_x = position.x;
+    msg.item_y = position.y;
+    msg.item_id = item_id;
+}

@@ -191,6 +191,7 @@ bool ServerProtocol::send_message(Message& message){
             throw LibError(errno, CLOSED_SOCKET);
         }
         break;
+    case ITEM_ON_FLOOR_UPDATE:
     case ITEM_POSITION:
         if (!skt.sendall(&message.item_id, sizeof(message.item_id), &was_closed) || was_closed) {
             throw LibError(errno, CLOSED_SOCKET);
@@ -205,6 +206,8 @@ bool ServerProtocol::send_message(Message& message){
         }
 
         break;
+
+
 
     case SPAWN_PLACE_ITEM_UPDATE:
         if (!skt.sendall(&message.spawn_place_id, sizeof(message.spawn_place_id), &was_closed) || was_closed) {

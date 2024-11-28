@@ -37,7 +37,6 @@ Duck* Game::getDuckByPosition(Position position) {
 
 void Game::simulate_round() {
         
-
         //sumo 1 al contador de rondas hasta generar un nuevo item en el spawn place
         for (const auto& spawn_place : spawn_places) {
                 if(spawn_place->updateIterations(items)){
@@ -218,6 +217,9 @@ void Game::run() {
 
 
 void Game::send_updates(){
+
+
+
         for (Duck& duck : ducks) {
 
                 Message duck_message;
@@ -415,8 +417,38 @@ void Game::create_items_on_floor(std::vector<ItemConfig> items_on_floor_position
                 int x = itemConfig.x;
                 int y = itemConfig.y;
                 uint8_t item_id = itemConfig.item_id;
-
-                items_on_floor.emplace_back(std::make_shared<Item>(item_id, x, y));
+                
+                if (item_id == ARMOR_ID) {
+                        items_on_floor.emplace_back(std::make_shared<Armor>(x, y));
+                }
+                else if (item_id == HELMET_ID) {
+                        items_on_floor.emplace_back(std::make_shared<Helmet>(x, y));
+                }
+                else if(item_id == PEW_PEW_LASER_ID){
+                        items_on_floor.emplace_back(std::make_shared<PewPewLaser>(x, y));
+                }
+                else if (item_id == LASER_RIFLE_ID) {
+                        items_on_floor.emplace_back(std::make_shared<LaserRifle>(x, y));
+                }
+                else if(item_id == AK_47_ID){
+                        items_on_floor.emplace_back(std::make_shared<Ak47>(x, y));
+                }
+                else if (item_id == DUEL_PISTOL_ID) {
+                        items_on_floor.emplace_back(std::make_shared<DuelPistol>(x, y));
+                }
+                else if(item_id == COWBOY_PISTOL_ID){
+                        items_on_floor.emplace_back(std::make_shared<CowboyPistol>(x, y));
+                }
+                else if (item_id == MAGNUM_ID) {
+                        items_on_floor.emplace_back(std::make_shared<Magnum>(x, y));
+                }
+                else if(item_id == SHOTGUN_ID){
+                        items_on_floor.emplace_back(std::make_shared<Shotgun>(x, y));
+                }
+                else if(item_id == SNIPER_ID){
+                        items_on_floor.emplace_back(std::make_shared<Sniper>(x, y));
+                }
+   
         }
 
 

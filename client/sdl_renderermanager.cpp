@@ -262,19 +262,14 @@ void RendererManager::renderItems(GameState* game) {
 
 void RendererManager::renderItemsOnFloor(GameState* game){
 
-    std::cout << "entro a la funcion pero puede que no tenga bien asignados los itemns no gloor\n";
 
 
     for (auto& item_on_floor : game->items_on_floor) {
-        std::cout << "RENDERIZO EL ITEM ON FLOOR \n";
 
-        std::cout << "RENDERIZO EL ITEM ON FLOOR:\n";
-        std::cout << "  item_id: " << static_cast<int>(item_on_floor.item_id) << "\n";
-        std::cout << "  x: " << item_on_floor.x << "\n";
-        std::cout << "  y: " << item_on_floor.y << "\n";
-        
+
+
         // Acá reemplazar con los ids de las otras armas cuando tengas los renders de las mismas
-        renderItem(item_on_floor.item_id, item_on_floor.x, item_on_floor.y);
+        renderItem(item_on_floor.item_id, item_on_floor.x, item_on_floor.y + TILE_SIZE * 11); //eso en y porque la funcion de render item la hicimos para poner encima de un spawn place
     }
 }
 

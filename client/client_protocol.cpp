@@ -87,7 +87,7 @@ Message ClientProtocol::receive_message(){
         if (was_closed) throw LibError(errno, CLOSED_SOCKET);
         break;
 
-
+    case ITEM_ON_FLOOR_UPDATE:
     case ITEM_POSITION:
         skt.recvall(&message.item_id, sizeof(uint8_t), &was_closed);
         if (was_closed) throw LibError(errno, CLOSED_SOCKET);
