@@ -39,7 +39,6 @@ typedef struct update
 //se me genera una dependencia circular entre game y executable
 class Executable;
 
-
 class Game: public Thread {
 
 private:
@@ -52,7 +51,6 @@ private:
         int players; //cantidad de jugadores
         LevelManager level_manager;
         std::vector<Update> updates;
-        //std::vector<std::unique_ptr<Proyectil>> projectiles;
 
 
         void send_updates();
@@ -65,6 +63,8 @@ private:
 
         void create_spawn_places(std::vector<Position> spawns_positions);
         void create_boxes(std::vector<Position> boxes_positions);
+
+        void create_items_on_floor(std::vector<ItemConfig> items_on_floor_positions);
         
         void refreshDuckPositions();
         void simulate_round();
@@ -76,6 +76,8 @@ private:
         void send_map_message();
         void send_initialize_ducks_message();
         void send_boxes_initialize_message();
+        void send_items_on_floor_message();
+
 
 
 public:
@@ -84,7 +86,7 @@ public:
         std::vector<std::shared_ptr<Item>> items;
         std::vector<std::unique_ptr<SpawnPlace>> spawn_places;
         std::vector<std::unique_ptr<Box>> boxes;
-
+        std::vector<std::shared_ptr<Item>> items_on_floor;
 
 
 
@@ -102,6 +104,9 @@ Duck* getDuckByPosition(Position position);
 Duck* getDuckById(char id);
 
 std::shared_ptr<Item> getItemByPosition(Position position);
+
+std::shared_ptr<Item> getItemOnFloorByPosition(Position position);
+
 
 SpawnPlace* getSpawnPlaceByPosition(Position position);
 

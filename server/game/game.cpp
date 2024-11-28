@@ -37,7 +37,6 @@ Duck* Game::getDuckByPosition(Position position) {
 
 void Game::simulate_round() {
         
-
         //sumo 1 al contador de rondas hasta generar un nuevo item en el spawn place
         for (const auto& spawn_place : spawn_places) {
                 if(spawn_place->updateIterations(items)){
@@ -119,15 +118,20 @@ void Game::run() {
         create_ducks(players, level_manager.get_ducks_positions());
         create_spawn_places(level_manager.get_spawn_places());
         create_boxes(level_manager.get_boxes());
+        create_items_on_floor(level_manager.get_items());
 
         //envio al cliente los mensajes
         send_map_message();
         send_initialize_ducks_message();
         send_spawn_place_message();
         send_boxes_initialize_message();
+        send_items_on_floor_message();
+
+
 
         while (is_running) {
                 const auto start = std::chrono::high_resolution_clock::now();
+
 
                 // saco de 10 comandos de la queue y los ejecuto
                 std::shared_ptr<Executable> command;
@@ -137,6 +141,7 @@ void Game::run() {
                         command->execute(*this);
                         i += 1;
                 }
+
 
                 // Simulo una ronda de movimientos
                 simulate_round();
@@ -160,6 +165,8 @@ void Game::run() {
                                 send_initialize_ducks_message();
                                 send_spawn_place_message();
                                 send_boxes_initialize_message();
+                                send_items_on_floor_message();
+
                                 
                                 //vaciar la queue del juego para descartar cualquier comando viejo?)
                                 break;
@@ -176,6 +183,8 @@ void Game::run() {
                                 send_initialize_ducks_message();
                                 send_spawn_place_message();
                                 send_boxes_initialize_message();
+                                send_items_on_floor_message();
+
                                 
                                 //vaciar la queue del juego para descartar cualquier comando viejo?)
                                 break;
@@ -208,6 +217,9 @@ void Game::run() {
 
 
 void Game::send_updates(){
+
+
+
         for (Duck& duck : ducks) {
 
                 Message duck_message;
@@ -297,6 +309,8 @@ void Game::initialize_round() {
         initialize_ducks(level_manager.get_ducks_positions());
         create_spawn_places(level_manager.get_spawn_places());
         create_boxes(level_manager.get_boxes());
+        create_items_on_floor(level_manager.get_items());
+
 
 }
 
@@ -392,6 +406,57 @@ void Game::create_boxes(std::vector<Position> boxes_positions){
         }
 }
 
+
+void Game::create_items_on_floor(std::vector<ItemConfig> items_on_floor_positions){
+        std::cout << "CREO ITEMES ON FLOOR: " << items_on_floor_positions.size()<< "\n";
+        items_on_floor.clear();
+
+        for (size_t i = 0; i < items_on_floor_positions.size(); ++i) {
+                ItemConfig itemConfig = items_on_floor_positions[i];
+                
+                int x = itemConfig.x;
+                int y = itemConfig.y;
+                uint8_t item_id = itemConfig.item_id;
+                
+                if (item_id == ARMOR_ID) {
+                        items_on_floor.emplace_back(std::make_shared<Armor>(x, y));
+                }
+                else if (item_id == HELMET_ID) {
+                        items_on_floor.emplace_back(std::make_shared<Helmet>(x, y));
+                }
+                else if(item_id == PEW_PEW_LASER_ID){
+                        items_on_floor.emplace_back(std::make_shared<PewPewLaser>(x, y));
+                }
+                else if (item_id == LASER_RIFLE_ID) {
+                        items_on_floor.emplace_back(std::make_shared<LaserRifle>(x, y));
+                }
+                else if(item_id == AK_47_ID){
+                        items_on_floor.emplace_back(std::make_shared<Ak47>(x, y));
+                }
+                else if (item_id == DUEL_PISTOL_ID) {
+                        items_on_floor.emplace_back(std::make_shared<DuelPistol>(x, y));
+                }
+                else if(item_id == COWBOY_PISTOL_ID){
+                        items_on_floor.emplace_back(std::make_shared<CowboyPistol>(x, y));
+                }
+                else if (item_id == MAGNUM_ID) {
+                        items_on_floor.emplace_back(std::make_shared<Magnum>(x, y));
+                }
+                else if(item_id == SHOTGUN_ID){
+                        items_on_floor.emplace_back(std::make_shared<Shotgun>(x, y));
+                }
+                else if(item_id == SNIPER_ID){
+                        items_on_floor.emplace_back(std::make_shared<Sniper>(x, y));
+                }
+   
+        }
+
+
+        
+}
+
+
+
 void Game::send_boxes_initialize_message(){
         Message msg;
         msg.type = BOXES_INICIALIZATION;
@@ -402,6 +467,26 @@ void Game::send_boxes_initialize_message(){
         Message box_position_message;
         boxes[i]->getBoxPositionMessage(box_position_message);
         monitor.broadcast(box_position_message);
+    }
+}
+
+void Game::send_items_on_floor_message(){
+
+        std::cout << "MANDO LOS ITEMS ON FLOOR: " << items_on_floor.size() << "\n";
+
+        Message msg;
+        msg.type = ITEMS_ON_FLOOR_INICIALIZATION;
+        msg.items_on_floor_quantity = items_on_floor.size();
+        monitor.broadcast(msg);
+
+    for (size_t i = 0; i < items_on_floor.size(); ++i){
+        std::cout << "MANDO el item position" << "\n";
+
+        Message item_position_message;
+        items_on_floor[i]->getItemPositionMessage(item_position_message);
+        
+
+        monitor.broadcast(item_position_message);
     }
 }
 
@@ -456,6 +541,32 @@ std::shared_ptr<Item> Game::getItemByPosition(Position position) {
             auto foundItem = *it;
 
             items.erase(it);
+
+            return foundItem;
+        }
+    }
+
+    return nullptr; // No se encontró ningún item
+}
+
+std::shared_ptr<Item> Game::getItemOnFloorByPosition(Position position) {
+    int area_x_min = position.x;
+    int area_x_max = position.x + DUCK_SIZE_X;
+    int area_y_min = position.y;
+    int area_y_max = position.y + DUCK_SIZE_Y;
+
+
+    for (auto it = items_on_floor.begin(); it != items_on_floor.end(); ++it) {
+        Position itemPos = (*it)->getPosition();
+
+
+        if (itemPos.x >= area_x_min && itemPos.x < area_x_max &&
+            itemPos.y >= area_y_min && itemPos.y < area_y_max) {
+            std::cout << "Encontré un item EN EL PISO, en la pos x: " << itemPos.x << " y: " << itemPos.y << std::endl;
+
+            auto foundItem = *it;
+
+            items_on_floor.erase(it);
 
             return foundItem;
         }

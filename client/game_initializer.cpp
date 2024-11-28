@@ -12,12 +12,16 @@ void GameInitializer::initialize_new_round(GameState &game, Queue<Message> &mess
     initializeSpawnPlaces(game, message_queue);
 
     initializeBoxes(game, message_queue);
+
+    initializeItemsOnFloor(game, message_queue);
     
 }
 
 
 void GameInitializer::initializeGame(Queue<Message> &message_queue, GameState& game, int frame_width, int frame_height){
     //Respetar este orden por que es el orden en que el server envia los mensajes
+    std::cout << "INICIALIZO EL JUEGO \n";
+    
     initializeMap(game, message_queue);
 
     createDucks(message_queue, game, frame_width, frame_height);
@@ -25,6 +29,9 @@ void GameInitializer::initializeGame(Queue<Message> &message_queue, GameState& g
     initializeSpawnPlaces(game, message_queue);
 
     initializeBoxes(game, message_queue);
+
+    initializeItemsOnFloor(game, message_queue);
+
 
 }
 
@@ -72,6 +79,24 @@ void GameInitializer::initializeBoxes(GameState& game, Queue<Message> &message_q
     }
 }
 
+void GameInitializer::initializeItemsOnFloor(GameState& game, Queue<Message> &message_queue){
+
+    std::cout << "INICIALIZO LOS ITEMS ON FLOOR \n";
+
+    game.items_on_floor.clear(); // borro los anteriores si habia
+
+    Message msg_quantity = message_queue.pop();
+
+    std::cout << "INICIALIZO "<<  msg_quantity.items_on_floor_quantity <<" ITEMS ON FLOOR" << "\n";
+
+    for (int i = 0; i < msg_quantity.items_on_floor_quantity ; i++){
+        Message message = message_queue.pop();
+
+        if(message.type == ITEM_POSITION){
+            game.items_on_floor.emplace_back(message.item_x * TILE_SIZE, message.item_y * TILE_SIZE, message.item_id);
+        }
+    }
+}
 
 void GameInitializer::initializeDucks(GameState &game, Queue<Message> &message_queue){
     Message message_ducks = message_queue.pop();

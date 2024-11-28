@@ -16,6 +16,7 @@ Message ClientProtocol::receive_message(){
     skt.recvall(&message.type, 1, &was_closed);
     if (was_closed) throw LibError(errno, CLOSED_SOCKET);
     
+
     //ARMAR TODOS LOS CASOS
     switch (message.type)
 
@@ -81,6 +82,12 @@ Message ClientProtocol::receive_message(){
         if (was_closed) throw LibError(errno, CLOSED_SOCKET);
         break;
 
+    case ITEMS_ON_FLOOR_INICIALIZATION:
+        skt.recvall(&message.items_on_floor_quantity, sizeof(message.items_on_floor_quantity), &was_closed);
+        if (was_closed) throw LibError(errno, CLOSED_SOCKET);
+        break;
+
+    case ITEM_ON_FLOOR_UPDATE:
     case ITEM_POSITION:
         skt.recvall(&message.item_id, sizeof(uint8_t), &was_closed);
         if (was_closed) throw LibError(errno, CLOSED_SOCKET);

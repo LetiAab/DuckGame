@@ -35,10 +35,12 @@ bool Duck::is_in_air(){
 bool Duck::pickUpItem(std::shared_ptr<Item> item) {
     if (item != nullptr){
         std::cout << "Agarro el item de ID " << item->getItemId() << "\n";
+        
         if (onHand == nullptr)
             std::cout << "No tiene un ítem en la mano actualmente" << "\n";
         else
             std::cout << "El item de la mano antes de cambiarlo tiene ID " << onHand->getItemId() << "\n";
+        
         onHand = item;
         std::cout << "Ahora el Id del Item en la mano es " << onHand->getItemId() << "\n";
         return true;
