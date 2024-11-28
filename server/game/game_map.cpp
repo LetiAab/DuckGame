@@ -569,39 +569,10 @@ void GameMap::setDuckNewPosition(int x, int y, char duck_id) {
 
 
 //Pone un pato en una posición (x, y) ocupando un rectángulo de DUCK_SIZE_X x DUCK_SIZE_Y
-bool GameMap::placeDuck(int x, int y, char duck_id) {
+bool GameMap::placeDuck(Position pos, char duck_id) {
 
-
-    if (x < 0 || y < 0 || (x + DUCK_SIZE_X) > width || (y + DUCK_SIZE_Y) > height) {
-        return false;
-    }
-    
-    if(duckIsOverVoid(x,y)){
-        return false;
-    }
-
-    // veo que no haya obstaculos
-    for (int i = x; i < x + DUCK_SIZE_X; ++i) {
-        for (int j = y; j < y + DUCK_SIZE_Y; ++j) {
-            if (map[j][i] == PLATFORM) {
-                return false;
-            }
-        }
-    }
-
-    // veo que no haya otro pato
-    for (int i = x; i < x + DUCK_SIZE_X; ++i) {
-        for (int j = y; j < y + DUCK_SIZE_Y; ++j) {
-            if ((map[j][i] == DUCK_1) || (map[j][i] == DUCK_2) || (map[j][i] == DUCK_3)
-             || (map[j][i] == DUCK_4) || (map[j][i] == DUCK_5) || (map[j][i] == DUCK_6)) {
-                return false;
-            }
-        }
-    }
-    
-    // Si no hay obstáculos, marco las celdas donde esta el pato
-    for (int i = x; i < x + DUCK_SIZE_X; ++i) {
-        for (int j = y; j < y + DUCK_SIZE_Y; ++j) {
+    for (int i = pos.x; i < pos.x + DUCK_SIZE_X; ++i) {
+        for (int j = pos.y; j < pos.y + DUCK_SIZE_Y; ++j) {
             map[j][i] = duck_id;
         }
     }
