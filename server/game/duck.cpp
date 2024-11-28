@@ -289,6 +289,13 @@ void Duck::setHelmet(std::shared_ptr<Helmet> new_helmet) {
     }
 }
 
+uint8_t Duck::getWeaponId(){
+    if (weapon != nullptr){
+        return weapon->getItemId();
+    }
+    return 0;
+}
+
 
 bool Duck::disparar() {
     if(is_dead){return false;}
@@ -301,7 +308,8 @@ bool Duck::disparar() {
             return false;
         }
 
-
+        
+        //RETROCESOOO PARA AK47 Y MAGNUM
         if (habia_municiones && (weapon->getItemId() == AK_47_ID || weapon->getItemId() == MAGNUM_ID)) {
             old_position = position;
 
