@@ -43,6 +43,9 @@ struct Message {
     int ducks_quantity;
     int spawn_places_quantity;
     int boxes_quantity;
+    int items_on_floor_quantity;
+
+
 
 };
 

@@ -9,6 +9,22 @@ const char PLATFORM = 'P';
 const char BOX = 'B';
 const char EMPTY = ' ';
 
+std::unordered_map<std::string, uint8_t> item_map = {
+    {"ARMOR_ID", ARMOR_ID},
+    {"HELMET_ID", HELMET_ID},
+    {"BASE_WEAPON_ID", BASE_WEAPON_ID},
+    {"GRANADA_ID", GRANADA_ID},
+    {"BANANA_ID", BANANA_ID},
+    {"PEW_PEW_LASER_ID", PEW_PEW_LASER_ID},
+    {"LASER_RIFLE_ID", LASER_RIFLE_ID},
+    {"AK_47_ID", AK_47_ID},
+    {"DUEL_PISTOL_ID", DUEL_PISTOL_ID},
+    {"COWBOY_PISTOL_ID", COWBOY_PISTOL_ID},
+    {"MAGNUM_ID", MAGNUM_ID},
+    {"SHOTGUN_ID", SHOTGUN_ID},
+    {"SNIPER_ID", SNIPER_ID}
+};
+
 LevelManager::LevelManager() : filePath("../editor/levels/map1.txt"), counter(0) {
     //cargo los niveles
     //si los archivos no son modificables, deberia poder leer los que estan disponibles
@@ -129,13 +145,22 @@ bool LevelManager::parserFile() {
                     std::cerr << "Error parsing BOX at line: " << line << std::endl;
                 }
 
-            } else if (section == "ITEMS") {
-                if (ss >> x && ss.ignore() && ss >> y && ss.ignore() && ss >> item_id) {
-                    items_positions.push_back({x, y, item_id});
-                    std::cout << "Item " << item_id << " placed at (" << x << ", " << y << ")" << std::endl;
+            } else if (section == "ITEM") {
+                std::string item_name;  
+
+                if (ss >> x && ss.ignore() && ss >> y && ss.ignore() && ss >> item_name) {
+                    auto it = item_map.find(item_name);
+                    if (it != item_map.end()) {
+                        item_id = it->second; 
+                        items_positions.push_back({x, y, item_id});
+                        std::cout << "Item " << item_name << " (ID: " << static_cast<int>(item_id) << ") placed at (" << x << ", " << y << ")" << std::endl;
+                    } else {
+                        std::cerr << "Error: Item name not found in map: " << item_name << std::endl;
+                    }
                 } else {
                     std::cerr << "Error parsing ITEM at line: " << line << std::endl;
                 }
+
 
             } else if (section == "SPAWN DUCK") {
                 if (ss >> x && ss.ignore() && ss >> y) {

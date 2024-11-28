@@ -17,7 +17,7 @@ bool Item::getItemPositionMessage(Message& msg){
     msg.type = ITEM_POSITION;
     msg.item_x = position.x;
     msg.item_y = position.y;
-    msg.item_id = BASE_WEAPON_ID;
+    msg.item_id = item_id;
 
     return true;
 

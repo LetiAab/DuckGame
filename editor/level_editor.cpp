@@ -2,6 +2,22 @@
 #include <SDL_image.h>
 #include <iostream>
 
+std::unordered_map<uint8_t, std::string> item_map = {
+    {ARMOR_ID, "ARMOR_ID"},
+    {HELMET_ID, "HELMET_ID"},
+    {BASE_WEAPON_ID, "BASE_WEAPON_ID"},
+    {GRANADA_ID, "GRANADA_ID"},
+    {BANANA_ID, "BANANA_ID"},
+    {PEW_PEW_LASER_ID, "PEW_PEW_LASER_ID"},
+    {LASER_RIFLE_ID, "LASER_RIFLE_ID"},
+    {AK_47_ID, "AK_47_ID"},
+    {DUEL_PISTOL_ID, "DUEL_PISTOL_ID"},
+    {COWBOY_PISTOL_ID, "COWBOY_PISTOL_ID"},
+    {MAGNUM_ID, "MAGNUM_ID"},
+    {SHOTGUN_ID, "SHOTGUN_ID"},
+    {SNIPER_ID, "SNIPER_ID"}
+};
+
 LevelEditor::LevelEditor()
     : window(nullptr), renderer(nullptr), backgroundTexture(nullptr), crateTexture(nullptr),
       selectedTexture(nullptr), 
@@ -882,10 +898,9 @@ void LevelEditor::saveLevel() {
 
     levelFile << "ITEM\n";
     for (const auto& [key, item] : items) {
-        levelFile << std::dec // Fuerza formato decimal para x e y
-                  << item.x / 4 << "," << item.y / 4 << ",0x"
-                  << std::hex << std::uppercase // Fuerza formato hexadecimal para item_id
-                  << static_cast<int>(item.item_id) << "\n";
+        levelFile << std::dec 
+                  << item.x / 4 << "," << item.y / 4 << ","
+                  << item_map[item.item_id] << "\n";
     }
     levelFile << "\n";
 

@@ -99,6 +99,14 @@ bool ServerProtocol::send_message(Message& message){
 
         break;
 
+    case ITEMS_ON_FLOOR_INICIALIZATION:
+        if (!skt.sendall(&message.items_on_floor_quantity, sizeof(message.items_on_floor_quantity), &was_closed) || was_closed) {
+            throw LibError(errno, CLOSED_SOCKET);
+        }
+
+        break;
+
+
     case DUCKS_INICIALIZATION:
         // Enviar la cantidad de patos
         if (!skt.sendall(&message.ducks_quantity, sizeof(message.ducks_quantity), &was_closed) || was_closed) {

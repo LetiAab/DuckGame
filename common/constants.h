@@ -86,6 +86,7 @@ const uint8_t END_GAME = 0x84;
 const uint8_t DUCKS_INICIALIZATION = 0x85;
 const uint8_t SPAWN_PLACES_INICIALIZATION = 0x86;
 const uint8_t BOXES_INICIALIZATION = 0x87;
+const uint8_t ITEMS_ON_FLOOR_INICIALIZATION = 0x88;
 
 
 const int N_SPAWN_PLACES = 4;

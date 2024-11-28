@@ -208,8 +208,6 @@ void RendererManager::renderBoxes(GameState* game){
             }
 
         }
-
-
 }
 void RendererManager::renderItem(uint8_t item_id, int x, int y, int mult){
      SDL_Rect rect;
@@ -259,6 +257,24 @@ void RendererManager::renderItems(GameState* game) {
     for (auto& spawn_place : game->spawn_places) {
         // Acá reemplazar con los ids de las otras armas cuando tengas los renders de las mismas
         renderItem(spawn_place.item_id, spawn_place.x, spawn_place.y);
+    }
+}
+
+void RendererManager::renderItemsOnFloor(GameState* game){
+
+    std::cout << "entro a la funcion pero puede que no tenga bien asignados los itemns no gloor\n";
+
+
+    for (auto& item_on_floor : game->items_on_floor) {
+        std::cout << "RENDERIZO EL ITEM ON FLOOR \n";
+
+        std::cout << "RENDERIZO EL ITEM ON FLOOR:\n";
+        std::cout << "  item_id: " << static_cast<int>(item_on_floor.item_id) << "\n";
+        std::cout << "  x: " << item_on_floor.x << "\n";
+        std::cout << "  y: " << item_on_floor.y << "\n";
+        
+        // Acá reemplazar con los ids de las otras armas cuando tengas los renders de las mismas
+        renderItem(item_on_floor.item_id, item_on_floor.x, item_on_floor.y);
     }
 }
 
@@ -329,6 +345,7 @@ void RendererManager::doRenderDynamic(GameState* game, Message& message, uint16_
 
     renderDucks(game);
     renderItems(game);
+    renderItemsOnFloor(game);
     renderBoxes(game);
     renderStats(game, id);
 

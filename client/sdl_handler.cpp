@@ -127,7 +127,9 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
         }
 
         if(message.type == ITEM_POSITION){
-            //RENDERIZAR LOS ITEMS bien
+            //RENDERIZAR LOS ITEMS QUE ESTAN EN EL PISO
+
+
             /*Item item;
             item.x = message.item_x * TILE_SIZE;
             item.y = message.item_y * TILE_SIZE;
@@ -350,7 +352,7 @@ void SDLHandler::run(Queue<Command>& command_queue, uint16_t id, Queue<Message>&
 
             //LUEGO RECIBO DEL SERVER Y HAGO EL RENDER
             Message message = handleMessages(&game, message_queue);
-            std::cout << "El message type es: " << static_cast<unsigned int>(message.type) << "\n";
+            //std::cout << "El message type es: " << static_cast<unsigned int>(message.type) << "\n";
 
             if(message.type == END_ROUND){
                 std::cout << "TERMINO LA RONDA"<< "\n";
