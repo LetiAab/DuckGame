@@ -20,8 +20,11 @@ private:
     std::unique_ptr<SDLHandler> sdl_handler;
     uint16_t lobby_id;
     uint16_t duck_id;
+    bool lobby_exit;
     
-    void handleLobby(uint16_t& id, Queue<Message>& message_queue);
+    int handleLobby(uint16_t& id, Queue<Message>& message_queue);
+    void close();
+
 public:
     Client(const std::string& hostname, const std::string& port);
     int start();

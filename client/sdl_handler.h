@@ -29,6 +29,8 @@ private:
     void loadGame(GameState &game, Queue<Message> &message_queue);
     Message handleMessages(GameState* game, Queue<Message>& message_queue);
     int waitForStartGame();
+    void initializeWindow(SDL_Window*& window, SDL_Renderer*& renderer);
+    void runGame(SDL_Window* window, SDL_Renderer* renderer, Queue<Command>& command_queue, uint16_t id, Queue<Message>& message_queue);
 
 };
 

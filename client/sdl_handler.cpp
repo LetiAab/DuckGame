@@ -288,34 +288,24 @@ int SDLHandler::waitForStartGame() {
     return done;
 }
 
-void SDLHandler::run(Queue<Command>& command_queue, uint16_t id, Queue<Message>& message_queue) {
-    SDL_Window* window = SDL_CreateWindow("Duck Game",
-                                          SDL_WINDOWPOS_UNDEFINED,
-                                          SDL_WINDOWPOS_UNDEFINED,
-                                          WINDOW_WIDTH, WINDOW_HEIGHT,
-                                          0);
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+void SDLHandler::initializeWindow(SDL_Window*& window, SDL_Renderer*& renderer) {
+    window = SDL_CreateWindow("Duck Game",
+                              SDL_WINDOWPOS_UNDEFINED,
+                              SDL_WINDOWPOS_UNDEFINED,
+                              WINDOW_WIDTH, WINDOW_HEIGHT,
+                              0);
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     handle_textures = TextureHandler(renderer);
     screenManager = std::make_unique<ScreenManager>(renderer, handle_textures);
     screenManager->showStartScreen();
+}
 
-    screenManager->loadLobbyScreen();
-    screenManager->renderStaticLobby();
-    screenManager->showLobbyScreen();
-    if(waitForStartGame() == ERROR) {
-        SDL_DestroyWindow(window);
-        SDL_DestroyRenderer(renderer);
-        return;
-    }
-
-
+void SDLHandler::runGame(SDL_Window *window, SDL_Renderer *renderer, Queue<Command> &command_queue, uint16_t id, Queue<Message> &message_queue) {
     GameState game{};
     game.renderer = renderer;
     game.command_queue = &command_queue;
     game.music = true;
     loadGame(game, message_queue);
-
-
 
     //Empiezo la musica de fondo
     const std::string path = std::string(AUDIO_PATH) +"ambient-music.wav";
@@ -333,9 +323,8 @@ void SDLHandler::run(Queue<Command>& command_queue, uint16_t id, Queue<Message>&
             const auto start = std::chrono::high_resolution_clock::now();
 
             //PRIMERO MANDO AL SERVER
-            
-            //no se si pasar el audio manager aca para reproducir el sonido del disparo es lo mejor 
-            //pero por ahora funciona... 
+            //no se si pasar el audio manager aca para reproducir el sonido del disparo es lo mejor
+            //pero por ahora funciona...
             done = eventProcessor.processGameEvents(window, &game, id);
 
             if(game.music){
@@ -355,9 +344,7 @@ void SDLHandler::run(Queue<Command>& command_queue, uint16_t id, Queue<Message>&
             if(message.type == END_ROUND){
                 std::cout << "TERMINO LA RONDA"<< "\n";
                 std::cout << "El ganador fue el pato "<< static_cast<char>(message.duck_winner) << "\n";
-                
                 continue;
-                
             }
 
             if(message.type == END_GAME){
@@ -370,7 +357,6 @@ void SDLHandler::run(Queue<Command>& command_queue, uint16_t id, Queue<Message>&
 
             rendererManager->doRenderDynamic(&game, message, id);
 
-            //SDL_Delay(DELAY_TIME);
             const auto end = std::chrono::high_resolution_clock::now();
             auto loop_duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
             auto sleep_duration = DELAY_TIME - loop_duration;
@@ -391,4 +377,21 @@ void SDLHandler::run(Queue<Command>& command_queue, uint16_t id, Queue<Message>&
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
     Mix_CloseAudio();
+}
+
+void SDLHandler::run(Queue<Command>& command_queue, uint16_t id, Queue<Message>& message_queue) {
+    SDL_Window* window = nullptr;
+    SDL_Renderer* renderer = nullptr;
+    initializeWindow(window, renderer);
+
+    /*screenManager->loadLobbyScreen();
+    screenManager->renderStaticLobby();
+    screenManager->showLobbyScreen();
+    if(waitForStartGame() == ERROR) {
+        SDL_DestroyWindow(window);
+        SDL_DestroyRenderer(renderer);
+        return;
+    }*/
+
+    runGame(window, renderer, command_queue, id, message_queue);
 }

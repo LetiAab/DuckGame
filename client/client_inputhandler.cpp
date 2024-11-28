@@ -77,7 +77,15 @@ void InputHandler::run() {
                 };
             }
 
-            if (input == "a"){
+            if (input == "8"){
+                auto command = Command(id, LIST_MATCH_AVAILABLE, actual_match_id);
+
+                if (command_queue.try_push(command)){
+                    std::cout << "Partidas disponibles..." << "\n";
+                };
+            }
+
+            /*if (input == "a"){
                 //moverme a la izquierda
                 auto command = Command(id, MOVE_LEFT);
 
@@ -116,7 +124,7 @@ void InputHandler::run() {
                 };
                 is_alive = false;
                 break;
-            }
+            }*/
 
         }
 

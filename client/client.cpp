@@ -6,7 +6,7 @@
 #include "common/constants.h"
 
 Client::Client(const std::string& hostname, const std::string& port):
-        protocol(Socket(hostname.c_str(), port.c_str())), lobby_id(0), duck_id(0){}
+        protocol(Socket(hostname.c_str(), port.c_str())), lobby_id(0), duck_id(0), lobby_exit(false){}
 
 void printExistingMatches(const std::vector<uint16_t>& existing_matches) {
     std::cout << "=> Ids de partidas disponibles: ";
@@ -46,48 +46,64 @@ void print_first_message(Message& first_message){
     std::cout << std::endl;
 }
 
-void Client::handleLobby(uint16_t& id, Queue<Message>& message_queue) {
-    while(true){
-        Message message = message_queue.pop();
+int Client::handleLobby(uint16_t& id, Queue<Message>& message_queue) {
+    int result = SUCCESS;
+    auto cmd = Command(id, LOBBY_STOP_CODE);
+    try {
+        while(true){
+            Message message = message_queue.pop();
 
-        if (message.type == LOBBY_EXIT_CODE){
-            std::cout << "Comando para salir..." << "\n";
-            break;
-        }
-
-        if (message.type == NEW_MATCH_CODE){
-            std::cout << "Partida creada con id: " << static_cast<int>(message.current_match_id) << "\n";
-            printExistingMatches(message.existing_matches);
-        }
-
-        if (message.type == EXISTING_MATCH_CODE){
-            std::cout << "Conectado a partida con id: " << static_cast<int>(message.current_match_id) << "\n";
-        }
-
-        if (message.type == LOBBY_COMMAND_FAIL){
-            std::cout << "Ups! parece que no puedes realizar esa accion" << "\n";
-        }
-
-        if (message.type == START_MATCH_CODE){
-            std::cout << "Partida iniciada con id: " << static_cast<int>(message.current_match_id) << "\n";
-
-            //esto no es muy lindo pero de momento funciona
-            auto cmd = Command(id, LOBBY_STOP_CODE);
-
-            if (protocol.send_command(cmd)){
-                std::cout << "Me desconecte del lobby. Ahora voy a comunicarme con el juego" << "\n";
+            if (message.type == LOBBY_EXIT_CODE){
+                std::cout << "Comando para salir..." << "\n";
+                lobby_exit = true;
                 break;
-            };
+            }
+
+            if (message.type == NEW_MATCH_CODE){
+                std::cout << "Partida creada con id: " << static_cast<int>(message.current_match_id) << "\n";
+                //printExistingMatches(message.existing_matches);
+            }
+
+            if (message.type == LIST_MATCH_AVAILABLE) {
+                printExistingMatches(message.existing_matches);
+            }
+
+            if (message.type == EXISTING_MATCH_CODE){
+                std::cout << "Conectado a partida con id: " << static_cast<int>(message.current_match_id) << "\n";
+            }
+
+            if (message.type == LOBBY_COMMAND_FAIL){
+                std::cout << "Ups! parece que no puedes realizar esa accion" << "\n";
+            }
+
+            if (message.type == START_MATCH_CODE){
+                std::cout << "Partida iniciada con id: " << static_cast<int>(message.current_match_id) << "\n";
+
+                //esto no es muy lindo pero de momento funciona
+                if (protocol.send_command(cmd)){
+                    std::cout << "Me desconecte del lobby. Ahora voy a comunicarme con el juego" << "\n";
+                    break;
+                };
+            }
+
+            std::cout << "\n";
         }
-        std::cout << "\n";
+    } catch (const ClosedQueue& e) {
+        result = ERROR;
+        std::cerr << "Exception handling the lobby: ClosedQueue" << e.what() << std::endl;
+
+    } catch (const LibError& e) {
+        result = ERROR;
+        std::cerr << "Exception handling the lobby: LibError" << e.what() << std::endl;
+
+    } catch (const std::exception& e) {
+        result = ERROR;
+        std::cerr << "Exception handling the lobby: " << e.what() << std::endl;
     }
+    return result;
 }
 
 int Client::start(){
-
-
-
-
     // primer mensaje de la conexion para saber mi id
     Message first_message = protocol.receive_message();
 
@@ -111,7 +127,17 @@ int Client::start(){
     input_handler->start();
 
     //manejo la interaccion con el lobby
-    handleLobby(lobby_id, message_queue);
+    int result = handleLobby(lobby_id, message_queue);
+    if (result != SUCCESS) {
+        std::cerr << "Error: Handle lobby failed." << std::endl;
+        close();
+        return result;
+    }
+    if (lobby_exit) {
+        std::cout << "Sali del lobby!"<< std::endl;
+        close();
+        return SUCCESS;
+    }
 
     //A partir  de ahora estoy jugando y recibo un nuevo id, el cual corresponde a mi pato
     Message first_game_message = message_queue.pop();
@@ -127,8 +153,12 @@ int Client::start(){
     sdl_handler->run(sender->get_queue(), duck_id, message_queue);
 
     //---------------------------------------------------------
-    //hacer un cierre mas prolijo
+    close();
 
+    return SUCCESS;
+}
+
+void Client::close() {
     std::cout << "Cerrando socket..." << std::endl;
     protocol.shutdown();
     std::cout << "Cerrando input handler..." << std::endl;
@@ -141,7 +171,4 @@ int Client::start(){
     receiver->stop();
     receiver->join();
     std::cout << "Cliente cerrado..." << std::endl;
-
-    return SUCCESS;
 }
-

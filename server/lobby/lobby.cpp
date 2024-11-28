@@ -110,6 +110,7 @@ void Lobby::get_all_match_ids(std::vector<uint16_t>& match_ids) {
     for (auto& match : matches) {
         if (match->is_match_available()) {
             match_ids.push_back(match->get_match_id());
+            //std::cout << match->get_match_id() << std::endl;
         }
     }
 }
@@ -216,7 +217,13 @@ LobbyMessage Lobby::process_command(const LobbyCommand& cmd) {
             }
             break;
         }
+        case LIST_MATCH_AVAILABLE: {
+            LobbyMessage msg = create_lobby_message(cmd.player_id);
+            send_message(msg);
+            std::cout << "El jugador quiere ver las partidas disponibles\n";
 
+            break;
+        }
     }
     
     return create_lobby_response(cmd.player_id, type, match_id);
