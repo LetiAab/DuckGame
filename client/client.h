@@ -21,7 +21,7 @@ private:
     uint16_t lobby_id;
     uint16_t duck_id;
     
-    void handleLobby(uint16_t& id, Queue<Message>& message_queue);
+    bool handleLobby(uint16_t& id, Queue<Message>& message_queue);
 public:
     Client(const std::string& hostname, const std::string& port);
     int start();

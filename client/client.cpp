@@ -46,48 +46,51 @@ void print_first_message(Message& first_message){
     std::cout << std::endl;
 }
 
-void Client::handleLobby(uint16_t& id, Queue<Message>& message_queue) {
-    while(true){
-        Message message = message_queue.pop();
+bool Client::handleLobby(uint16_t& id, Queue<Message>& message_queue) {
+    bool ok = true;
+    bool running = true;
+    try{
 
-        if (message.type == LOBBY_EXIT_CODE){
-            std::cout << "Comando para salir..." << "\n";
-            break;
+        while(running){
+            Message message = message_queue.pop();
+
+            if (message.type == NEW_MATCH_CODE){
+                std::cout << "Partida creada con id: " << static_cast<int>(message.current_match_id) << "\n";
+                printExistingMatches(message.existing_matches);
+            }
+
+            if (message.type == EXISTING_MATCH_CODE){
+                std::cout << "Conectado a partida con id: " << static_cast<int>(message.current_match_id) << "\n";
+            }
+
+            if (message.type == LOBBY_COMMAND_FAIL){
+                std::cout << "Ups! parece que no puedes realizar esa accion" << "\n";
+            }
+
+            if (message.type == START_MATCH_CODE){
+                std::cout << "Partida iniciada con id: " << static_cast<int>(message.current_match_id) << "\n";
+
+                //esto no es muy lindo pero de momento funciona
+                auto cmd = Command(id, LOBBY_STOP_CODE);
+
+                if (protocol.send_command(cmd)){
+                    std::cout << "Me desconecte del lobby. Ahora voy a comunicarme con el juego" << "\n";
+                    running = false;
+                    break;
+                };
+            }
+            std::cout << "\n";
         }
-
-        if (message.type == NEW_MATCH_CODE){
-            std::cout << "Partida creada con id: " << static_cast<int>(message.current_match_id) << "\n";
-            printExistingMatches(message.existing_matches);
-        }
-
-        if (message.type == EXISTING_MATCH_CODE){
-            std::cout << "Conectado a partida con id: " << static_cast<int>(message.current_match_id) << "\n";
-        }
-
-        if (message.type == LOBBY_COMMAND_FAIL){
-            std::cout << "Ups! parece que no puedes realizar esa accion" << "\n";
-        }
-
-        if (message.type == START_MATCH_CODE){
-            std::cout << "Partida iniciada con id: " << static_cast<int>(message.current_match_id) << "\n";
-
-            //esto no es muy lindo pero de momento funciona
-            auto cmd = Command(id, LOBBY_STOP_CODE);
-
-            if (protocol.send_command(cmd)){
-                std::cout << "Me desconecte del lobby. Ahora voy a comunicarme con el juego" << "\n";
-                break;
-            };
-        }
-        std::cout << "\n";
+    } catch (const ClosedQueue& e){
+        ok = false;
+        running = false;
     }
+    return ok;
 }
 
+
+
 int Client::start(){
-
-
-
-
     // primer mensaje de la conexion para saber mi id
     Message first_message = protocol.receive_message();
 
@@ -110,8 +113,19 @@ int Client::start(){
     receiver->start();
     input_handler->start();
 
-    //manejo la interaccion con el lobby
-    handleLobby(lobby_id, message_queue);
+    //manejo la interaccion con el lobby, si devuelve false es que fallo algo y debo salir
+    if (!handleLobby(lobby_id, message_queue)){
+        std::cout << "CIERRO LOS HILOS Y ME VOY" << std::endl;
+        input_handler->stop();
+        input_handler->join();
+
+        sender->stop();
+        sender->join();
+
+        receiver->stop();
+        receiver->join();
+        return 1;
+    }
 
     //A partir  de ahora estoy jugando y recibo un nuevo id, el cual corresponde a mi pato
     Message first_game_message = message_queue.pop();

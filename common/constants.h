@@ -161,4 +161,6 @@ const std::vector<std::vector<uint8_t>> colors = {
 const int BUTTON_W = 239;
 const int BUTTON_H = 77;
 
+static const char CLOSED_SOCKET[] = "Socket was closed";
+
 #endif
