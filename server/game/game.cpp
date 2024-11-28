@@ -337,34 +337,12 @@ void Game::initialize_ducks(std::vector<Position> ducks_positions){
 
         for (std::size_t i = 0; i < ducks.size(); ++i) {
                 Position pos = ducks_positions[i];
+                map.placeDuck(pos, ducks[i].get_id());
                 ducks[i].reset_for_round(pos);
         }
 
 }
 
-//TODO: Esto solo sirve para la  distribucion de obstaculos hardcodeados
-Position Game::get_random_position_for_duck(char duck_id){
-        std::random_device rd;
-        std::mt19937 gen(rd());
-
-        std::uniform_int_distribution<> distrib_x(18, map.get_width() - 18);
-        std::uniform_int_distribution<> distrib_y(10, map.get_height() - 20);
-
-
-        int random_x = distrib_x(gen);
-        int random_y = distrib_y(gen);
-
-        bool has_place = map.placeDuck(random_x, random_y, duck_id);
-        while (!has_place) {
-                random_x = distrib_x(gen);
-                random_y = distrib_y(gen);
-
-                has_place = map.placeDuck(random_x, random_y, duck_id);
-        }
-
-        return Position(random_x, random_y);
-        
-}
 
 void Game::create_ducks(int size, std::vector<Position> ducks_positions) {
         round_manager.initialize_manager(size);
@@ -372,7 +350,7 @@ void Game::create_ducks(int size, std::vector<Position> ducks_positions) {
         for(uint16_t id = 1; id <= size; ++id) {
                 char char_id = static_cast<char>(id + '0');
                 Position pos = ducks_positions[id-1];
-
+                map.placeDuck(pos, char_id);
                 ducks.emplace_back(char_id, pos.x, pos.y, &map);
         }
 }

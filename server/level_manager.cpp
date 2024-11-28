@@ -166,16 +166,7 @@ bool LevelManager::parserFile() {
                 if (ss >> x && ss.ignore() && ss >> y) {
                     ducks_positions.emplace_back(x, y);
                     std::cout << "Duck spawned at (" << x << ", " << y << ")" << std::endl;
-
-                    int duck_id = ducks_positions.size();
-                    for (int i = x; i < x + DUCK_SIZE_X; ++i) {
-                        for (int j = y; j < y + DUCK_SIZE_Y; ++j) {
-                            if (i < map.map_width && j < map.map_height) {
-                                map.map[j][i] = '0' + duck_id;
-                                //std::cout << "Placed duck " << duck_id << " at (" << i << ", " << j << ")" << std::endl;
-                            }
-                        }
-                    }
+                    
                 } else {
                     std::cerr << "Error parsing SPAWN DUCK at line: " << line << std::endl;
                 }
