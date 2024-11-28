@@ -27,7 +27,7 @@ private:
     void renderItemsOnFloor(GameState* game);
 
 
-    void renderItem(uint8_t item_id, int x, int y, int mult = 1);    
+    void renderItem(uint8_t item_id, int x, int y, int mult = 1, bool enableOscillation = true);    
 
 
 
