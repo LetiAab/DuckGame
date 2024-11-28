@@ -60,8 +60,15 @@ void Lobby::clean_disconnected_players() {
     for (const auto& player : lobby_players) {
         if (player->is_playing()) {
             std::cout << "Lobby: el jugador " << player->get_player_id() <<" esta en partida, voy a eliminarlo"  << std::endl;
-        }else if (!player->is_connected()) {
+        } else if (!player->is_connected()) {
             std::cout << "Lobby: el jugador " << player->get_player_id() <<" se desconecto, voy a  eliminarlo"  << std::endl;
+            //si el jugador que se desconecto estaba conectado a una partida sin empezar, lo elimino de la partida
+            uint16_t match_id = player->get_match_id();
+            if(match_id != 0){
+                Match* match = find_match_by_id(match_id);
+                match->remove_player();
+            }
+            
             player->stop();
         }
     }
@@ -158,10 +165,11 @@ void Lobby::notify_players(Match* match, LobbyMessage msg){
 
         if (lobby_player->get_match_id() == match_id) {
             //aviso a los jugadores que la partida va a empezar para que se detenga el hilo recibidor
-            lobby_player->send_lobby_message(msg);
-            std::shared_ptr<Player> player = lobby_player->start_game(queue);
-            match->add_player(player);
-            
+            if(lobby_player->send_lobby_message(msg)){
+                std::shared_ptr<Player> player = lobby_player->start_game(queue);
+                match->add_player(player);
+            }
+
         }
     }
     
@@ -199,10 +207,10 @@ LobbyMessage Lobby::process_command(const LobbyCommand& cmd) {
     switch (type) {
         case NEW_MATCH_CODE: {
             std::unique_ptr<Match> new_match = std::make_unique<Match>(match_counter_ids);
-            new_match->can_add_player();
+            //new_match->can_add_player();
 
             match_id = new_match->get_match_id();
-            lobby_player->set_match_id(match_id);
+            //lobby_player->set_match_id(match_id);
 
             matches.push_back(std::move(new_match));
             match_counter_ids += 1;
@@ -212,8 +220,9 @@ LobbyMessage Lobby::process_command(const LobbyCommand& cmd) {
         }
         case EXISTING_MATCH_CODE: {
             Match* match = find_match_by_id(cmd.match_id);
-
-            if (match->can_add_player()) {
+            uint16_t old_match = lobby_player->get_match_id();
+            //verifico que se pueda conectar a dicha partida y que no haya estado conectado a otra antes
+            if (match->can_add_player() && (old_match == 0)) {
 
                 match_id = cmd.match_id;
                 lobby_player->set_match_id(match_id);
