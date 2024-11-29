@@ -9,7 +9,7 @@ bool Magnum::disparar(int position_x, int position_y, char looking, GameMap* map
     if (municiones > 0) {
         //la bala debe aparecer fuera del pato, o sino se mata a si mismo
         int bullet_position_x = (looking == LOOKING_RIGHT) ? position_x + DUCK_SIZE_X : position_x -1;
-        int bullet_position_y = (is_looking_up) ? position_y - DUCK_SIZE_Y : position_y;
+        int bullet_position_y = (is_looking_up) ? position_y - DUCK_SIZE_Y / 2 : position_y;
 
         Position bullet_pos(bullet_position_x, bullet_position_y);
         //si donde debe salir la bala hay una pared, no puedo disparar

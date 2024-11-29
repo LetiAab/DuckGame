@@ -13,4 +13,10 @@ void LookUpCommand::execute(Game& game) {
     Duck* duck = game.getDuckById(char_id);
     duck->is_looking_up = true;
 
+    //Aviso que estoy mirando para arriba
+    Message lookUpMsg;
+    duck->get_duck_position_message(lookUpMsg);
+    game.game_broadcast(lookUpMsg);
+
+
 }

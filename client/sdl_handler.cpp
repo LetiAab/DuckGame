@@ -253,6 +253,9 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
         }
 
         if (message.type == DUCK_POS_UPDATE){
+
+            std::cout << "RECIBO POS UPDATE" << "\n";
+
             int pos_id = message.player_id - 1;
 
             game->ducks[pos_id].x = message.duck_x * TILE_SIZE;
@@ -272,6 +275,8 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
             game->ducks[pos_id].is_jumping = message.is_jumping;
             game->ducks[pos_id].is_fluttering = message.is_fluttering;
             game->ducks[pos_id].is_laying_down = message.is_laying_down;
+            game->ducks[pos_id].is_looking_up = message.is_looking_up;
+
         }
     }
     return message;
