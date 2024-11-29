@@ -127,6 +127,7 @@ void GameInitializer::initializeDucks(GameState &game, Queue<Message> &message_q
                         game.ducks[pos_id].is_moving = msg.is_moving;
                         game.ducks[pos_id].is_jumping = msg.is_jumping;
                         game.ducks[pos_id].is_fluttering = msg.is_fluttering;
+                        game.ducks[pos_id].is_looking_up = msg.is_looking_up;
                         game.ducks[pos_id].is_dead = false;
 
                         game.ducks[pos_id].armor_equiped = 0;
@@ -165,6 +166,7 @@ void GameInitializer::createDucks(Queue<Message> &message_queue, GameState &game
                 duck.is_moving = false;
                 duck.is_jumping = false;
                 duck.is_fluttering = false;
+                duck.is_looking_up = false;
 
                 duck.armor_equiped = 0;
                 duck.weapon_equiped = 0;

@@ -20,6 +20,8 @@ Duck::Duck(char id, int x, int y, GameMap* map) :
     is_laying_down(false),
     was_laying_down(false),
     is_slippy(false),
+    is_looking_up(false),
+    was_looking_up(false),
     life_points(1),
     stop_notificated(false),
     is_dead(false),
@@ -194,12 +196,23 @@ void Duck::form_position_message(Message& msg){
     msg.is_jumping = is_jumping;
     msg.is_fluttering = is_fluttering;
     msg.is_laying_down = is_laying_down;
+    msg.is_looking_up = is_looking_up;
 }
 
 bool Duck::get_duck_position_message(Message& msg){
+
+    std::cout << "POSICION DEL PATO MESSAGE" << "\n";
+
     if(is_dead){return false;}
 
+    if(is_looking_up != was_looking_up){
+        form_position_message(msg);
+        was_looking_up = is_looking_up;
+        return true;
+    }
+
     if (is_laying_down != was_laying_down) {
+
         form_position_message(msg);
         was_laying_down = is_laying_down;
         return true;
@@ -303,7 +316,7 @@ bool Duck::disparar() {
     if (weapon != nullptr) {
         std::cout << "Soy pato, disparo desde x: " << position.x << " y: " << position.y << "\n";
         bool habia_municiones = (weapon->getMuniciones() > 0);
-        if(!(weapon->disparar(position.x, position.y, looking, map, id_player))){
+        if(!(weapon->disparar(position.x, position.y, looking, map, id_player, is_looking_up))){
             //si no pude disparar devuevlo false
             return false;
         }
