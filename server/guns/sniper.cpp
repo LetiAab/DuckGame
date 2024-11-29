@@ -7,11 +7,11 @@
 Sniper::Sniper(int x, int y)
     : Weapon(SNIPER_ID, "Sniper", 256, 0, 3, x, y) {}  // Inicializar posición
 
-bool Sniper::disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) {
+bool Sniper::disparar(int position_x, int position_y, char looking, GameMap* map, char id_player, bool is_looking_up) {
     if (municiones > 0) {
         //la bala debe aparecer fuera del pato, o sino se mata a si mismo
         int bullet_position_x = (looking == LOOKING_RIGHT) ? position_x + DUCK_SIZE_X : position_x -1;
-        int bullet_position_y = position_y;
+        int bullet_position_y = (is_looking_up) ? position_y - DUCK_SIZE_Y : position_y;
 
         Position bullet_pos(bullet_position_x, bullet_position_y);
         //si donde debe salir la bala hay una pared, no puedo disparar
@@ -22,6 +22,11 @@ bool Sniper::disparar(int position_x, int position_y, char looking, GameMap* map
 
         int direccion_x = (looking == LOOKING_RIGHT) ? 6 : -6;
         int direccion_y = 0;  // La bala se mueve horizonalmente
+        
+        if(is_looking_up){
+            direccion_x = 0;
+            direccion_y = -6;
+        }
 
         int bullet_id = municiones; //el id es el numero de muncion. Inteligente verdad?
 

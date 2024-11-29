@@ -98,6 +98,10 @@ void RendererManager::renderDucks(GameState* game) {
         } else if (duck.is_fluttering) {
             duck_texture = texture_handler.getTexture("duck-fluttering");
             //wings_texture = texture_handler.getTexture("duck-fluttering-wings");
+        }else if (duck.is_looking_up){
+            //ANIMAR QUE MIRA PARA ARRIBA?¿
+            duck_texture = texture_handler.getTexture("duck-jumping");
+
         } else {
             duck_texture = texture_handler.getTexture("duck-walking");
             wings_texture = texture_handler.getTexture("duck-walking-wings");

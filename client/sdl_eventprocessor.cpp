@@ -90,6 +90,9 @@ uint8_t EventProcessor::handleKeyDown(SDL_Keycode key) {
             case SDLK_m:
                 move = MUTE;
                 break;
+            case SDLK_w:
+                move = LOOK_UP;
+                break;
             default:
                 break;
         }
@@ -109,11 +112,14 @@ uint8_t EventProcessor::handleKeyUp(SDL_Keycode key) {
             case SDLK_d:
                 move = STOP_RIGHT;
                 break;
-            case SDLK_w:
+            case SDLK_j:
                 move = STOP_UP;
                 break;
             case SDLK_s:
                 move = STOP_DOWN;
+                break;
+            case SDLK_w:
+                move = STOP_LOOK_UP;
                 break;
             default:
                 break;
