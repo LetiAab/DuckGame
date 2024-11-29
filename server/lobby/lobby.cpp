@@ -137,6 +137,9 @@ LobbyMessage Lobby::create_lobby_response(uint16_t player_id, uint8_t type, uint
         get_all_match_ids(msg.existing_matches);
         msg.len_matches = msg.existing_matches.size();
         msg.current_match_id = 0;
+    } else if (type == LIST_MATCH_AVAILABLE) {
+        get_all_match_ids(msg.existing_matches);
+        msg.len_matches = msg.existing_matches.size();
     }
 
     return msg;
@@ -218,10 +221,7 @@ LobbyMessage Lobby::process_command(const LobbyCommand& cmd) {
             break;
         }
         case LIST_MATCH_AVAILABLE: {
-            LobbyMessage msg = create_lobby_message(cmd.player_id);
-            send_message(msg);
             std::cout << "El jugador quiere ver las partidas disponibles\n";
-
             break;
         }
     }
