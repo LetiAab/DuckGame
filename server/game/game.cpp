@@ -46,8 +46,7 @@ void Game::simulate_round() {
                 }
         }
 
-
-        for(const auto& box: boxes){
+                for(const auto& box: boxes){
                 if(box->isDestroyed()){
                         continue;
                 }
@@ -60,7 +59,6 @@ void Game::simulate_round() {
                 }
 
         }
-
 
         for (Duck& duck : ducks) {
                 if (duck.is_dead) {
@@ -95,7 +93,10 @@ void Game::simulate_round() {
                         monitor.broadcast(kill_duck_message);
                         std::cout << "Pato muerto."  << std::endl;
                 }
+
+
         }
+
 }
 /* 
 void Game::add_projectile(std::unique_ptr<Proyectil> projectile) {
@@ -380,7 +381,7 @@ void Game::create_boxes(std::vector<Position> boxes_positions){
         for (size_t i = 0; i < boxes_positions.size(); ++i) {
                 Position pos = boxes_positions[i];
                 
-                boxes.emplace_back(std::make_unique<Box>(pos, 0, &map));
+                boxes.emplace_back(std::make_unique<Box>(pos, i, &map));
         }
 }
 

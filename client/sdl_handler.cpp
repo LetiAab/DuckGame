@@ -118,7 +118,7 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
         }
 
         if(message.type == BOX_DESTROYED){
-
+            std::cout << "Se destruyo la caja con id: " << message.box_id << "\n";
 
             int box_id = message.box_id;
             game->boxes[box_id].destroyed = true;
