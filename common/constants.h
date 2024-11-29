@@ -143,8 +143,8 @@ const int BOX_SIZE_Y = 4;
 const int BOX_TOTAL_SIZE = 16;
 
 
-const int BULLET_SIZE_Y = 1;
-const int BULLET_SIZE_X = 2;
+const int BULLET_SIZE_Y = 2;
+const int BULLET_SIZE_X = 4;
 
 const int TILE_SIZE = 4;
 
