@@ -117,6 +117,7 @@ void RendererManager::renderDucks(GameState* game) {
             // Si el pato está mirando hacia arriba
             if (duck.is_looking_up) {
                 angle = (duck.flipType == SDL_FLIP_HORIZONTAL) ? 90.0 : -90.0;
+                gun_rect.x = (duck.flipType == SDL_FLIP_HORIZONTAL) ? gun_rect.x - TILE_SIZE * 3 : gun_rect.x + TILE_SIZE * 3;
             }
 
             if (duck.weapon_equiped == COWBOY_PISTOL_ID) {
