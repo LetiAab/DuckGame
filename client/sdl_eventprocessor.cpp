@@ -72,7 +72,7 @@ uint8_t EventProcessor::handleKeyDown(SDL_Keycode key) {
             case SDLK_d:
                 move =  MOVE_RIGHT;
                 break;
-            case SDLK_w:
+            case SDLK_j:
                 move =  MOVE_UP;
                 break;
             case SDLK_s:
