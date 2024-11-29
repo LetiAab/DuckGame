@@ -138,12 +138,12 @@ const int DUCK_SIZE_Y = 12;
 const int DUCK_TOTAL_SIZE = 96; //Cantidad total de cuadrados que ocupa el pato 9
 
 
-const int BOX_SIZE_X = 4;
-const int BOX_SIZE_Y = 4;
-const int BOX_TOTAL_SIZE = 16;
+const int BOX_SIZE_X = 8;
+const int BOX_SIZE_Y = 8;
+const int BOX_TOTAL_SIZE = 64;
 
 
-const int BULLET_SIZE_Y = 2;
+const int BULLET_SIZE_Y = 4;
 const int BULLET_SIZE_X = 4;
 
 const int TILE_SIZE = 4;
