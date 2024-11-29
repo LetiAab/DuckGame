@@ -172,7 +172,7 @@ void ScreenManager::renderNewMatchText(int id_match) {
     SDL_RenderPresent(renderer);
 }
 
-void ScreenManager::renderAvailableMatches(int id_match) {
+void ScreenManager::renderAvailableMatches(int len_matches) {
     matches.clear();
 
     SDL_RenderCopy(renderer, lobby_textures["static_scene"], NULL, NULL);
@@ -180,13 +180,13 @@ void ScreenManager::renderAvailableMatches(int id_match) {
     int rect_x = join->x+30;
     int rect_y = join->y+join->h+30;
 
-    for (int i=1; i<id_match; i++) {
+    for (int i=1; i<len_matches+1; i++) {
         if(rect_x+50 >= WINDOW_WIDTH) {
             rect_x = join->x+30;
             rect_y += 50;
         }
         SDL_Rect rect = {rect_x, rect_y, 40, 40};
-        matches.push_back({rect, i});
+        matches.push_back({rect, static_cast<uint16_t>(i)});
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
         SDL_RenderDrawRect(renderer, &rect);
 
@@ -197,11 +197,6 @@ void ScreenManager::renderAvailableMatches(int id_match) {
 
     SDL_RenderPresent(renderer);
 }
-
-/*std::vector<std::pair<SDL_Rect, int>> ScreenManager::getMatches() {
-    return matches;
-}*/
-
 
 void ScreenManager::renderSelectedMatch(int x, int y, int& chosen_match) {
     for (auto& [rect, id] : matches) {

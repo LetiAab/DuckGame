@@ -122,7 +122,7 @@ uint8_t EventProcessor::handleKeyUp(SDL_Keycode key) {
     return move;
 }
 
-int EventProcessor::processLobbyEvents(ScreenManager* screenManager, bool& start_game, int& id_match, int& chosen_match) {
+int EventProcessor::processLobbyEvents(ScreenManager* screenManager, Queue<Command>& command_queue, uint16_t id, bool& start_game, int& chosen_match, bool& selected_match) {
     int done = SUCCESS;
     SDL_Event event;
     int x, y;
@@ -135,6 +135,7 @@ int EventProcessor::processLobbyEvents(ScreenManager* screenManager, bool& start
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
                 case SDL_WINDOWEVENT_CLOSE:
+                    command_queue.push(Command(id, LOBBY_EXIT_CODE));
                     done = ERROR;
                 break;
                 case SDL_MOUSEBUTTONDOWN: {
@@ -144,27 +145,44 @@ int EventProcessor::processLobbyEvents(ScreenManager* screenManager, bool& start
                     std::cout << "X: " << x << " Y: " << y << "\n";
 
                     if (x >= start->x && x <= start->x+BUTTON_W && y >= start->y && y <= start->y+BUTTON_H) {
+                        if (command_queue.try_push(Command(id, START_MATCH_CODE, chosen_match))){
+                            std::cout << "Iniciando partida..." << "\n";
+                        }
                         start_game = true;
                         std::cout << "Empezo el juego!\n";
+
+
                     } else if (x >= new_match->x && x <= new_match->x+BUTTON_W && y >= new_match->y && y <= new_match->y+BUTTON_H) {
+                        selected_match = false;
                         // si se presiona se crea una nueva partida => se escribe el id de la partida nueva
-                        screenManager->renderNewMatchText(id_match);
-                        std::cout << "Nueva partida creada con id: " << id_match << "\n";
-                        id_match++;
+                        if (command_queue.try_push(Command(id, NEW_MATCH_CODE, chosen_match))){
+                            std::cout << "Creando partida..." << "\n";
+                        }
                     } else if (x >= list_matches->x && x <= list_matches->x+BUTTON_W && y >= list_matches->y && y <= list_matches->y+BUTTON_H) {
                         // list matches
                         // aparece un menu con las partidas disponibles
                         // luego se puede presionar una de las partidas
-                        screenManager->renderAvailableMatches(id_match);
                         std::cout << "Ver listado de partidas\n";
+                        if (command_queue.try_push(Command(id, LIST_MATCH_AVAILABLE))){
+                            std::cout << "Partidas disponibles..." << "\n";
+                        };
+                        selected_match = true;
+                        chosen_match = 1;
+                        std::cout << "Partida seleccionada: " << chosen_match << "\n";
+                        if (command_queue.try_push(Command(id, EXISTING_MATCH_CODE, chosen_match))){
+                            std::cout << "Conectando a partida..." << "\n";
+                        }
                     }
 
                     // join match
                     // si se presiona se conecta a la partida seleccionada
-                    if (chosen_match == 0) {
+                    /*if (selected_match) {
                         screenManager->renderSelectedMatch(x, y, chosen_match);
                         std::cout << "Partida seleccionada: " << chosen_match << "\n";
-                    }
+                        if (command_queue.try_push(Command(id, EXISTING_MATCH_CODE, chosen_match))){
+                            std::cout << "Conectando a partida..." << "\n";
+                        };
+                    }*/
 
                 break;
                 }
