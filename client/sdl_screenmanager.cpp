@@ -127,7 +127,6 @@ void ScreenManager::renderStaticLobby() {
     SDL_Rect start_button_rect = {start.x, start.y, start.w, start.h};
     SDL_RenderCopy(renderer, getTexture("start-button"), NULL, &start_button_rect);
 
-
     Button new_match = {NEW_MATCH_CODE, 80, t_size.y+80, BUTTON_W, BUTTON_H};
     buttons.push_back(new_match);
     SDL_Rect new_match_button_rect = {new_match.x, new_match.y, new_match.w, new_match.h};
@@ -174,16 +173,20 @@ void ScreenManager::renderNewMatchText(int id_match) {
 }
 
 void ScreenManager::renderAvailableMatches(int id_match) {
+    matches.clear();
+
     SDL_RenderCopy(renderer, lobby_textures["static_scene"], NULL, NULL);
     Button* join = getButton(LIST_MATCH_AVAILABLE);
     int rect_x = join->x+30;
     int rect_y = join->y+join->h+30;
+
     for (int i=1; i<id_match; i++) {
         if(rect_x+50 >= WINDOW_WIDTH) {
             rect_x = join->x+30;
             rect_y += 50;
         }
         SDL_Rect rect = {rect_x, rect_y, 40, 40};
+        matches.push_back({rect, i});
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
         SDL_RenderDrawRect(renderer, &rect);
 
@@ -193,6 +196,24 @@ void ScreenManager::renderAvailableMatches(int id_match) {
     }
 
     SDL_RenderPresent(renderer);
+}
+
+/*std::vector<std::pair<SDL_Rect, int>> ScreenManager::getMatches() {
+    return matches;
+}*/
+
+
+void ScreenManager::renderSelectedMatch(int x, int y, int& chosen_match) {
+    for (auto& [rect, id] : matches) {
+        if (x >= rect.x && x <= rect.x+rect.w && y >= rect.y && y <= rect.y+rect.h) {
+            std::cout << "Partida SELECTED : " << id << "\n";
+            SDL_SetRenderDrawColor(renderer, 0, 255, 0, 50);
+            SDL_RenderFillRect(renderer, &rect);
+            SDL_RenderPresent(renderer);
+            chosen_match = id;
+            break;
+        }
+    }
 }
 
 ScreenManager::~ScreenManager() {

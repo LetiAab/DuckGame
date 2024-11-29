@@ -271,11 +271,12 @@ int SDLHandler::waitForStartGame() {
     int done = SUCCESS;
     bool start_game = false;
     int id_match = 1;
+    int chosen_match = 0;
 
     while (!start_game && !done) {
         const auto start = std::chrono::high_resolution_clock::now();
 
-        done = eventProcessor.processLobbyEvents(screenManager.get(), start_game, id_match);
+        done = eventProcessor.processLobbyEvents(screenManager.get(), start_game, id_match, chosen_match);
 
         const auto end = std::chrono::high_resolution_clock::now();
         auto loop_duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
@@ -384,14 +385,14 @@ void SDLHandler::run(Queue<Command>& command_queue, uint16_t id, Queue<Message>&
     SDL_Renderer* renderer = nullptr;
     initializeWindow(window, renderer);
 
-    /*screenManager->loadLobbyScreen();
+    screenManager->loadLobbyScreen();
     screenManager->renderStaticLobby();
     screenManager->showLobbyScreen();
     if(waitForStartGame() == ERROR) {
         SDL_DestroyWindow(window);
         SDL_DestroyRenderer(renderer);
         return;
-    }*/
+    }
 
     runGame(window, renderer, command_queue, id, message_queue);
 }

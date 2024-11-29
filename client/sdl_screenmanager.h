@@ -21,11 +21,14 @@ public:
     void renderNewMatchText(int id_match);
     void renderAvailableMatches(int id_match);
     Button* getButton(uint8_t id);
+    void renderSelectedMatch(int x, int y, int& chosen_match);
+
 private:
     SDL_Renderer* renderer;
     TextureHandler& texture_handler;
     std::vector<Button> buttons;
     std::unordered_map<std::string, SDL_Texture*> lobby_textures;
+    std::vector<std::pair<SDL_Rect, int>> matches;
 };
 
 #endif //SDL_SCREENMANAGER_H
