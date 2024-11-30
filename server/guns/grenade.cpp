@@ -33,11 +33,7 @@ void Grenade::mostrarInformacion() const {
     std::cout << "Municiones: " << municiones << std::endl;
 }
 
-
-// Devuelve true cuando ya no le quedan proyectiles
-bool Grenade::update_weapon(int position_x, int position_y, char looking, GameMap* map, char id_player){
-        ticks_counter++;
-
+void Grenade::simulate_movement(GameMap* map) {
         // Uso la de banana pq hace lo mismo
         Position old_position = position;
         position = map->try_move_grenade(position, speed);
@@ -51,6 +47,13 @@ bool Grenade::update_weapon(int position_x, int position_y, char looking, GameMa
         if (map->is_throwable_touching_floor(position, 1, 1)) {
                 touching_floor = true;
         }
+
+        // std::cout << "Granada se movio desde x: " << old_position.x << " y: " << old_position.y << ", hasta x: " << position.x << " y: " << position.y << std::endl;
+}
+
+// Devuelve true cuando ya no le quedan proyectiles
+bool Grenade::update_weapon(int position_x, int position_y, char looking, GameMap* map, char id_player){
+        ticks_counter++;
 
         if (exploded) {
                 for(auto it = projectiles.begin(); it != projectiles.end(); ) {
@@ -68,9 +71,11 @@ bool Grenade::update_weapon(int position_x, int position_y, char looking, GameMa
                         return true;
                 }
         } else {
+                simulate_movement(map);
+
                 if (ticks_counter >= 20) {
                         // Creo que lo mejor va a ser que explote acá también y mueva los perdigones
-                        std::cout << "La granada explotó en la mano del pato" << std::endl;
+                        std::cout << "La granada explotó" << std::endl;
                                 
                         int fragment_position_x = (looking == LOOKING_RIGHT) ? position_x + DUCK_SIZE_X : position_x -1;
                         int fragment_position_y = position_y;
