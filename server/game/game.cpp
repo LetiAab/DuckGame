@@ -504,11 +504,13 @@ void Game::create_items_on_floor(std::vector<ItemConfig> items_on_floor_position
                 else if(item_id == SNIPER_ID){
                         items_on_floor.emplace_back(std::make_shared<Sniper>(x, y));
                 }
-   
+                else if(item_id == BANANA_ID){
+                        items_on_floor.emplace_back(std::make_shared<Banana>(x, y));
+                }
+                else if(item_id == GRENADE_ID){
+                        items_on_floor.emplace_back(std::make_shared<Grenade>(x, y));
+                }
         }
-
-
-        
 }
 
 

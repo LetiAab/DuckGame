@@ -55,7 +55,11 @@ void Box::createItem(std::vector<std::shared_ptr<Item>>& items) {
     int item_type = std::rand() % 12;
     std::shared_ptr<Item> item;
 
-    if (item_type == 2) {
+    if (item_type == 0) {
+        item = std::make_shared<Banana>(position.x, position.y);
+    } else if (item_type == 1) {
+        item = std::make_shared<Grenade>(position.x, position.y);
+    } else if (item_type == 2) {
         item = std::make_shared<PewPewLaser>(position.x, position.y);
     } else if (item_type == 3) {
         item = std::make_shared<LaserRifle>(position.x, position.y);
