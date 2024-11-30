@@ -142,7 +142,7 @@ void Duck::update_position() {
     int delta_y = position.y;
 
     if (is_slippy) {
-        int slippery_vec = (LOOKING_RIGHT) ? 1 : -1;
+        int slippery_vec = (looking == LOOKING_RIGHT) ? 1 : -1;
         delta_x += 4*slippery_vec;
         delta_y += speed_y;
     } else {
@@ -158,10 +158,10 @@ void Duck::update_position() {
         is_slippy = true;
     }
 
-    std::cout << "Antes de move duck tiene x: " << position.x << " y: " << position.y << std::endl;
+    // std::cout << "Antes de move duck tiene x: " << position.x << " y: " << position.y << std::endl;
     //mueve al pato a la nueva posicion si esta libre o a la que este libre inmediatamente antes
     position = map->move_duck_to(position, new_pos, id_player);
-    std::cout << "Después de move duck tiene x: " << position.x << " y: " << position.y << std::endl;
+    // std::cout << "Después de move duck tiene x: " << position.x << " y: " << position.y << std::endl;
 
     // Ver si tiene una pared al lado
     if (next_to_wall()) {
@@ -236,7 +236,7 @@ void Duck::form_position_message(Message& msg){
 
 bool Duck::get_duck_position_message(Message& msg){
 
-    std::cout << "POSICION DEL PATO MESSAGE" << "\n";
+    // std::cout << "POSICION DEL PATO MESSAGE" << "\n";
 
     if(is_dead){return false;}
 
