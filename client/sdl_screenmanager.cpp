@@ -30,60 +30,94 @@ void ScreenManager::showStartScreen() {
     SDL_DestroyTexture(start_logo);
 }
 
-void ScreenManager::showNextRoundScreen() {
-    // TODO: poner esto mas lindo, se podria mostrar el pato que gano la ronda
-    if (TTF_Init() == -1) {
-        std::cerr << "Error: No se pudo inicializar SDL_ttf: " << TTF_GetError() << std::endl;
+void ScreenManager::showGetReadyScreen() {
+    SDL_Texture* static_scene = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, WINDOW_WIDTH, WINDOW_HEIGHT);
+    if (!static_scene) {
+        std::cerr << "Error creating texture: " << SDL_GetError() << std::endl;
         return;
     }
 
-    // Cargar la fuente
-    TTF_Font* font = TTF_OpenFont("../client/fonts/04B_30__.TTF", 48);
-    if (!font) {
-        std::cerr << "Error: No se pudo cargar la fuente: " << TTF_GetError() << std::endl;
-        TTF_Quit();
-        return;
-    }
+    SDL_SetRenderTarget(renderer, static_scene);
+    SDL_RenderClear(renderer); // Limpiar el renderizador antes de dibujar
 
-    // Crear el texto "Next Round!" como textura
-    SDL_Color white = {255, 255, 255, 255};
-    SDL_Surface* text_surface = TTF_RenderText_Blended(font, "Next Round!", white);
-    if (!text_surface) {
-        std::cerr << "Error: No se pudo crear la superficie del texto: " << TTF_GetError() << std::endl;
-        TTF_CloseFont(font);
-        TTF_Quit();
-        return;
-    }
+    SDL_RenderCopy(renderer, getTexture("next-round-background"), NULL, NULL);
 
-    SDL_Texture* text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
-    SDL_FreeSurface(text_surface);
+    texture_handler.saveText("04B_16", "GET READY!", {255, 255, 255, 255});
 
-    SDL_Point text_size = {text_surface->w, text_surface->h};
-    SDL_Rect text_rect = {WINDOW_WIDTH / 2 - text_size.x / 2, WINDOW_HEIGHT / 2 - text_size.y / 2, text_size.x, text_size.y};
+    SDL_Point t_size;
+    SDL_QueryTexture(texture_handler.getText("GET READY!"), NULL, NULL, &t_size.x, &t_size.y);
+    SDL_Rect textRect = {WINDOW_WIDTH / 2 - t_size.x / 2, WINDOW_HEIGHT / 2 - t_size.y / 2, t_size.x, t_size.y};
+    SDL_RenderCopy(renderer, texture_handler.getText("GET READY!"), NULL, &textRect);
 
-    // Renderizar el texto en pantalla
-    SDL_RenderClear(renderer);
-    SDL_RenderCopy(renderer, text_texture, NULL, &text_rect);
+    SDL_SetRenderTarget(renderer, NULL);
+    SDL_RenderCopy(renderer, static_scene, NULL, NULL); 
     SDL_RenderPresent(renderer);
 
-    SDL_Delay(20);
+    SDL_Delay(2000);
 
-    // Efecto de fade out
-    for (int alpha = 255; alpha >= 0; alpha -= 5) {
-        SDL_SetTextureAlphaMod(text_texture, alpha);
-        SDL_RenderClear(renderer);
-        SDL_RenderCopy(renderer, text_texture, NULL, &text_rect);
-        SDL_RenderPresent(renderer);
-        SDL_Delay(30);
-    }
-
-    SDL_DestroyTexture(text_texture);
-    TTF_CloseFont(font);
-    TTF_Quit();
-
-    SDL_RenderClear(renderer);
-    SDL_RenderPresent(renderer);
+    SDL_DestroyTexture(static_scene);
 }
+
+
+void ScreenManager::showNextRoundScreen(uint16_t id_winner) {
+    if (id_winner < 1 || id_winner > 6) return;
+
+    // Dibujar fondo
+    SDL_RenderClear(renderer);
+    SDL_RenderCopy(renderer, getTexture("next-round-background"), NULL, NULL);
+    SDL_RenderPresent(renderer);
+
+    // Configurar parámetros del pato
+    int pos_id = id_winner - 1;
+    SDL_Texture* duck_texture = texture_handler.getTexture("duck");
+    SDL_SetTextureColorMod(duck_texture, colors[pos_id][0], colors[pos_id][1], colors[pos_id][2]);
+
+    // Tamaño y posición final del pato (agrandado)
+    int final_width = 7 * TILE_SIZE * DUCK_SIZE_X;
+    int final_height = 7 * TILE_SIZE * DUCK_SIZE_Y;
+    int center_x = (WINDOW_WIDTH - final_width) / 2;
+    int center_y = 100;
+
+    // Animación de escalado del pato
+    for (float scale = 0.1f; scale <= 1.0f; scale += 0.05f) {
+        SDL_RenderClear(renderer);
+        SDL_RenderCopy(renderer, getTexture("next-round-background"), NULL, NULL);
+
+        int width = static_cast<int>(final_width * scale);
+        int height = static_cast<int>(final_height * scale);
+        SDL_Rect duck_rect = {center_x + (final_width - width) / 2, center_y + (final_height - height) / 2, width, height};
+
+        SDL_RenderCopyEx(renderer, duck_texture, NULL, &duck_rect, 0, NULL, SDL_FLIP_NONE);
+        SDL_RenderPresent(renderer);
+        SDL_Delay(20);
+    }
+
+    SDL_SetTextureColorMod(duck_texture, 255, 255, 255); // Restaurar color
+
+    SDL_Delay(500); // Pausa antes del texto
+
+    // Dibujar texto debajo del pato
+    texture_handler.saveText("8bit_bigger", "Winner", {255, 255, 255, 255});
+    SDL_Point t_size;
+    SDL_QueryTexture(texture_handler.getText("Winner"), NULL, NULL, &t_size.x, &t_size.y);
+
+    SDL_Rect textRect = {
+        (WINDOW_WIDTH - t_size.x) / 2,          // Centramos horizontalmente
+        center_y + final_height + 40,           // Más separado del pato
+        t_size.x,
+        t_size.y
+    };
+
+    SDL_RenderCopy(renderer, texture_handler.getText("Winner"), NULL, &textRect);
+    SDL_RenderPresent(renderer);
+
+    SDL_Delay(2000);
+
+    showGetReadyScreen();
+}
+
+
+
 
 
 
@@ -92,7 +126,9 @@ void ScreenManager::loadLobbyScreen() {
                         {"background", "start/galaxy"},
                         {"start-button", "start/start-match"},
                         {"new-match-button", "start/new-match"},
-                        {"join-button", "start/join-match"}};
+                        {"join-button", "start/join-match"},
+                        {"next-round-background", "round/nightsky"},
+                        {"duck", "duck"}};
 
     // Cargar imagenes del lobby
     for (auto& texture : textures_to_load) {
@@ -101,9 +137,11 @@ void ScreenManager::loadLobbyScreen() {
     }
     texture_handler.loadFont("04B_16", "04B_30__.TTF", 90);
     texture_handler.loadFont("8bit", "8bitOperatorPlus8-Regular.ttf", 25);
+    texture_handler.loadFont("8bit_bigger", "8bitOperatorPlus8-Regular.ttf", 70);
 
     texture_handler.saveText("04B_16", "Lobby", {255, 255, 255, 255});
 }
+
 
 SDL_Texture* ScreenManager::getTexture(const std::string& name) const {
     return lobby_textures.at(name);

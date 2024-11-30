@@ -98,12 +98,7 @@ void Game::simulate_round() {
         }
 
 }
-/* 
-void Game::add_projectile(std::unique_ptr<Proyectil> projectile) {
-    // Transfiere la propiedad del proyectil usando std::move
-    projectiles.push_back(std::move(projectile));
 
-} */
 
 void Game::set_players(int number_of_players){
         players = number_of_players;

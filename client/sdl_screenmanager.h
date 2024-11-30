@@ -1,6 +1,7 @@
 #ifndef SDL_SCREENMANAGER_H
 #define SDL_SCREENMANAGER_H
 #include "sdl_texturehandler.h"
+#include "game_state.h"
 
 struct Button {
     uint8_t id;
@@ -13,7 +14,8 @@ public:
     ScreenManager(SDL_Renderer *renderer, TextureHandler &texture_handler);
     ~ScreenManager();
     void showStartScreen();
-    void showNextRoundScreen();
+    void showNextRoundScreen(uint16_t id_winner);
+    void showGetReadyScreen();
     void loadLobbyScreen();
     void renderStaticLobby();
     void showLobbyScreen();
