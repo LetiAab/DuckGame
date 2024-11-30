@@ -174,7 +174,7 @@ void Game::run() {
 
                                 std::cout << "Envio mensajes para iniciar la nueva ronda"  << std::endl;
 
-                                notify_players_end_round();
+                                notify_players_end_of_five_rounds();
                                 send_map_message();
                                 send_initialize_ducks_message();
                                 send_spawn_place_message();
@@ -237,23 +237,29 @@ void Game::send_updates(){
 
 }
 
-
-
 void Game::notify_players_end_game(){
-         std::cout << "El ganador de la partida fue el pato "<< static_cast<char>(round_manager.get_duck_winner()) << std::endl;
+        std::cout << "El ganador de la partida fue el pato "<< static_cast<char>(round_manager.get_duck_winner()) << std::endl;
         Message msg;
-        msg.type = END_GAME;
-        msg.duck_winner = round_manager.get_duck_winner();
-        monitor.broadcast(msg);
-        std::cout << "Le aviso a los jugadores que el juego termino"  << std::endl;
+        if(round_manager.get_end_match_message(msg)){
+                monitor.broadcast(msg);
+                std::cout << "Le aviso a los jugadores el juego termino"  << std::endl;
+        }
 }
 
 void Game::notify_players_end_round(){
         Message msg;
-        msg.type = END_ROUND;
-        msg.duck_winner = round_manager.get_duck_round_winner();
-        monitor.broadcast(msg);
-        std::cout << "Le aviso a los jugadores que la ronda termino"  << std::endl;
+        if(round_manager.get_end_round_message(msg)){
+                monitor.broadcast(msg);
+                std::cout << "Le aviso a los jugadores que la ronda termino"  << std::endl;
+        }
+}
+
+void Game::notify_players_end_of_five_rounds(){
+        Message msg;
+        if(round_manager.get_five_round_message(msg)){
+                monitor.broadcast(msg);
+                std::cout << "Le aviso a los jugadores el score"  << std::endl;
+        }
 }
 
 bool Game::check_end_of_round(){

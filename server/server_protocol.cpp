@@ -56,14 +56,39 @@ bool ServerProtocol::send_message(Message& message){
     switch (message.type)
     {
     case END_GAME:
+        if (!skt.sendall(&message.round, sizeof(message.round), &was_closed) || was_closed) {
+            throw LibError(errno, CLOSED_SOCKET);
+        }
+
         if (!skt.sendall(&message.duck_winner, sizeof(message.duck_winner), &was_closed) || was_closed) {
             throw LibError(errno, CLOSED_SOCKET);
         }
         break;
 
     case END_ROUND:
+        if (!skt.sendall(&message.round, sizeof(message.round), &was_closed) || was_closed) {
+            throw LibError(errno, CLOSED_SOCKET);
+        }
 
         if (!skt.sendall(&message.duck_winner, sizeof(message.duck_winner), &was_closed) || was_closed) {
+            throw LibError(errno, CLOSED_SOCKET);
+        }
+        break;
+
+    case END_FIVE_ROUNDS:
+        if (!skt.sendall(&message.round, sizeof(message.round), &was_closed) || was_closed) {
+            throw LibError(errno, CLOSED_SOCKET);
+        }
+
+        if (!skt.sendall(&message.duck_winner, sizeof(message.duck_winner), &was_closed) || was_closed) {
+            throw LibError(errno, CLOSED_SOCKET);
+        }
+
+        if (!skt.sendall(&message.ducks_quantity, sizeof(message.ducks_quantity), &was_closed) || was_closed) {
+            throw LibError(errno, CLOSED_SOCKET);
+        }
+
+        if (!skt.sendall(message.scoreboard.data(), message.ducks_quantity * sizeof(int), &was_closed) || was_closed) {
             throw LibError(errno, CLOSED_SOCKET);
         }
         break;

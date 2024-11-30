@@ -22,14 +22,36 @@ Message ClientProtocol::receive_message(){
 
     {
     case END_GAME:
+        skt.recvall(&message.round, sizeof(message.round), &was_closed);
+        if (was_closed) throw LibError(errno, CLOSED_SOCKET);
+
         skt.recvall(&message.duck_winner, sizeof(message.duck_winner), &was_closed);
         if (was_closed) throw LibError(errno, CLOSED_SOCKET);
         break;
 
     case END_ROUND:
+        skt.recvall(&message.round, sizeof(message.round), &was_closed);
+        if (was_closed) throw LibError(errno, CLOSED_SOCKET);
 
         skt.recvall(&message.duck_winner, sizeof(message.duck_winner), &was_closed);
         if (was_closed) throw LibError(errno, CLOSED_SOCKET);
+        break;
+
+    case END_FIVE_ROUNDS:
+        skt.recvall(&message.round, sizeof(message.round), &was_closed);
+        if (was_closed) throw LibError(errno, CLOSED_SOCKET);
+
+        skt.recvall(&message.duck_winner, sizeof(message.duck_winner), &was_closed);
+        if (was_closed) throw LibError(errno, CLOSED_SOCKET);
+
+        skt.recvall(&message.ducks_quantity, sizeof(message.ducks_quantity), &was_closed);
+        if (was_closed) throw LibError(errno, CLOSED_SOCKET);
+
+        message.scoreboard.resize(message.ducks_quantity);
+
+        skt.recvall(message.scoreboard.data(), message.ducks_quantity * sizeof(int), &was_closed);
+        if (was_closed) throw LibError(errno, CLOSED_SOCKET);
+
         break;
 
     case FIRST_GAME_MESSAGE:

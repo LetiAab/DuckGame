@@ -50,6 +50,7 @@ bool RoundManager::check_end_of_five_rounds(){
     return (rounds % 5 == 0);
 }
 
+
 bool RoundManager::check_end_of_match() {
     //verifico que pasaron 5 rondas
     if (!check_end_of_five_rounds()){
@@ -83,4 +84,33 @@ char RoundManager::get_duck_winner(){
 
 char RoundManager::get_duck_round_winner(){
     return last_round_winner;
+}
+
+bool RoundManager::get_five_round_message(Message &msg){
+    msg.type = END_FIVE_ROUNDS;
+    msg.round = rounds;
+    msg.duck_winner = static_cast<uint16_t>(last_round_winner - '0');
+    msg.ducks_quantity = ducks.size();
+    
+    for(auto &duck: ducks){
+        msg.scoreboard.push_back(duck.rounds_won);
+    }
+    return true;
+}
+
+bool RoundManager::get_end_round_message(Message &msg){
+    msg.type = END_ROUND;
+    msg.round = rounds;
+    msg.duck_winner = static_cast<uint16_t>(last_round_winner - '0');
+    return true;
+    
+}
+
+bool RoundManager::get_end_match_message(Message &msg){
+    msg.type = END_ROUND;
+    msg.round = rounds;
+    msg.duck_winner = static_cast<uint16_t>(duck_winner - '0');
+
+    return true;
+
 }

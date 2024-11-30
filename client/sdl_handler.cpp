@@ -86,7 +86,7 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
 
             gameInitializer.initialize_new_round(*game, message_queue);
             std::cout << "SE INICIALIZO EL GAME "<< "\n";
-            screenManager->showNextRoundScreen(static_cast<uint16_t>(message.duck_winner - '0'));
+            screenManager->showNextRoundScreen(message.duck_winner);
             std::cout << "refresco lo estatico "<< "\n";
             rendererManager->doRenderStatic(game);
             message.type = END_ROUND;
@@ -371,7 +371,7 @@ void SDLHandler::run(Queue<Command>& command_queue, uint16_t id, Queue<Message>&
 
             if(message.type == END_ROUND){
                 std::cout << "TERMINO LA RONDA"<< "\n";
-                std::cout << "El ganador fue el pato "<< static_cast<char>(message.duck_winner) << "\n";
+                std::cout << "El ganador fue el pato "<< message.duck_winner<< "\n";
                 
                 continue;
                 
@@ -379,7 +379,7 @@ void SDLHandler::run(Queue<Command>& command_queue, uint16_t id, Queue<Message>&
 
             if(message.type == END_GAME){
                 std::cout << "TERMINO LA PARTIDA"<< "\n";
-                std::cout << "El ganador fue el pato "<< static_cast<char>(message.duck_winner)  << "\n";
+                std::cout << "El ganador fue el pato "<< message.duck_winner  << "\n";
                 //TODO:  mostrar pantalla de victoria antes de salir
                 done = ERROR;
                 break;
