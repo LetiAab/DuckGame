@@ -66,7 +66,7 @@ void Game::simulate_round() {
                         Grenade* throwed_grenade = (Grenade*)throwed_weapon;
                         Position current_position = throwed_grenade->getPosition();
 
-                        throwed_grenade->update_weapon(current_position.x, current_position.y, LOOKING_LEFT, &map, 0);
+                        throwed_grenade->update_weapon(current_position.x, current_position.y, '0', &map, 0);
                 } else if (throwed_weapon->getItemId() == BANANA_ID) {
                         Banana* throwed_banana = (Banana*)throwed_weapon;
                         // Position current_position = throwed_banana->getPosition();

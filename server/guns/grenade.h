@@ -29,7 +29,7 @@ public:
 
     void mostrarInformacion() const;  
     bool update_weapon(int position_x, int position_y, char looking, GameMap* map, char id_player);
-    void simulate_movement(GameMap* map);
+    void simulate_movement(GameMap* map, char looking);
 
     virtual ~Grenade() = default;  // Destructor virtual
 };

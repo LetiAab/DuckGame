@@ -33,7 +33,10 @@ void Grenade::mostrarInformacion() const {
     std::cout << "Municiones: " << municiones << std::endl;
 }
 
-void Grenade::simulate_movement(GameMap* map) {
+void Grenade::simulate_movement(GameMap* map, char looking) {
+        if (looking != '0') {
+                speed.x = 4 * ((looking == LOOKING_RIGHT) ? 1 : -1);
+        }
         // Uso la de banana pq hace lo mismo
         Position old_position = position;
         position = map->try_move_grenade(position, speed);
@@ -71,7 +74,7 @@ bool Grenade::update_weapon(int position_x, int position_y, char looking, GameMa
                         return true;
                 }
         } else {
-                simulate_movement(map);
+                simulate_movement(map, looking);
 
                 if (ticks_counter >= 20) {
                         // Creo que lo mejor va a ser que explote acá también y mueva los perdigones
