@@ -14,6 +14,7 @@ struct Duck {
     bool is_jumping;
     bool is_fluttering;
     bool is_laying_down;
+    bool is_looking_up;
     bool is_dead;
 
     //EL pato tiene los ids de las armas/armaduras que tiene. Si es 0 no tiene ninguna
@@ -52,6 +53,7 @@ struct Projectile {
     int id;
     int type;
     int times_repeated;
+    bool horizontal;
 };
 
 struct Crate {

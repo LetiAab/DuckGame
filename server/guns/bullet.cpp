@@ -1,7 +1,7 @@
 #include "bullet.h"
 
-Bullet::Bullet(int bullet_id, Position position, int direction_x, int direction_y, GameMap* map, char duck_id, int alcance) 
-    : Projectile(bullet_id, 0, position, direction_x, direction_y, map, duck_id, alcance) {}
+Bullet::Bullet(int bullet_id, Position position, int direction_x, int direction_y, GameMap* map, char duck_id, int alcance, bool horizontal) 
+    : Projectile(bullet_id, 0, position, direction_x, direction_y, map, duck_id, alcance, horizontal) {}
 // Nota: deberías diferenciar entre el número de bala y el tipo de proyectil
 
 
@@ -58,6 +58,8 @@ bool Bullet::get_bullet_message(Message& msg){
     msg.bullet_y = position.y;
     msg.bullet_id = projectile_id;
     msg.bullet_type = projectile_type;
+    msg.bullet_horizontal = horizontal;
+
     //mandar flag del impacto (?)
 
     return true;

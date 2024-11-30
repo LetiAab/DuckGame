@@ -14,7 +14,8 @@ class BouncingLaser : public Projectile {
 private:
 
 public:
-    BouncingLaser(int laser_id, Position position, int direction_x, int direction_y, GameMap* map, char duck_id, int alcance);
+
+    BouncingLaser(int laser_id, Position position, int direction_x, int direction_y, GameMap* map, char duck_id, int alcance, bool horizontal);
     void comenzar_trayectoria() override;
     void update_position() override;
 

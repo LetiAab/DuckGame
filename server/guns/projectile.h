@@ -19,9 +19,10 @@ protected:
     char duck_id;
     int alcance;
     bool should_erase;
+    bool horizontal;
 
 public:
-    Projectile(int projectile_id, int projectile_type, Position position, int direction_x, int direction_y, GameMap* map, char duck_id, int alcance);
+    Projectile(int projectile_id, int projectile_type, Position position, int direction_x, int direction_y, GameMap* map, char duck_id, int alcance, bool horizontal);
     virtual ~Projectile() = default;
 
     virtual void comenzar_trayectoria() = 0;

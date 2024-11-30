@@ -261,6 +261,10 @@ bool ServerProtocol::send_message(Message& message){
         if (!skt.sendall(&message.bullet_type, sizeof(message.bullet_type), &was_closed) || was_closed) {
             throw LibError(errno, CLOSED_SOCKET);
         }
+
+        if (!skt.sendall(&message.bullet_horizontal, sizeof(message.bullet_horizontal), &was_closed) || was_closed) {
+            throw LibError(errno, CLOSED_SOCKET);
+        }
         break; 
 
     case KILL_DUCK:
@@ -299,6 +303,9 @@ bool ServerProtocol::send_message(Message& message){
             throw LibError(errno, CLOSED_SOCKET);
         }
         if (!skt.sendall(&message.is_laying_down, sizeof(message.is_laying_down), &was_closed) || was_closed) {
+            throw LibError(errno, CLOSED_SOCKET);
+        }
+        if (!skt.sendall(&message.is_looking_up, sizeof(message.is_looking_up), &was_closed) || was_closed) {
             throw LibError(errno, CLOSED_SOCKET);
         }
 
@@ -375,6 +382,12 @@ std::shared_ptr<Executable> ServerProtocol::receive_command(){
         return std::make_shared<TakeItemCommand>(player_id);
     case DROP_WEAPON:
         return std::make_shared<DropWeaponCommand>(player_id);
+    case LOOK_UP:
+        return std::make_shared<LookUpCommand>(player_id);
+    case STOP_LOOK_UP:
+        return std::make_shared<StopLookUpCommand>(player_id);
+
+
     case EXIT_GAME:
         break;
     default:

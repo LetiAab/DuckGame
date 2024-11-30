@@ -66,6 +66,7 @@ Message ClientProtocol::receive_message(){
         if (was_closed) throw LibError(errno, CLOSED_SOCKET);
         break;
     
+        
 
     case DUCKS_INICIALIZATION:
         skt.recvall(&message.ducks_quantity, sizeof(message.ducks_quantity), &was_closed);
@@ -139,11 +140,15 @@ Message ClientProtocol::receive_message(){
         skt.recvall(&message.bullet_y, sizeof(int), &was_closed);
         skt.recvall(&message.bullet_id, sizeof(int), &was_closed);
         skt.recvall(&message.bullet_type, sizeof(int), &was_closed);
+        skt.recvall(&message.bullet_horizontal, sizeof(bool), &was_closed);
+
         if (was_closed) throw LibError(errno, CLOSED_SOCKET);
 
         break;
 
     case DUCK_POS_UPDATE:
+
+        std::cout << "RECIBO EN EL PROTOCOLO EL DUCK POS UPDATE" << "\n";
         skt.recvall(&message.player_id, 2, &was_closed);
         skt.recvall(&message.duck_x, sizeof(int), &was_closed);
         skt.recvall(&message.duck_y, sizeof(int), &was_closed);
@@ -152,6 +157,7 @@ Message ClientProtocol::receive_message(){
         skt.recvall(&message.is_jumping, sizeof(bool), &was_closed);
         skt.recvall(&message.is_fluttering, sizeof(bool), &was_closed);
         skt.recvall(&message.is_laying_down, sizeof(bool), &was_closed);
+        skt.recvall(&message.is_looking_up, sizeof(bool), &was_closed);
         if (was_closed) throw LibError(errno, CLOSED_SOCKET);
 
         break;
@@ -194,6 +200,8 @@ bool ClientProtocol::send_command(Command command){
     case SHOOT:
     case TAKE_ITEM:
     case DROP_WEAPON:
+    case LOOK_UP:
+    case STOP_LOOK_UP:
 
         if (!skt.sendall(&command.type, sizeof(command.type), &was_closed) || was_closed) {
             throw LibError(errno, CLOSED_SOCKET);

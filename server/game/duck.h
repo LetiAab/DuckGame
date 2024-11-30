@@ -52,6 +52,8 @@ public:
     bool is_laying_down;
     bool was_laying_down;
     bool is_slippy;
+    bool is_looking_up;
+    bool was_looking_up;
     int life_points;
     bool stop_notificated;
     bool is_dead;

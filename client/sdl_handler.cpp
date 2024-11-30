@@ -234,11 +234,12 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
                     projectile.old_y = projectile.current_y;
                     projectile.current_x = message.bullet_x;
                     projectile.current_y = message.bullet_y;
+                    projectile.horizontal = message.bullet_horizontal;
                     std::cout << "Ya tenia ese id, lo actualizo \n";
                 }
             }
             if (!includes) {
-                game->projectiles.push_back(Projectile{message.bullet_x, message.bullet_y, 10000, 10000, message.bullet_id, message.bullet_type, 0});
+                game->projectiles.push_back(Projectile{message.bullet_x, message.bullet_y, 10000, 10000, message.bullet_id, message.bullet_type, 0, message.bullet_horizontal});
                 std::cout << "No tenia ese id, lo meto \n";
             }
         }
@@ -252,6 +253,9 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
         }
 
         if (message.type == DUCK_POS_UPDATE){
+
+            std::cout << "RECIBO POS UPDATE" << "\n";
+
             int pos_id = message.player_id - 1;
 
             game->ducks[pos_id].x = message.duck_x * TILE_SIZE;
@@ -271,6 +275,8 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
             game->ducks[pos_id].is_jumping = message.is_jumping;
             game->ducks[pos_id].is_fluttering = message.is_fluttering;
             game->ducks[pos_id].is_laying_down = message.is_laying_down;
+            game->ducks[pos_id].is_looking_up = message.is_looking_up;
+
         }
     }
     return message;

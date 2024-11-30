@@ -30,20 +30,25 @@ void RendererManager::doRenderStatic(GameState* game) {
 }
 
 //** Dinamico **//
+#include <iostream> // Para std::cout
+
 void RendererManager::renderBullet(GameState* game, const int size) {
-    for (Projectile& projectile: game->projectiles) {    
+    for (Projectile& projectile : game->projectiles) {    
+
+        SDL_Rect bulletRect = { projectile.current_x * TILE_SIZE, projectile.current_y * TILE_SIZE, size, size };
+
         if (projectile.type == 0) {
-            SDL_Rect bulletRect = { projectile.current_x * TILE_SIZE, projectile.current_y * TILE_SIZE, size, size };
-            SDL_RenderCopy(renderer, texture_handler.getTexture("bullet"), NULL, &bulletRect);
+            double angle = projectile.horizontal ? 0 : -90; 
+            SDL_RenderCopyEx(renderer, texture_handler.getTexture("bullet"), NULL, &bulletRect, angle, NULL, SDL_FLIP_NONE);
             projectile.times_repeated++;
         } else {
-            SDL_Rect laserRect = { projectile.current_x * TILE_SIZE, projectile.current_y * TILE_SIZE, size, size };
-            SDL_RenderCopy(renderer, texture_handler.getTexture("laser"), NULL, &laserRect);        
+            double angle = projectile.horizontal ? 0 : -90; 
+            SDL_RenderCopyEx(renderer, texture_handler.getTexture("laser"), NULL, &bulletRect, angle, NULL, SDL_FLIP_NONE);        
             projectile.times_repeated++;
         }
     }
 
-    // Saco las balas y laseres que repitieron posición en el mapa
+    // Saco las balas y láseres que repitieron posición en el mapa
     for (auto it = game->projectiles.begin(); it != game->projectiles.end();) {
         if (it->times_repeated > 1) {
             it = game->projectiles.erase(it);
@@ -98,6 +103,10 @@ void RendererManager::renderDucks(GameState* game) {
         } else if (duck.is_fluttering) {
             duck_texture = texture_handler.getTexture("duck-fluttering");
             //wings_texture = texture_handler.getTexture("duck-fluttering-wings");
+        } else if (duck.is_looking_up){
+            duck_texture = texture_handler.getTexture("duck-walking");
+            wings_texture = texture_handler.getTexture("duck-walking-wings");
+        
         } else {
             duck_texture = texture_handler.getTexture("duck-walking");
             wings_texture = texture_handler.getTexture("duck-walking-wings");
@@ -107,28 +116,36 @@ void RendererManager::renderDucks(GameState* game) {
         SDL_RenderCopyEx(renderer, duck_texture, &src_rect, &duck_rect, 0, NULL, duck.flipType);
         SDL_SetTextureColorMod(duck_texture, 255, 255, 255); //reseteo el color
 
-        if(duck.weapon_equiped != 0){
-            //por ahora siempre renderiza el mismo arma. Hay que valdiar contra los diferentes ids de armas que no existen aun;
+        if (duck.weapon_equiped != 0) {
+            double angle = 0.0;
+
+            // Si el pato está mirando hacia arriba
+            if (duck.is_looking_up) {
+                angle = (duck.flipType == SDL_FLIP_HORIZONTAL) ? 90.0 : -90.0;
+                gun_rect.x = (duck.flipType == SDL_FLIP_HORIZONTAL) ? gun_rect.x - TILE_SIZE * 3 : gun_rect.x + TILE_SIZE * 3;
+            }
+
             if (duck.weapon_equiped == COWBOY_PISTOL_ID) {
-                SDL_RenderCopyEx(renderer, texture_handler.getTexture("cowboy-pistol"), NULL, &gun_rect, 0, NULL, duck.flipType);
+                SDL_RenderCopyEx(renderer, texture_handler.getTexture("cowboy-pistol"), NULL, &gun_rect, angle, NULL, duck.flipType);
             } else if (duck.weapon_equiped == LASER_RIFLE_ID) {
-                SDL_RenderCopyEx(renderer, texture_handler.getTexture("laser-rifle"), NULL, &gun_rect, 0, NULL, duck.flipType);
+                SDL_RenderCopyEx(renderer, texture_handler.getTexture("laser-rifle"), NULL, &gun_rect, angle, NULL, duck.flipType);
             } else if (duck.weapon_equiped == MAGNUM_ID) {
-                SDL_RenderCopyEx(renderer, texture_handler.getTexture("magnum"), NULL, &gun_rect, 0, NULL, duck.flipType);
+                SDL_RenderCopyEx(renderer, texture_handler.getTexture("magnum"), NULL, &gun_rect, angle, NULL, duck.flipType);
             } else if (duck.weapon_equiped == PEW_PEW_LASER_ID) {
-                SDL_RenderCopyEx(renderer, texture_handler.getTexture("pew-pew-laser"), NULL, &gun_rect, 0, NULL, duck.flipType);
+                SDL_RenderCopyEx(renderer, texture_handler.getTexture("pew-pew-laser"), NULL, &gun_rect, angle, NULL, duck.flipType);
             } else if (duck.weapon_equiped == SHOTGUN_ID) {
-                SDL_RenderCopyEx(renderer, texture_handler.getTexture("shotgun"), NULL, &gun_rect, 0, NULL, duck.flipType);
+                SDL_RenderCopyEx(renderer, texture_handler.getTexture("shotgun"), NULL, &gun_rect, angle, NULL, duck.flipType);
             } else if (duck.weapon_equiped == AK_47_ID) {
-                SDL_RenderCopyEx(renderer, texture_handler.getTexture("AK-47"), NULL, &gun_rect, 0, NULL, duck.flipType);
+                SDL_RenderCopyEx(renderer, texture_handler.getTexture("AK-47"), NULL, &gun_rect, angle, NULL, duck.flipType);
             } else if (duck.weapon_equiped == SNIPER_ID) {
-                SDL_RenderCopyEx(renderer, texture_handler.getTexture("sniper"), NULL, &gun_rect, 0, NULL, duck.flipType);
+                SDL_RenderCopyEx(renderer, texture_handler.getTexture("sniper"), NULL, &gun_rect, angle, NULL, duck.flipType);
             } else if (duck.weapon_equiped == DUEL_PISTOL_ID) {
-                SDL_RenderCopyEx(renderer, texture_handler.getTexture("duel-pistol"), NULL, &gun_rect, 0, NULL, duck.flipType);
+                SDL_RenderCopyEx(renderer, texture_handler.getTexture("duel-pistol"), NULL, &gun_rect, angle, NULL, duck.flipType);
             } else {
-                SDL_RenderCopyEx(renderer, texture_handler.getTexture("gun"), NULL, &gun_rect, 0, NULL, duck.flipType);
+                SDL_RenderCopyEx(renderer, texture_handler.getTexture("gun"), NULL, &gun_rect, angle, NULL, duck.flipType);
             }
         }
+
 
         if(duck.item_on_hand != 0){
 

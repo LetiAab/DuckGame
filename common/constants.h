@@ -70,6 +70,8 @@ const uint8_t DROP_WEAPON = 0X38;
 
 const uint8_t MUTE = 0X39;
 
+
+
 const uint8_t HELMET_BROKEN = 0X77;
 const uint8_t ARMOR_BROKEN = 0X78;
 
@@ -88,6 +90,12 @@ const uint8_t SPAWN_PLACES_INICIALIZATION = 0x86;
 const uint8_t BOXES_INICIALIZATION = 0x87;
 const uint8_t ITEMS_ON_FLOOR_INICIALIZATION = 0x88;
 const uint8_t ITEM_ON_FLOOR_UPDATE = 0x89;
+
+const uint8_t LOOK_UP = 0x90;
+const uint8_t STOP_LOOK_UP = 0x91;
+
+
+
 
 
 const int N_SPAWN_PLACES = 4;
