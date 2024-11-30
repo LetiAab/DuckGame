@@ -40,12 +40,14 @@ void Banana::update_weapon(GameMap& map){
 
         // Mover a la banana en el mapa. Mi idea es, tiene una velocidad de -4 en y, y le voy sumando 1 cada vez que pasa una iteración
         Position old_position = position;
-        position = map.try_move_banana(position, speed, pisada);
+        bool hit_void = false;
+        position = map.try_move_banana(position, speed, hit_void);
         if (speed.y < 3) {
                 speed.y++;
         }
 
-        if (pisada) {
+        if (hit_void) {
+            map.clean_projectile_old_position(old_position, 1, 1);
             used = true;
             return;
         }

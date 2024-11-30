@@ -78,9 +78,9 @@ public:
 
     void tellMap() const;
 
-    Position try_move_banana(Position old_position, Position speed, bool& hit_duck);
+    Position try_move_banana(Position old_position, Position speed, bool& hit_void);
 
-    Position try_move_grenade(Position old_position, Position speed);
+    Position try_move_grenade(Position old_position, Position speed, bool& hit_void);
 
     bool is_throwable_touching_floor(Position position, int size_x, int size_y);
     void placeBox(Position pos);

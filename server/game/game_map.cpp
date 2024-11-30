@@ -225,7 +225,7 @@ bool GameMap::is_throwable_touching_floor(Position position, int size_x, int siz
 }
 
 // La idea es, muevo a la granada como parabola, y después si cae al piso ya no se mueve
-Position GameMap::try_move_grenade(Position old_position, Position speed) {
+Position GameMap::try_move_grenade(Position old_position, Position speed, bool& hit_void) {
     // Si está tocando el piso ya no se mueve más
     if (is_throwable_touching_floor(old_position, 1, 1)) {
         return old_position;
@@ -255,6 +255,8 @@ Position GameMap::try_move_grenade(Position old_position, Position speed) {
         for (int y = next_y; y < next_y + 1; ++y) {
             for (int x = next_x; x < next_x + 1; ++x) {
 
+                std::cout << "avancé la granada, esta en la pos x: " << x << " y: " << y << ", donde hay un " << map[y][x] << std::endl;
+
                 if (map[y][x] == PLATFORM) {
                     // Caso 1: choque con una plataforma
                     return Position(final_x, final_y);  // devuelvo la posición actual
@@ -265,6 +267,10 @@ Position GameMap::try_move_grenade(Position old_position, Position speed) {
                     final_x = next_x;
                     final_y = next_y;
                     return Position(final_x, final_y);
+                } else if (map[y][x] == VOID) {
+                    // Caso 1: choque con una plataforma
+                    hit_void = true;
+                    return Position(final_x, final_y);  // devuelvo la posición actual
                 }
             }
         }
@@ -287,7 +293,7 @@ Position GameMap::try_move_grenade(Position old_position, Position speed) {
 }
 
 // La idea es, muevo a la banana como parabola, y después si cae al piso ya no se mueve
-Position GameMap::try_move_banana(Position old_position, Position speed, bool& hit_duck) {
+Position GameMap::try_move_banana(Position old_position, Position speed, bool& hit_void) {
     // Si está tocando el piso ya no se mueve más
     if (is_throwable_touching_floor(old_position, 1, 1)) {
         return old_position;
@@ -324,11 +330,16 @@ Position GameMap::try_move_banana(Position old_position, Position speed, bool& h
                 else if (bullet_hit_other_duck(map[y][x], '0')) {
                     // Caso 2: choque con otro pato
                     // avanzo una posición más para que la bala quede "dentro" del pato
-                    hit_duck = true;
+                    
                     final_x = next_x;
                     final_y = next_y;
                     return Position(final_x, final_y);
+                } else if (map[y][x] == VOID) {
+                    // Caso 1: choque con una plataforma
+                    hit_void = true;
+                    return Position(final_x, final_y);  // devuelvo la posición actual
                 }
+
             }
         }
 

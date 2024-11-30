@@ -39,9 +39,16 @@ void Grenade::simulate_movement(GameMap* map, char looking) {
         }
         // Uso la de banana pq hace lo mismo
         Position old_position = position;
-        position = map->try_move_grenade(position, speed);
+        bool hit_void = false;
+        position = map->try_move_grenade(position, speed, hit_void);
         if (speed.y < 3) {
                 speed.y++;
+        }
+
+        if (hit_void) {
+            map->clean_projectile_old_position(old_position, 1, 1);
+            used = true;
+            return;
         }
         
         map->clean_projectile_old_position(old_position, 1, 1);
@@ -89,13 +96,7 @@ bool Grenade::update_weapon(int position_x, int position_y, char looking, GameMa
                         int fragment_position_y = position_y;
 
                         Position fragment_position(fragment_position_x, fragment_position_y);
-/*                 
-                        //si donde debe salir la bala hay una pared, no puedo disparar
-                        if(game_map->at( fragment_position)== 'P') {
-                        std::cout << "No puedo disparar, hay una pared inmediatamente al lado" << std::endl;
-                        return;
-                        } 
-*/
+
                         int fragment_count = 0;
 
                         // Tiro ocho proyectiles, uno en cada dirección
@@ -106,7 +107,7 @@ bool Grenade::update_weapon(int position_x, int position_y, char looking, GameMa
                                         int direccion_x = i;
                                         int direccion_y = j;
 
-                                        auto new_fragment = std::make_unique<GrenadeFragment>(fragment_count, fragment_position, direccion_x, direccion_y, map, id_player, alcance, true);
+                                        auto new_fragment = std::make_unique<GrenadeFragment>(fragment_count, fragment_position, direccion_x, direccion_y, map, id_player, 20, true);
                                         new_fragment->comenzar_trayectoria();
                                         projectiles.push_back(std::move(new_fragment));
 
