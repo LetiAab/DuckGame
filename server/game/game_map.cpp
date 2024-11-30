@@ -15,7 +15,7 @@ const char ITEM = 'I';
 const char VOID = 'V'; //VACIO
 
 const char BOX = 'B';
-
+const char BANANA = 'b';
 
 const char BULLET = '*';
 
@@ -443,7 +443,7 @@ bool GameMap::duckIsOverBanana(Position position, Position &banana_position) {
     for (int i = position.x; i < position.x + DUCK_SIZE_X; ++i) {
         for (int j = position.y; j < position.y + DUCK_SIZE_Y; ++j) {
             // std::cout << "Chequeo en posición x: " << i << " y: " << j << " que tiene un: " << map[j][i] << "\n";
-            if (map[j][i] == 'B') {
+            if (map[j][i] == BANANA) {
             //    std::cout << "Pisé una banana, está en la posición x: " << i << " y: " << j << "\n";
                 banana_position = Position {i, j};
                 return true;
