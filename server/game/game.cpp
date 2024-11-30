@@ -37,16 +37,75 @@ Duck* Game::getDuckByPosition(Position position) {
 
 void Game::add_throwed_weapon(Weapon* throwed_weapon) {
         if (throwed_weapon->getItemId() == GRENADE_ID) {
-                auto shared_throwed_weapon = std::shared_ptr<Grenade>((Grenade*)throwed_weapon);
-                throwed_weapons.push_back(shared_throwed_weapon);
+                Grenade* casted_grenade = (Grenade*)throwed_weapon;
+                throwed_weapons.emplace_back(std::make_shared<Grenade>(casted_grenade->getPosition().x, casted_grenade->getPosition().y, casted_grenade->getCurrentTicks()));
+                // throwed_weapons.push_back(shared_throwed_weapon);
         } else if (throwed_weapon->getItemId() == BANANA_ID) {
-                auto shared_throwed_weapon = std::shared_ptr<Banana>((Banana*)throwed_weapon);
-                throwed_weapons.push_back(shared_throwed_weapon);
+                Banana* casted_banana = (Banana*)throwed_weapon;
+
+                if (casted_banana->peeled) {
+                        throwed_weapons.emplace_back(std::make_shared<Banana>(casted_banana->getPosition().x, casted_banana->getPosition().y));
+                }
+
+                //throwed_weapons.push_back(shared_throwed_weapon);
         } else {
                 std::cout << "Este arma no debería ser agregada! \n";
         }
 
 }
+
+void Game::simulate_throwed_weapons() {
+        for(auto it = throwed_weapons.begin(); it != throwed_weapons.end(); ) {
+                Weapon* throwed_weapon = it->get();
+
+                if (throwed_weapon->getItemId() == GRENADE_ID) {
+                        Grenade* throwed_grenade = (Grenade*)throwed_weapon;
+
+                        Position current_position = throwed_grenade->getPosition();
+
+                        bool should_erase = throwed_grenade->update_weapon(current_position.x, current_position.y, '0', &map, 0);
+                        if (should_erase) {
+                                throwed_weapons.erase(it);
+                                continue;
+                        }
+                } else if (throwed_weapon->getItemId() == BANANA_ID) {
+                        Banana* throwed_banana = (Banana*)throwed_weapon;
+
+                        if (throwed_banana->pisada) {
+                                throwed_weapons.erase(it);
+                                continue;
+                        }
+
+                        throwed_banana->update_weapon(map);
+
+                        std::cout << "Banana en pos x: " << throwed_banana->getPosition().x << " y: " << throwed_banana->getPosition().y << std::endl;
+                }
+                
+                ++it;
+        }
+}
+
+void Game::search_banana_collision() {
+        for (auto& throwed_weapon: throwed_weapons) {
+                if (throwed_weapon->getItemId() == BANANA_ID) {
+                        Banana* throwed_banana = (Banana*) throwed_weapon.get();
+                        if (!throwed_banana->pisada) {
+                                Position throwed_pos = throwed_banana->getPosition();
+                                if (map.bullet_hit_other_duck(map.at(throwed_pos), 'z')) {
+                                        std::cout << "Pisada ahora es true \n";
+                                        throwed_banana->pisada = true;
+                                        throwed_banana->setUsed(true);
+                                        Message throwed_message;
+                                        if (throwed_weapon->get_throwed_position_message(throwed_message)){
+                                                monitor.broadcast(throwed_message);
+                                        } 
+                                }
+                        }
+
+                }
+        }
+}
+
 
 void Game::simulate_round() {
         
@@ -59,29 +118,7 @@ void Game::simulate_round() {
                 }
         }
 
-        for(auto it = throwed_weapons.begin(); it != throwed_weapons.end(); ) {
-                Weapon* throwed_weapon = it->get();
-
-                if (throwed_weapon->getItemId() == GRENADE_ID) {
-                        Grenade* throwed_grenade = (Grenade*)throwed_weapon;
-                        Position current_position = throwed_grenade->getPosition();
-
-                        throwed_grenade->update_weapon(current_position.x, current_position.y, '0', &map, 0);
-                } else if (throwed_weapon->getItemId() == BANANA_ID) {
-                        Banana* throwed_banana = (Banana*)throwed_weapon;
-                        // Position current_position = throwed_banana->getPosition();
-
-                        throwed_banana->update_weapon(map);
-
-/*                         if (throwed_banana->pisada) {
-                              it = throwed_weapons.erase(it);
-                        } */
-
-                        std::cout << "Banana en pos x: " << throwed_banana->getPosition().x << " y: " << throwed_banana->getPosition().y << std::endl;
-                }
-                
-                ++it;
-        }
+        simulate_throwed_weapons();
         
         for(const auto& box: boxes){
                 if(box->isDestroyed()){
@@ -108,24 +145,7 @@ void Game::simulate_round() {
                 int notification = duck.update_life();
                 duck.update_position();
 
-                for (auto& throwed_weapon: throwed_weapons) {
-                        if (throwed_weapon->getItemId() == BANANA_ID) {
-                                Banana* throwed_banana = (Banana*) throwed_weapon.get();
-                                if (!throwed_banana->pisada) {
-                                        Position throwed_pos = throwed_banana->getPosition();
-                                        if (map.bullet_hit_other_duck(map.at(throwed_pos), 'z')) {
-                                                std::cout << "Pisada ahora es true \n";
-                                                throwed_banana->pisada = true;
-                                                throwed_banana->setUsed(true);
-                                                Message throwed_message;
-                                                if (throwed_weapon->get_throwed_position_message(throwed_message)){
-                                                        monitor.broadcast(throwed_message);
-                                                } 
-                                        }
-                                }
-
-                        }
-                }
+                search_banana_collision();
 
                 duck.update_weapon();
 
@@ -272,7 +292,26 @@ void Game::run() {
         std::cout << "Termino el juego!"  << std::endl;
 }
 
+void Game::send_throwed_weapon_updates() {
+        // actualizo la posición de las balas de la granada
+        for (auto& throwed_weapon: throwed_weapons) {
+                
+                Message throwed_message;
+                
+                if (throwed_weapon->get_throwed_position_message(throwed_message)){
+                        monitor.broadcast(throwed_message);
+                } 
 
+
+                for (auto& unique_proyectile : throwed_weapon->projectiles) {
+                        Projectile* projectile = unique_proyectile.get();
+                        Message projectile_message;
+                        if (projectile->get_projectile_message(projectile_message)){
+                                monitor.broadcast(projectile_message);
+                        }
+                }
+        }
+}
 
 void Game::send_updates(){
 
@@ -295,27 +334,10 @@ void Game::send_updates(){
                         }
 
                 }
-
-                // actualizo la posición de las balas de la granada
-                for (auto& throwed_weapon: throwed_weapons) {
-                        
-                        Message throwed_message;
-                        
-                        if (throwed_weapon->get_throwed_position_message(throwed_message)){
-                                monitor.broadcast(throwed_message);
-                        } 
-
-
-                        for (auto& unique_proyectile : throwed_weapon->projectiles) {
-                                Projectile* projectile = unique_proyectile.get();
-                                Message projectile_message;
-                                if (projectile->get_projectile_message(projectile_message)){
-                                        monitor.broadcast(projectile_message);
-                                }
-                        }
-                }
                 
         }
+
+        send_throwed_weapon_updates();
 
 }
 

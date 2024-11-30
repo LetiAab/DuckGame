@@ -54,6 +54,11 @@ void Grenade::simulate_movement(GameMap* map, char looking) {
         // std::cout << "Granada se movio desde x: " << old_position.x << " y: " << old_position.y << ", hasta x: " << position.x << " y: " << position.y << std::endl;
 }
 
+int Grenade::getCurrentTicks() {
+        return ticks_counter;
+}
+
+
 // Devuelve true cuando ya no le quedan proyectiles
 bool Grenade::update_weapon(int position_x, int position_y, char looking, GameMap* map, char id_player){
         ticks_counter++;

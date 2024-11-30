@@ -27,6 +27,8 @@ public:
         return disparar_grenade(position_x, position_y, looking, map, id_player, is_looking_up);
     }
 
+    int getCurrentTicks();
+
     void mostrarInformacion() const;  
     bool update_weapon(int position_x, int position_y, char looking, GameMap* map, char id_player);
     void simulate_movement(GameMap* map, char looking);

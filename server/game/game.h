@@ -54,6 +54,8 @@ private:
 
 
         void send_updates();
+        void send_throwed_weapon_updates();
+
         void initialize_round();
         void initialize_ducks(std::vector<Position> ducks_positions);
         Position get_random_position_for_duck(char duck_id);
@@ -68,6 +70,10 @@ private:
         
         void refreshDuckPositions();
         void simulate_round();
+        void simulate_throwed_weapons();
+        void search_banana_collision();
+
+
         bool check_end_game();
         bool check_end_of_round();
         void notify_players_end_game();
