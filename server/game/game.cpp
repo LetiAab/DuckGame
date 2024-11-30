@@ -37,7 +37,6 @@ Duck* Game::getDuckByPosition(Position position) {
 
 void Game::simulate_round() {
         
-
         //sumo 1 al contador de rondas hasta generar un nuevo item en el spawn place
         for (const auto& spawn_place : spawn_places) {
                 if(spawn_place->updateIterations(items)){
@@ -47,8 +46,7 @@ void Game::simulate_round() {
                 }
         }
 
-
-        for(const auto& box: boxes){
+                for(const auto& box: boxes){
                 if(box->isDestroyed()){
                         continue;
                 }
@@ -61,7 +59,6 @@ void Game::simulate_round() {
                 }
 
         }
-
 
         for (Duck& duck : ducks) {
                 if (duck.is_dead) {
@@ -96,7 +93,10 @@ void Game::simulate_round() {
                         monitor.broadcast(kill_duck_message);
                         std::cout << "Pato muerto."  << std::endl;
                 }
+
+
         }
+
 }
 /* 
 void Game::add_projectile(std::unique_ptr<Proyectil> projectile) {
@@ -119,15 +119,20 @@ void Game::run() {
         create_ducks(players, level_manager.get_ducks_positions());
         create_spawn_places(level_manager.get_spawn_places());
         create_boxes(level_manager.get_boxes());
+        create_items_on_floor(level_manager.get_items());
 
         //envio al cliente los mensajes
         send_map_message();
         send_initialize_ducks_message();
         send_spawn_place_message();
         send_boxes_initialize_message();
+        send_items_on_floor_message();
+
+
 
         while (is_running) {
                 const auto start = std::chrono::high_resolution_clock::now();
+
 
                 // saco de 10 comandos de la queue y los ejecuto
                 std::shared_ptr<Executable> command;
@@ -137,6 +142,7 @@ void Game::run() {
                         command->execute(*this);
                         i += 1;
                 }
+
 
                 // Simulo una ronda de movimientos
                 simulate_round();
@@ -160,6 +166,8 @@ void Game::run() {
                                 send_initialize_ducks_message();
                                 send_spawn_place_message();
                                 send_boxes_initialize_message();
+                                send_items_on_floor_message();
+
                                 
                                 //vaciar la queue del juego para descartar cualquier comando viejo?)
                                 break;
@@ -176,6 +184,8 @@ void Game::run() {
                                 send_initialize_ducks_message();
                                 send_spawn_place_message();
                                 send_boxes_initialize_message();
+                                send_items_on_floor_message();
+
                                 
                                 //vaciar la queue del juego para descartar cualquier comando viejo?)
                                 break;
@@ -208,6 +218,9 @@ void Game::run() {
 
 
 void Game::send_updates(){
+
+
+
         for (Duck& duck : ducks) {
 
                 Message duck_message;
@@ -297,6 +310,8 @@ void Game::initialize_round() {
         initialize_ducks(level_manager.get_ducks_positions());
         create_spawn_places(level_manager.get_spawn_places());
         create_boxes(level_manager.get_boxes());
+        create_items_on_floor(level_manager.get_items());
+
 
 }
 
@@ -323,34 +338,12 @@ void Game::initialize_ducks(std::vector<Position> ducks_positions){
 
         for (std::size_t i = 0; i < ducks.size(); ++i) {
                 Position pos = ducks_positions[i];
+                map.placeDuck(pos, ducks[i].get_id());
                 ducks[i].reset_for_round(pos);
         }
 
 }
 
-//TODO: Esto solo sirve para la  distribucion de obstaculos hardcodeados
-Position Game::get_random_position_for_duck(char duck_id){
-        std::random_device rd;
-        std::mt19937 gen(rd());
-
-        std::uniform_int_distribution<> distrib_x(18, map.get_width() - 18);
-        std::uniform_int_distribution<> distrib_y(10, map.get_height() - 20);
-
-
-        int random_x = distrib_x(gen);
-        int random_y = distrib_y(gen);
-
-        bool has_place = map.placeDuck(random_x, random_y, duck_id);
-        while (!has_place) {
-                random_x = distrib_x(gen);
-                random_y = distrib_y(gen);
-
-                has_place = map.placeDuck(random_x, random_y, duck_id);
-        }
-
-        return Position(random_x, random_y);
-        
-}
 
 void Game::create_ducks(int size, std::vector<Position> ducks_positions) {
         round_manager.initialize_manager(size);
@@ -358,7 +351,7 @@ void Game::create_ducks(int size, std::vector<Position> ducks_positions) {
         for(uint16_t id = 1; id <= size; ++id) {
                 char char_id = static_cast<char>(id + '0');
                 Position pos = ducks_positions[id-1];
-
+                map.placeDuck(pos, char_id);
                 ducks.emplace_back(char_id, pos.x, pos.y, &map);
         }
 }
@@ -388,9 +381,60 @@ void Game::create_boxes(std::vector<Position> boxes_positions){
         for (size_t i = 0; i < boxes_positions.size(); ++i) {
                 Position pos = boxes_positions[i];
                 
-                boxes.emplace_back(std::make_unique<Box>(pos, 0, &map));
+                boxes.emplace_back(std::make_unique<Box>(pos, i, &map));
         }
 }
+
+
+void Game::create_items_on_floor(std::vector<ItemConfig> items_on_floor_positions){
+        std::cout << "CREO ITEMES ON FLOOR: " << items_on_floor_positions.size()<< "\n";
+        items_on_floor.clear();
+
+        for (size_t i = 0; i < items_on_floor_positions.size(); ++i) {
+                ItemConfig itemConfig = items_on_floor_positions[i];
+                
+                int x = itemConfig.x;
+                int y = itemConfig.y;
+                uint8_t item_id = itemConfig.item_id;
+                
+                if (item_id == ARMOR_ID) {
+                        items_on_floor.emplace_back(std::make_shared<Armor>(x, y));
+                }
+                else if (item_id == HELMET_ID) {
+                        items_on_floor.emplace_back(std::make_shared<Helmet>(x, y));
+                }
+                else if(item_id == PEW_PEW_LASER_ID){
+                        items_on_floor.emplace_back(std::make_shared<PewPewLaser>(x, y));
+                }
+                else if (item_id == LASER_RIFLE_ID) {
+                        items_on_floor.emplace_back(std::make_shared<LaserRifle>(x, y));
+                }
+                else if(item_id == AK_47_ID){
+                        items_on_floor.emplace_back(std::make_shared<Ak47>(x, y));
+                }
+                else if (item_id == DUEL_PISTOL_ID) {
+                        items_on_floor.emplace_back(std::make_shared<DuelPistol>(x, y));
+                }
+                else if(item_id == COWBOY_PISTOL_ID){
+                        items_on_floor.emplace_back(std::make_shared<CowboyPistol>(x, y));
+                }
+                else if (item_id == MAGNUM_ID) {
+                        items_on_floor.emplace_back(std::make_shared<Magnum>(x, y));
+                }
+                else if(item_id == SHOTGUN_ID){
+                        items_on_floor.emplace_back(std::make_shared<Shotgun>(x, y));
+                }
+                else if(item_id == SNIPER_ID){
+                        items_on_floor.emplace_back(std::make_shared<Sniper>(x, y));
+                }
+   
+        }
+
+
+        
+}
+
+
 
 void Game::send_boxes_initialize_message(){
         Message msg;
@@ -402,6 +446,26 @@ void Game::send_boxes_initialize_message(){
         Message box_position_message;
         boxes[i]->getBoxPositionMessage(box_position_message);
         monitor.broadcast(box_position_message);
+    }
+}
+
+void Game::send_items_on_floor_message(){
+
+        std::cout << "MANDO LOS ITEMS ON FLOOR: " << items_on_floor.size() << "\n";
+
+        Message msg;
+        msg.type = ITEMS_ON_FLOOR_INICIALIZATION;
+        msg.items_on_floor_quantity = items_on_floor.size();
+        monitor.broadcast(msg);
+
+    for (size_t i = 0; i < items_on_floor.size(); ++i){
+        std::cout << "MANDO el item position" << "\n";
+
+        Message item_position_message;
+        items_on_floor[i]->getItemPositionMessage(item_position_message);
+        
+
+        monitor.broadcast(item_position_message);
     }
 }
 
@@ -456,6 +520,32 @@ std::shared_ptr<Item> Game::getItemByPosition(Position position) {
             auto foundItem = *it;
 
             items.erase(it);
+
+            return foundItem;
+        }
+    }
+
+    return nullptr; // No se encontró ningún item
+}
+
+std::shared_ptr<Item> Game::getItemOnFloorByPosition(Position position) {
+    int area_x_min = position.x;
+    int area_x_max = position.x + DUCK_SIZE_X;
+    int area_y_min = position.y;
+    int area_y_max = position.y + DUCK_SIZE_Y;
+
+
+    for (auto it = items_on_floor.begin(); it != items_on_floor.end(); ++it) {
+        Position itemPos = (*it)->getPosition();
+
+
+        if (itemPos.x >= area_x_min && itemPos.x < area_x_max &&
+            itemPos.y >= area_y_min && itemPos.y < area_y_max) {
+            std::cout << "Encontré un item EN EL PISO, en la pos x: " << itemPos.x << " y: " << itemPos.y << std::endl;
+
+            auto foundItem = *it;
+
+            items_on_floor.erase(it);
 
             return foundItem;
         }

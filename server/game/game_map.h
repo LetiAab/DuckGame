@@ -19,7 +19,7 @@ private:
 public:
     GameMap(int width, int height);
 
-    bool placeDuck(int x, int y, char duck_id);
+    bool placeDuck(Position pos, char duck_id);
 
     bool is_duck_touching_floor(int x, int y);
 

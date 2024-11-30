@@ -40,11 +40,12 @@ void InputHandler::run() {
             std::string input;
             std::getline(std::cin, input);
 
-            if (input.empty() || input == "Exit") {
+            if (input == "Exit") {
                 //este es para salir del programa
-                auto stop_command = Command(id, LOBBY_EXIT_CODE);
-                command_queue.push(stop_command);
+                //auto stop_command = Command(id, LOBBY_EXIT_CODE);
+                //command_queue.push(stop_command);
                 is_alive = false;
+                command_queue.close();
                 break;
             }
 
@@ -84,47 +85,6 @@ void InputHandler::run() {
                     std::cout << "Partidas disponibles..." << "\n";
                 };
             }
-
-            /*if (input == "a"){
-                //moverme a la izquierda
-                auto command = Command(id, MOVE_LEFT);
-
-                if (command_queue.try_push(command)){
-                    std::cout << "Moviendome a la izquierda..." << "\n";
-                };
-            }
-            if (input == "d"){
-                auto command = Command(id, MOVE_RIGHT);
-
-                if (command_queue.try_push(command)){
-                    std::cout << "Moviendome a la derecha..." << "\n";
-                };
-            }
-            if (input == "w"){
-                //moverme a la izquierda
-                auto command = Command(id, MOVE_UP);
-
-                if (command_queue.try_push(command)){
-                    std::cout << "Moviendome hacia arriba w..." << "\n";
-                };
-            }
-            if (input == "s"){
-                //moverme a la izquierda
-                auto command = Command(id, MOVE_DOWN);
-
-                if (command_queue.try_push(command)){
-                    std::cout << "Moviendome hacia abajo..." << "\n";
-                };
-            }
-            if (input[0] == EXIT_GAME) {
-                //este es para salir del juego
-                auto stop_command = Command(id, EXIT_GAME);
-                if (command_queue.try_push(stop_command)){
-                    std::cout << "Escape!" << "\n";
-                };
-                is_alive = false;
-                break;
-            }*/
 
         }
 

@@ -2,6 +2,22 @@
 #include <SDL_image.h>
 #include <iostream>
 
+std::unordered_map<uint8_t, std::string> item_map = {
+    {ARMOR_ID, "ARMOR_ID"},
+    {HELMET_ID, "HELMET_ID"},
+    {BASE_WEAPON_ID, "BASE_WEAPON_ID"},
+    {GRANADA_ID, "GRANADA_ID"},
+    {BANANA_ID, "BANANA_ID"},
+    {PEW_PEW_LASER_ID, "PEW_PEW_LASER_ID"},
+    {LASER_RIFLE_ID, "LASER_RIFLE_ID"},
+    {AK_47_ID, "AK_47_ID"},
+    {DUEL_PISTOL_ID, "DUEL_PISTOL_ID"},
+    {COWBOY_PISTOL_ID, "COWBOY_PISTOL_ID"},
+    {MAGNUM_ID, "MAGNUM_ID"},
+    {SHOTGUN_ID, "SHOTGUN_ID"},
+    {SNIPER_ID, "SNIPER_ID"}
+};
+
 LevelEditor::LevelEditor()
     : window(nullptr), renderer(nullptr), backgroundTexture(nullptr), crateTexture(nullptr),
       selectedTexture(nullptr), 
@@ -864,34 +880,33 @@ void LevelEditor::saveLevel() {
 
     levelFile << "CRATES\n";
     for (const auto& [key, crate] : crates) {
-        levelFile << crate.x / 4 << "," << crate.y / 4 << "\n";
+        levelFile << std::dec << crate.x / 4 << "," << crate.y / 4 << "\n";
     }
     levelFile << "\n";
 
     levelFile << "SPAWN PLACE\n";
     for (const auto& [key, spawnPlace] : spawn_places) {
-        levelFile << spawnPlace.x / 4 << "," << spawnPlace.y / 4 << "\n";
+        levelFile << std::dec << spawnPlace.x / 4 << "," << spawnPlace.y / 4 << "\n";
     }
     levelFile << "\n";
 
     levelFile << "BOX\n";
     for (const auto& [key, box] : boxes) {
-        levelFile << box.x / 4 << "," << box.y / 4 << "\n";
+        levelFile << std::dec << box.x / 4 << "," << box.y / 4 << "\n";
     }
     levelFile << "\n";
 
     levelFile << "ITEM\n";
     for (const auto& [key, item] : items) {
-        levelFile << std::dec // Fuerza formato decimal para x e y
-                  << item.x / 4 << "," << item.y / 4 << ",0x"
-                  << std::hex << std::uppercase // Fuerza formato hexadecimal para item_id
-                  << static_cast<int>(item.item_id) << "\n";
+        levelFile << std::dec 
+                  << item.x / 4 << "," << item.y / 4 << ","
+                  << item_map[item.item_id] << "\n";
     }
     levelFile << "\n";
 
     levelFile << "SPAWN DUCK\n";
     for (const auto& [key, duck] : ducks) {
-        levelFile << duck.x / 4 << "," << duck.y / 4 << "\n";
+        levelFile << std::dec << duck.x / 4 << "," << duck.y / 4 << "\n";
     }
     levelFile << "\n";
 

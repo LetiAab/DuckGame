@@ -31,6 +31,8 @@ public:
 
     bool can_add_player();
 
+    void remove_player();
+
     void start_match();
 
     void stop_match();

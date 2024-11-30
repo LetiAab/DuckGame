@@ -35,10 +35,12 @@ bool Duck::is_in_air(){
 bool Duck::pickUpItem(std::shared_ptr<Item> item) {
     if (item != nullptr){
         std::cout << "Agarro el item de ID " << item->getItemId() << "\n";
+        
         if (onHand == nullptr)
             std::cout << "No tiene un ítem en la mano actualmente" << "\n";
         else
             std::cout << "El item de la mano antes de cambiarlo tiene ID " << onHand->getItemId() << "\n";
+        
         onHand = item;
         std::cout << "Ahora el Id del Item en la mano es " << onHand->getItemId() << "\n";
         return true;
@@ -287,6 +289,13 @@ void Duck::setHelmet(std::shared_ptr<Helmet> new_helmet) {
     }
 }
 
+uint8_t Duck::getWeaponId(){
+    if (weapon != nullptr){
+        return weapon->getItemId();
+    }
+    return 0;
+}
+
 
 bool Duck::disparar() {
     if(is_dead){return false;}
@@ -299,7 +308,8 @@ bool Duck::disparar() {
             return false;
         }
 
-
+        
+        //RETROCESOOO PARA AK47 Y MAGNUM
         if (habia_municiones && (weapon->getItemId() == AK_47_ID || weapon->getItemId() == MAGNUM_ID)) {
             old_position = position;
 

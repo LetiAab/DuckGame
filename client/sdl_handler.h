@@ -17,9 +17,10 @@ class SDLHandler {
 public:
     SDLHandler();
     ~SDLHandler();
-    int run(uint16_t lobby_id, Queue<Command>& command_queue, Queue<Message>& message_queue);
+    int run(uint16_t lobby_id, Queue<Command>& command_queue, Queue<Message>& message_queue, ClientProtocol& protocol);
 
 private:
+    bool is_alive;
     TextureHandler handle_textures;
     EventProcessor eventProcessor;
     GameInitializer gameInitializer;
@@ -31,7 +32,7 @@ private:
     void loadGame(GameState &game, Queue<Message> &message_queue);
     Message handleMessages(GameState* game, Queue<Message>& message_queue);
     //ClientProtocol& protocol
-    int waitForStartGame(uint16_t lobby_id, Queue<Command>& command_queue, Queue<Message>& message_queue);
+    int waitForStartGame(uint16_t lobby_id, Queue<Command>& command_queue, Queue<Message>& message_queue, ClientProtocol& protocol);
     void initializeWindow(SDL_Window*& window, SDL_Renderer*& renderer);
     int runGame(SDL_Window* window, SDL_Renderer* renderer, Queue<Command>& command_queue, Queue<Message>& message_queue);
 

@@ -18,6 +18,12 @@ bool Match::can_add_player() {
     return false;
 }
 
+void Match::remove_player(){
+    if (current_players > 0) {
+        current_players -= 1;
+    }
+}
+
 bool Match::is_able_to_start(){
 	if ((current_players >= min_players) and !is_running) {
         return true;

@@ -14,6 +14,7 @@ struct Duck {
     bool is_jumping;
     bool is_fluttering;
     bool is_laying_down;
+    bool is_dead;
 
     //EL pato tiene los ids de las armas/armaduras que tiene. Si es 0 no tiene ninguna
     uint8_t weapon_equiped;
@@ -64,6 +65,12 @@ struct Box {
     bool item_taked;
 };
 
+//para los items del piso
+struct Item {
+    int x, y;
+    uint8_t item_id;
+};
+
 struct SpawnPlace {
     int x, y;
     uint8_t item_id;
@@ -76,6 +83,7 @@ struct GameState {
     std::vector<Crate> crates;
     std::vector<SpawnPlace> spawn_places;
     std::vector<Box> boxes;
+    std::vector<Item> items_on_floor;
     SDL_Renderer* renderer;
     ClientGameMap client_game_map;
     Queue<Command>* command_queue;

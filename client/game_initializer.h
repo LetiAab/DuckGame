@@ -18,6 +18,8 @@ private:
     void initializeSpawnPlaces(GameState& game, Queue<Message> &message_queue);
     void initializeBoxes(GameState& game, Queue<Message> &message_queue);
     void initializeMap(GameState& game, Queue<Message> &message_queue);
+    void initializeItemsOnFloor(GameState& game, Queue<Message> &message_queue);
+
 
 };
 

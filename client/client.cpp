@@ -21,7 +21,7 @@ int Client::start(){
     receiver->start();
 
     sdl_handler = std::make_unique<SDLHandler>();
-    int result = sdl_handler->run(lobby_id, sender->get_queue(), receiver->get_queue());
+    int result = sdl_handler->run(lobby_id, sender->get_queue(), receiver->get_queue(), protocol);
 
     close();
 
@@ -31,11 +31,11 @@ int Client::start(){
 void Client::close() {
     std::cout << "Cerrando socket..." << std::endl;
     protocol.shutdown();
-    std::cout << "Cerrando sender..." << std::endl;
-    sender->stop();
-    sender->join();
     std::cout << "Cerrando receiver..." << std::endl;
     receiver->stop();
     receiver->join();
+    std::cout << "Cerrando sender..." << std::endl;
+    sender->stop();
+    sender->join();
     std::cout << "Cliente cerrado..." << std::endl;
 }

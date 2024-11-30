@@ -122,7 +122,7 @@ uint8_t EventProcessor::handleKeyUp(SDL_Keycode key) {
     return move;
 }
 
-int EventProcessor::processLobbyEvents(ScreenManager* screenManager, Queue<Command>& command_queue, uint16_t id, bool& start_game, int& chosen_match, bool& selected_match) {
+int EventProcessor::processLobbyEvents(ScreenManager* screenManager, Queue<Command>& command_queue, uint16_t id, bool& is_alive, int& chosen_match, bool& selected_match) {
     int done = SUCCESS;
     SDL_Event event;
     int x, y;
@@ -135,8 +135,13 @@ int EventProcessor::processLobbyEvents(ScreenManager* screenManager, Queue<Comma
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
                 case SDL_WINDOWEVENT_CLOSE:
-                    command_queue.push(Command(id, LOBBY_EXIT_CODE));
-                    done = ERROR;
+                    is_alive = false;
+                    if (command_queue.try_push(Command(id, EXIT_GAME))){
+                        std::cout << "Escape!" << "\n";
+                    };
+                    //command_queue.close();
+                    /*command_queue.push(Command(id, LOBBY_EXIT_CODE));
+                    done = ERROR;*/
                 break;
                 case SDL_MOUSEBUTTONDOWN: {
                     std::cout << "Mouse PRESSED\n";
@@ -148,7 +153,7 @@ int EventProcessor::processLobbyEvents(ScreenManager* screenManager, Queue<Comma
                         if (command_queue.try_push(Command(id, START_MATCH_CODE, chosen_match))){
                             std::cout << "Iniciando partida..." << "\n";
                         }
-                        start_game = true;
+                        //is_alive = false;
                         std::cout << "Empezo el juego!\n";
 
 
@@ -166,6 +171,7 @@ int EventProcessor::processLobbyEvents(ScreenManager* screenManager, Queue<Comma
                         if (command_queue.try_push(Command(id, LIST_MATCH_AVAILABLE))){
                             std::cout << "Partidas disponibles..." << "\n";
                         };
+                        //aca puse que solo se una al match 1 para probar
                         selected_match = true;
                         chosen_match = 1;
                         std::cout << "Partida seleccionada: " << chosen_match << "\n";
@@ -188,11 +194,16 @@ int EventProcessor::processLobbyEvents(ScreenManager* screenManager, Queue<Comma
                 }
                 case SDL_KEYDOWN:
                     if (event.key.keysym.sym == SDLK_ESCAPE) {
-                        done = ERROR;
+                        auto stop_command = Command(id, EXIT_GAME);
+                        if (command_queue.try_push(stop_command)){
+                            std::cout << "Escape!" << "\n";
+                        }
+                        is_alive = false;
                     }
                 break;
                 case SDL_QUIT:
-                    done = ERROR;
+                    is_alive = false;
+                    command_queue.close();
                 break;
                 default:
                     break;
@@ -200,6 +211,8 @@ int EventProcessor::processLobbyEvents(ScreenManager* screenManager, Queue<Comma
         }
 
     } catch (std::runtime_error& e) {
+        done = ERROR;
+        is_alive = false;
         std::cerr << e.what() << "\n";
     }
     return done;

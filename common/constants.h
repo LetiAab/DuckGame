@@ -86,6 +86,8 @@ const uint8_t END_GAME = 0x84;
 const uint8_t DUCKS_INICIALIZATION = 0x85;
 const uint8_t SPAWN_PLACES_INICIALIZATION = 0x86;
 const uint8_t BOXES_INICIALIZATION = 0x87;
+const uint8_t ITEMS_ON_FLOOR_INICIALIZATION = 0x88;
+const uint8_t ITEM_ON_FLOOR_UPDATE = 0x89;
 
 
 const int N_SPAWN_PLACES = 4;
@@ -136,13 +138,13 @@ const int DUCK_SIZE_Y = 12;
 const int DUCK_TOTAL_SIZE = 96; //Cantidad total de cuadrados que ocupa el pato 9
 
 
-const int BOX_SIZE_X = 4;
-const int BOX_SIZE_Y = 4;
-const int BOX_TOTAL_SIZE = 16;
+const int BOX_SIZE_X = 8;
+const int BOX_SIZE_Y = 8;
+const int BOX_TOTAL_SIZE = 64;
 
 
-const int BULLET_SIZE_Y = 1;
-const int BULLET_SIZE_X = 2;
+const int BULLET_SIZE_Y = 4;
+const int BULLET_SIZE_X = 4;
 
 const int TILE_SIZE = 4;
 
@@ -160,5 +162,7 @@ const std::vector<std::vector<uint8_t>> colors = {
 
 const int BUTTON_W = 239;
 const int BUTTON_H = 77;
+
+static const char CLOSED_SOCKET[] = "Socket was closed";
 
 #endif

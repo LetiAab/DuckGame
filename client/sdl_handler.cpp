@@ -7,7 +7,7 @@
 
 //using namespace SDL2pp;
 
-SDLHandler::SDLHandler(): handle_textures(nullptr), duck_id(0), lobby_exit(false) {
+SDLHandler::SDLHandler(): is_alive(true), handle_textures(nullptr), duck_id(0), lobby_exit(false) {
     SDL_Init(SDL_INIT_VIDEO);
     SDL_Init(SDL_INIT_AUDIO);
 }
@@ -117,7 +117,7 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
         }
 
         if(message.type == BOX_DESTROYED){
-
+            std::cout << "Se destruyo la caja con id: " << message.box_id << "\n";
 
             int box_id = message.box_id;
             game->boxes[box_id].destroyed = true;
@@ -125,12 +125,23 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
 
         }
 
-        if(message.type == ITEM_POSITION){
-            //RENDERIZAR LOS ITEMS bien
-            /*Item item;
-            item.x = message.item_x * TILE_SIZE;
-            item.y = message.item_y * TILE_SIZE;
-            game.items.push_back(item);*/
+        if (message.type == ITEM_ON_FLOOR_UPDATE) {
+            int x = message.item_x * TILE_SIZE;
+            int y = message.item_y * TILE_SIZE;
+
+            std::cout << "AGARRE EL ITEM QUE ESTA EN X: "<< x << " Y: "<< y << "\n";
+
+
+            // Recorrer la lista de items en el suelo hasta encontrar el que matchea con la pos que me llegó
+            for (auto& item_on_floor : game->items_on_floor) {
+                std::cout << "RECORRO LA LISTA DE ITEMS EN EL SUELO X: "<< item_on_floor.x << " Y: "<< item_on_floor.y << "\n";
+                
+                if (item_on_floor.x == x && item_on_floor.y == y) {
+                    std::cout << "Item found at (" << x << ", " << y << ") with ID: " << static_cast<int>(item_on_floor.item_id) << std::endl;
+
+                    item_on_floor.item_id = 0;
+                }
+            }
         }
 
         if(message.type == DUCK_PICKUP_ITEM){
@@ -235,8 +246,9 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
         if(message.type == KILL_DUCK){
             int pos_id = message.player_id - 1;
             //NO LO ELIMINO DE LA LISTA PORQUE ALTO KILOMBO ASI QUE MUEVO EL DIBUJO AFUERA DE LA PANTALLA
-            game->ducks[pos_id].x = 400 * TILE_SIZE;
-            game->ducks[pos_id].y = 400 * TILE_SIZE;
+            //game->ducks[pos_id].x = 400 * TILE_SIZE;
+            //game->ducks[pos_id].y = 400 * TILE_SIZE;
+            game->ducks[pos_id].is_dead = true;
         }
 
         if (message.type == DUCK_POS_UPDATE){
@@ -266,17 +278,17 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
 
 
 //** Lobby **//
-int SDLHandler::waitForStartGame(uint16_t lobby_id, Queue<Command>& command_queue, Queue<Message>& message_queue) {
+int SDLHandler::waitForStartGame(uint16_t lobby_id, Queue<Command>& command_queue, Queue<Message>& message_queue, ClientProtocol& protocol) {
     int done = SUCCESS;
-    bool start_game = false;
+    //bool start_game = false;
     int chosen_match = 0;
     bool selected_match = false;
     //auto cmd = Command(lobby_id, LOBBY_STOP_CODE);
 
-    while (!start_game) {
+    while (is_alive) {
         const auto start = std::chrono::high_resolution_clock::now();
 
-        done = eventProcessor.processLobbyEvents(screenManager.get(), command_queue, lobby_id, start_game, chosen_match, selected_match);
+        done = eventProcessor.processLobbyEvents(screenManager.get(), command_queue, lobby_id, is_alive, chosen_match, selected_match);
         //****************************
 
         //handle lobby
@@ -289,6 +301,8 @@ int SDLHandler::waitForStartGame(uint16_t lobby_id, Queue<Command>& command_queu
             if (message.type == LOBBY_EXIT_CODE){
                 std::cout << "Comando para salir..." << "\n";
                 lobby_exit = true;
+                is_alive = false;
+                command_queue.close();
                 break;
             }
 
@@ -309,29 +323,35 @@ int SDLHandler::waitForStartGame(uint16_t lobby_id, Queue<Command>& command_queu
                 std::cout << "Ups! parece que no puedes realizar esa accion" << "\n";
             }
 
-            /*if (message.type == START_MATCH_CODE){
-                std::cout << "Partida iniciada con id: " << static_cast<int>(message.current_match_id) << "\n";
-                start_game = true;
+            if (message.type == START_MATCH_CODE){
                 chosen_match = message.current_match_id;
+                std::cout << "Partida iniciada con id: " << static_cast<int>(chosen_match) << "\n";
+                //start_game = true;
+
                 //command_queue.push(Command(lobby_id, LOBBY_STOP_CODE, chosen_match));
+                //command_queue.push(Command(lobby_id, LOBBY_STOP_CODE));
                 //esto no es muy lindo pero de momento funciona
-                if (protocol.send_command(cmd)){
+                if (protocol.send_command(Command(lobby_id, LOBBY_STOP_CODE))){
                     std::cout << "Me desconecte del lobby. Ahora voy a comunicarme con el juego" << "\n";
+                    is_alive = false;
                     break;
                 }
-            }*/
+            }
 
             std::cout << "\n";
         } catch (const ClosedQueue& e) {
             done = ERROR;
+            is_alive = false;
             std::cerr << "Exception handling the lobby: ClosedQueue" << e.what() << std::endl;
 
         } catch (const LibError& e) {
             done = ERROR;
+            is_alive = false;
             std::cerr << "Exception handling the lobby: LibError" << e.what() << std::endl;
 
         } catch (const std::exception& e) {
             done = ERROR;
+            is_alive = false;
             std::cerr << "Exception handling the lobby: " << e.what() << std::endl;
         }
 
@@ -399,7 +419,7 @@ int SDLHandler::runGame(SDL_Window *window, SDL_Renderer *renderer, Queue<Comman
 
             //LUEGO RECIBO DEL SERVER Y HAGO EL RENDER
             Message message = handleMessages(&game, message_queue);
-            std::cout << "El message type es: " << static_cast<unsigned int>(message.type) << "\n";
+            //std::cout << "El message type es: " << static_cast<unsigned int>(message.type) << "\n";
 
             if(message.type == END_ROUND){
                 std::cout << "TERMINO LA RONDA"<< "\n";
@@ -440,7 +460,7 @@ int SDLHandler::runGame(SDL_Window *window, SDL_Renderer *renderer, Queue<Comman
     return done;
 }
 
-int SDLHandler::run(uint16_t lobby_id, Queue<Command>& command_queue, Queue<Message>& message_queue) {
+int SDLHandler::run(uint16_t lobby_id, Queue<Command>& command_queue, Queue<Message>& message_queue, ClientProtocol& protocol) {
     SDL_Window* window = nullptr;
     SDL_Renderer* renderer = nullptr;
     initializeWindow(window, renderer);
@@ -449,7 +469,7 @@ int SDLHandler::run(uint16_t lobby_id, Queue<Command>& command_queue, Queue<Mess
     screenManager->loadLobbyScreen();
     screenManager->renderStaticLobby();
     screenManager->showLobbyScreen();
-    if(waitForStartGame(lobby_id, command_queue, message_queue) == ERROR) {
+    if(waitForStartGame(lobby_id, command_queue, message_queue, protocol) == ERROR) {
         SDL_DestroyWindow(window);
         SDL_DestroyRenderer(renderer);
         return ERROR;
@@ -464,8 +484,7 @@ int SDLHandler::run(uint16_t lobby_id, Queue<Command>& command_queue, Queue<Mess
     duck_id = first_game_message.player_id;
     std::cout << "My DUCK ID is: " << duck_id  << std::endl;
 
-    //int result = runGame(window, renderer, command_queue, message_queue);
+    int result = runGame(window, renderer, command_queue, message_queue);
 
-    //return result;
-    return SUCCESS;
+    return result;
 }

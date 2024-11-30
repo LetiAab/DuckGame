@@ -33,19 +33,23 @@ void ShootCommand::execute(Game& game) {
         if(msg.item_id != ARMOR_ID && msg.item_id != HELMET_ID){
 
             if(duck->disparar()){
-                //hago como un handshaking de disparar para saber si tengo que  
-                //reproducir el sonido de la bala
+
                 Message msg2;
                 msg2.type = SHOOT; 
                 msg2.player_id = player_id;
                 game.game_broadcast(msg2);
                 std::cout << "Jugador " << player_id << " dispara con su arma le aviso al client\n";
 
+                if(duck->getWeaponId() == AK_47_ID || duck->getWeaponId() == MAGNUM_ID){
+                    //SI DISPARE UNA AK47 O UNA MAGNUM TENGO QUE NOTIFICAR RETROCESO (MANDO LA POS DEL PATO)
+                    Message msgRetroceso;
+                    duck->get_duck_position_message(msgRetroceso);
+                    game.game_broadcast(msgRetroceso);
+                }
+      
             }
         }
     } else {
-        //hago como un handshaking de disparar para saber si tengo que  
-        //reproducir el sonido de la bala
 
         if(duck->disparar()){
             Message msg3;
@@ -53,6 +57,14 @@ void ShootCommand::execute(Game& game) {
             msg3.player_id = player_id;
             game.game_broadcast(msg3);
             std::cout << "Jugador " << player_id << " dispara con su arma le aviso al client\n";
+        
+        
+            if(duck->getWeaponId() == AK_47_ID || duck->getWeaponId() == MAGNUM_ID){
+            //SI DISPARE UNA AK47 O UNA MAGNUM TENGO QUE NOTIFICAR RETROCESO (MANDO LA POS DEL PATO)
+                Message msgRetroceso;
+                duck->get_duck_position_message(msgRetroceso);
+                game.game_broadcast(msgRetroceso);
+            }
         } 
     }
 }
