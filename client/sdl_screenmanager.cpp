@@ -31,7 +31,7 @@ void ScreenManager::showStartScreen() {
     SDL_DestroyTexture(start_logo);
 }
 
-void ScreenManager::showGetReadyScreen() {
+void ScreenManager::showGetReadyScreen(int round) {
     SDL_Texture* static_scene = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, WINDOW_WIDTH, WINDOW_HEIGHT);
     if (!static_scene) {
         std::cerr << "Error creating texture: " << SDL_GetError() << std::endl;
@@ -39,43 +39,62 @@ void ScreenManager::showGetReadyScreen() {
     }
 
     SDL_SetRenderTarget(renderer, static_scene);
-    SDL_RenderClear(renderer); // Limpiar el renderizador antes de dibujar
-
+    SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer, getTexture("next-round-background"), NULL, NULL);
 
-    texture_handler.saveText("04B_16", "GET READY!", {255, 255, 255, 255});
+    std::string round_text = "Round " + std::to_string(round);
+    texture_handler.saveText("04B_16", round_text, {255, 255, 255, 255});
 
     SDL_Point t_size;
-    SDL_QueryTexture(texture_handler.getText("GET READY!"), NULL, NULL, &t_size.x, &t_size.y);
-    SDL_Rect textRect = {WINDOW_WIDTH / 2 - t_size.x / 2, WINDOW_HEIGHT / 2 - t_size.y / 2, t_size.x, t_size.y};
-    SDL_RenderCopy(renderer, texture_handler.getText("GET READY!"), NULL, &textRect);
+    SDL_QueryTexture(texture_handler.getText(round_text), NULL, NULL, &t_size.x, &t_size.y);
+    SDL_Rect textRect = {WINDOW_WIDTH / 2 - t_size.x / 2, WINDOW_HEIGHT / 2 - t_size.y - 50, t_size.x, t_size.y};
+    SDL_RenderCopy(renderer, texture_handler.getText(round_text), NULL, &textRect);
 
     SDL_SetRenderTarget(renderer, NULL);
-    SDL_RenderCopy(renderer, static_scene, NULL, NULL); 
+    SDL_RenderCopy(renderer, static_scene, NULL, NULL);
     SDL_RenderPresent(renderer);
 
-    SDL_Delay(2000);
+    SDL_Delay(1000);
+
+    // Mostrar cuenta regresiva 3, 2, 1
+    for (int countdown = 3; countdown > 0; --countdown) {
+        SDL_SetRenderTarget(renderer, static_scene);
+        SDL_RenderClear(renderer);
+        SDL_RenderCopy(renderer, getTexture("next-round-background"), NULL, NULL);
+
+        SDL_RenderCopy(renderer, texture_handler.getText(round_text), NULL, &textRect);
+
+        std::string countdown_text = std::to_string(countdown);
+        texture_handler.saveText("04B_16", countdown_text, {255, 255, 255, 255});
+        SDL_QueryTexture(texture_handler.getText(countdown_text), NULL, NULL, &t_size.x, &t_size.y);
+        SDL_Rect countdownRect = {WINDOW_WIDTH / 2 - t_size.x / 2, WINDOW_HEIGHT / 2, t_size.x, t_size.y};
+        SDL_RenderCopy(renderer, texture_handler.getText(countdown_text), NULL, &countdownRect);
+
+        SDL_SetRenderTarget(renderer, NULL);
+        SDL_RenderCopy(renderer, static_scene, NULL, NULL);
+        SDL_RenderPresent(renderer);
+
+        SDL_Delay(1000); // Espera 1 segundo entre números
+    }
 
     SDL_DestroyTexture(static_scene);
 }
 
 
+
 void ScreenManager::showNextRoundScreen(uint16_t id_winner) {
     if (id_winner < 1 || id_winner > 6) return;
 
-    // Dibujar fondo
     SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer, getTexture("next-round-background"), NULL, NULL);
     SDL_RenderPresent(renderer);
 
-    // Configurar parámetros del pato
     int pos_id = id_winner - 1;
     SDL_Texture* duck_texture = texture_handler.getTexture("duck");
     SDL_SetTextureColorMod(duck_texture, colors[pos_id][0], colors[pos_id][1], colors[pos_id][2]);
 
-    // Tamaño y posición final del pato (agrandado)
-    int final_width = 7 * TILE_SIZE * DUCK_SIZE_X;
-    int final_height = 7 * TILE_SIZE * DUCK_SIZE_Y;
+    int final_width = 6 * TILE_SIZE * DUCK_SIZE_X;
+    int final_height = 6 * TILE_SIZE * DUCK_SIZE_Y;
     int center_x = (WINDOW_WIDTH - final_width) / 2;
     int center_y = 100;
 
@@ -93,18 +112,17 @@ void ScreenManager::showNextRoundScreen(uint16_t id_winner) {
         SDL_Delay(20);
     }
 
-    SDL_SetTextureColorMod(duck_texture, 255, 255, 255); // Restaurar color
+    SDL_SetTextureColorMod(duck_texture, 255, 255, 255);
 
-    SDL_Delay(500); // Pausa antes del texto
+    SDL_Delay(500);
 
-    // Dibujar texto debajo del pato
     texture_handler.saveText("8bit_bigger", "Winner", {255, 255, 255, 255});
     SDL_Point t_size;
     SDL_QueryTexture(texture_handler.getText("Winner"), NULL, NULL, &t_size.x, &t_size.y);
 
     SDL_Rect textRect = {
-        (WINDOW_WIDTH - t_size.x) / 2,          // Centramos horizontalmente
-        center_y + final_height + 40,           // Más separado del pato
+        (WINDOW_WIDTH - t_size.x) / 2,
+        center_y + final_height + 40,
         t_size.x,
         t_size.y
     };
@@ -118,7 +136,6 @@ void ScreenManager::showNextRoundScreen(uint16_t id_winner) {
 void ScreenManager::showScoreboard(std::vector<int> scoreboard) {
     std::vector<DuckScore> duck_scores = sortScoreboard(scoreboard);
 
-    // Crear textura para la escena estática
     SDL_Texture* static_scene = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, WINDOW_WIDTH, WINDOW_HEIGHT);
     if (!static_scene) {
         std::cerr << "Error creating texture: " << SDL_GetError() << std::endl;
@@ -128,64 +145,56 @@ void ScreenManager::showScoreboard(std::vector<int> scoreboard) {
     SDL_SetRenderTarget(renderer, static_scene);
     SDL_RenderClear(renderer);
 
-    // Dibujar fondo
     SDL_RenderCopy(renderer, getTexture("screen"), NULL, NULL);
 
-    // Dibujar título "Scoreboard"
     texture_handler.saveText("8bit_bigger", "Scoreboard", {255, 255, 255, 255});
     SDL_Point t_size;
     SDL_QueryTexture(texture_handler.getText("Scoreboard"), NULL, NULL, &t_size.x, &t_size.y);
     SDL_Rect textRect = {WINDOW_WIDTH / 2 - t_size.x / 2, 100, t_size.x, t_size.y};
     SDL_RenderCopy(renderer, texture_handler.getText("Scoreboard"), NULL, &textRect);
 
-    // Variables para los podios y patos
     SDL_Texture* duck_texture = texture_handler.getTexture("duck");
     SDL_Texture* crate_texture = texture_handler.getTexture("crate");
-
-    // Dimensiones ajustadas
-    int podio_base_height = 20 * TILE_SIZE;    // Altura base del podio (doble)
-    int podio_decremento = 5 * TILE_SIZE;      // Decremento mayor (doble)
-    int duck_width = 2 * TILE_SIZE * DUCK_SIZE_X;
-    int duck_height = 2 * TILE_SIZE * DUCK_SIZE_Y;
-    int spacing = 200;                         // Más espacio entre patos/podios
+    
+    int base_podio_y = 490;
+    int podio_multiplicador = 2*TILE_SIZE;
+    int duck_width = TILE_SIZE * DUCK_SIZE_X * 2;
+    int duck_height = TILE_SIZE * DUCK_SIZE_Y * 2;
+    int spacing = 150;
     int start_x = (WINDOW_WIDTH - (duck_scores.size() * spacing)) / 2;
-    int base_y = 500;                          // Posición inicial más baja
 
     for (size_t i = 0; i < duck_scores.size(); ++i) {
         DuckScore& score = duck_scores[i];
 
-        // Calcular posición del podio
-        int podio_height = podio_base_height - (i * podio_decremento);
+        int podio_height = podio_multiplicador * score.rounds_won;
+
         int podio_x = start_x + (i * spacing);
-        int podio_y = base_y - podio_height;
+        int podio_y = base_podio_y - podio_height;
 
-        // Dibujar podio
-        SDL_Rect podio_rect = {podio_x, podio_y, duck_width, podio_height};
-        SDL_RenderCopy(renderer, crate_texture, NULL, &podio_rect);
+        if (podio_height > 0) {
+            SDL_Rect podio_rect = {podio_x, podio_y, duck_width, podio_height};
+            SDL_RenderCopy(renderer, crate_texture, NULL, &podio_rect);
+        }
 
-        // Dibujar pato encima del podio
+        int duck_y = podio_y - duck_height;
         SDL_SetTextureColorMod(duck_texture, colors[score.id][0], colors[score.id][1], colors[score.id][2]);
-        SDL_Rect duck_rect = {podio_x, podio_y - duck_height, duck_width, duck_height};
+        SDL_Rect duck_rect = {podio_x, duck_y, duck_width, duck_height};
         SDL_RenderCopyEx(renderer, duck_texture, NULL, &duck_rect, 0, NULL, SDL_FLIP_NONE);
 
-        // Dibujar rondas ganadas (texto blanco, centrado)
         std::string score_text = std::to_string(score.rounds_won);
         texture_handler.saveText("8bit_bigger", score_text, {255, 255, 255, 255});
         SDL_QueryTexture(texture_handler.getText(score_text), NULL, NULL, &t_size.x, &t_size.y);
-        SDL_Rect scoreRect = {podio_x + (duck_width - t_size.x) / 2, podio_y - duck_height - t_size.y - 20, t_size.x, t_size.y};
+        SDL_Rect scoreRect = {podio_x + (duck_width - t_size.x) / 2, duck_y - t_size.y - 10, t_size.x, t_size.y};
         SDL_RenderCopy(renderer, texture_handler.getText(score_text), NULL, &scoreRect);
     }
 
-    // Renderizar escena final
     SDL_SetRenderTarget(renderer, NULL);
     SDL_RenderCopy(renderer, static_scene, NULL, NULL);
     SDL_RenderPresent(renderer);
 
-    // Mostrar la pantalla por unos segundos
     SDL_Delay(9000);
     SDL_DestroyTexture(static_scene);
 }
-
 
 
 

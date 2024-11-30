@@ -20,7 +20,7 @@ public:
     ~ScreenManager();
     void showStartScreen();
     void showNextRoundScreen(uint16_t id_winner);
-    void showGetReadyScreen();
+    void showGetReadyScreen(int round);
     void showScoreboard(std::vector<int> scoreboard);
     void loadLobbyScreen();
     void renderStaticLobby();

@@ -87,7 +87,7 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
             gameInitializer.initialize_new_round(*game, message_queue);
             std::cout << "SE INICIALIZO EL GAME "<< "\n";
             screenManager->showNextRoundScreen(message.duck_winner);
-            screenManager->showGetReadyScreen();
+            screenManager->showGetReadyScreen(message.round);
             std::cout << "refresco lo estatico "<< "\n";
             rendererManager->doRenderStatic(game);
             message.type = END_ROUND;
@@ -102,7 +102,7 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
 
             screenManager->showScoreboard(message.scoreboard);
 
-            screenManager->showGetReadyScreen();
+            screenManager->showGetReadyScreen(message.round);
 
             std::cout << "refresco lo estatico "<< "\n";
             rendererManager->doRenderStatic(game);
