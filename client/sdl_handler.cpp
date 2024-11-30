@@ -280,65 +280,56 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
 //** Lobby **//
 int SDLHandler::waitForStartGame(uint16_t lobby_id, Queue<Command>& command_queue, Queue<Message>& message_queue, ClientProtocol& protocol) {
     int done = SUCCESS;
-    //bool start_game = false;
     int chosen_match = 0;
     bool selected_match = false;
-    //auto cmd = Command(lobby_id, LOBBY_STOP_CODE);
+    std::cout << "Seleccionando... " << selected_match << "\n";
 
     while (is_alive) {
         const auto start = std::chrono::high_resolution_clock::now();
 
         done = eventProcessor.processLobbyEvents(screenManager.get(), command_queue, lobby_id, is_alive, chosen_match, selected_match);
-        //****************************
 
-        //handle lobby
         try {
             Message message;
-            if (!message_queue.try_pop(message)) {
-                continue;
-            }
-
-            if (message.type == LOBBY_EXIT_CODE){
-                std::cout << "Comando para salir..." << "\n";
-                lobby_exit = true;
-                is_alive = false;
-                command_queue.close();
-                break;
-            }
-
-            if (message.type == NEW_MATCH_CODE){
-                std::cout << "Partida creada con id: " << static_cast<int>(message.current_match_id) << "\n";
-                screenManager->renderNewMatchText(message.current_match_id);
-            }
-
-            if (message.type == LIST_MATCH_AVAILABLE) {
-                screenManager->renderAvailableMatches(message.len_matches);
-            }
-
-            if (message.type == EXISTING_MATCH_CODE){
-                std::cout << "Conectado a partida con id: " << static_cast<int>(message.current_match_id) << "\n";
-            }
-
-            if (message.type == LOBBY_COMMAND_FAIL){
-                std::cout << "Ups! parece que no puedes realizar esa accion" << "\n";
-            }
-
-            if (message.type == START_MATCH_CODE){
-                chosen_match = message.current_match_id;
-                std::cout << "Partida iniciada con id: " << static_cast<int>(chosen_match) << "\n";
-                //start_game = true;
-
-                //command_queue.push(Command(lobby_id, LOBBY_STOP_CODE, chosen_match));
-                //command_queue.push(Command(lobby_id, LOBBY_STOP_CODE));
-                //esto no es muy lindo pero de momento funciona
-                if (protocol.send_command(Command(lobby_id, LOBBY_STOP_CODE))){
-                    std::cout << "Me desconecte del lobby. Ahora voy a comunicarme con el juego" << "\n";
+            if (message_queue.try_pop(message)) {
+                if (message.type == LOBBY_EXIT_CODE){
+                    std::cout << "Comando para salir..." << "\n";
+                    lobby_exit = true;
                     is_alive = false;
+                    command_queue.close();
                     break;
                 }
+
+                if (message.type == NEW_MATCH_CODE){
+                    std::cout << "Partida creada con id: " << static_cast<int>(message.current_match_id) << "\n";
+                    screenManager->renderNewMatchText(message.current_match_id);
+                }
+
+                if (message.type == LIST_MATCH_AVAILABLE) {
+                    screenManager->renderAvailableMatches(message.existing_matches);
+                }
+
+                if (message.type == EXISTING_MATCH_CODE){
+                    std::cout << "Conectado a partida con id: " << static_cast<int>(message.current_match_id) << "\n";
+                }
+
+                if (message.type == LOBBY_COMMAND_FAIL){
+                    std::cout << "Ups! parece que no puedes realizar esa accion" << "\n";
+                }
+
+                if (message.type == START_MATCH_CODE){
+                    chosen_match = message.current_match_id;
+                    std::cout << "Partida iniciada con id: " << static_cast<int>(chosen_match) << "\n";
+                    if (protocol.send_command(Command(lobby_id, LOBBY_STOP_CODE))){
+                        std::cout << "Me desconecte del lobby. Ahora voy a comunicarme con el juego" << "\n";
+                        is_alive = false;
+                        break;
+                    }
+                }
+
+                std::cout << "\n";
             }
 
-            std::cout << "\n";
         } catch (const ClosedQueue& e) {
             done = ERROR;
             is_alive = false;
@@ -355,8 +346,6 @@ int SDLHandler::waitForStartGame(uint16_t lobby_id, Queue<Command>& command_queu
             std::cerr << "Exception handling the lobby: " << e.what() << std::endl;
         }
 
-
-        //****************************
         const auto end = std::chrono::high_resolution_clock::now();
         auto loop_duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
         auto sleep_duration = DELAY_TIME - loop_duration;

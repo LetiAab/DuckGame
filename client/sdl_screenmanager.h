@@ -19,7 +19,7 @@ public:
     void showLobbyScreen();
     SDL_Texture* getTexture(const std::string& name) const;
     void renderNewMatchText(int id_match);
-    void renderAvailableMatches(int len_matches);
+    void renderAvailableMatches(std::vector<uint16_t> existing_matches);
     Button* getButton(uint8_t id);
     void renderSelectedMatch(int x, int y, int& chosen_match);
 

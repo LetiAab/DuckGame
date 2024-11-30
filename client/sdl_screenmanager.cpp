@@ -31,6 +31,7 @@ void ScreenManager::showStartScreen() {
 }
 
 void ScreenManager::showNextRoundScreen() {
+    SDL_RenderClear(renderer);
     // TODO: poner esto mas lindo, se podria mostrar el pato que gano la ronda
     if (TTF_Init() == -1) {
         std::cerr << "Error: No se pudo inicializar SDL_ttf: " << TTF_GetError() << std::endl;
@@ -172,7 +173,7 @@ void ScreenManager::renderNewMatchText(int id_match) {
     SDL_RenderPresent(renderer);
 }
 
-void ScreenManager::renderAvailableMatches(int len_matches) {
+void ScreenManager::renderAvailableMatches(std::vector<uint16_t> existing_matches) {
     matches.clear();
 
     SDL_RenderCopy(renderer, lobby_textures["static_scene"], NULL, NULL);
@@ -180,18 +181,18 @@ void ScreenManager::renderAvailableMatches(int len_matches) {
     int rect_x = join->x+30;
     int rect_y = join->y+join->h+30;
 
-    for (int i=1; i<len_matches+1; i++) {
+    for (uint16_t id : existing_matches) {
         if(rect_x+50 >= WINDOW_WIDTH) {
             rect_x = join->x+30;
             rect_y += 50;
         }
         SDL_Rect rect = {rect_x, rect_y, 40, 40};
-        matches.push_back({rect, static_cast<uint16_t>(i)});
+        matches.push_back({rect, id});
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
         SDL_RenderDrawRect(renderer, &rect);
 
-        texture_handler.saveText("8bit", std::to_string(i), {255, 255, 255, 255});
-        SDL_RenderCopy(renderer, texture_handler.getText(std::to_string(i)), NULL, &rect);
+        texture_handler.saveText("8bit", std::to_string(id), {255, 255, 255, 255});
+        SDL_RenderCopy(renderer, texture_handler.getText(std::to_string(id)), NULL, &rect);
         rect_x += 50;
     }
 
@@ -199,13 +200,17 @@ void ScreenManager::renderAvailableMatches(int len_matches) {
 }
 
 void ScreenManager::renderSelectedMatch(int x, int y, int& chosen_match) {
+    //SDL_RenderCopy(renderer, lobby_textures["static_scene"], NULL, NULL);
     for (auto& [rect, id] : matches) {
         if (x >= rect.x && x <= rect.x+rect.w && y >= rect.y && y <= rect.y+rect.h) {
             std::cout << "Partida SELECTED : " << id << "\n";
+            chosen_match = id;
+
             SDL_SetRenderDrawColor(renderer, 0, 255, 0, 50);
             SDL_RenderFillRect(renderer, &rect);
+            //texture_handler.saveText("8bit", std::to_string(id), {255, 255, 255, 255});
+            //SDL_RenderCopy(renderer, texture_handler.getText(std::to_string(id)), NULL, &rect);
             SDL_RenderPresent(renderer);
-            chosen_match = id;
             break;
         }
     }

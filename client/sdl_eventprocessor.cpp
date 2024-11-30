@@ -1,6 +1,5 @@
 #include "sdl_eventprocessor.h"
 
-
 #include <iostream>
 
 int EventProcessor::processGameEvents(SDL_Window* window, GameState* game, uint16_t id) {
@@ -158,7 +157,7 @@ int EventProcessor::processLobbyEvents(ScreenManager* screenManager, Queue<Comma
 
 
                     } else if (x >= new_match->x && x <= new_match->x+BUTTON_W && y >= new_match->y && y <= new_match->y+BUTTON_H) {
-                        selected_match = false;
+                        //selected_match = false;
                         // si se presiona se crea una nueva partida => se escribe el id de la partida nueva
                         if (command_queue.try_push(Command(id, NEW_MATCH_CODE, chosen_match))){
                             std::cout << "Creando partida..." << "\n";
@@ -171,25 +170,17 @@ int EventProcessor::processLobbyEvents(ScreenManager* screenManager, Queue<Comma
                         if (command_queue.try_push(Command(id, LIST_MATCH_AVAILABLE))){
                             std::cout << "Partidas disponibles..." << "\n";
                         };
-                        //aca puse que solo se una al match 1 para probar
                         selected_match = true;
-                        chosen_match = 1;
-                        std::cout << "Partida seleccionada: " << chosen_match << "\n";
-                        if (command_queue.try_push(Command(id, EXISTING_MATCH_CODE, chosen_match))){
-                            std::cout << "Conectando a partida..." << "\n";
-                        }
-                    }
-
-                    // join match
-                    // si se presiona se conecta a la partida seleccionada
-                    /*if (selected_match) {
+                        std::cout << "Seleccionando... " << selected_match << "\n";
+                    } else if (selected_match && x >= 504 && x<= WINDOW_WIDTH && y >= 269 && y <= 446) {
+                        // join match
+                        // si se presiona se conecta a la partida seleccionada
                         screenManager->renderSelectedMatch(x, y, chosen_match);
                         std::cout << "Partida seleccionada: " << chosen_match << "\n";
                         if (command_queue.try_push(Command(id, EXISTING_MATCH_CODE, chosen_match))){
                             std::cout << "Conectando a partida..." << "\n";
                         };
-                    }*/
-
+                    }
                 break;
                 }
                 case SDL_KEYDOWN:
