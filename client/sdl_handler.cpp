@@ -271,7 +271,7 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
 
         if (message.type == DUCK_POS_UPDATE){
 
-            std::cout << "RECIBO POS UPDATE" << "\n";
+            // std::cout << "RECIBO POS UPDATE" << "\n";
 
             int pos_id = message.player_id - 1;
 
