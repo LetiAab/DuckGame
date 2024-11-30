@@ -208,8 +208,8 @@ void ScreenManager::renderSelectedMatch(int x, int y, int& chosen_match) {
 
             SDL_SetRenderDrawColor(renderer, 0, 255, 0, 50);
             SDL_RenderFillRect(renderer, &rect);
-            //texture_handler.saveText("8bit", std::to_string(id), {255, 255, 255, 255});
-            //SDL_RenderCopy(renderer, texture_handler.getText(std::to_string(id)), NULL, &rect);
+            texture_handler.saveText("8bit", std::to_string(id), {0, 0, 0, 255});
+            SDL_RenderCopy(renderer, texture_handler.getText(std::to_string(id)), NULL, &rect);
             SDL_RenderPresent(renderer);
             break;
         }
