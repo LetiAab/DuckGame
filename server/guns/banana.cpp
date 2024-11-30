@@ -5,7 +5,7 @@
 
 // 6 balas, Alcance: medio (15 tiles (15 x TILE_SIZE = 60))
 Banana::Banana(int x, int y)
-    : Weapon(BANANA_ID, "Banana", 60, 0, 1, x, y), peeled(false), speed(4, -4), pisada(false) {}
+    : Weapon(BANANA_ID, "Banana", 1000, 0, 1, x, y), peeled(false), speed(4, -4), pisada(false) {}
 
 bool Banana::disparar_banana(int position_x, int position_y, char looking, GameMap* map, char id_player, bool is_looking_up) {
         if (!map && is_looking_up) {
