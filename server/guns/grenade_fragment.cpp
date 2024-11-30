@@ -3,8 +3,8 @@
 #define GRENADE_FRAGMENT_SIZE_X 1
 #define GRENADE_FRAGMENT_SIZE_Y 1
 
-GrenadeFragment::GrenadeFragment(int fragment_id, Position position, int direction_x, int direction_y, GameMap* map, char duck_id, int alcance) 
-    : Projectile(fragment_id, 0, position, direction_x, direction_y, map, duck_id, alcance) {}
+GrenadeFragment::GrenadeFragment(int fragment_id, Position position, int direction_x, int direction_y, GameMap* map, char duck_id, int alcance, bool horizontal) 
+    : Projectile(fragment_id, 0, position, direction_x, direction_y, map, duck_id, alcance, horizontal) {}
 // Nota: deberías diferenciar entre el número de bala y el tipo de proyectil
 
 

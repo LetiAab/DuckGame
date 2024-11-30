@@ -20,10 +20,10 @@ public:
     explicit Banana(int x = 0, int y = 0);
 
     // Métodos
-    void disparar_banana(int position_x, int position_y, char looking, GameMap* map, char id_player);
+    bool disparar_banana(int position_x, int position_y, char looking, GameMap* map, char id_player, bool is_looking_up);
 
-    void disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) override {
-        disparar_banana(position_x, position_y, looking, map, id_player);
+    bool disparar(int position_x, int position_y, char looking, GameMap* map, char id_player, bool is_looking_up) override {
+        return disparar_banana(position_x, position_y, looking, map, id_player, is_looking_up);
     }
 
     void mostrarInformacion() const;  

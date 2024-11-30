@@ -7,17 +7,19 @@
 Banana::Banana(int x, int y)
     : Weapon(BANANA_ID, "Banana", 60, 0, 1, x, y), peeled(false), speed(4, -4), pisada(false) {}
 
-void Banana::disparar_banana(int position_x, int position_y, char looking, GameMap* map, char id_player) {
-        if (!map) {
+bool Banana::disparar_banana(int position_x, int position_y, char looking, GameMap* map, char id_player, bool is_looking_up) {
+        if (!map && is_looking_up) {
                 std::cout << "Position x: " << position_x << ", y: " << position_y
                  << ", looking: " << looking << ", id_player: " << static_cast<uint16_t>(id_player) << std::endl;
         }
     if (!peeled) {
         peeled = true;
         std::cout << "Se peló la banana" << std::endl;
+        return true;
     } else {
         std::cout << "La banana ya está pelada" << std::endl;
     }
+    return false;
 }
 
 void Banana::mostrarInformacion() const {

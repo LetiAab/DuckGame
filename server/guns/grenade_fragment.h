@@ -12,7 +12,7 @@
 class GameMap;
 class GrenadeFragment : public Projectile {
 public:
-    GrenadeFragment(int fragment_id, Position position, int direction_x, int direction_y, GameMap* map, char duck_id, int alcance);
+    GrenadeFragment(int fragment_id, Position position, int direction_x, int direction_y, GameMap* map, char duck_id, int alcance, bool horizontal);
     void comenzar_trayectoria() override;
     void update_position() override;
 

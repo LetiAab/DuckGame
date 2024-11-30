@@ -7,17 +7,19 @@
 Grenade::Grenade(int x, int y)
     : Weapon(GRENADE_ID, "Grenade", 60, 0, 1, x, y), activated(false), ticks_counter(0), exploded(false), speed(4, -4) {}
 
-void Grenade::disparar_grenade(int position_x, int position_y, char looking, GameMap* map, char id_player) {
-        if (!map) {
+bool Grenade::disparar_grenade(int position_x, int position_y, char looking, GameMap* map, char id_player, bool is_looking_up) {
+        if (!map && is_looking_up) {
                 std::cout << "Position x: " << position_x << ", y: " << position_y
                  << ", looking: " << looking << ", id_player: " << static_cast<uint16_t>(id_player) << std::endl;
         }
         if (!activated) {
                 activated = true;
                 std::cout << "Se activó la granada" << std::endl;
+                return true;
         } else {
                 std::cout << "La granada ya está activada" << std::endl;
         }
+        return false;
 }
 
 void Grenade::mostrarInformacion() const {
@@ -102,7 +104,7 @@ bool Grenade::update_weapon(int position_x, int position_y, char looking, GameMa
                                         int direccion_x = i;
                                         int direccion_y = j;
 
-                                        auto new_fragment = std::make_unique<GrenadeFragment>(fragment_count, fragment_position, direccion_x, direccion_y, map, id_player, alcance);
+                                        auto new_fragment = std::make_unique<GrenadeFragment>(fragment_count, fragment_position, direccion_x, direccion_y, map, id_player, alcance, true);
                                         new_fragment->comenzar_trayectoria();
                                         projectiles.push_back(std::move(new_fragment));
 
