@@ -172,7 +172,7 @@ void Game::run() {
 
                                 initialize_round();
 
-                                std::cout << "Envio mensajes para iniciar la nueva ronda"  << std::endl;
+                                std::cout << "Envio mensajes del scoreboard"  << std::endl;
 
                                 notify_players_end_of_five_rounds();
                                 send_map_message();

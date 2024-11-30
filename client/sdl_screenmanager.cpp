@@ -1,6 +1,7 @@
 #include "sdl_screenmanager.h"
 
 #include "common/constants.h"
+#include <algorithm>
 
 ScreenManager::ScreenManager(SDL_Renderer* renderer, TextureHandler& texture_handler) :
     renderer(renderer), texture_handler(texture_handler) {}
@@ -112,13 +113,94 @@ void ScreenManager::showNextRoundScreen(uint16_t id_winner) {
     SDL_RenderPresent(renderer);
 
     SDL_Delay(2000);
+}
 
-    showGetReadyScreen();
+void ScreenManager::showScoreboard(std::vector<int> scoreboard) {
+    std::vector<DuckScore> duck_scores = sortScoreboard(scoreboard);
+
+    // Crear textura para la escena estática
+    SDL_Texture* static_scene = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, WINDOW_WIDTH, WINDOW_HEIGHT);
+    if (!static_scene) {
+        std::cerr << "Error creating texture: " << SDL_GetError() << std::endl;
+        return;
+    }
+
+    SDL_SetRenderTarget(renderer, static_scene);
+    SDL_RenderClear(renderer);
+
+    // Dibujar fondo
+    SDL_RenderCopy(renderer, getTexture("screen"), NULL, NULL);
+
+    // Dibujar título "Scoreboard"
+    texture_handler.saveText("8bit_bigger", "Scoreboard", {255, 255, 255, 255});
+    SDL_Point t_size;
+    SDL_QueryTexture(texture_handler.getText("Scoreboard"), NULL, NULL, &t_size.x, &t_size.y);
+    SDL_Rect textRect = {WINDOW_WIDTH / 2 - t_size.x / 2, 100, t_size.x, t_size.y};
+    SDL_RenderCopy(renderer, texture_handler.getText("Scoreboard"), NULL, &textRect);
+
+    // Variables para los podios y patos
+    SDL_Texture* duck_texture = texture_handler.getTexture("duck");
+    SDL_Texture* crate_texture = texture_handler.getTexture("crate");
+
+    // Dimensiones ajustadas
+    int podio_base_height = 20 * TILE_SIZE;    // Altura base del podio (doble)
+    int podio_decremento = 5 * TILE_SIZE;      // Decremento mayor (doble)
+    int duck_width = 2 * TILE_SIZE * DUCK_SIZE_X;
+    int duck_height = 2 * TILE_SIZE * DUCK_SIZE_Y;
+    int spacing = 200;                         // Más espacio entre patos/podios
+    int start_x = (WINDOW_WIDTH - (duck_scores.size() * spacing)) / 2;
+    int base_y = 500;                          // Posición inicial más baja
+
+    for (size_t i = 0; i < duck_scores.size(); ++i) {
+        DuckScore& score = duck_scores[i];
+
+        // Calcular posición del podio
+        int podio_height = podio_base_height - (i * podio_decremento);
+        int podio_x = start_x + (i * spacing);
+        int podio_y = base_y - podio_height;
+
+        // Dibujar podio
+        SDL_Rect podio_rect = {podio_x, podio_y, duck_width, podio_height};
+        SDL_RenderCopy(renderer, crate_texture, NULL, &podio_rect);
+
+        // Dibujar pato encima del podio
+        SDL_SetTextureColorMod(duck_texture, colors[score.id][0], colors[score.id][1], colors[score.id][2]);
+        SDL_Rect duck_rect = {podio_x, podio_y - duck_height, duck_width, duck_height};
+        SDL_RenderCopyEx(renderer, duck_texture, NULL, &duck_rect, 0, NULL, SDL_FLIP_NONE);
+
+        // Dibujar rondas ganadas (texto blanco, centrado)
+        std::string score_text = std::to_string(score.rounds_won);
+        texture_handler.saveText("8bit_bigger", score_text, {255, 255, 255, 255});
+        SDL_QueryTexture(texture_handler.getText(score_text), NULL, NULL, &t_size.x, &t_size.y);
+        SDL_Rect scoreRect = {podio_x + (duck_width - t_size.x) / 2, podio_y - duck_height - t_size.y - 20, t_size.x, t_size.y};
+        SDL_RenderCopy(renderer, texture_handler.getText(score_text), NULL, &scoreRect);
+    }
+
+    // Renderizar escena final
+    SDL_SetRenderTarget(renderer, NULL);
+    SDL_RenderCopy(renderer, static_scene, NULL, NULL);
+    SDL_RenderPresent(renderer);
+
+    // Mostrar la pantalla por unos segundos
+    SDL_Delay(9000);
+    SDL_DestroyTexture(static_scene);
 }
 
 
 
 
+std::vector<DuckScore> ScreenManager::sortScoreboard(std::vector<int> scoreboard) {
+    std::vector<DuckScore> duck_scores;
+    for (size_t i = 0; i < scoreboard.size(); ++i) {
+        duck_scores.emplace_back(i, scoreboard[i]);
+    }
+
+    std::sort(duck_scores.begin(), duck_scores.end(), [](const DuckScore& a, const DuckScore& b) {
+        return a.rounds_won > b.rounds_won; // Ordena de mayor a menor
+    });
+
+    return duck_scores;
+}
 
 
 void ScreenManager::loadLobbyScreen() {
@@ -128,6 +210,7 @@ void ScreenManager::loadLobbyScreen() {
                         {"new-match-button", "start/new-match"},
                         {"join-button", "start/join-match"},
                         {"next-round-background", "round/nightsky"},
+                        {"screen", "round/screen"},
                         {"duck", "duck"}};
 
     // Cargar imagenes del lobby
