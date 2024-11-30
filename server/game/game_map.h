@@ -5,6 +5,7 @@
 #include <vector>
 #include "common/position.h"
 #include "common/constants.h"
+#include "../level_manager.h"
 
 
 class GameMap {
@@ -18,7 +19,7 @@ private:
 public:
     GameMap(int width, int height);
 
-    bool placeDuck(int x, int y, char duck_id);
+    bool placeDuck(Position pos, char duck_id);
 
     bool is_duck_touching_floor(int x, int y);
 
@@ -27,7 +28,11 @@ public:
 
     char duck_in_position(int x, int y, int size_x, int size_y);
 
+    void clear_map();
+
     void setEscenario();
+
+    void set_escenario_for_round(MapConfig mapConfig);
 
     bool canMoveDuckTo(int x, int y, char duck_id);
 
@@ -78,6 +83,10 @@ public:
     Position try_move_grenade(Position old_position, Position speed);
 
     bool is_throwable_touching_floor(Position position, int size_x, int size_y);
+    void placeBox(Position pos);
+    void removeBox(Position pos);
+    bool isCollisionWithBox(Position pos, int size_x, int size_y);
+    bool boxIsOverBullet(Position position);
 
 
 };

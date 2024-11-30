@@ -30,7 +30,7 @@ public:
 
     bool get_throwed_position_message(Message& throwed_message);
 
-    virtual void disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) = 0;
+    virtual bool disparar(int position_x, int position_y, char looking, GameMap* map, char id_player, bool is_looking_up) = 0;
     virtual ~Weapon() = default;  // Destructor virtual
 
 protected:

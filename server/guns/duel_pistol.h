@@ -19,7 +19,7 @@ public:
     DuelPistol(int x = 0, int y = 0);
 
     // Métodos
-    void disparar(int position_x, int position_y, char looking, GameMap* map, char id_player) override;
+    bool disparar(int position_x, int position_y, char looking, GameMap* map, char id_player, bool is_looking_up) override;
 
     void mostrarInformacion() const;  
     void update_weapon();

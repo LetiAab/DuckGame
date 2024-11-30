@@ -11,6 +11,7 @@ public:
     ShootCommand(uint16_t player_id);
 
     void execute(Game& game) override;
+
 };
 
 #endif

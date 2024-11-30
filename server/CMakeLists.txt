@@ -12,12 +12,15 @@ target_sources(taller_server
     lobby/lobby_player.cpp
     receiver.cpp
     sender.cpp
+    level_manager.cpp
     game/game.cpp
     game/game_queue_monitor.cpp
     game/game_map.cpp
     game/duck.cpp
     game/item.cpp
     game/spawn_place.cpp
+    game/box.cpp
+    game/round_manager.cpp
     guns/bullet.cpp
     guns/weapon.cpp
     guns/pew_pew_laser.cpp
@@ -41,10 +44,13 @@ target_sources(taller_server
     executables/start/move_right_command.cpp
     executables/start/move_down_command.cpp
     executables/start/move_up_command.cpp
+    executables/start/look_up_command.cpp
     executables/stop/stop_move_command.cpp
     executables/stop/stop_move_right_command.cpp
     executables/stop/stop_move_left_command.cpp
     executables/stop/stop_jump_command.cpp
+    executables/stop/stop_move_down_command.cpp
+    executables/stop/stop_look_up_command.cpp
     executables/guns_commands/shoot_command.cpp
     executables/guns_commands/take_item_command.cpp
     executables/guns_commands/drop_weapon_command.cpp
@@ -62,12 +68,15 @@ target_sources(taller_server
     lobby/lobby_player.h
     receiver.h
     sender.h
+    level_manager.h
     game/game.h
     game/game_queue_monitor.h
     game/game_map.h
     game/duck.h
     game/item.h
     game/spawn_place.h
+    game/box.h
+    game/round_manager.h
     guns/bullet.h
     guns/weapon.h
     guns/pew_pew_laser.h
@@ -93,10 +102,13 @@ target_sources(taller_server
     executables/start/move_right_command.h
     executables/start/move_down_command.h
     executables/start/move_up_command.h
+    executables/start/look_up_command.h
     executables/stop/stop_move_command.h
     executables/stop/stop_move_right_command.h
     executables/stop/stop_move_left_command.h
     executables/stop/stop_jump_command.h
+    executables/stop/stop_move_down_command.h
+    executables/stop/stop_look_up_command.h
     executables/guns_commands/shoot_command.h
     executables/guns_commands/take_item_command.h
     executables/guns_commands/drop_weapon_command.h

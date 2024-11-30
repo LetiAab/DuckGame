@@ -10,15 +10,26 @@ class RendererManager {
 public:
     RendererManager(SDL_Renderer* renderer, TextureHandler& texture_handler);
     void doRenderStatic(GameState* game);
-    void doRenderDynamic(GameState* game, Message& message);
+    void doRenderDynamic(GameState* game, Message& message, uint16_t id);
+
 
 private:
     SDL_Renderer* renderer;
     TextureHandler& texture_handler;
+    SDL_Texture* static_scene;
+
     void renderBullet(GameState* game,  int size = 20);
     void renderDucks(GameState* game);
     void renderItems(GameState* game);
     void renderThrowed(GameState* game);
+    void renderStats(GameState* game, uint16_t id);
+
+    void renderBoxes(GameState* game);
+    void renderItemsOnFloor(GameState* game);
+
+
+    void renderItem(uint8_t item_id, int x, int y, int mult = 1, bool enableOscillation = true);    
+
 
 
 };

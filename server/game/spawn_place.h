@@ -1,7 +1,6 @@
 #ifndef SPAWN_PLACE_H
 #define SPAWN_PLACE_H
 
-#include "item.h"
 #include "common/position.h" 
 #include "../guns/weapon.h"
 #include "../guns/pew_pew_laser.h"

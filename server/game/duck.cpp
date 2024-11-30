@@ -2,11 +2,9 @@
 #include <iostream>
 #include <typeinfo>
 
-
 const int HELMET_BROKE = 0;
 const int ARMOR_BROKE = 1;
 const int DEAD = 2;
-
 
 Duck::Duck(char id, int x, int y, GameMap* map) :
     id_player(id),
@@ -19,7 +17,11 @@ Duck::Duck(char id, int x, int y, GameMap* map) :
     looking(LOOKING_RIGHT),
     is_jumping(false),
     is_fluttering(false),
+    is_laying_down(false),
+    was_laying_down(false),
     is_slippy(false),
+    is_looking_up(false),
+    was_looking_up(false),
     life_points(1),
     stop_notificated(false),
     is_dead(false),
@@ -37,14 +39,14 @@ bool Duck::next_to_wall(){
 }
 
 bool Duck::pickUpItem(std::shared_ptr<Item> item) {
-
-    
     if (item != nullptr){
         std::cout << "Agarro el item de ID " << item->getItemId() << "\n";
+        
         if (onHand == nullptr)
             std::cout << "No tiene un ítem en la mano actualmente" << "\n";
         else
             std::cout << "El item de la mano antes de cambiarlo tiene ID " << onHand->getItemId() << "\n";
+        
         onHand = item;
         std::cout << "Ahora el Id del Item en la mano es " << onHand->getItemId() << "\n";
         return true;
@@ -93,7 +95,7 @@ void Duck::check_gravity(){
 }
 
 int Duck::update_life(){
-//Esta funcion tiene que avisar que le sacaron el casco, le sacaron el armor, o que murio
+    //Esta funcion tiene que avisar que le sacaron el casco, le sacaron el armor, o que murio
 
     if(map->duckIsOverVoid(position.x, position.y)){
         is_dead = true;
@@ -132,7 +134,6 @@ int Duck::update_life(){
 }
 
 void Duck::update_position() {
-
     if(is_dead){return;}
 
     check_gravity();
@@ -229,13 +230,31 @@ void Duck::form_position_message(Message& msg){
     msg.is_moving = is_moving;
     msg.is_jumping = is_jumping;
     msg.is_fluttering = is_fluttering;
+    msg.is_laying_down = is_laying_down;
+    msg.is_looking_up = is_looking_up;
 }
 
 bool Duck::get_duck_position_message(Message& msg){
+
+    std::cout << "POSICION DEL PATO MESSAGE" << "\n";
+
     if(is_dead){return false;}
 
-//    std::cout << "Chequeo del mensaje, old position es x: " << old_position.x << " y: " << old_position.y << 
-//            "y position es x: " << position.x << " y: " << position.y << "\n";
+    if(is_looking_up != was_looking_up){
+        form_position_message(msg);
+        was_looking_up = is_looking_up;
+        return true;
+    }
+
+    if (is_laying_down != was_laying_down) {
+
+        form_position_message(msg);
+        was_laying_down = is_laying_down;
+        return true;
+    }
+
+    //    std::cout << "Chequeo del mensaje, old position es x: " << old_position.x << " y: " << old_position.y <<
+    //            "y position es x: " << position.x << " y: " << position.y << "\n";
             
     if (old_position.x == position.x && old_position.y == position.y){
         if(stop_notificated){
@@ -256,11 +275,14 @@ bool Duck::get_duck_position_message(Message& msg){
 }
 
 
+bool Duck::get_duck_initialize_message(Message& msg){
+    form_position_message(msg);
+    return true;
+}
+
 char Duck::get_id() const {
     return id_player;
 }
-
-
 
 void Duck::setWeapon(std::shared_ptr<Weapon> new_weapon) {
     std::cout << "ASIGNO NUEVA ARMA" << "\n";
@@ -321,6 +343,13 @@ void Duck::setHelmet(std::shared_ptr<Helmet> new_helmet) {
     }
 }
 
+uint8_t Duck::getWeaponId(){
+    if (weapon != nullptr){
+        return weapon->getItemId();
+    }
+    return 0;
+}
+
 
 bool Duck::disparar() {
     if(is_dead){return false;}
@@ -328,9 +357,13 @@ bool Duck::disparar() {
     if (weapon != nullptr) {
         std::cout << "Soy pato, disparo desde x: " << position.x << " y: " << position.y << "\n";
         bool habia_municiones = (weapon->getMuniciones() > 0);
-        weapon->disparar(position.x, position.y, looking, map, id_player);
+        if(!(weapon->disparar(position.x, position.y, looking, map, id_player, is_looking_up))){
+            //si no pude disparar devuevlo false
+            return false;
+        }
 
-
+        
+        //RETROCESOOO PARA AK47 Y MAGNUM
         if (habia_municiones && (weapon->getItemId() == AK_47_ID || weapon->getItemId() == MAGNUM_ID)) {
             old_position = position;
 
@@ -349,6 +382,10 @@ bool Duck::disparar() {
             // Esto porque no tengo el monitor a mano ni el game, solo el map, y no puedo notificarlo
         }
 
+        if (habia_municiones){
+            return true;
+        }
+
     }
     return false;
 }
@@ -356,6 +393,27 @@ bool Duck::disparar() {
 
 Position Duck::getPosition(){
     return position;
+}
+
+void Duck::reset_for_round(Position pos){
+    position = pos;
+    old_position = pos;
+    is_moving = false;
+    speed_x = 0;
+    speed_y = 0;
+    looking = LOOKING_RIGHT;
+    is_jumping = false;
+    is_fluttering= false;
+    is_laying_down= false;
+    was_laying_down= false;
+    is_slippy= false;
+    life_points = 1;
+    stop_notificated = false;
+    is_dead = false;
+    weapon = nullptr;
+    armor = nullptr;
+    helmet = nullptr;
+    onHand.reset();
 }
 
 std::shared_ptr<Item> Duck::getItemOnHand() const {

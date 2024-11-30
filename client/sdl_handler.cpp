@@ -3,9 +3,7 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_mixer.h>
 #include <common/message.h>
-
-
-#define DELAY_TIME 60
+#include <map>
 
 //using namespace SDL2pp;
 
@@ -19,10 +17,11 @@ SDLHandler::~SDLHandler() {
 }
 
 //** Juego **//
-void SDLHandler::loadGame(GameState* game) {
+void SDLHandler::loadGame(GameState &game, Queue<Message> &message_queue) {
     std::vector<TextureInfo> textures_to_load = {
         {"forest", "backgrounds/forest", 1},
         {"crate", "crate", 1},
+        {"box", "box", 1},
         {"gun", "guns/AK-47", 1},
         {"cowboy-pistol", "guns/cowboy_pistol", 1},
         {"laser-rifle", "guns/laser_rifle", 1},
@@ -45,7 +44,10 @@ void SDLHandler::loadGame(GameState* game) {
         {"duck-walking-wings", "duck-walking-wings", 1},
         {"duck-jumping", "duck-jumping", 1},
         {"duck-jumping-wings", "duck-jumping-wings", 1},
-        {"duck-fluttering", "duck-fluttering", 6}
+        {"duck-fluttering", "duck-fluttering", 6},
+        {"duck", "duck", 1},
+        {"corazon", "corazon", 1},
+        {"duck-laying-down", "duck-laying-down", 1}
     };
 
     // Cargo las texturas
@@ -54,50 +56,97 @@ void SDLHandler::loadGame(GameState* game) {
         handle_textures.loadTexture(texture_info, &frame_width, &frame_height);
     }
 
-    // Inicializo los patos y los crates
-    gameInitializer.initializeDucks(game, frame_width, frame_height);
-    gameInitializer.initializeCrates(game);
-    
 
+    // Recibo e inicializo los elementos del juego
+    gameInitializer.initializeGame(message_queue, game, frame_width, frame_height);
+    
     // Inicializo el render manager
-    rendererManager = std::make_unique<RendererManager>(game->renderer, handle_textures);
+    rendererManager = std::make_unique<RendererManager>(game.renderer, handle_textures);
 
     audioManager = std::make_unique<AudioManager>();
 
 }
 
 
-
-      
 Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queue) {
+
+    //No quise tocar mas el server entonces mapee la municion inicial aca
+    std::map<uint8_t, int> weaponAmmo = {
+            {PEW_PEW_LASER_ID, 12},
+            {LASER_RIFLE_ID, 10},
+            {AK_47_ID, 30},
+            {DUEL_PISTOL_ID, 1},
+            {COWBOY_PISTOL_ID, 6},
+            {MAGNUM_ID, 6},
+            {SHOTGUN_ID, 2},
+            {SNIPER_ID, 3}
+        };
+
     Message message;
     while (message_queue.try_pop(message)) {
 
+        if(message.type == END_ROUND){
+            std::cout << "SE TERMINO LA RONDA "<< "\n";
+
+            gameInitializer.initialize_new_round(*game, message_queue);
+            std::cout << "SE INICIALIZO EL GAME "<< "\n";
+            screenManager->showNextRoundScreen();
+            std::cout << "refresco lo estatico "<< "\n";
+            rendererManager->doRenderStatic(game);
+            message.type = END_ROUND;
+        }
+
         if(message.type == END_GAME){
             std::cout << "SE TERMINO LA PARTIDA "<< "\n";
+            //TODO: Mostrar el mensaje del final de la partida
         }
+
         if(message.type == SPAWN_PLACE_ITEM_UPDATE){
 
             int pos_spawn_id = message.spawn_place_id;
-            game->spawn_places[pos_spawn_id].item_id = message.item_id; 
+            game->spawn_places[pos_spawn_id].item_id = message.item_id;
 
         }
 
         if(message.type == SHOOT){
+
+            int pos_id = message.player_id - 1;
+            if(game->ducks[pos_id].current_ammo > 0){
+                game->ducks[pos_id].current_ammo -= 1;
+            }
             //si recibo esto es que efectivamente disparé y tengo que reproducir el sonido
             const std::string path = std::string(AUDIO_PATH) + "shoot.wav";
             audioManager->loadSoundEffect(path);
             audioManager->playSoundEffect();
-            audioManager->setSoundEffectVolume(70);
+            audioManager->setSoundEffectVolume(100);
+        }
+
+        if(message.type == BOX_DESTROYED){
+            std::cout << "Se destruyo la caja con id: " << message.box_id << "\n";
+
+            int box_id = message.box_id;
+            game->boxes[box_id].destroyed = true;
+            game->boxes[box_id].item_id = message.item_id;
 
         }
 
-        if(message.type == ITEM_POSITION){
-            //RENDERIZAR LOS ITEMS bien
-            /*Item item;
-            item.x = message.item_x * TILE_SIZE;
-            item.y = message.item_y * TILE_SIZE;
-            game.items.push_back(item);*/
+        if (message.type == ITEM_ON_FLOOR_UPDATE) {
+            int x = message.item_x * TILE_SIZE;
+            int y = message.item_y * TILE_SIZE;
+
+            std::cout << "AGARRE EL ITEM QUE ESTA EN X: "<< x << " Y: "<< y << "\n";
+
+
+            // Recorrer la lista de items en el suelo hasta encontrar el que matchea con la pos que me llegó
+            for (auto& item_on_floor : game->items_on_floor) {
+                std::cout << "RECORRO LA LISTA DE ITEMS EN EL SUELO X: "<< item_on_floor.x << " Y: "<< item_on_floor.y << "\n";
+                
+                if (item_on_floor.x == x && item_on_floor.y == y) {
+                    std::cout << "Item found at (" << x << ", " << y << ") with ID: " << static_cast<int>(item_on_floor.item_id) << std::endl;
+
+                    item_on_floor.item_id = 0;
+                }
+            }
         }
 
 
@@ -134,6 +183,8 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
              || (message.item_id == BANANA_ID) || (message.item_id == BASE_WEAPON_ID)){
                 std::cout << "agarre un ARMA A: " << static_cast<int>(message.item_id) << "\n";
                 game->ducks[pos_id].weapon_equiped = message.item_id;
+                game->ducks[pos_id].current_ammo = weaponAmmo[message.item_id];
+
             }            
 
             if(message.item_id == HELMET_ID){
@@ -176,6 +227,7 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
         if(message.type == DROP_WEAPON){
             int pos_id = message.player_id - 1;
             game->ducks[pos_id].weapon_equiped = 0;
+            game->ducks[pos_id].current_ammo = 0;
         }
 
         if(message.type == ARMOR_BROKEN){
@@ -199,11 +251,12 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
                     projectile.old_y = projectile.current_y;
                     projectile.current_x = message.bullet_x;
                     projectile.current_y = message.bullet_y;
+                    projectile.horizontal = message.bullet_horizontal;
                     std::cout << "Ya tenia ese id, lo actualizo \n";
                 }
             }
             if (!includes) {
-                game->projectiles.push_back(Projectile{message.bullet_x, message.bullet_y, 10000, 10000, message.bullet_id, message.bullet_type, 0});
+                game->projectiles.push_back(Projectile{message.bullet_x, message.bullet_y, 10000, 10000, message.bullet_id, message.bullet_type, 0, message.bullet_horizontal});
                 std::cout << "No tenia ese id, lo meto \n";
             }
         }
@@ -211,11 +264,15 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
         if(message.type == KILL_DUCK){
             int pos_id = message.player_id - 1;
             //NO LO ELIMINO DE LA LISTA PORQUE ALTO KILOMBO ASI QUE MUEVO EL DIBUJO AFUERA DE LA PANTALLA
-            game->ducks[pos_id].x = 400 * TILE_SIZE;
-            game->ducks[pos_id].y = 400 * TILE_SIZE;
+            //game->ducks[pos_id].x = 400 * TILE_SIZE;
+            //game->ducks[pos_id].y = 400 * TILE_SIZE;
+            game->ducks[pos_id].is_dead = true;
         }
 
         if (message.type == DUCK_POS_UPDATE){
+
+            std::cout << "RECIBO POS UPDATE" << "\n";
+
             int pos_id = message.player_id - 1;
 
             game->ducks[pos_id].x = message.duck_x * TILE_SIZE;
@@ -234,6 +291,9 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
             game->ducks[pos_id].is_moving = message.is_moving;
             game->ducks[pos_id].is_jumping = message.is_jumping;
             game->ducks[pos_id].is_fluttering = message.is_fluttering;
+            game->ducks[pos_id].is_laying_down = message.is_laying_down;
+            game->ducks[pos_id].is_looking_up = message.is_looking_up;
+
         }
     }
     return message;
@@ -247,12 +307,22 @@ int SDLHandler::waitForStartGame() {
     int id_match = 1;
 
     while (!start_game && !done) {
+        const auto start = std::chrono::high_resolution_clock::now();
+
         done = eventProcessor.processLobbyEvents(screenManager.get(), start_game, id_match);
+
+        const auto end = std::chrono::high_resolution_clock::now();
+        auto loop_duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+        auto sleep_duration = DELAY_TIME - loop_duration;
+
+        if (sleep_duration > 0) {
+            SDL_Delay(sleep_duration);
+        }
     }
     return done;
 }
 
-void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& command_queue, uint16_t id, Queue<Message>& message_queue) {
+void SDLHandler::run(Queue<Command>& command_queue, uint16_t id, Queue<Message>& message_queue) {
     SDL_Window* window = SDL_CreateWindow("Duck Game",
                                           SDL_WINDOWPOS_UNDEFINED,
                                           SDL_WINDOWPOS_UNDEFINED,
@@ -273,29 +343,13 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
     }
 
 
-
     GameState game{};
     game.renderer = renderer;
-    game.client_game_map.setMap(map);
     game.command_queue = &command_queue;
-    std::cout << "ID: " << id << "\n";
-
-    //recibo la posicion de los N spawn places
-
+    game.music = true;
+    loadGame(game, message_queue);
 
 
-    loadGame(&game);
-
-    std::cout << "HORA DE RECIBIR SPAWNS" << "\n";
-    for (int i = 0; i < N_SPAWN_PLACES; i++){
-        // lo hago bloqueante asi no avanza hasta recibir los spawnplaces
-
-        Message message = message_queue.pop();
-
-        if(message.type == SPAWN_PLACE_POSITION){
-            game.spawn_places.emplace_back(message.spaw_place_x * TILE_SIZE, message.spaw_place_y * TILE_SIZE, message.item_id);
-        }
-    }
 
     //Empiezo la musica de fondo
     const std::string path = std::string(AUDIO_PATH) +"ambient-music.wav";
@@ -310,24 +364,54 @@ void SDLHandler::run(std::vector<std::vector<char>> &map, Queue<Command>& comman
     int done = SUCCESS;
     try{
         while (!done) {
+            const auto start = std::chrono::high_resolution_clock::now();
+
             //PRIMERO MANDO AL SERVER
             
             //no se si pasar el audio manager aca para reproducir el sonido del disparo es lo mejor 
             //pero por ahora funciona... 
             done = eventProcessor.processGameEvents(window, &game, id);
 
+            if(game.music){
+                audioManager->setMusicVolume(30);
+                audioManager->setSoundEffectVolume(100);
+            }
 
+            if(!game.music){
+                audioManager->setMusicVolume(0);
+                audioManager->setSoundEffectVolume(0);
+            }
 
             //LUEGO RECIBO DEL SERVER Y HAGO EL RENDER
             Message message = handleMessages(&game, message_queue);
+            //std::cout << "El message type es: " << static_cast<unsigned int>(message.type) << "\n";
+
+            if(message.type == END_ROUND){
+                std::cout << "TERMINO LA RONDA"<< "\n";
+                std::cout << "El ganador fue el pato "<< static_cast<char>(message.duck_winner) << "\n";
+                
+                continue;
+                
+            }
+
             if(message.type == END_GAME){
+                std::cout << "TERMINO LA PARTIDA"<< "\n";
+                std::cout << "El ganador fue el pato "<< static_cast<char>(message.duck_winner)  << "\n";
+                //TODO:  mostrar pantalla de victoria antes de salir
                 done = ERROR;
                 break;
             }
 
-            rendererManager->doRenderDynamic(&game, message);
+            rendererManager->doRenderDynamic(&game, message, id);
 
-            SDL_Delay(DELAY_TIME);
+            //SDL_Delay(DELAY_TIME);
+            const auto end = std::chrono::high_resolution_clock::now();
+            auto loop_duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+            auto sleep_duration = DELAY_TIME - loop_duration;
+
+            if (sleep_duration > 0) {
+                SDL_Delay(sleep_duration);
+            }
         }
     } catch (const ClosedQueue& e){
         done = ERROR;

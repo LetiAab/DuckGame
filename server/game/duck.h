@@ -27,14 +27,10 @@
 #include "../guns/grenade.h"
 #include "../guns/banana.h"
 
-
-
 class GameMap;
 class Item;
 class Weapon;
 class Bullet;
-
-
 
 class Duck {
 private:
@@ -55,7 +51,11 @@ public:
     char looking;
     bool is_jumping;
     bool is_fluttering;
+    bool is_laying_down;
+    bool was_laying_down;
     bool is_slippy;
+    bool is_looking_up;
+    bool was_looking_up;
     int life_points;
     bool stop_notificated;
     bool is_dead;
@@ -78,6 +78,7 @@ public:
     bool next_to_wall();
 
     bool get_duck_position_message(Message& msg);
+    bool get_duck_initialize_message(Message& msg);
 
     bool get_duck_dead_message(Message& msg);
 
@@ -99,7 +100,11 @@ public:
 
     bool disparar();
 
+    void reset_for_round(Position pos);
+
     Position getPosition();
+
+    uint8_t getWeaponId();
 
 };
 

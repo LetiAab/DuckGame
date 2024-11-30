@@ -30,6 +30,63 @@ void ScreenManager::showStartScreen() {
     SDL_DestroyTexture(start_logo);
 }
 
+void ScreenManager::showNextRoundScreen() {
+    // TODO: poner esto mas lindo, se podria mostrar el pato que gano la ronda
+    if (TTF_Init() == -1) {
+        std::cerr << "Error: No se pudo inicializar SDL_ttf: " << TTF_GetError() << std::endl;
+        return;
+    }
+
+    // Cargar la fuente
+    TTF_Font* font = TTF_OpenFont("../client/fonts/04B_30__.TTF", 48);
+    if (!font) {
+        std::cerr << "Error: No se pudo cargar la fuente: " << TTF_GetError() << std::endl;
+        TTF_Quit();
+        return;
+    }
+
+    // Crear el texto "Next Round!" como textura
+    SDL_Color white = {255, 255, 255, 255};
+    SDL_Surface* text_surface = TTF_RenderText_Blended(font, "Next Round!", white);
+    if (!text_surface) {
+        std::cerr << "Error: No se pudo crear la superficie del texto: " << TTF_GetError() << std::endl;
+        TTF_CloseFont(font);
+        TTF_Quit();
+        return;
+    }
+
+    SDL_Texture* text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
+    SDL_FreeSurface(text_surface);
+
+    SDL_Point text_size = {text_surface->w, text_surface->h};
+    SDL_Rect text_rect = {WINDOW_WIDTH / 2 - text_size.x / 2, WINDOW_HEIGHT / 2 - text_size.y / 2, text_size.x, text_size.y};
+
+    // Renderizar el texto en pantalla
+    SDL_RenderClear(renderer);
+    SDL_RenderCopy(renderer, text_texture, NULL, &text_rect);
+    SDL_RenderPresent(renderer);
+
+    SDL_Delay(20);
+
+    // Efecto de fade out
+    for (int alpha = 255; alpha >= 0; alpha -= 5) {
+        SDL_SetTextureAlphaMod(text_texture, alpha);
+        SDL_RenderClear(renderer);
+        SDL_RenderCopy(renderer, text_texture, NULL, &text_rect);
+        SDL_RenderPresent(renderer);
+        SDL_Delay(30);
+    }
+
+    SDL_DestroyTexture(text_texture);
+    TTF_CloseFont(font);
+    TTF_Quit();
+
+    SDL_RenderClear(renderer);
+    SDL_RenderPresent(renderer);
+}
+
+
+
 void ScreenManager::loadLobbyScreen() {
     std::unordered_map<std::string, std::string> textures_to_load = {
                         {"background", "start/galaxy"},
@@ -70,6 +127,7 @@ void ScreenManager::renderStaticLobby() {
     SDL_Rect start_button_rect = {start.x, start.y, start.w, start.h};
     SDL_RenderCopy(renderer, getTexture("start-button"), NULL, &start_button_rect);
 
+
     Button new_match = {NEW_MATCH_CODE, 80, t_size.y+80, BUTTON_W, BUTTON_H};
     buttons.push_back(new_match);
     SDL_Rect new_match_button_rect = {new_match.x, new_match.y, new_match.w, new_match.h};
@@ -79,6 +137,8 @@ void ScreenManager::renderStaticLobby() {
     buttons.push_back(join);
     SDL_Rect join_button_rect = {join.x, join.y, join.w, join.h};
     SDL_RenderCopy(renderer, getTexture("join-button"), NULL, &join_button_rect);
+
+
 
     SDL_SetRenderTarget(renderer, NULL);
     lobby_textures["static_scene"] = static_scene;

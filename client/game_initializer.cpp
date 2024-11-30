@@ -2,53 +2,204 @@
 
 #include <iostream>
 
-void GameInitializer::initializeDucks(GameState* game, const int frame_width, const int frame_height) {
-    Duck duck{};
-    int count = 0;
-    game->ducks_quantity = 0;
-    for (size_t i = 0; i < game->client_game_map.map.size(); ++i) {
-        for (size_t j = 0; j < (game->client_game_map.map)[i].size(); ++j) {
-            // Verificar si el valor está entre '1' y '6'
-            if ((game->client_game_map.map)[i][j] >= '1' && (game->client_game_map.map)[i][j] <= '6') {
-                duck.x = j * TILE_SIZE;
-                duck.y = i * TILE_SIZE;
+
+void GameInitializer::initialize_new_round(GameState &game, Queue<Message> &message_queue){
+    //Respetar este orden por que es el orden en que el server envia los mensajes
+    initializeMap(game, message_queue);
+
+    initializeDucks(game, message_queue);
+
+    initializeSpawnPlaces(game, message_queue);
+
+    initializeBoxes(game, message_queue);
+
+    initializeItemsOnFloor(game, message_queue);
+    
+}
+
+
+void GameInitializer::initializeGame(Queue<Message> &message_queue, GameState& game, int frame_width, int frame_height){
+    //Respetar este orden por que es el orden en que el server envia los mensajes
+    std::cout << "INICIALIZO EL JUEGO \n";
+    
+    initializeMap(game, message_queue);
+
+    createDucks(message_queue, game, frame_width, frame_height);
+
+    initializeSpawnPlaces(game, message_queue);
+
+    initializeBoxes(game, message_queue);
+
+    initializeItemsOnFloor(game, message_queue);
+
+
+}
+
+
+void GameInitializer::initializeMap(GameState& game, Queue<Message> &message_queue){
+    Message message_map = message_queue.pop();
+
+    if(message_map.type == MAP_INICIALIZATION){
+        std::cout << "INICIALIZO EL MAPA "<< "\n";
+        game.client_game_map.setMap(message_map.map);
+    }
+
+    initializeCrates(game);
+}
+
+void GameInitializer::initializeSpawnPlaces(GameState& game, Queue<Message> &message_queue){
+    game.spawn_places.clear(); // borro los anteriores si habia
+    Message msg_quantity = message_queue.pop();
+
+
+    std::cout << "INICIALIZO "<<  msg_quantity.spawn_places_quantity <<" SPAWNS" << "\n";
+    for (int i = 0; i < msg_quantity.spawn_places_quantity; i++){
+
+        Message message = message_queue.pop();
+
+        if(message.type == SPAWN_PLACE_POSITION){
+            game.spawn_places.emplace_back(message.spaw_place_x * TILE_SIZE, message.spaw_place_y * TILE_SIZE, message.item_id);
+        }
+    }
+}
+
+void GameInitializer::initializeBoxes(GameState& game, Queue<Message> &message_queue){
+    game.boxes.clear(); // borro los anteriores si habia
+
+    Message msg_quantity = message_queue.pop();
+
+    std::cout << "INICIALIZO "<<  msg_quantity.boxes_quantity <<" BOXES" << "\n";
+
+    for (int i = 0; i < msg_quantity.boxes_quantity ; i++){
+        Message message = message_queue.pop();
+
+        if(message.type == BOX_POSITION){
+            game.boxes.emplace_back(message.box_x * TILE_SIZE, message.box_y * TILE_SIZE, message.item_id);
+        }
+    }
+}
+
+void GameInitializer::initializeItemsOnFloor(GameState& game, Queue<Message> &message_queue){
+
+    std::cout << "INICIALIZO LOS ITEMS ON FLOOR \n";
+
+    game.items_on_floor.clear(); // borro los anteriores si habia
+
+    Message msg_quantity = message_queue.pop();
+
+    std::cout << "INICIALIZO "<<  msg_quantity.items_on_floor_quantity <<" ITEMS ON FLOOR" << "\n";
+
+    for (int i = 0; i < msg_quantity.items_on_floor_quantity ; i++){
+        Message message = message_queue.pop();
+
+        if(message.type == ITEM_POSITION){
+            game.items_on_floor.emplace_back(message.item_x * TILE_SIZE, message.item_y * TILE_SIZE, message.item_id);
+        }
+    }
+}
+
+void GameInitializer::initializeDucks(GameState &game, Queue<Message> &message_queue){
+    Message message_ducks = message_queue.pop();
+    if(message_ducks.type == DUCKS_INICIALIZATION){
+
+        game.ducks_quantity = message_ducks.ducks_quantity;
+
+        std::cout << "Recibo los patos de nuevo" << "\n";
+        for (int i = 0; i < game.ducks_quantity; i++){
+
+            Message msg = message_queue.pop();
+
+            if (msg.type == DUCK_POS_UPDATE){
+                        int pos_id = msg.player_id - 1;
+
+                        game.ducks[pos_id].x = msg.duck_x * TILE_SIZE;
+                        game.ducks[pos_id].y = msg.duck_y * TILE_SIZE;
+
+                        if(msg.looking == LOOKING_LEFT){
+                            //pato esta mirando a la izquierda
+                            game.ducks[pos_id].flipType = SDL_FLIP_HORIZONTAL;
+
+                        } else {
+                            //pato esta mirando a la derecha
+                            game.ducks[pos_id].flipType = SDL_FLIP_NONE;
+                        }
+
+                        game.ducks[pos_id].is_moving = msg.is_moving;
+                        game.ducks[pos_id].is_jumping = msg.is_jumping;
+                        game.ducks[pos_id].is_fluttering = msg.is_fluttering;
+                        game.ducks[pos_id].is_looking_up = msg.is_looking_up;
+                        game.ducks[pos_id].is_dead = false;
+
+                        game.ducks[pos_id].armor_equiped = 0;
+                        game.ducks[pos_id].weapon_equiped = 0;
+                        game.ducks[pos_id].helmet_equiped = 0;
+                        game.ducks[pos_id].item_on_hand = 0;
+                        game.ducks[pos_id].current_ammo = 0;
+
+
+                        game.ducks[pos_id].current_frame_index = 0;
+                        game.ducks[pos_id].animation_frame = 0;
+
+            }
+        }
+    }
+
+}
+
+void GameInitializer::createDucks(Queue<Message> &message_queue, GameState &game, const int frame_width, const int frame_height) {
+    Message message_ducks = message_queue.pop();
+    if(message_ducks.type == DUCKS_INICIALIZATION){
+
+        game.ducks_quantity = message_ducks.ducks_quantity;
+        Duck duck{};
+
+        std::cout << "INICIALIZO LOS PATOS" << "\n";
+        for (int i = 0; i < game.ducks_quantity; i++){
+
+            Message msg = message_queue.pop();
+
+            if (msg.type == DUCK_POS_UPDATE){
+                duck = Duck{};
+                duck.x = msg.duck_x * TILE_SIZE;
+                duck.y = msg.duck_y * TILE_SIZE;
                 duck.flipType = SDL_FLIP_NONE;
                 duck.is_moving = false;
-                duck.animation_frame = 0;
-                duck.current_frame_index = 0;
-                
-                //Items
+                duck.is_jumping = false;
+                duck.is_fluttering = false;
+                duck.is_looking_up = false;
+
                 duck.armor_equiped = 0;
                 duck.weapon_equiped = 0;
+                duck.current_ammo = 0;
                 duck.helmet_equiped = 0;
                 duck.item_on_hand = 0;
 
-                // Configuro el tamaño de los fotogramas del pato
+                duck.animation_frame = 0;
+                duck.current_frame_index = 0;
                 duck.frame_width = frame_width;
                 duck.frame_height = frame_height;
 
-                count++;
-                if (count == DUCK_TOTAL_SIZE) {
-                    game->ducks[game->ducks_quantity] = duck;
-                    game->ducks_quantity++;
-                    count = 0;
-                }
+                game.ducks.push_back(duck);
             }
         }
     }
-    std::cout << "Cantidad de patos: " << game->ducks_quantity << "\n";
+
 }
 
-void GameInitializer::initializeCrates(GameState* game) {
-    for (size_t i = 0; i < game->client_game_map.map.size(); ++i) {
-        for (size_t j = 0; j < (game->client_game_map.map)[i].size(); ++j) {
-            if ((game->client_game_map.map)[i][j] == 'P') {
+
+void GameInitializer::initializeCrates(GameState& game) {
+    game.crates.clear();
+    for (size_t i = 0; i < game.client_game_map.map.size(); ++i) {
+        for (size_t j = 0; j < (game.client_game_map.map)[i].size(); ++j) {
+            if ((game.client_game_map.map)[i][j] == 'P') {
                 Crate crate;
                 crate.x = j * TILE_SIZE;
                 crate.y = i * TILE_SIZE;
-                game->crates.push_back(crate);
+                game.crates.push_back(crate);
             }
         }
     }
 }
+
+
 

@@ -1,7 +1,7 @@
 #include "bouncing_laser.h"
 
-BouncingLaser::BouncingLaser(int laser_id, Position position, int direction_x, int direction_y, GameMap* map, char duck_id, int alcance) 
-    : Projectile(laser_id, 2, position, direction_x, direction_y, map, duck_id, alcance) {}
+BouncingLaser::BouncingLaser(int laser_id, Position position, int direction_x, int direction_y, GameMap* map, char duck_id, int alcance, bool horizontal) 
+    : Projectile(laser_id, 2, position, direction_x, direction_y, map, duck_id, alcance, horizontal) {}
 // Nota: Para dibujar el laser necesitaría un manejo de grados, lo cual no es tan complicado, pero no lo uso para caluclar la posición
 
 
@@ -65,6 +65,7 @@ bool BouncingLaser::get_laser_message(Message& msg){
     msg.bullet_y = position.y;
     msg.bullet_id = projectile_id;
     msg.bullet_type = 1;
+    msg.bullet_horizontal = horizontal;
     //mandar flag del impacto (?)
 
     return true;

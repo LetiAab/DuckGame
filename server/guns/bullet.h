@@ -12,7 +12,7 @@
 class GameMap;
 class Bullet : public Projectile {
 public:
-    Bullet(int bullet_id, Position position, int direction_x, int direction_y, GameMap* map, char duck_id, int alcance);
+    Bullet(int bullet_id, Position position, int direction_x, int direction_y, GameMap* map, char duck_id, int alcance, bool horizontal);
     void comenzar_trayectoria() override;
     void update_position() override;
 

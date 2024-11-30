@@ -35,6 +35,7 @@ public:
     std::shared_ptr<Player> start_game(Queue<std::shared_ptr<Executable>>& game_queue);
 
     bool is_connected();
+    bool is_playing();
 
     uint16_t get_player_id();
 

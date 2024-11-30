@@ -24,7 +24,12 @@ int EventProcessor::processGameEvents(SDL_Window* window, GameState* game, uint1
                     done = ERROR;
                     break;
                 }
-                if (move != 0) {
+
+                if(move == MUTE){
+                    std::cout << "CAMBIO EL MUTE" << "\n";
+                    game->music = !game->music;
+                }
+                if (move != 0 && move != MUTE) {
                     positionUpdated = true;
                 }
 
@@ -73,7 +78,7 @@ uint8_t EventProcessor::handleKeyDown(SDL_Keycode key) {
             case SDLK_s:
                 move =  MOVE_DOWN;
                 break;
-            case SDLK_f:
+            case SDLK_j:
                 move =  SHOOT;
                 break;
             case SDLK_e:
@@ -81,6 +86,12 @@ uint8_t EventProcessor::handleKeyDown(SDL_Keycode key) {
                 break;
             case SDLK_q:
                 move = DROP_WEAPON;
+                break;
+            case SDLK_m:
+                move = MUTE;
+                break;
+            case SDLK_k:
+                move = LOOK_UP;
                 break;
             default:
                 break;
@@ -106,6 +117,9 @@ uint8_t EventProcessor::handleKeyUp(SDL_Keycode key) {
                 break;
             case SDLK_s:
                 move = STOP_DOWN;
+                break;
+            case SDLK_k:
+                move = STOP_LOOK_UP;
                 break;
             default:
                 break;
