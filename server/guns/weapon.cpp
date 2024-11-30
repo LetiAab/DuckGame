@@ -12,18 +12,6 @@ void Weapon::mostrarInformacion() const {
     std::cout << "Municiones: " << municiones << std::endl;
 }
 
-std::string Weapon::getNombre() const {
-    return nombre;
-}
-
-double Weapon::getAlcance() const {
-    return alcance;
-}
-
-double Weapon::getDispersion() const {
-    return dispersion;
-}
-
 int Weapon::getMuniciones() const {
     return municiones;
 }

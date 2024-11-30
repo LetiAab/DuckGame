@@ -21,13 +21,7 @@ public:
 
     void mostrarInformacion() const;  
     void update_weapon();
-
-    // Getters
-    std::string getNombre() const;
-    double getAlcance() const;
-    double getDispersion() const;
-    int getMuniciones() const;
-
+    
 private:
     bool recargando;
 };

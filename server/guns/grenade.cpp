@@ -29,21 +29,6 @@ void Grenade::mostrarInformacion() const {
     std::cout << "Municiones: " << municiones << std::endl;
 }
 
-std::string Grenade::getNombre() const {
-    return nombre;
-}
-
-double Grenade::getAlcance() const {
-    return alcance;
-}
-
-double Grenade::getDispersion() const {
-    return dispersion;
-}
-
-int Grenade::getMuniciones() const {
-    return municiones;
-}
 
 // Devuelve true cuando ya no le quedan proyectiles
 bool Grenade::update_weapon(int position_x, int position_y, char looking, GameMap* map, char id_player){

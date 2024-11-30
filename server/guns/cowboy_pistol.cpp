@@ -53,22 +53,6 @@ void CowboyPistol::mostrarInformacion() const {
     std::cout << "Municiones: " << municiones << std::endl;
 }
 
-std::string CowboyPistol::getNombre() const {
-    return nombre;
-}
-
-double CowboyPistol::getAlcance() const {
-    return alcance;
-}
-
-double CowboyPistol::getDispersion() const {
-    return dispersion;
-}
-
-int CowboyPistol::getMuniciones() const {
-    return municiones;
-}
-
 void CowboyPistol::update_weapon(){
 
     for(auto it = projectiles.begin(); it != projectiles.end(); ) {

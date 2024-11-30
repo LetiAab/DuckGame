@@ -29,24 +29,6 @@ void Banana::mostrarInformacion() const {
     std::cout << "Municiones: " << municiones << std::endl;
 }
 
-std::string Banana::getNombre() const {
-    return nombre;
-}
-
-double Banana::getAlcance() const {
-    return alcance;
-}
-
-double Banana::getDispersion() const {
-    return dispersion;
-}
-
-int Banana::getMuniciones() const {
-    return municiones;
-}
-
-
-
 void Banana::update_weapon(GameMap& map){
         if(pisada){
             //si empacte con algo debo eliminar la bala luego de mandar el mensaje

@@ -30,12 +30,6 @@ public:
     void mostrarInformacion() const;  
     bool update_weapon(int position_x, int position_y, char looking, GameMap* map, char id_player);
 
-    // Getters
-    std::string getNombre() const;
-    double getAlcance() const;
-    double getDispersion() const;
-    int getMuniciones() const;
-
     virtual ~Grenade() = default;  // Destructor virtual
 };
 

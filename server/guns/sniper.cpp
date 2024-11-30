@@ -50,22 +50,6 @@ void Sniper::mostrarInformacion() const {
     std::cout << "Municiones: " << municiones << std::endl;
 }
 
-std::string Sniper::getNombre() const {
-    return nombre;
-}
-
-double Sniper::getAlcance() const {
-    return alcance;
-}
-
-double Sniper::getDispersion() const {
-    return dispersion;
-}
-
-int Sniper::getMuniciones() const {
-    return municiones;
-}
-
 void Sniper::update_weapon(){
 
     for(auto it = projectiles.begin(); it != projectiles.end(); ) {
