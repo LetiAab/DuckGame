@@ -18,7 +18,7 @@ public:
     Position speed;
 
     // Constructor que inicializa la posición
-    explicit Grenade(int x = 0, int y = 0);
+    explicit Grenade(int x = 0, int y = 0, int current_ticks = 0);
 
     // Métodos
     bool disparar_grenade(int position_x, int position_y, char looking, GameMap* map, char id_player, bool is_looking_up);
