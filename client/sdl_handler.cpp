@@ -235,11 +235,12 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
                     projectile.old_y = projectile.current_y;
                     projectile.current_x = message.bullet_x;
                     projectile.current_y = message.bullet_y;
+                    projectile.horizontal = message.bullet_horizontal;
                     std::cout << "Ya tenia ese id, lo actualizo \n";
                 }
             }
             if (!includes) {
-                game->projectiles.push_back(Projectile{message.bullet_x, message.bullet_y, 10000, 10000, message.bullet_id, message.bullet_type, 0});
+                game->projectiles.push_back(Projectile{message.bullet_x, message.bullet_y, 10000, 10000, message.bullet_id, message.bullet_type, 0, message.bullet_horizontal});
                 std::cout << "No tenia ese id, lo meto \n";
             }
         }

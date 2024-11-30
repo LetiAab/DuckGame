@@ -53,6 +53,7 @@ struct Projectile {
     int id;
     int type;
     int times_repeated;
+    bool horizontal;
 };
 
 struct Crate {
