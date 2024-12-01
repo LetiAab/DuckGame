@@ -60,7 +60,8 @@ void SDLHandler::loadGame(GameState &game, Queue<Message> &message_queue) {
     gameInitializer.initializeGame(message_queue, game, frame_width, frame_height);
     
     // Inicializo el render manager
-    rendererManager = std::make_unique<RendererManager>(game.renderer, handle_textures);
+    camera = std::make_unique<Camera>();
+    rendererManager = std::make_unique<RendererManager>(game.renderer, handle_textures, *camera);
 
     audioManager = std::make_unique<AudioManager>();
 

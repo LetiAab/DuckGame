@@ -27,6 +27,7 @@ private:
     std::unique_ptr<ScreenManager> screenManager;
     std::unique_ptr<RendererManager> rendererManager;
     std::unique_ptr<AudioManager> audioManager;
+    std::unique_ptr<Camera> camera;
     uint16_t duck_id;
     bool lobby_exit;
     void loadGame(GameState &game, Queue<Message> &message_queue);
