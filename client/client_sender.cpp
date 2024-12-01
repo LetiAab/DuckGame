@@ -17,7 +17,7 @@ void ClientSender::run() {
 
     } catch (const ClosedQueue& e) {
         is_alive = false;
-        protocol.shutdown();
+        //protocol.shutdown();
     } catch (const LibError& e) {
         is_alive = false;
 

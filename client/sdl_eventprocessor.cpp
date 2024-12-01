@@ -141,8 +141,9 @@ int EventProcessor::processLobbyEvents(ScreenManager* screenManager, Queue<Comma
             switch (event.type) {
                 case SDL_WINDOWEVENT_CLOSE:
                     is_alive = false;
-                    if (command_queue.try_push(Command(id, EXIT_GAME))){
+                    if (command_queue.try_push(Command(id, LOBBY_EXIT_CODE))){
                         std::cout << "Escape!" << "\n";
+                        command_queue.close();
                     };
                     //command_queue.close();
                     /*command_queue.push(Command(id, LOBBY_EXIT_CODE));
@@ -191,9 +192,10 @@ int EventProcessor::processLobbyEvents(ScreenManager* screenManager, Queue<Comma
                 }
                 case SDL_KEYDOWN:
                     if (event.key.keysym.sym == SDLK_ESCAPE) {
-                        auto stop_command = Command(id, EXIT_GAME);
+                        auto stop_command = Command(id, LOBBY_EXIT_CODE);
                         if (command_queue.try_push(stop_command)){
                             std::cout << "Escape!" << "\n";
+                            command_queue.close();
                         }
                         is_alive = false;
                     }

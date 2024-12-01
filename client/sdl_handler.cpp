@@ -471,6 +471,8 @@ int SDLHandler::runGame(SDL_Window *window, SDL_Renderer *renderer, Queue<Comman
                 SDL_Delay(sleep_duration);
             }
         }
+        game.command_queue->close();
+        message_queue.close();
     } catch (const ClosedQueue& e){
         done = ERROR;
         std::cout << "SE CERRO LA QUEUE"<< "\n";
