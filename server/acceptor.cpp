@@ -36,6 +36,9 @@ void Acceptor::run() {
 
 void Acceptor::stop() {
     is_alive = false;
+    std::cout << "Acceptor: deteniendo el lobby..."  << std::endl;
     lobby.stop();
+    std::cout << "Acceptor: joineando el lobby..."  << std::endl;
     lobby.join();
+    std::cout << "Acceptor: todo listo"  << std::endl;
 }

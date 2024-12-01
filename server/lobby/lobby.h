@@ -23,6 +23,8 @@ private:
 
     void clean_finished_matches();
     void clean_disconnected_players();
+    void clean_all_players();
+    void clean_all_matches();
     LobbyMessage process_command(const LobbyCommand& cmd);
     void process_start_match_command(const LobbyCommand& cmd);
     void send_message(const LobbyMessage& msg);

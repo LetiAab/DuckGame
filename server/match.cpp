@@ -33,7 +33,6 @@ bool Match::is_able_to_start(){
 
 void Match::start_match() {
 
-    is_running = true;
 
     //envio a cada jugador el id de su pato, el cual se usara durante todo el juego
     //quizas tambien deberia mandarle su color (?)
@@ -58,18 +57,21 @@ void Match::start_match() {
     game.set_players(players.size());
     game.start();
 
+    is_running = true;
 }
 
 void Match::stop_match(){
-    game.stop();
-    game.join();
-    std::cout << "Match: joinie game"  << std::endl;
-    for(auto& player: players){
-        player->stop_playing();
+    if(is_running){
+        game.stop();
+        game.join();
+        std::cout << "Match: joinie game"  << std::endl;
+        for(auto& player: players){
+            player->stop_playing();
+        }
+        
+        players.clear();
+        std::cout << "Match: elimine a los players de mi partida"  << std::endl;
     }
-    
-    players.clear();
-    std::cout << "Match: elimine a los players de mi partida"  << std::endl;
 }
 
 bool Match::is_over(){

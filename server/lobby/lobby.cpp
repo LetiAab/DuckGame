@@ -78,6 +78,22 @@ void Lobby::clean_disconnected_players() {
     });
 }
 
+void Lobby::clean_all_players() {
+    for (const auto& player : lobby_players) {
+        player->stop();
+    }
+
+    lobby_players.clear();
+}
+
+void Lobby::clean_all_matches() {
+    for (const auto& match : matches) {
+        match->stop_match();
+    }
+
+    matches.clear();
+}
+
 
 void Lobby::add_player(std::shared_ptr<LobbyPlayer> player) {
     std::cout << "Lobby: recibi un nuevo jugador"  << std::endl;
@@ -89,8 +105,12 @@ void Lobby::add_player(std::shared_ptr<LobbyPlayer> player) {
 
 void Lobby::stop() {
     is_alive = false;
+    clean_all_players();
+    std::cout << "Lobby: elimine todos los jugadores"  << std::endl;
+    clean_all_matches();
+    std::cout << "Lobby: elimine todos los partidos"  << std::endl;
     lobby_queue.close();
-    // liberar memoria, etc
+    std::cout << "Lobby: LISTO"  << std::endl;
 }
 
 Queue<LobbyCommand>& Lobby::get_lobby_queue() {

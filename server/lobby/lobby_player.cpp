@@ -21,7 +21,6 @@ bool LobbyPlayer::send_lobby_message(const LobbyMessage& msg) {
         return true;
 
     } catch(const LibError& e){
-        connected = false;
         return false;
     }
 }
@@ -45,7 +44,9 @@ std::shared_ptr<Player> LobbyPlayer::start_game(Queue<std::shared_ptr<Executable
 
 
 void LobbyPlayer::stop() {
-    connected = false;
+    if(!playing){
+        protocol.shutdown();
+    }
     lobby_receiver.stop();
     std::cout << "LobbyPlayer: estoy por hacer el join"  << std::endl;
     lobby_receiver.join();
