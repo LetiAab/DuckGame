@@ -339,7 +339,6 @@ int SDLHandler::waitForStartGame(uint16_t lobby_id, Queue<Command>& command_queu
                     std::cout << "Comando para salir..." << "\n";
                     lobby_exit = true;
                     is_alive = false;
-                    command_queue.close();
                     break;
                 }
 
@@ -478,8 +477,7 @@ int SDLHandler::runGame(SDL_Window *window, SDL_Renderer *renderer, Queue<Comman
                 SDL_Delay(sleep_duration);
             }
         }
-        game.command_queue->close();
-        message_queue.close();
+        
     } catch (const ClosedQueue& e){
         done = ERROR;
         std::cout << "SE CERRO LA QUEUE"<< "\n";
@@ -505,10 +503,14 @@ int SDLHandler::run(uint16_t lobby_id, Queue<Command>& command_queue, Queue<Mess
     screenManager->renderStaticLobby();
     screenManager->showLobbyScreen();
     if(waitForStartGame(lobby_id, command_queue, message_queue, protocol) == ERROR) {
+        std::cout << "Parece que hubo un error, el juego no empezara"<< std::endl;
         SDL_DestroyWindow(window);
         SDL_DestroyRenderer(renderer);
+        command_queue.close();
+        message_queue.close();
         return ERROR;
     }
+
     if (lobby_exit) {
         std::cout << "Sali del lobby!"<< std::endl;
         return SUCCESS;
@@ -520,6 +522,8 @@ int SDLHandler::run(uint16_t lobby_id, Queue<Command>& command_queue, Queue<Mess
     std::cout << "My DUCK ID is: " << duck_id  << std::endl;
 
     int result = runGame(window, renderer, command_queue, message_queue);
+    command_queue.close();
+    message_queue.close();
 
     return result;
 }

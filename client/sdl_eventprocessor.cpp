@@ -140,10 +140,12 @@ int EventProcessor::processLobbyEvents(ScreenManager* screenManager, Queue<Comma
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
                 case SDL_WINDOWEVENT_CLOSE:
+                    std::cout << "Escape!" << "\n";
                     is_alive = false;
+                    done = ERROR;
                     if (command_queue.try_push(Command(id, LOBBY_EXIT_CODE))){
                         std::cout << "Escape!" << "\n";
-                        command_queue.close();
+                        //command_queue.close();
                     };
                     //command_queue.close();
                     /*command_queue.push(Command(id, LOBBY_EXIT_CODE));
@@ -195,14 +197,16 @@ int EventProcessor::processLobbyEvents(ScreenManager* screenManager, Queue<Comma
                         auto stop_command = Command(id, LOBBY_EXIT_CODE);
                         if (command_queue.try_push(stop_command)){
                             std::cout << "Escape!" << "\n";
-                            command_queue.close();
+                            //command_queue.close();
                         }
                         is_alive = false;
+                        done = ERROR;
                     }
                 break;
                 case SDL_QUIT:
                     is_alive = false;
-                    command_queue.close();
+                    done = ERROR;
+                    //command_queue.close();
                 break;
                 default:
                     break;
