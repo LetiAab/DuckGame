@@ -26,6 +26,7 @@ struct Message {
     int bullet_y;
     int bullet_id;
     int bullet_type;
+    bool bullet_horizontal;
 
     int item_x;
     int item_y;

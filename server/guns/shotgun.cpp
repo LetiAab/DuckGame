@@ -41,7 +41,7 @@ bool Shotgun::disparar(int position_x, int position_y, char looking, GameMap* ma
             }
 
             int bullet_id = municiones * SHOTGUN_ID + i; 
-            auto new_bullet = std::make_unique<Bullet>(bullet_id, bullet_pos, direccion_x, direccion_y, map, id_player, alcance);
+            auto new_bullet = std::make_unique<Bullet>(bullet_id, bullet_pos, direccion_x, direccion_y, map, id_player, alcance, !is_looking_up);
             new_bullet->comenzar_trayectoria();
             projectiles.push_back(std::move(new_bullet));
         }

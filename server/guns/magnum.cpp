@@ -38,7 +38,7 @@ bool Magnum::disparar(int position_x, int position_y, char looking, GameMap* map
 
 
 
-        auto new_bullet = std::make_unique<Bullet>(bullet_id, bullet_pos, direccion_x, direccion_y, map, id_player, alcance);
+        auto new_bullet = std::make_unique<Bullet>(bullet_id, bullet_pos, direccion_x, direccion_y, map, id_player, alcance, !is_looking_up);
         new_bullet->comenzar_trayectoria();
         projectiles.push_back(std::move(new_bullet));
         

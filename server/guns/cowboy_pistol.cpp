@@ -33,7 +33,7 @@ bool CowboyPistol::disparar_cowboy_pistol(int position_x, int position_y, char l
 
         int bullet_id = municiones; //el id es el numero de muncion. Inteligente verdad?
 
-        auto new_bullet = std::make_unique<Bullet>(bullet_id, bullet_pos, direccion_x, direccion_y, map, id_player, alcance);
+        auto new_bullet = std::make_unique<Bullet>(bullet_id, bullet_pos, direccion_x, direccion_y, map, id_player, alcance, !is_looking_up);
         new_bullet->comenzar_trayectoria();
         projectiles.push_back(std::move(new_bullet));
         

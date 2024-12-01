@@ -2,7 +2,7 @@
 
 #include "../game/game.h"
 
-Projectile::Projectile(int projectile_id, int projectile_type, Position position, int direction_x, int direction_y, GameMap* map, char duck_id, int alcance) 
+Projectile::Projectile(int projectile_id, int projectile_type, Position position, int direction_x, int direction_y, GameMap* map, char duck_id, int alcance, bool horizontal) 
     : projectile_id(projectile_id),
     projectile_type(projectile_type),
     position(position),
@@ -14,7 +14,8 @@ Projectile::Projectile(int projectile_id, int projectile_type, Position position
     impacto(false),
     duck_id(duck_id),
     alcance(alcance),
-    should_erase(false) {}
+    should_erase(false),
+    horizontal(horizontal) {}
 
 /* 
     ProyectilGranada::ProyectilGranada(int tiempo, int pos_x, int pos_y, int speed_x, int speed_y) : Proyectil("Granada", 5, 15, pos_x, pos_y, speed_x, speed_y) {

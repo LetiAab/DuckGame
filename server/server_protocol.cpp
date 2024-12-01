@@ -294,6 +294,10 @@ bool ServerProtocol::send_message(Message& message){
         if (!skt.sendall(&message.bullet_type, sizeof(message.bullet_type), &was_closed) || was_closed) {
             throw LibError(errno, CLOSED_SOCKET);
         }
+
+        if (!skt.sendall(&message.bullet_horizontal, sizeof(message.bullet_horizontal), &was_closed) || was_closed) {
+            throw LibError(errno, CLOSED_SOCKET);
+        }
         break; 
 
     case KILL_DUCK:

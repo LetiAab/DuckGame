@@ -1,7 +1,7 @@
 #include "laser.h"
 
-Laser::Laser(int laser_id, Position position, int direction_x, int direction_y, GameMap* map, char duck_id, int alcance) 
-    : Projectile(laser_id, 1, position, direction_x, direction_y, map, duck_id, alcance) {}
+Laser::Laser(int laser_id, Position position, int direction_x, int direction_y, GameMap* map, char duck_id, int alcance, bool horizontal) 
+    : Projectile(laser_id, 1, position, direction_x, direction_y, map, duck_id, alcance, horizontal) {}
 
 
 
@@ -51,6 +51,8 @@ bool Laser::get_laser_message(Message& msg){
     msg.bullet_y = position.y;
     msg.bullet_id = projectile_id;
     msg.bullet_type = projectile_type;
+    msg.bullet_horizontal = horizontal;
+
     //mandar flag del impacto (?)
 
     return true;

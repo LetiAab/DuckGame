@@ -34,7 +34,7 @@ bool PewPewLaser::disparar(int position_x, int position_y, char looking, GameMap
                     direccion_y =  direccion_y + i;
                 }
 
-                auto new_laser = std::make_unique<Laser>(laser_id, laser_pos, direccion_x, direccion_y, map, id_player, alcance);
+                auto new_laser = std::make_unique<Laser>(laser_id, laser_pos, direccion_x, direccion_y, map, id_player, alcance, !is_looking_up);
                 new_laser->comenzar_trayectoria();
                 projectiles.push_back(std::move(new_laser));
         }

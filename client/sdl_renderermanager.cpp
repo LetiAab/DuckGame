@@ -30,20 +30,25 @@ void RendererManager::doRenderStatic(GameState* game) {
 }
 
 //** Dinamico **//
+#include <iostream> // Para std::cout
+
 void RendererManager::renderBullet(GameState* game, const int size) {
-    for (Projectile& projectile: game->projectiles) {    
+    for (Projectile& projectile : game->projectiles) {    
+
+        SDL_Rect bulletRect = { projectile.current_x * TILE_SIZE, projectile.current_y * TILE_SIZE, size, size };
+
         if (projectile.type == 0) {
-            SDL_Rect bulletRect = { projectile.current_x * TILE_SIZE, projectile.current_y * TILE_SIZE, size, size };
-            SDL_RenderCopy(renderer, texture_handler.getTexture("bullet"), NULL, &bulletRect);
+            double angle = projectile.horizontal ? 0 : -90; 
+            SDL_RenderCopyEx(renderer, texture_handler.getTexture("bullet"), NULL, &bulletRect, angle, NULL, SDL_FLIP_NONE);
             projectile.times_repeated++;
         } else {
-            SDL_Rect laserRect = { projectile.current_x * TILE_SIZE, projectile.current_y * TILE_SIZE, size, size };
-            SDL_RenderCopy(renderer, texture_handler.getTexture("laser"), NULL, &laserRect);        
+            double angle = projectile.horizontal ? 0 : -90; 
+            SDL_RenderCopyEx(renderer, texture_handler.getTexture("laser"), NULL, &bulletRect, angle, NULL, SDL_FLIP_NONE);        
             projectile.times_repeated++;
         }
     }
 
-    // Saco las balas y laseres que repitieron posición en el mapa
+    // Saco las balas y láseres que repitieron posición en el mapa
     for (auto it = game->projectiles.begin(); it != game->projectiles.end();) {
         if (it->times_repeated > 1) {
             it = game->projectiles.erase(it);
