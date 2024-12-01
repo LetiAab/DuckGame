@@ -54,8 +54,6 @@ void Grenade::simulate_movement(GameMap* map) {
         if (map->is_throwable_touching_floor(position, 1, 1)) {
                 touching_floor = true;
         }
-
-        // std::cout << "Granada se movio desde x: " << old_position.x << " y: " << old_position.y << ", hasta x: " << position.x << " y: " << position.y << std::endl;
 }
 
 int Grenade::getCurrentTicks() {

@@ -372,14 +372,9 @@ bool Duck::disparar() {
             int delta_y = position.y;
 
             Position new_pos(delta_x, delta_y);
+            
             //mueve al pato a la nueva posicion si esta libre o a la que este libre inmediatamente antes
             position = map->move_duck_to(position, new_pos, id_player);
-
-            std::cout << "Retroceso, old position es x: " << old_position.x << " y: " << old_position.y << 
-            "y position es x: " << position.x << " y: " << position.y << "\n";
-            
-            // Un problema de esto es que el retroceso no se notifica si el usuario no se mueve en la ronda
-            // Esto porque no tengo el monitor a mano ni el game, solo el map, y no puedo notificarlo
         }
 
         if (habia_municiones){
