@@ -240,64 +240,31 @@ void RendererManager::renderItem(uint8_t item_id, int x, int y, int mult, bool e
     SDL_Rect rect_helmet = transformToCameraSpace(x, y - TILE_SIZE * 9 + static_cast<int>(offset_y), ((TILE_SIZE * DUCK_SIZE_X / 2) + TILE_SIZE) * mult, ((TILE_SIZE * DUCK_SIZE_Y / 2) + TILE_SIZE) * mult);
     SDL_Rect rect_armor = transformToCameraSpace(x - TILE_SIZE, y - TILE_SIZE * 8 + static_cast<int>(offset_y), (TILE_SIZE * DUCK_SIZE_X / 2) + TILE_SIZE, (TILE_SIZE * DUCK_SIZE_Y / 2) * mult);
 
-    /*SDL_Rect rect11, rect_helmet, rect_armor;
-    rect11 = {
-        static_cast<int>((static_cast<float>(x) - camera.getX()) * camera.getZoom()),
-        static_cast<int>((static_cast<float>(y - TILE_SIZE * 11 + static_cast<int>(offset_y)) - camera.getY()) * camera.getZoom()),
-        static_cast<int>(TILE_SIZE * DUCK_SIZE_X * mult * camera.getZoom()),
-        static_cast<int>(TILE_SIZE * DUCK_SIZE_Y * mult * camera.getZoom())
-    };
-    rect_helmet = {
-        static_cast<int>((static_cast<float>(x) - camera.getX()) * camera.getZoom()),
-        static_cast<int>((static_cast<float>(y - TILE_SIZE * 9 + static_cast<int>(offset_y)) - camera.getY()) * camera.getZoom()),
-        static_cast<int>(((TILE_SIZE * DUCK_SIZE_X / 2) + TILE_SIZE) * mult * camera.getZoom()),
-        static_cast<int>(((TILE_SIZE * DUCK_SIZE_Y / 2) + TILE_SIZE) * mult * camera.getZoom())
-    };
-
-    rect_armor = {
-        static_cast<int>((static_cast<float>(x - TILE_SIZE) - camera.getX()) * camera.getZoom()),
-        static_cast<int>((static_cast<float>(y - TILE_SIZE * 8 + static_cast<int>(offset_y)) - camera.getY()) * camera.getZoom()),
-        static_cast<int>(((TILE_SIZE * DUCK_SIZE_X / 2) + TILE_SIZE) * camera.getZoom()),
-        static_cast<int>((TILE_SIZE * DUCK_SIZE_Y / 2) * camera.getZoom()) };*/
-
     if (item_id == BASE_WEAPON_ID) {
-        //rect = { x, y - TILE_SIZE * 11 + static_cast<int>(offset_y), TILE_SIZE * DUCK_SIZE_X * mult, TILE_SIZE * DUCK_SIZE_Y * mult };
         SDL_RenderCopyEx(renderer, texture_handler.getTexture("gun"), NULL, &rect11, 0, NULL, SDL_FLIP_NONE);
     } else if (item_id == COWBOY_PISTOL_ID) {
-        //rect = { x, y - TILE_SIZE * 11 + static_cast<int>(offset_y), TILE_SIZE * DUCK_SIZE_X * mult, TILE_SIZE * DUCK_SIZE_Y * mult };
         SDL_RenderCopyEx(renderer, texture_handler.getTexture("cowboy-pistol"), NULL, &rect11, 0, NULL, SDL_FLIP_NONE);
     } else if (item_id == LASER_RIFLE_ID) {
-        //rect = { x, y - TILE_SIZE * 11 + static_cast<int>(offset_y), TILE_SIZE * DUCK_SIZE_X * mult, TILE_SIZE * DUCK_SIZE_Y * mult };
         SDL_RenderCopyEx(renderer, texture_handler.getTexture("laser-rifle"), NULL, &rect11, 0, NULL, SDL_FLIP_NONE);
     } else if (item_id == MAGNUM_ID) {
-        //rect = { x, y - TILE_SIZE * 11 + static_cast<int>(offset_y), TILE_SIZE * DUCK_SIZE_X * mult, TILE_SIZE * DUCK_SIZE_Y * mult };
         SDL_RenderCopyEx(renderer, texture_handler.getTexture("magnum"), NULL, &rect11, 0, NULL, SDL_FLIP_NONE);
     } else if (item_id == PEW_PEW_LASER_ID) {
-        //rect = { x, y - TILE_SIZE * 11 + static_cast<int>(offset_y), TILE_SIZE * DUCK_SIZE_X * mult, TILE_SIZE * DUCK_SIZE_Y * mult };
         SDL_RenderCopyEx(renderer, texture_handler.getTexture("pew-pew-laser"), NULL, &rect11, 0, NULL, SDL_FLIP_NONE);
     } else if (item_id == SHOTGUN_ID) {
-        //rect = { x, y - TILE_SIZE * 11 + static_cast<int>(offset_y), TILE_SIZE * DUCK_SIZE_X * mult, TILE_SIZE * DUCK_SIZE_Y * mult };
         SDL_RenderCopyEx(renderer, texture_handler.getTexture("shotgun"), NULL, &rect11, 0, NULL, SDL_FLIP_NONE);
     } else if (item_id == AK_47_ID) {
-        //rect = { x, y - TILE_SIZE * 11 + static_cast<int>(offset_y), TILE_SIZE * DUCK_SIZE_X * mult, TILE_SIZE * DUCK_SIZE_Y * mult };
         SDL_RenderCopyEx(renderer, texture_handler.getTexture("AK-47"), NULL, &rect11, 0, NULL, SDL_FLIP_NONE);
     } else if (item_id == SNIPER_ID) {
-        //rect = { x, y - TILE_SIZE * 11 + static_cast<int>(offset_y), TILE_SIZE * DUCK_SIZE_X * mult, TILE_SIZE * DUCK_SIZE_Y * mult };
         SDL_RenderCopyEx(renderer, texture_handler.getTexture("sniper"), NULL, &rect11, 0, NULL, SDL_FLIP_NONE);
     } else if (item_id == DUEL_PISTOL_ID) {
-        //rect = { x, y - TILE_SIZE * 11 + static_cast<int>(offset_y), TILE_SIZE * DUCK_SIZE_X * mult, TILE_SIZE * DUCK_SIZE_Y * mult };
         SDL_RenderCopyEx(renderer, texture_handler.getTexture("duel-pistol"), NULL, &rect11, 0, NULL, SDL_FLIP_NONE);
     } else if (item_id == GRENADE_ID) {
-        //rect = { x, y - TILE_SIZE * 11 + static_cast<int>(offset_y), TILE_SIZE * DUCK_SIZE_X * mult, TILE_SIZE * DUCK_SIZE_Y * mult };
-            SDL_RenderCopyEx(renderer, texture_handler.getTexture("grenade-pin"), NULL, &rect11, 0, NULL, SDL_FLIP_NONE);
+        SDL_RenderCopyEx(renderer, texture_handler.getTexture("grenade-pin"), NULL, &rect11, 0, NULL, SDL_FLIP_NONE);
     } else if (item_id == BANANA_ID) {
-        //rect = { x, y - TILE_SIZE * 11 + static_cast<int>(offset_y), TILE_SIZE * DUCK_SIZE_X * mult, TILE_SIZE * DUCK_SIZE_Y * mult };
-            SDL_RenderCopyEx(renderer, texture_handler.getTexture("banana"), NULL, &rect11, 0, NULL, SDL_FLIP_NONE);
+        SDL_RenderCopyEx(renderer, texture_handler.getTexture("banana"), NULL, &rect11, 0, NULL, SDL_FLIP_NONE);
     } else if (item_id == HELMET_ID) {
-        //rect = { x, y - TILE_SIZE * 9 + static_cast<int>(offset_y), ((TILE_SIZE * DUCK_SIZE_X / 2) + TILE_SIZE) * mult, ((TILE_SIZE * DUCK_SIZE_Y / 2) + TILE_SIZE) * mult };
         SDL_RenderCopyEx(renderer, texture_handler.getTexture("helmet"), NULL, &rect_helmet, 0, NULL, SDL_FLIP_NONE);
     } else if (item_id == ARMOR_ID) {
-        //rect = { x - TILE_SIZE, y - TILE_SIZE * 8 + static_cast<int>(offset_y), (TILE_SIZE * DUCK_SIZE_X / 2) + TILE_SIZE, (TILE_SIZE * DUCK_SIZE_Y / 2) };
         SDL_RenderCopyEx(renderer, texture_handler.getTexture("armor"), NULL, &rect_armor, 0, NULL, SDL_FLIP_NONE);
     }
 }
@@ -454,10 +421,10 @@ void RendererManager::updateCamera(GameState* game, Camera& camera) {
     }
 
     int padding = 80;
-    min_x -= padding;
-    min_y -= padding;
-    max_x += padding;
-    max_y += padding;
+    min_x = std::max(0, min_x - padding);
+    min_y = std::max(0, min_y - padding);
+    max_x = std::min(WINDOW_WIDTH, max_x + padding);
+    max_y = std::min(WINDOW_HEIGHT, max_y + padding);
 
     int bounding_width = max_x - min_x;
     int bounding_height = max_y - min_y;
@@ -466,8 +433,8 @@ void RendererManager::updateCamera(GameState* game, Camera& camera) {
     float zoom_y = static_cast<float>(WINDOW_HEIGHT) / static_cast<float>(bounding_height);
     float new_zoom = std::min(zoom_x, zoom_y);
 
-    int center_x = min_x + (max_x - min_x) / 2;
-    int center_y = min_y + (max_y - min_y) / 2;
+    int center_x = std::clamp(min_x + (max_x - min_x) / 2, camera.getWidth() / 2, WINDOW_WIDTH - camera.getWidth() / 2);
+    int center_y = std::clamp(min_y + (max_y - min_y) / 2, camera.getHeight() / 2, WINDOW_HEIGHT - camera.getHeight() / 2);
 
     float smooth_factor = 1.0f;
     camera.setZoom(camera.getZoom() + smooth_factor * (new_zoom - camera.getZoom()));
