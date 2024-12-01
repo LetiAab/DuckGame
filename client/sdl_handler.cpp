@@ -7,7 +7,7 @@
 
 //using namespace SDL2pp;
 
-SDLHandler::SDLHandler(): handle_textures(nullptr) {
+SDLHandler::SDLHandler(): is_alive(true), handle_textures(nullptr), duck_id(0), lobby_exit(false) {
     SDL_Init(SDL_INIT_VIDEO);
     SDL_Init(SDL_INIT_AUDIO);
 }
@@ -56,7 +56,6 @@ void SDLHandler::loadGame(GameState &game, Queue<Message> &message_queue) {
         handle_textures.loadTexture(texture_info, &frame_width, &frame_height);
     }
 
-
     // Recibo e inicializo los elementos del juego
     gameInitializer.initializeGame(message_queue, game, frame_width, frame_height);
     
@@ -85,20 +84,41 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
     Message message;
     while (message_queue.try_pop(message)) {
 
+        if(message.type == END_GAME){
+            std::cout << "SE TERMINO LA PARTIDA "<< "\n";
+
+            screenManager->showScoreboard(message.scoreboard);
+
+            screenManager->showEndMatchScreen(message.duck_winner);
+            message.type = END_GAME;
+        }
+
         if(message.type == END_ROUND){
             std::cout << "SE TERMINO LA RONDA "<< "\n";
 
             gameInitializer.initialize_new_round(*game, message_queue);
             std::cout << "SE INICIALIZO EL GAME "<< "\n";
-            screenManager->showNextRoundScreen();
+            screenManager->showNextRoundScreen(message.duck_winner);
+            screenManager->showGetReadyScreen(message.round);
             std::cout << "refresco lo estatico "<< "\n";
             rendererManager->doRenderStatic(game);
-            message.type = END_ROUND;
+
         }
 
-        if(message.type == END_GAME){
-            std::cout << "SE TERMINO LA PARTIDA "<< "\n";
-            //TODO: Mostrar el mensaje del final de la partida
+        if(message.type == END_FIVE_ROUNDS){
+            std::cout << "PASARON 5 RONDAS "<< "\n";
+
+            gameInitializer.initialize_new_round(*game, message_queue);
+            std::cout << "Se inicializo el game "<< "\n";
+            screenManager->showNextRoundScreen(message.duck_winner);
+
+            screenManager->showScoreboard(message.scoreboard);
+
+            screenManager->showGetReadyScreen(message.round);
+
+            std::cout << "refresco lo estatico "<< "\n";
+            rendererManager->doRenderStatic(game);
+
         }
 
         if(message.type == SPAWN_PLACE_ITEM_UPDATE){
@@ -301,15 +321,73 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
 
 
 //** Lobby **//
-int SDLHandler::waitForStartGame() {
+int SDLHandler::waitForStartGame(uint16_t lobby_id, Queue<Command>& command_queue, Queue<Message>& message_queue, ClientProtocol& protocol) {
     int done = SUCCESS;
-    bool start_game = false;
-    int id_match = 1;
+    int chosen_match = 0;
+    bool selected_match = false;
+    std::cout << "Seleccionando... " << selected_match << "\n";
 
-    while (!start_game && !done) {
+    while (is_alive) {
         const auto start = std::chrono::high_resolution_clock::now();
 
-        done = eventProcessor.processLobbyEvents(screenManager.get(), start_game, id_match);
+        done = eventProcessor.processLobbyEvents(screenManager.get(), command_queue, lobby_id, is_alive, chosen_match, selected_match);
+
+        try {
+            Message message;
+            if (message_queue.try_pop(message)) {
+                if (message.type == LOBBY_EXIT_CODE){
+                    std::cout << "Comando para salir..." << "\n";
+                    lobby_exit = true;
+                    is_alive = false;
+                    command_queue.close();
+                    break;
+                }
+
+                if (message.type == NEW_MATCH_CODE){
+                    std::cout << "Partida creada con id: " << static_cast<int>(message.current_match_id) << "\n";
+                    screenManager->renderNewMatchText(message.current_match_id);
+                }
+
+                if (message.type == LIST_MATCH_AVAILABLE) {
+                    screenManager->renderAvailableMatches(message.existing_matches);
+                }
+
+                if (message.type == EXISTING_MATCH_CODE){
+                    std::cout << "Conectado a partida con id: " << static_cast<int>(message.current_match_id) << "\n";
+                }
+
+                if (message.type == LOBBY_COMMAND_FAIL){
+                    std::cout << "Ups! parece que no puedes realizar esa accion" << "\n";
+                }
+
+                if (message.type == START_MATCH_CODE){
+                    chosen_match = message.current_match_id;
+                    std::cout << "Partida iniciada con id: " << static_cast<int>(chosen_match) << "\n";
+                    if (protocol.send_command(Command(lobby_id, LOBBY_STOP_CODE))){
+                        std::cout << "Me desconecte del lobby. Ahora voy a comunicarme con el juego" << "\n";
+                        is_alive = false;
+                        break;
+                    }
+                }
+
+                std::cout << "\n";
+            }
+
+        } catch (const ClosedQueue& e) {
+            done = ERROR;
+            is_alive = false;
+            std::cerr << "Exception handling the lobby: ClosedQueue" << e.what() << std::endl;
+
+        } catch (const LibError& e) {
+            done = ERROR;
+            is_alive = false;
+            std::cerr << "Exception handling the lobby: LibError" << e.what() << std::endl;
+
+        } catch (const std::exception& e) {
+            done = ERROR;
+            is_alive = false;
+            std::cerr << "Exception handling the lobby: " << e.what() << std::endl;
+        }
 
         const auto end = std::chrono::high_resolution_clock::now();
         auto loop_duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
@@ -322,34 +400,24 @@ int SDLHandler::waitForStartGame() {
     return done;
 }
 
-void SDLHandler::run(Queue<Command>& command_queue, uint16_t id, Queue<Message>& message_queue) {
-    SDL_Window* window = SDL_CreateWindow("Duck Game",
-                                          SDL_WINDOWPOS_UNDEFINED,
-                                          SDL_WINDOWPOS_UNDEFINED,
-                                          WINDOW_WIDTH, WINDOW_HEIGHT,
-                                          0);
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+void SDLHandler::initializeWindow(SDL_Window*& window, SDL_Renderer*& renderer) {
+    window = SDL_CreateWindow("Duck Game",
+                              SDL_WINDOWPOS_UNDEFINED,
+                              SDL_WINDOWPOS_UNDEFINED,
+                              WINDOW_WIDTH, WINDOW_HEIGHT,
+                              0);
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     handle_textures = TextureHandler(renderer);
     screenManager = std::make_unique<ScreenManager>(renderer, handle_textures);
     screenManager->showStartScreen();
+}
 
-    screenManager->loadLobbyScreen();
-    screenManager->renderStaticLobby();
-    screenManager->showLobbyScreen();
-    if(waitForStartGame() == ERROR) {
-        SDL_DestroyWindow(window);
-        SDL_DestroyRenderer(renderer);
-        return;
-    }
-
-
+int SDLHandler::runGame(SDL_Window *window, SDL_Renderer *renderer, Queue<Command> &command_queue, Queue<Message> &message_queue) {
     GameState game{};
     game.renderer = renderer;
     game.command_queue = &command_queue;
     game.music = true;
     loadGame(game, message_queue);
-
-
 
     //Empiezo la musica de fondo
     const std::string path = std::string(AUDIO_PATH) +"ambient-music.wav";
@@ -367,10 +435,9 @@ void SDLHandler::run(Queue<Command>& command_queue, uint16_t id, Queue<Message>&
             const auto start = std::chrono::high_resolution_clock::now();
 
             //PRIMERO MANDO AL SERVER
-            
-            //no se si pasar el audio manager aca para reproducir el sonido del disparo es lo mejor 
-            //pero por ahora funciona... 
-            done = eventProcessor.processGameEvents(window, &game, id);
+            //no se si pasar el audio manager aca para reproducir el sonido del disparo es lo mejor
+            //pero por ahora funciona...
+            done = eventProcessor.processGameEvents(window, &game, duck_id);
 
             if(game.music){
                 audioManager->setMusicVolume(30);
@@ -386,25 +453,16 @@ void SDLHandler::run(Queue<Command>& command_queue, uint16_t id, Queue<Message>&
             Message message = handleMessages(&game, message_queue);
             //std::cout << "El message type es: " << static_cast<unsigned int>(message.type) << "\n";
 
-            if(message.type == END_ROUND){
-                std::cout << "TERMINO LA RONDA"<< "\n";
-                std::cout << "El ganador fue el pato "<< static_cast<char>(message.duck_winner) << "\n";
-                
-                continue;
-                
-            }
-
             if(message.type == END_GAME){
                 std::cout << "TERMINO LA PARTIDA"<< "\n";
-                std::cout << "El ganador fue el pato "<< static_cast<char>(message.duck_winner)  << "\n";
-                //TODO:  mostrar pantalla de victoria antes de salir
+                std::cout << "El ganador fue el pato "<< message.duck_winner  << "\n";
+
                 done = ERROR;
                 break;
             }
 
-            rendererManager->doRenderDynamic(&game, message, id);
+            rendererManager->doRenderDynamic(&game, message, duck_id);
 
-            //SDL_Delay(DELAY_TIME);
             const auto end = std::chrono::high_resolution_clock::now();
             auto loop_duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
             auto sleep_duration = DELAY_TIME - loop_duration;
@@ -425,4 +483,34 @@ void SDLHandler::run(Queue<Command>& command_queue, uint16_t id, Queue<Message>&
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
     Mix_CloseAudio();
+    return done;
+}
+
+int SDLHandler::run(uint16_t lobby_id, Queue<Command>& command_queue, Queue<Message>& message_queue, ClientProtocol& protocol) {
+    SDL_Window* window = nullptr;
+    SDL_Renderer* renderer = nullptr;
+    initializeWindow(window, renderer);
+
+    //manejo la interaccion con el lobby
+    screenManager->loadLobbyScreen();
+    screenManager->renderStaticLobby();
+    screenManager->showLobbyScreen();
+    if(waitForStartGame(lobby_id, command_queue, message_queue, protocol) == ERROR) {
+        SDL_DestroyWindow(window);
+        SDL_DestroyRenderer(renderer);
+        return ERROR;
+    }
+    if (lobby_exit) {
+        std::cout << "Sali del lobby!"<< std::endl;
+        return SUCCESS;
+    }
+
+    //recibo un nuevo id, el cual corresponde a mi pato
+    Message first_game_message = message_queue.pop();
+    duck_id = first_game_message.player_id;
+    std::cout << "My DUCK ID is: " << duck_id  << std::endl;
+
+    int result = runGame(window, renderer, command_queue, message_queue);
+
+    return result;
 }

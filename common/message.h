@@ -43,8 +43,11 @@ struct Message {
     int box_x;
     int box_y;
 
-    char duck_winner;
+    int round;
+    uint16_t duck_winner;
     int ducks_quantity;
+    std::vector<int> scoreboard;
+
     int spawn_places_quantity;
     int boxes_quantity;
     int items_on_floor_quantity;

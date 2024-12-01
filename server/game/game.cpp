@@ -178,12 +178,7 @@ void Game::simulate_round() {
         }
 
 }
-/* 
-void Game::add_projectile(std::unique_ptr<Proyectil> projectile) {
-    // Transfiere la propiedad del proyectil usando std::move
-    projectiles.push_back(std::move(projectile));
 
-} */
 
 void Game::set_players(int number_of_players){
         players = number_of_players;
@@ -246,32 +241,28 @@ void Game::run() {
                                 send_boxes_initialize_message();
                                 send_items_on_floor_message();
 
-                                
-                                //vaciar la queue del juego para descartar cualquier comando viejo?)
                                 break;
                         
                         case MATCH_5_ROUNDS:
-                                //TODO: Mandar primero un resumen de como va el juego
 
                                 initialize_round();
 
-                                std::cout << "Envio mensajes para iniciar la nueva ronda"  << std::endl;
+                                std::cout << "Envio mensajes del scoreboard"  << std::endl;
 
-                                notify_players_end_round();
+                                notify_players_end_of_five_rounds();
                                 send_map_message();
                                 send_initialize_ducks_message();
                                 send_spawn_place_message();
                                 send_boxes_initialize_message();
                                 send_items_on_floor_message();
 
-                                
-                                //vaciar la queue del juego para descartar cualquier comando viejo?)
                                 break;
 
                         case MATCH_HAS_WINNER:
 
+                                std::cout << "Envio mensajes de fin de partida"  << std::endl;
+
                                 notify_players_end_game();
-                                //mandarle mas info sobre los puntajes de la partida
 
                                 is_running = false;
                                 is_over = true;
@@ -342,23 +333,29 @@ void Game::send_updates(){
 
 }
 
-
-
 void Game::notify_players_end_game(){
-         std::cout << "El ganador de la partida fue el pato "<< static_cast<char>(round_manager.get_duck_winner()) << std::endl;
+        std::cout << "El ganador de la partida fue el pato "<< static_cast<char>(round_manager.get_duck_winner()) << std::endl;
         Message msg;
-        msg.type = END_GAME;
-        msg.duck_winner = round_manager.get_duck_winner();
-        monitor.broadcast(msg);
-        std::cout << "Le aviso a los jugadores que el juego termino"  << std::endl;
+        if(round_manager.get_end_match_message(msg)){
+                monitor.broadcast(msg);
+                std::cout << "Le aviso a los jugadores el juego termino"  << std::endl;
+        }
 }
 
 void Game::notify_players_end_round(){
         Message msg;
-        msg.type = END_ROUND;
-        msg.duck_winner = round_manager.get_duck_round_winner();
-        monitor.broadcast(msg);
-        std::cout << "Le aviso a los jugadores que la ronda termino"  << std::endl;
+        if(round_manager.get_end_round_message(msg)){
+                monitor.broadcast(msg);
+                std::cout << "Le aviso a los jugadores que la ronda termino"  << std::endl;
+        }
+}
+
+void Game::notify_players_end_of_five_rounds(){
+        Message msg;
+        if(round_manager.get_five_round_message(msg)){
+                monitor.broadcast(msg);
+                std::cout << "Le aviso a los jugadores el score"  << std::endl;
+        }
 }
 
 bool Game::check_end_of_round(){

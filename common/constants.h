@@ -94,6 +94,7 @@ const uint8_t ITEM_ON_FLOOR_UPDATE = 0x89;
 
 const uint8_t LOOK_UP = 0x90;
 const uint8_t STOP_LOOK_UP = 0x91;
+const uint8_t END_FIVE_ROUNDS = 0X92;
 
 
 

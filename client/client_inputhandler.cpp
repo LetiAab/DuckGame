@@ -78,14 +78,12 @@ void InputHandler::run() {
                 };
             }
 
-            if (input[0] == EXIT_GAME) {
-                //este es para salir del juego
-                auto stop_command = Command(id, EXIT_GAME);
-                if (command_queue.try_push(stop_command)){
-                    std::cout << "Escape!" << "\n";
+            if (input == "8"){
+                auto command = Command(id, LIST_MATCH_AVAILABLE, actual_match_id);
+
+                if (command_queue.try_push(command)){
+                    std::cout << "Partidas disponibles..." << "\n";
                 };
-                is_alive = false;
-                break;
             }
 
         }
