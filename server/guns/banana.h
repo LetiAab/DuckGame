@@ -17,7 +17,7 @@ public:
     bool pisada;
 
     // Constructor que inicializa la posición
-    explicit Banana(int x = 0, int y = 0);
+    explicit Banana(int x = 0, int y = 0, Position speed = Position {0, 0});
 
     // Métodos
     bool disparar_banana(int position_x, int position_y, char looking, GameMap* map, char id_player, bool is_looking_up);
@@ -30,6 +30,8 @@ public:
 //    bool update_weapon(int position_x, int position_y, char looking, GameMap* map, char id_player);
 
     void update_weapon(GameMap& map);
+
+    void prepare_drop(char duck_looking);
 
     virtual ~Banana() = default;  // Destructor virtual
 };

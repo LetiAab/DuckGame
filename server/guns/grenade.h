@@ -18,7 +18,7 @@ public:
     Position speed;
 
     // Constructor que inicializa la posición
-    explicit Grenade(int x = 0, int y = 0, int current_ticks = 0);
+    explicit Grenade(int x = 0, int y = 0, int current_ticks = 0, Position speed = Position {0, 0});
 
     // Métodos
     bool disparar_grenade(int position_x, int position_y, char looking, GameMap* map, char id_player, bool is_looking_up);
@@ -31,7 +31,9 @@ public:
 
     void mostrarInformacion() const;  
     bool update_weapon(int position_x, int position_y, char looking, GameMap* map, char id_player);
-    void simulate_movement(GameMap* map, char looking);
+    void simulate_movement(GameMap* map);
+
+    void prepare_drop(char duck_looking);
 
     virtual ~Grenade() = default;  // Destructor virtual
 };

@@ -38,16 +38,13 @@ Duck* Game::getDuckByPosition(Position position) {
 void Game::add_throwed_weapon(Weapon* throwed_weapon) {
         if (throwed_weapon->getItemId() == GRENADE_ID) {
                 Grenade* casted_grenade = (Grenade*)throwed_weapon;
-                throwed_weapons.emplace_back(std::make_shared<Grenade>(casted_grenade->getPosition().x, casted_grenade->getPosition().y, casted_grenade->getCurrentTicks()));
-                // throwed_weapons.push_back(shared_throwed_weapon);
+                throwed_weapons.emplace_back(std::make_shared<Grenade>(casted_grenade->getPosition().x, casted_grenade->getPosition().y, casted_grenade->getCurrentTicks(), casted_grenade->speed));
         } else if (throwed_weapon->getItemId() == BANANA_ID) {
                 Banana* casted_banana = (Banana*)throwed_weapon;
 
                 if (casted_banana->peeled) {
-                        throwed_weapons.emplace_back(std::make_shared<Banana>(casted_banana->getPosition().x, casted_banana->getPosition().y));
+                        throwed_weapons.emplace_back(std::make_shared<Banana>(casted_banana->getPosition().x, casted_banana->getPosition().y, casted_banana->speed));
                 }
-
-                //throwed_weapons.push_back(shared_throwed_weapon);
         } else {
                 std::cout << "Este arma no debería ser agregada! \n";
         }
@@ -78,7 +75,7 @@ void Game::simulate_throwed_weapons() {
 
                         throwed_banana->update_weapon(map);
 
-                        std::cout << "Banana en pos x: " << throwed_banana->getPosition().x << " y: " << throwed_banana->getPosition().y << std::endl;
+                        // std::cout << "Banana en pos x: " << throwed_banana->getPosition().x << " y: " << throwed_banana->getPosition().y << std::endl;
                 }
                 
                 ++it;

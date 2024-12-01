@@ -29,7 +29,7 @@ void SpawnPlace::setItemId(int newItemId) {
 
 bool SpawnPlace::getSpawnPlacePositionMessage(Message& msg){
     //TODO: Esto se tendria que implementar en las hijas àra saner que item id mandar
-    std::cout << "LE PASO EL SPAWN CON x: " << position.x << " y: " << position.y << "\n";
+    //std::cout << "LE PASO EL SPAWN CON x: " << position.x << " y: " << position.y << "\n";
 
     msg.type = SPAWN_PLACE_POSITION;
     msg.spaw_place_x = position.x;

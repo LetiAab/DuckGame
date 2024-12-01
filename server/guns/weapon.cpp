@@ -21,7 +21,7 @@ bool Weapon::get_throwed_position_message(Message& msg) {
     if (used) {
         return false;
     }
-    std::cout << "LE PASO EL SPAWN CON x: " << position.x << " y: " << position.y << "\n";
+    //std::cout << "LE PASO EL SPAWN CON x: " << position.x << " y: " << position.y << "\n";
 
     msg.type = THROWABLE_ITEM;
     msg.item_x = position.x;

@@ -8,8 +8,8 @@ Grenade::Grenade(int x, int y)
     : Weapon(GRENADE_ID, "Grenade", 60, 0, 1, x, y), activated(false), ticks_counter(0), exploded(false), speed(4, -4) {}
  */
 // 6 balas, Alcance: medio (15 tiles (15 x TILE_SIZE = 60))
-Grenade::Grenade(int x, int y, int current_ticks)
-    : Weapon(GRENADE_ID, "Grenade", 1000, 0, 1, x, y), activated(false), ticks_counter(current_ticks), exploded(false), speed(3, -4) {}
+Grenade::Grenade(int x, int y, int current_ticks, Position speed)
+    : Weapon(GRENADE_ID, "Grenade", 1000, 0, 1, x, y), activated(false), ticks_counter(current_ticks), exploded(false), speed(speed) {}
 
 bool Grenade::disparar_grenade(int position_x, int position_y, char looking, GameMap* map, char id_player, bool is_looking_up) {
         if (!map && is_looking_up) {
@@ -33,10 +33,7 @@ void Grenade::mostrarInformacion() const {
     std::cout << "Municiones: " << municiones << std::endl;
 }
 
-void Grenade::simulate_movement(GameMap* map, char looking) {
-        if (looking != '0') {
-                speed.x = 4 * ((looking == LOOKING_RIGHT) ? 1 : -1);
-        }
+void Grenade::simulate_movement(GameMap* map) {
         // Uso la de banana pq hace lo mismo
         Position old_position = position;
         bool hit_void = false;
@@ -86,7 +83,7 @@ bool Grenade::update_weapon(int position_x, int position_y, char looking, GameMa
                         return true;
                 }
         } else {
-                simulate_movement(map, looking);
+                simulate_movement(map);
 
                 if (ticks_counter >= 20) {
                         // Creo que lo mejor va a ser que explote acá también y mueva los perdigones
@@ -122,4 +119,12 @@ bool Grenade::update_weapon(int position_x, int position_y, char looking, GameMa
                 }
         }
         return false;
+}
+
+void Grenade::prepare_drop(char duck_looking) {
+    if (duck_looking == LOOKING_LEFT) {
+        speed.x = -3;
+    } else {
+        speed.x = 3;
+    }
 }

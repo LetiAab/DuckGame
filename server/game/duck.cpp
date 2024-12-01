@@ -423,6 +423,16 @@ std::shared_ptr<Item> Duck::getItemOnHand() const {
 Weapon* Duck::dropWeapon() {
     if (weapon) {
         std::cout << "El jugador " << id_player << " deja caer su arma: " << std::endl;
+
+        // Basicamente le cambia la velocidad segun donde esté mirando
+        if (weapon->getItemId() == GRENADE_ID) {
+            Grenade* weapon_grenade = (Grenade*)weapon.get();
+            weapon_grenade->prepare_drop(looking);
+        } else if (weapon->getItemId() == BANANA_ID) {
+            Banana* weapon_banana = (Banana*)weapon.get();
+            weapon_banana->prepare_drop(looking);
+        }
+
         //SE ELIMINA LA REFERENCIA SOLAMENTE
         //deberia pasarle el arma a la lista de items del juego
         Weapon* weapon_to_drop = weapon.get();
