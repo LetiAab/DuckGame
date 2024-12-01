@@ -47,7 +47,8 @@ void SDLHandler::loadGame(GameState &game, Queue<Message> &message_queue) {
         {"duck-fluttering", "duck-fluttering", 6},
         {"duck", "duck", 1},
         {"corazon", "corazon", 1},
-        {"duck-laying-down", "duck-laying-down", 1}
+        {"duck-laying-down", "duck-laying-down", 1},
+        {"grave", "grave", 1}
     };
 
     // Cargo las texturas
