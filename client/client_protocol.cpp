@@ -21,6 +21,8 @@ Message ClientProtocol::receive_message(){
     switch (message.type)
 
     {
+    case EXIT_GAME:
+        break;
     case END_GAME:
         std::cout << "Protocolo: recibo el END_MATCH" << "\n";
         skt.recvall(&message.round, sizeof(message.round), &was_closed);

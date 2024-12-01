@@ -52,6 +52,8 @@ private:
         LevelManager level_manager;
         std::vector<Update> updates;
 
+        void disconect_all_players();
+
 
         void send_updates();
         void send_throwed_weapon_updates();

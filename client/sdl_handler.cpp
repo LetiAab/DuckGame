@@ -335,7 +335,7 @@ int SDLHandler::waitForStartGame(uint16_t lobby_id, Queue<Command>& command_queu
         try {
             Message message;
             if (message_queue.try_pop(message)) {
-                if (message.type == LOBBY_EXIT_CODE){
+                if (message.type == EXIT_GAME){
                     std::cout << "Comando para salir..." << "\n";
                     lobby_exit = true;
                     is_alive = false;
@@ -456,6 +456,13 @@ int SDLHandler::runGame(SDL_Window *window, SDL_Renderer *renderer, Queue<Comman
             if(message.type == END_GAME){
                 std::cout << "TERMINO LA PARTIDA"<< "\n";
                 std::cout << "El ganador fue el pato "<< message.duck_winner  << "\n";
+
+                done = ERROR;
+                break;
+            }
+
+            if(message.type == EXIT_GAME){
+                std::cout << "Lo siento, parece que el servidor cerró"<< "\n";
 
                 done = ERROR;
                 break;

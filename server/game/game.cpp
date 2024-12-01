@@ -392,13 +392,22 @@ bool Game::check_end_game(){
 }
 
 void Game::stop() {
-        std::cout << "Comienzo el stop"  << std::endl;
-        game_queue.close();
+        std::cout << "Game: Comienzo el stop"  << std::endl;
+        if(!is_over){
+                disconect_all_players();
+        }
         monitor.remove_all_queues();
-        is_running = false;
-        is_over = true;
-        std::cout << "termino el stop"  << std::endl;
+        game_queue.close();
+        std::cout << "Game: termino el stop"  << std::endl;
 }
+
+void Game::disconect_all_players() {
+        Message msg;
+        msg.type = EXIT_GAME;
+        monitor.broadcast(msg);
+        std::cout << "Game: mando a todos los jugadores el mensaje EXIT_GAME"  << std::endl;
+}
+
 
 void Game::initialize_round() {
         level_manager.choose_level();

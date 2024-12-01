@@ -17,9 +17,11 @@ void ClientSender::run() {
 
     } catch (const ClosedQueue& e) {
         is_alive = false;
+        std::cerr << "Sender: se cerro la command_queue"  << std::endl;
         //protocol.shutdown();
     } catch (const LibError& e) {
         is_alive = false;
+        std::cerr << "Sender: se cerro el socket"  << std::endl;
 
     } catch (const std::exception& e) {
         is_alive = false;

@@ -19,9 +19,10 @@ void ClientReceiver::run() {
 
     } catch (const ClosedQueue& e) {
         is_alive = false;
-
+        std::cerr << "Receiver: se cerro la message_queue"  << std::endl;
     } catch (const LibError& e) {
         is_alive = false;
+        std::cerr << "Receiver: se cerro el socket"  << std::endl;
         //message_queue.close();
 
     } catch (const std::exception& e) {
