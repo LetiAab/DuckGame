@@ -437,15 +437,6 @@ int SDLHandler::runGame(SDL_Window *window, SDL_Renderer *renderer, Queue<Comman
             Message message = handleMessages(&game, message_queue);
             //std::cout << "El message type es: " << static_cast<unsigned int>(message.type) << "\n";
 
-<<<<<<< HEAD
-=======
-            if(message.type == END_ROUND){
-                std::cout << "TERMINO LA RONDA"<< "\n";
-                std::cout << "El ganador fue el pato "<< static_cast<char>(message.duck_winner) << "\n";
-                continue;
-            }
-
->>>>>>> 499d30f071dfa8321eab46a2858c537146f61c82
             if(message.type == END_GAME){
                 std::cout << "TERMINO LA PARTIDA"<< "\n";
                 std::cout << "El ganador fue el pato "<< message.duck_winner  << "\n";
