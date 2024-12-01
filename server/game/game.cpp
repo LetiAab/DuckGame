@@ -62,6 +62,10 @@ void Game::simulate_throwed_weapons() {
 
                         bool should_erase = throwed_grenade->update_weapon(current_position.x, current_position.y, '0', &map, 0);
                         if (should_erase) {
+                                Message throwed_message;
+                                if (throwed_weapon->get_throwed_position_message(throwed_message)){
+                                        monitor.broadcast(throwed_message);
+                                }
                                 throwed_weapons.erase(it);
                                 continue;
                         }
