@@ -2,10 +2,12 @@
 #include <iostream>
 #include <random>
 
+#define BANANA 'b'
+
 
 // 6 balas, Alcance: medio (15 tiles (15 x TILE_SIZE = 60))
 Banana::Banana(int x, int y)
-    : Weapon(BANANA_ID, "Banana", 1000, 0, 1, x, y), peeled(false), speed(2, -4), pisada(false) {}
+    : Weapon(BANANA_ID, "Banana", 1000, 0, 1, x, y), peeled(false), speed(3, -4), pisada(false) {}
 
 bool Banana::disparar_banana(int position_x, int position_y, char looking, GameMap* map, char id_player, bool is_looking_up) {
         if (!map && is_looking_up) {
@@ -32,10 +34,8 @@ void Banana::mostrarInformacion() const {
 void Banana::update_weapon(GameMap& map){
         if(pisada){
             //si empacte con algo debo eliminar la bala luego de mandar el mensaje
-            std::cout << "PISADA ES TRUEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE" << std::endl;
             map.clean_projectile_old_position(position, 1, 1);
             used = true;
-            // should_erase = true;
         }
 
         // Mover a la banana en el mapa. Mi idea es, tiene una velocidad de -4 en y, y le voy sumando 1 cada vez que pasa una iteración
@@ -53,7 +53,7 @@ void Banana::update_weapon(GameMap& map){
         }
         
         map.clean_projectile_old_position(old_position, 1, 1);
-        map.set_projectile_new_position(position, 1, 1, 'B');
+        map.set_projectile_new_position(position, 1, 1, BANANA);
 
         if (map.is_throwable_touching_floor(position, 1, 1)) {
                 touching_floor = true;

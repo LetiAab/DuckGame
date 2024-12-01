@@ -382,7 +382,7 @@ Position GameMap::move_duck_to(Position old_position, Position new_position, cha
         bool is_free = true;
         for (int y = next_y; y < next_y + DUCK_SIZE_Y; ++y) {
             for (int x = next_x; x < next_x + DUCK_SIZE_X; ++x) {
-                if (map[y][x] != EMPTY && map[y][x] != duck_id && map[y][x] != 'B') {
+                if (map[y][x] != EMPTY && map[y][x] != duck_id && map[y][x] != BANANA) {
                     is_free = false;
                     break;
                 }
@@ -443,7 +443,7 @@ bool GameMap::duckIsOverBanana(Position position, Position &banana_position) {
     for (int i = position.x; i < position.x + DUCK_SIZE_X; ++i) {
         for (int j = position.y; j < position.y + DUCK_SIZE_Y; ++j) {
             // std::cout << "Chequeo en posición x: " << i << " y: " << j << " que tiene un: " << map[j][i] << "\n";
-            if (map[j][i] == BANANA) {
+            if ((j >= 0 && j < height && i >= 0 && i < width) && map[j][i] == BANANA) {
             //    std::cout << "Pisé una banana, está en la posición x: " << i << " y: " << j << "\n";
                 banana_position = Position {i, j};
                 return true;
