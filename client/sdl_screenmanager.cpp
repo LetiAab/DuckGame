@@ -133,6 +133,57 @@ void ScreenManager::showNextRoundScreen(uint16_t id_winner) {
     SDL_Delay(2000);
 }
 
+void ScreenManager::showEndMatchScreen(uint16_t id_winner) {
+    if (id_winner < 1 || id_winner > 6) return;
+
+    SDL_RenderClear(renderer);
+    SDL_RenderCopy(renderer, getTexture("firework"), NULL, NULL);
+    SDL_RenderPresent(renderer);
+
+    int pos_id = id_winner - 1;
+    SDL_Texture* duck_texture = texture_handler.getTexture("duck");
+    SDL_SetTextureColorMod(duck_texture, colors[pos_id][0], colors[pos_id][1], colors[pos_id][2]);
+
+    int final_width = 6 * TILE_SIZE * DUCK_SIZE_X;
+    int final_height = 6 * TILE_SIZE * DUCK_SIZE_Y;
+    int center_x = (WINDOW_WIDTH - final_width) / 2;
+    int center_y = 100;
+
+    // Animación de escalado del pato
+    for (float scale = 0.1f; scale <= 1.0f; scale += 0.05f) {
+        SDL_RenderClear(renderer);
+        SDL_RenderCopy(renderer, getTexture("firework"), NULL, NULL);
+
+        int width = static_cast<int>(final_width * scale);
+        int height = static_cast<int>(final_height * scale);
+        SDL_Rect duck_rect = {center_x + (final_width - width) / 2, center_y + (final_height - height) / 2, width, height};
+
+        SDL_RenderCopyEx(renderer, duck_texture, NULL, &duck_rect, 0, NULL, SDL_FLIP_NONE);
+        SDL_RenderPresent(renderer);
+        SDL_Delay(20);
+    }
+
+    SDL_SetTextureColorMod(duck_texture, 255, 255, 255);
+
+    SDL_Delay(500);
+
+    texture_handler.saveText("8bit_bigger", "DUCK WINNER", {255, 255, 255, 255});
+    SDL_Point t_size;
+    SDL_QueryTexture(texture_handler.getText("DUCK WINNER"), NULL, NULL, &t_size.x, &t_size.y);
+
+    SDL_Rect textRect = {
+        (WINDOW_WIDTH - t_size.x) / 2,
+        center_y + final_height + 40,
+        t_size.x,
+        t_size.y
+    };
+
+    SDL_RenderCopy(renderer, texture_handler.getText("DUCK WINNER"), NULL, &textRect);
+    SDL_RenderPresent(renderer);
+
+    SDL_Delay(4000);
+}
+
 void ScreenManager::showScoreboard(std::vector<int> scoreboard) {
     std::vector<DuckScore> duck_scores = sortScoreboard(scoreboard);
 
@@ -220,6 +271,7 @@ void ScreenManager::loadLobbyScreen() {
                         {"join-button", "start/join-match"},
                         {"next-round-background", "round/nightsky"},
                         {"screen", "round/screen"},
+                        {"firework", "round/firework"},
                         {"duck", "duck"}};
 
     // Cargar imagenes del lobby

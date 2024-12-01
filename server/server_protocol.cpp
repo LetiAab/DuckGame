@@ -63,6 +63,14 @@ bool ServerProtocol::send_message(Message& message){
         if (!skt.sendall(&message.duck_winner, sizeof(message.duck_winner), &was_closed) || was_closed) {
             throw LibError(errno, CLOSED_SOCKET);
         }
+
+        if (!skt.sendall(&message.ducks_quantity, sizeof(message.ducks_quantity), &was_closed) || was_closed) {
+            throw LibError(errno, CLOSED_SOCKET);
+        }
+
+        if (!skt.sendall(message.scoreboard.data(), message.ducks_quantity * sizeof(int), &was_closed) || was_closed) {
+            throw LibError(errno, CLOSED_SOCKET);
+        }
         break;
 
     case END_ROUND:

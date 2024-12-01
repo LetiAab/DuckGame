@@ -163,12 +163,9 @@ void Game::run() {
                                 send_boxes_initialize_message();
                                 send_items_on_floor_message();
 
-                                
-                                //vaciar la queue del juego para descartar cualquier comando viejo?)
                                 break;
                         
                         case MATCH_5_ROUNDS:
-                                //TODO: Mandar primero un resumen de como va el juego
 
                                 initialize_round();
 
@@ -181,14 +178,13 @@ void Game::run() {
                                 send_boxes_initialize_message();
                                 send_items_on_floor_message();
 
-                                
-                                //vaciar la queue del juego para descartar cualquier comando viejo?)
                                 break;
 
                         case MATCH_HAS_WINNER:
 
+                                std::cout << "Envio mensajes de fin de partida"  << std::endl;
+
                                 notify_players_end_game();
-                                //mandarle mas info sobre los puntajes de la partida
 
                                 is_running = false;
                                 is_over = true;

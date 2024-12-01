@@ -107,9 +107,14 @@ bool RoundManager::get_end_round_message(Message &msg){
 }
 
 bool RoundManager::get_end_match_message(Message &msg){
-    msg.type = END_ROUND;
+    msg.type = END_GAME;
     msg.round = rounds;
     msg.duck_winner = static_cast<uint16_t>(duck_winner - '0');
+    msg.ducks_quantity = ducks.size();
+    
+    for(auto &duck: ducks){
+        msg.scoreboard.push_back(duck.rounds_won);
+    }
 
     return true;
 
