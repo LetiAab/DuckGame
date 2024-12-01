@@ -13,7 +13,7 @@ Message ClientProtocol::receive_message(){
     bool was_closed = false;
     Message message;
 
-    skt.recvall(&message.type, 1, &was_closed);
+    skt.recvall(&message.type, sizeof(message.type), &was_closed);
     if (was_closed) throw LibError(errno, CLOSED_SOCKET);
     
 
@@ -22,14 +22,45 @@ Message ClientProtocol::receive_message(){
 
     {
     case END_GAME:
+        std::cout << "Protocolo: recibo el END_MATCH" << "\n";
+        skt.recvall(&message.round, sizeof(message.round), &was_closed);
+        if (was_closed) throw LibError(errno, CLOSED_SOCKET);
+
         skt.recvall(&message.duck_winner, sizeof(message.duck_winner), &was_closed);
+        if (was_closed) throw LibError(errno, CLOSED_SOCKET);
+
+        skt.recvall(&message.ducks_quantity, sizeof(message.ducks_quantity), &was_closed);
+        if (was_closed) throw LibError(errno, CLOSED_SOCKET);
+
+        message.scoreboard.resize(message.ducks_quantity);
+
+        skt.recvall(message.scoreboard.data(), message.ducks_quantity * sizeof(int), &was_closed);
         if (was_closed) throw LibError(errno, CLOSED_SOCKET);
         break;
 
     case END_ROUND:
+        skt.recvall(&message.round, sizeof(message.round), &was_closed);
+        if (was_closed) throw LibError(errno, CLOSED_SOCKET);
 
         skt.recvall(&message.duck_winner, sizeof(message.duck_winner), &was_closed);
         if (was_closed) throw LibError(errno, CLOSED_SOCKET);
+        break;
+
+    case END_FIVE_ROUNDS:
+        skt.recvall(&message.round, sizeof(message.round), &was_closed);
+        if (was_closed) throw LibError(errno, CLOSED_SOCKET);
+
+        skt.recvall(&message.duck_winner, sizeof(message.duck_winner), &was_closed);
+        if (was_closed) throw LibError(errno, CLOSED_SOCKET);
+
+        skt.recvall(&message.ducks_quantity, sizeof(message.ducks_quantity), &was_closed);
+        if (was_closed) throw LibError(errno, CLOSED_SOCKET);
+
+        message.scoreboard.resize(message.ducks_quantity);
+
+        skt.recvall(message.scoreboard.data(), message.ducks_quantity * sizeof(int), &was_closed);
+        if (was_closed) throw LibError(errno, CLOSED_SOCKET);
+
         break;
 
     case FIRST_GAME_MESSAGE:
@@ -148,7 +179,7 @@ Message ClientProtocol::receive_message(){
 
     case DUCK_POS_UPDATE:
 
-        std::cout << "RECIBO EN EL PROTOCOLO EL DUCK POS UPDATE" << "\n";
+        //std::cout << "RECIBO EN EL PROTOCOLO EL DUCK POS UPDATE" << "\n";
         skt.recvall(&message.player_id, 2, &was_closed);
         skt.recvall(&message.duck_x, sizeof(int), &was_closed);
         skt.recvall(&message.duck_y, sizeof(int), &was_closed);

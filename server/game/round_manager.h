@@ -1,4 +1,5 @@
 #include "common/constants.h"
+#include "common/message.h"
 
 #ifndef ROUND_MANAGER_H
 #define ROUND_MANAGER_H
@@ -41,6 +42,12 @@ public:
     char get_duck_round_winner();
 
     int get_round();
+
+    bool get_five_round_message(Message &msg);
+
+    bool get_end_round_message(Message &msg);
+
+    bool get_end_match_message(Message &msg);
 
 
 };

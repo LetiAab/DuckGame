@@ -80,20 +80,41 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
     Message message;
     while (message_queue.try_pop(message)) {
 
+        if(message.type == END_GAME){
+            std::cout << "SE TERMINO LA PARTIDA "<< "\n";
+
+            screenManager->showScoreboard(message.scoreboard);
+
+            screenManager->showEndMatchScreen(message.duck_winner);
+            message.type = END_GAME;
+        }
+
         if(message.type == END_ROUND){
             std::cout << "SE TERMINO LA RONDA "<< "\n";
 
             gameInitializer.initialize_new_round(*game, message_queue);
             std::cout << "SE INICIALIZO EL GAME "<< "\n";
-            screenManager->showNextRoundScreen();
+            screenManager->showNextRoundScreen(message.duck_winner);
+            screenManager->showGetReadyScreen(message.round);
             std::cout << "refresco lo estatico "<< "\n";
             rendererManager->doRenderStatic(game);
-            message.type = END_ROUND;
+
         }
 
-        if(message.type == END_GAME){
-            std::cout << "SE TERMINO LA PARTIDA "<< "\n";
-            //TODO: Mostrar el mensaje del final de la partida
+        if(message.type == END_FIVE_ROUNDS){
+            std::cout << "PASARON 5 RONDAS "<< "\n";
+
+            gameInitializer.initialize_new_round(*game, message_queue);
+            std::cout << "Se inicializo el game "<< "\n";
+            screenManager->showNextRoundScreen(message.duck_winner);
+
+            screenManager->showScoreboard(message.scoreboard);
+
+            screenManager->showGetReadyScreen(message.round);
+
+            std::cout << "refresco lo estatico "<< "\n";
+            rendererManager->doRenderStatic(game);
+
         }
 
         if(message.type == SPAWN_PLACE_ITEM_UPDATE){
@@ -416,16 +437,10 @@ int SDLHandler::runGame(SDL_Window *window, SDL_Renderer *renderer, Queue<Comman
             Message message = handleMessages(&game, message_queue);
             //std::cout << "El message type es: " << static_cast<unsigned int>(message.type) << "\n";
 
-            if(message.type == END_ROUND){
-                std::cout << "TERMINO LA RONDA"<< "\n";
-                std::cout << "El ganador fue el pato "<< static_cast<char>(message.duck_winner) << "\n";
-                continue;
-            }
-
             if(message.type == END_GAME){
                 std::cout << "TERMINO LA PARTIDA"<< "\n";
-                std::cout << "El ganador fue el pato "<< static_cast<char>(message.duck_winner)  << "\n";
-                //TODO:  mostrar pantalla de victoria antes de salir
+                std::cout << "El ganador fue el pato "<< message.duck_winner  << "\n";
+
                 done = ERROR;
                 break;
             }

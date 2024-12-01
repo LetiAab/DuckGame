@@ -72,6 +72,7 @@ private:
         bool check_end_of_round();
         void notify_players_end_game();
         void notify_players_end_round();
+        void notify_players_end_of_five_rounds();
         void send_spawn_place_message();
         void send_map_message();
         void send_initialize_ducks_message();
