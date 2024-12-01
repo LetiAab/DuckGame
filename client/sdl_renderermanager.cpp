@@ -18,12 +18,10 @@ void RendererManager::doRenderStatic(GameState* game) {
         SDL_RenderCopy(renderer, texture_handler.getTexture("crate"), NULL, &crate_rect);
     }
 
-    //RENDERIZO LOS SPAWN PLACES.    
+    // RENDERIZO LOS SPAWN PLACES
     for (auto & spawn_place : game->spawn_places) {
-
         SDL_Rect spawn_rect = {spawn_place.x, spawn_place.y, TILE_SIZE * 6, TILE_SIZE * 4};
         SDL_RenderCopy(renderer, texture_handler.getTexture("spawn"), NULL, &spawn_rect);
-
   }
 
     SDL_SetRenderTarget(renderer, NULL);
@@ -44,11 +42,11 @@ SDL_Rect RendererManager::transformToCameraSpace(float obj_x, float obj_y, float
 void RendererManager::renderBullet(GameState* game, const int size) {
     for (Projectile& projectile : game->projectiles) {    
 
-        SDL_Rect bulletRect = {
-            static_cast<int>((static_cast<float>(projectile.current_x * TILE_SIZE) - camera.getX()) * camera.getZoom()),
-            static_cast<int>((static_cast<float>(projectile.current_y * TILE_SIZE) - camera.getY()) * camera.getZoom()),
-            static_cast<int>(static_cast<float>(size) * camera.getZoom()),
-            static_cast<int>(static_cast<float>(size) * camera.getZoom()) };
+        SDL_Rect bulletRect = transformToCameraSpace(
+            projectile.current_x * TILE_SIZE,
+            projectile.current_y * TILE_SIZE,
+            size,
+            size);
 
         if (projectile.type == 0) {
             double angle = projectile.horizontal ? 0 : -90; 
@@ -213,17 +211,16 @@ void RendererManager::renderBoxes(GameState* game){
         for (auto& box : game->boxes) {
             if(!box.destroyed){
                 SDL_Rect box_rect = transformToCameraSpace(
-                box.x,
-                box.y,
-                TILE_SIZE * BOX_SIZE_X,
-                TILE_SIZE * BOX_SIZE_Y );
+                        box.x,
+                        box.y,
+                        TILE_SIZE * BOX_SIZE_X,
+                        TILE_SIZE * BOX_SIZE_Y );
             
                 SDL_RenderCopyEx(renderer, texture_handler.getTexture("box"), NULL, &box_rect, 0, NULL, SDL_FLIP_NONE);
 
             } else if (!box.item_taked) {
                 renderItem(box.item_id, box.x, box.y + 20);
             }
-
         }
 }
 
@@ -289,12 +286,11 @@ void RendererManager::renderThrowed(GameState* game) {
         //    continue;
         // Para renderizar en el spawn_place
         if (throwed_item.type == GRENADE_ID) {
-            SDL_Rect helmet_rect = {
+            SDL_Rect helmet_rect = transformToCameraSpace(
                 throwed_item.current_x,
                 throwed_item.current_y - TILE_SIZE * 9,
                 (TILE_SIZE * DUCK_SIZE_X / 2) + TILE_SIZE,
-                (TILE_SIZE * DUCK_SIZE_Y / 2) + TILE_SIZE
-            };
+                (TILE_SIZE * DUCK_SIZE_Y / 2) + TILE_SIZE);
             SDL_RenderCopyEx(renderer, texture_handler.getTexture("grenade"), NULL, &helmet_rect, 0, NULL, SDL_FLIP_NONE);
         }
         if (throwed_item.type == BANANA_ID) {
@@ -304,12 +300,11 @@ void RendererManager::renderThrowed(GameState* game) {
             if (throwed_item.used) {
                 std::cout << "Throwed item es true \n";
             }
-            SDL_Rect helmet_rect = {
+            SDL_Rect helmet_rect = transformToCameraSpace(
                 throwed_item.current_x,
                 throwed_item.current_y - TILE_SIZE * 9,
                 (TILE_SIZE * DUCK_SIZE_X / 2) + TILE_SIZE,
-                (TILE_SIZE * DUCK_SIZE_Y / 2) + TILE_SIZE
-            };
+                (TILE_SIZE * DUCK_SIZE_Y / 2) + TILE_SIZE);
             SDL_RenderCopyEx(renderer, texture_handler.getTexture("banana-floor"), NULL, &helmet_rect, 0, NULL, SDL_FLIP_NONE);
         }
     }
@@ -343,7 +338,6 @@ void RendererManager::renderStats(GameState* game, uint16_t id) {
     SDL_SetTextureColorMod(duck_texture, colors[pos_id][0], colors[pos_id][1], colors[pos_id][2]);
     SDL_RenderCopyEx(renderer, duck_texture, NULL, &duck_rect, 0, NULL, SDL_FLIP_NONE);
     SDL_SetTextureColorMod(duck_texture, 255, 255, 255);
-
 
     SDL_Texture* heart_texture = texture_handler.getTexture("corazon");
 
