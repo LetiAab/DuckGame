@@ -58,22 +58,6 @@ void Magnum::mostrarInformacion() const {
     std::cout << "Municiones: " << municiones << std::endl;
 }
 
-std::string Magnum::getNombre() const {
-    return nombre;
-}
-
-double Magnum::getAlcance() const {
-    return alcance;
-}
-
-double Magnum::getDispersion() const {
-    return dispersion;
-}
-
-int Magnum::getMuniciones() const {
-    return municiones;
-}
-
 void Magnum::update_weapon(){
 
     for(auto it = projectiles.begin(); it != projectiles.end(); ) {

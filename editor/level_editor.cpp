@@ -6,7 +6,7 @@ std::unordered_map<uint8_t, std::string> item_map = {
     {ARMOR_ID, "ARMOR_ID"},
     {HELMET_ID, "HELMET_ID"},
     {BASE_WEAPON_ID, "BASE_WEAPON_ID"},
-    {GRANADA_ID, "GRANADA_ID"},
+    {GRENADE_ID, "GRENADE_ID"},
     {BANANA_ID, "BANANA_ID"},
     {PEW_PEW_LASER_ID, "PEW_PEW_LASER_ID"},
     {LASER_RIFLE_ID, "LASER_RIFLE_ID"},
@@ -740,7 +740,7 @@ void LevelEditor::handleEvent(SDL_Event& event, bool& running) {
                         break;
                     }
 
-                    Item newItem = { roundedX, roundedY, GRANADA_ID, GrenadaTexture };
+                    Item newItem = { roundedX, roundedY, GRENADE_ID, GrenadaTexture };
                     items[generateKey(roundedX, roundedY)] = newItem;
                     occupancyGrid[gridX][gridY] = true;
                     occupancyGrid[gridX + 1][gridY] = true;

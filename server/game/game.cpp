@@ -35,6 +35,79 @@ Duck* Game::getDuckByPosition(Position position) {
         }
 }
 
+void Game::add_throwed_weapon(Weapon* throwed_weapon) {
+        if (throwed_weapon->getItemId() == GRENADE_ID) {
+                Grenade* casted_grenade = (Grenade*)throwed_weapon;
+                throwed_weapons.emplace_back(std::make_shared<Grenade>(casted_grenade->getPosition().x, casted_grenade->getPosition().y, casted_grenade->getCurrentTicks(), casted_grenade->speed));
+        } else if (throwed_weapon->getItemId() == BANANA_ID) {
+                Banana* casted_banana = (Banana*)throwed_weapon;
+
+                if (casted_banana->peeled) {
+                        throwed_weapons.emplace_back(std::make_shared<Banana>(casted_banana->getPosition().x, casted_banana->getPosition().y, casted_banana->speed));
+                }
+        } else {
+                std::cout << "Este arma no debería ser agregada! \n";
+        }
+
+}
+
+void Game::simulate_throwed_weapons() {
+        for(auto it = throwed_weapons.begin(); it != throwed_weapons.end(); ) {
+                Weapon* throwed_weapon = it->get();
+
+                if (throwed_weapon->getItemId() == GRENADE_ID) {
+                        Grenade* throwed_grenade = (Grenade*)throwed_weapon;
+
+                        Position current_position = throwed_grenade->getPosition();
+
+                        bool should_erase = throwed_grenade->update_weapon(current_position.x, current_position.y, '0', &map, 0);
+                        if (should_erase) {
+                                Message throwed_message;
+                                if (throwed_weapon->get_throwed_position_message(throwed_message)){
+                                        monitor.broadcast(throwed_message);
+                                }
+                                throwed_weapons.erase(it);
+                                continue;
+                        }
+                } else if (throwed_weapon->getItemId() == BANANA_ID) {
+                        Banana* throwed_banana = (Banana*)throwed_weapon;
+
+                        if (throwed_banana->pisada) {
+                                throwed_weapons.erase(it);
+                                continue;
+                        }
+
+                        throwed_banana->update_weapon(map);
+
+                        // std::cout << "Banana en pos x: " << throwed_banana->getPosition().x << " y: " << throwed_banana->getPosition().y << std::endl;
+                }
+                
+                ++it;
+        }
+}
+
+void Game::search_banana_collision() {
+        for (auto& throwed_weapon: throwed_weapons) {
+                if (throwed_weapon->getItemId() == BANANA_ID) {
+                        Banana* throwed_banana = (Banana*) throwed_weapon.get();
+                        if (!throwed_banana->pisada) {
+                                Position throwed_pos = throwed_banana->getPosition();
+                                if (map.bullet_hit_other_duck(map.at(throwed_pos), 'z')) {
+                                        std::cout << "Pisada ahora es true \n";
+                                        throwed_banana->pisada = true;
+                                        throwed_banana->setUsed(true);
+                                        Message throwed_message;
+                                        if (throwed_weapon->get_throwed_position_message(throwed_message)){
+                                                monitor.broadcast(throwed_message);
+                                        } 
+                                }
+                        }
+
+                }
+        }
+}
+
+
 void Game::simulate_round() {
         
         //sumo 1 al contador de rondas hasta generar un nuevo item en el spawn place
@@ -46,7 +119,9 @@ void Game::simulate_round() {
                 }
         }
 
-                for(const auto& box: boxes){
+        simulate_throwed_weapons();
+        
+        for(const auto& box: boxes){
                 if(box->isDestroyed()){
                         continue;
                 }
@@ -63,11 +138,16 @@ void Game::simulate_round() {
         for (Duck& duck : ducks) {
                 if (duck.is_dead) {
                         // Si el pato murio en la ronda anterior, lo saltamos y continuamos con el siguiente
+                        // Nota: dejo esto para el caso en que la granada le explota en la mano al pato
+                        duck.update_weapon();
                         continue;
                 }
 
                 int notification = duck.update_life();
                 duck.update_position();
+
+                search_banana_collision();
+
                 duck.update_weapon();
 
                 // std::cout << "Despues de mover las balas \n";
@@ -122,8 +202,6 @@ void Game::run() {
         send_spawn_place_message();
         send_boxes_initialize_message();
         send_items_on_floor_message();
-
-
 
         while (is_running) {
                 const auto start = std::chrono::high_resolution_clock::now();
@@ -206,7 +284,26 @@ void Game::run() {
         std::cout << "Termino el juego!"  << std::endl;
 }
 
+void Game::send_throwed_weapon_updates() {
+        // actualizo la posición de las balas de la granada
+        for (auto& throwed_weapon: throwed_weapons) {
+                
+                Message throwed_message;
+                
+                if (throwed_weapon->get_throwed_position_message(throwed_message)){
+                        monitor.broadcast(throwed_message);
+                } 
 
+
+                for (auto& unique_proyectile : throwed_weapon->projectiles) {
+                        Projectile* projectile = unique_proyectile.get();
+                        Message projectile_message;
+                        if (projectile->get_projectile_message(projectile_message)){
+                                monitor.broadcast(projectile_message);
+                        }
+                }
+        }
+}
 
 void Game::send_updates(){
 
@@ -227,9 +324,12 @@ void Game::send_updates(){
                                         monitor.broadcast(projectile_message);
                                 }
                         }
+
                 }
                 
         }
+
+        send_throwed_weapon_updates();
 
 }
 
@@ -424,11 +524,13 @@ void Game::create_items_on_floor(std::vector<ItemConfig> items_on_floor_position
                 else if(item_id == SNIPER_ID){
                         items_on_floor.emplace_back(std::make_shared<Sniper>(x, y));
                 }
-   
+                else if(item_id == BANANA_ID){
+                        items_on_floor.emplace_back(std::make_shared<Banana>(x, y));
+                }
+                else if(item_id == GRENADE_ID){
+                        items_on_floor.emplace_back(std::make_shared<Grenade>(x, y));
+                }
         }
-
-
-        
 }
 
 

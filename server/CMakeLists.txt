@@ -33,6 +33,9 @@ target_sources(taller_server
     guns/magnum.cpp
     guns/shotgun.cpp
     guns/sniper.cpp
+    guns/grenade.cpp
+    guns/grenade_fragment.cpp
+    guns/banana.cpp
     armor/armor.cpp
     armor/helmet.cpp
     #guns/gun.cpp
@@ -86,6 +89,9 @@ target_sources(taller_server
     guns/magnum.h
     guns/shotgun.h
     guns/sniper.h
+    guns/grenade.h
+    guns/grenade_fragment.h
+    guns/banana.h
     armor/armor.h
     armor/helmet.h
     #guns/gun.h

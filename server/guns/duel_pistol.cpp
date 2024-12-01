@@ -60,22 +60,6 @@ void DuelPistol::mostrarInformacion() const {
     std::cout << "Municiones: " << municiones << std::endl;
 }
 
-std::string DuelPistol::getNombre() const {
-    return nombre;
-}
-
-double DuelPistol::getAlcance() const {
-    return alcance;
-}
-
-double DuelPistol::getDispersion() const {
-    return dispersion;
-}
-
-int DuelPistol::getMuniciones() const {
-    return municiones;
-}
-
 void DuelPistol::update_weapon(){
 
     for(auto it = projectiles.begin(); it != projectiles.end(); ) {

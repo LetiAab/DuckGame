@@ -79,6 +79,7 @@ const uint8_t SPAWN_PLACE_POSITION = 0X79;
 
 const uint8_t SPAWN_PLACE_ITEM_UPDATE = 0X80;
 
+const uint8_t THROWABLE_ITEM = 0x95;
 const uint8_t BOX_DESTROYED = 0X81;
 
 const uint8_t BOX_POSITION = 0X82;
@@ -111,7 +112,7 @@ const uint8_t HELMET_ID = 0x40;
 
 const uint8_t BASE_WEAPON_ID = 0x41;
 
-const uint8_t GRANADA_ID = 0x42;
+const uint8_t GRENADE_ID = 0x42;
 const uint8_t BANANA_ID = 0x43;
 const uint8_t PEW_PEW_LASER_ID = 0x44;
 const uint8_t LASER_RIFLE_ID = 0x45;

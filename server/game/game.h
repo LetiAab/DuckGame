@@ -54,6 +54,8 @@ private:
 
 
         void send_updates();
+        void send_throwed_weapon_updates();
+
         void initialize_round();
         void initialize_ducks(std::vector<Position> ducks_positions);
         Position get_random_position_for_duck(char duck_id);
@@ -68,6 +70,10 @@ private:
         
         void refreshDuckPositions();
         void simulate_round();
+        void simulate_throwed_weapons();
+        void search_banana_collision();
+
+
         bool check_end_game();
         bool check_end_of_round();
         void notify_players_end_game();
@@ -86,6 +92,7 @@ public:
         std::vector<Duck> ducks;
         std::vector<std::shared_ptr<Item>> items;
         std::vector<std::unique_ptr<SpawnPlace>> spawn_places;
+        std::vector<std::shared_ptr<Weapon>> throwed_weapons;
         std::vector<std::unique_ptr<Box>> boxes;
         std::vector<std::shared_ptr<Item>> items_on_floor;
 
@@ -111,6 +118,7 @@ std::shared_ptr<Item> getItemOnFloorByPosition(Position position);
 
 SpawnPlace* getSpawnPlaceByPosition(Position position);
 
+void add_throwed_weapon(Weapon* throwed_weapon);
 Box* getBoxByPosition(Position position);
 
 

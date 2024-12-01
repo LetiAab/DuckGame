@@ -13,7 +13,7 @@ std::unordered_map<std::string, uint8_t> item_map = {
     {"ARMOR_ID", ARMOR_ID},
     {"HELMET_ID", HELMET_ID},
     {"BASE_WEAPON_ID", BASE_WEAPON_ID},
-    {"GRANADA_ID", GRANADA_ID},
+    {"GRENADE_ID", GRENADE_ID},
     {"BANANA_ID", BANANA_ID},
     {"PEW_PEW_LASER_ID", PEW_PEW_LASER_ID},
     {"LASER_RIFLE_ID", LASER_RIFLE_ID},

@@ -11,6 +11,8 @@
 #include "../guns/magnum.h"
 #include "../guns/shotgun.h"
 #include "../guns/sniper.h"
+#include "../guns/banana.h"
+#include "../guns/grenade.h"
 #include "../armor/armor.h"
 #include "../armor/helmet.h"
 #include "item.h"

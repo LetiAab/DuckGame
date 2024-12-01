@@ -272,6 +272,29 @@ bool ServerProtocol::send_message(Message& message){
 
         break;
 
+    case THROWABLE_ITEM:
+ 
+        if (!skt.sendall(&message.item_id, sizeof(message.spawn_place_id), &was_closed) || was_closed) {
+            return false;
+        }
+
+        if (!skt.sendall(&message.item_x, sizeof(message.item_x), &was_closed) || was_closed) {
+            return false;
+        }
+
+        if (!skt.sendall(&message.item_y, sizeof(message.item_y), &was_closed) || was_closed) {
+            return false;
+        }
+
+        if (!skt.sendall(&message.item_used, sizeof(message.item_used), &was_closed) || was_closed) {
+            return false;
+        }    
+
+        if (!skt.sendall(&message.item_touching_floor, sizeof(message.item_touching_floor), &was_closed) || was_closed) {
+            return false;
+        }    
+
+        break;
 
     case BULLET_POS_UPDATE:
 

@@ -60,21 +60,6 @@ void Ak47::mostrarInformacion() const {
     std::cout << "Municiones: " << municiones << std::endl;
 }
 
-std::string Ak47::getNombre() const {
-    return nombre;
-}
-
-double Ak47::getAlcance() const {
-    return alcance;
-}
-
-double Ak47::getDispersion() const {
-    return dispersion;
-}
-
-int Ak47::getMuniciones() const {
-    return municiones;
-}
 
 void Ak47::update_weapon(){
 

@@ -31,6 +31,8 @@ struct Message {
     int item_x;
     int item_y;
     uint8_t item_id;
+    bool item_used;
+    bool item_touching_floor;
 
     int spaw_place_x;
     int spaw_place_y;

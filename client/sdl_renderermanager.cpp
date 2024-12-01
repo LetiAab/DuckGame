@@ -117,6 +117,7 @@ void RendererManager::renderDucks(GameState* game) {
         SDL_SetTextureColorMod(duck_texture, 255, 255, 255); //reseteo el color
 
         if (duck.weapon_equiped != 0) {
+            // Para renderizar el arma en la mano del pato
             double angle = 0.0;
 
             // Si el pato está mirando hacia arriba
@@ -140,7 +141,11 @@ void RendererManager::renderDucks(GameState* game) {
             } else if (duck.weapon_equiped == SNIPER_ID) {
                 SDL_RenderCopyEx(renderer, texture_handler.getTexture("sniper"), NULL, &gun_rect, angle, NULL, duck.flipType);
             } else if (duck.weapon_equiped == DUEL_PISTOL_ID) {
-                SDL_RenderCopyEx(renderer, texture_handler.getTexture("duel-pistol"), NULL, &gun_rect, angle, NULL, duck.flipType);
+                SDL_RenderCopyEx(renderer, texture_handler.getTexture("duel-pistol"), NULL, &gun_rect, 0, NULL, duck.flipType);
+            } else if (duck.weapon_equiped == GRENADE_ID) {
+                SDL_RenderCopyEx(renderer, texture_handler.getTexture("grenade-pin"), NULL, &gun_rect, 0, NULL, duck.flipType);
+            } else if (duck.weapon_equiped == BANANA_ID) {
+                SDL_RenderCopyEx(renderer, texture_handler.getTexture("banana"), NULL, &gun_rect, 0, NULL, duck.flipType);
             } else {
                 SDL_RenderCopyEx(renderer, texture_handler.getTexture("gun"), NULL, &gun_rect, angle, NULL, duck.flipType);
             }
@@ -243,7 +248,7 @@ void RendererManager::renderItem(uint8_t item_id, int x, int y, int mult, bool e
     // Calcular el movimiento oscilante solo si está habilitado
     float offset_y = enableOscillation ? std::sin(float_time) * 5 : 0;
 
-    if (item_id == BASE_WEAPON_ID || item_id == GRANADA_ID || item_id == BANANA_ID) {
+    if (item_id == BASE_WEAPON_ID) {
         rect = { x, y - TILE_SIZE * 11 + static_cast<int>(offset_y), TILE_SIZE * DUCK_SIZE_X * mult, TILE_SIZE * DUCK_SIZE_Y * mult };
         SDL_RenderCopyEx(renderer, texture_handler.getTexture("gun"), NULL, &rect, 0, NULL, SDL_FLIP_NONE);
     } else if (item_id == COWBOY_PISTOL_ID) {
@@ -270,6 +275,12 @@ void RendererManager::renderItem(uint8_t item_id, int x, int y, int mult, bool e
     } else if (item_id == DUEL_PISTOL_ID) {
         rect = { x, y - TILE_SIZE * 11 + static_cast<int>(offset_y), TILE_SIZE * DUCK_SIZE_X * mult, TILE_SIZE * DUCK_SIZE_Y * mult };
         SDL_RenderCopyEx(renderer, texture_handler.getTexture("duel-pistol"), NULL, &rect, 0, NULL, SDL_FLIP_NONE);
+    } else if (item_id == GRENADE_ID) {
+        rect = { x, y - TILE_SIZE * 11 + static_cast<int>(offset_y), TILE_SIZE * DUCK_SIZE_X * mult, TILE_SIZE * DUCK_SIZE_Y * mult };
+            SDL_RenderCopyEx(renderer, texture_handler.getTexture("grenade-pin"), NULL, &rect, 0, NULL, SDL_FLIP_NONE);
+    } else if (item_id == BANANA_ID) {
+        rect = { x, y - TILE_SIZE * 11 + static_cast<int>(offset_y), TILE_SIZE * DUCK_SIZE_X * mult, TILE_SIZE * DUCK_SIZE_Y * mult };
+            SDL_RenderCopyEx(renderer, texture_handler.getTexture("banana"), NULL, &rect, 0, NULL, SDL_FLIP_NONE);
     } else if (item_id == HELMET_ID) {
         rect = { x, y - TILE_SIZE * 9 + static_cast<int>(offset_y), ((TILE_SIZE * DUCK_SIZE_X / 2) + TILE_SIZE) * mult, ((TILE_SIZE * DUCK_SIZE_Y / 2) + TILE_SIZE) * mult };
         SDL_RenderCopyEx(renderer, texture_handler.getTexture("helmet"), NULL, &rect, 0, NULL, SDL_FLIP_NONE);
@@ -277,6 +288,7 @@ void RendererManager::renderItem(uint8_t item_id, int x, int y, int mult, bool e
         rect = { x - TILE_SIZE, y - TILE_SIZE * 8 + static_cast<int>(offset_y), (TILE_SIZE * DUCK_SIZE_X / 2) + TILE_SIZE, (TILE_SIZE * DUCK_SIZE_Y / 2) };
         SDL_RenderCopyEx(renderer, texture_handler.getTexture("armor"), NULL, &rect, 0, NULL, SDL_FLIP_NONE);
     }
+    
 }
 
 
@@ -301,6 +313,47 @@ void RendererManager::renderItemsOnFloor(GameState* game){
     }
 }
 
+
+
+void RendererManager::renderThrowed(GameState* game) {
+    for (auto& throwed_item : game->throwed_items) {
+        //if (throwed_item.used)
+        //    continue;
+        // Para renderizar en el spawn_place
+        if (throwed_item.type == GRENADE_ID) {
+            SDL_Rect helmet_rect = {
+                throwed_item.current_x,
+                throwed_item.current_y - TILE_SIZE * 9,
+                (TILE_SIZE * DUCK_SIZE_X / 2) + TILE_SIZE,
+                (TILE_SIZE * DUCK_SIZE_Y / 2) + TILE_SIZE
+            };
+            SDL_RenderCopyEx(renderer, texture_handler.getTexture("grenade"), NULL, &helmet_rect, 0, NULL, SDL_FLIP_NONE);
+        }
+        if (throwed_item.type == BANANA_ID) {
+            std::cout << "La banana pos x: " << throwed_item.current_x << " y: " << 
+            throwed_item.current_y << " y un id " << throwed_item.type << " used: " << 
+            (int)throwed_item.used << " y touching_floor" << (int)throwed_item.touching_floor << ", lo meto a la lista \n";
+            if (throwed_item.used) {
+                std::cout << "Throwed item es true \n";
+            }
+            SDL_Rect helmet_rect = {
+                throwed_item.current_x,
+                throwed_item.current_y - TILE_SIZE * 9,
+                (TILE_SIZE * DUCK_SIZE_X / 2) + TILE_SIZE,
+                (TILE_SIZE * DUCK_SIZE_Y / 2) + TILE_SIZE
+            };
+            SDL_RenderCopyEx(renderer, texture_handler.getTexture("banana-floor"), NULL, &helmet_rect, 0, NULL, SDL_FLIP_NONE);
+        }
+    }
+    for (auto it = game->throwed_items.begin(); it != game->throwed_items.end();) {
+        if (it->used || !it->touching_floor) {
+            std::cout << "Elimino un elemento" << "\n";
+            it = game->throwed_items.erase(it);
+        } else {
+            ++it; // Solo avanzas si no eliminaste
+        }
+    }
+}
 
 void RendererManager::renderStats(GameState* game, uint16_t id) {
     if (id == 0 || id > game->ducks_quantity) {
@@ -375,6 +428,8 @@ void RendererManager::doRenderDynamic(GameState* game, Message& message, uint16_
     if (message.type == BULLET_POS_UPDATE){
         renderBullet(game);
     }
+
+    renderThrowed(game);
 
     SDL_RenderPresent(renderer);
     SDL_RenderClear(renderer);

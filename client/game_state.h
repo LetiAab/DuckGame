@@ -56,6 +56,14 @@ struct Projectile {
     bool horizontal;
 };
 
+struct ThrowedItem {
+    int current_x;
+    int current_y;
+    int type;
+    bool used;
+    bool touching_floor;
+};
+
 struct Crate {
     int x, y;
 };
@@ -90,6 +98,7 @@ struct GameState {
     ClientGameMap client_game_map;
     Queue<Command>* command_queue;
     std::vector<Projectile> projectiles;
+    std::vector<ThrowedItem> throwed_items;
     bool music;
 
 

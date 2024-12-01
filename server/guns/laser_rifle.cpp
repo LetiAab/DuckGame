@@ -49,22 +49,6 @@ void LaserRifle::mostrarInformacion() const {
     std::cout << "Municiones: " << municiones << std::endl;
 }
 
-std::string LaserRifle::getNombre() const {
-    return nombre;
-}
-
-double LaserRifle::getAlcance() const {
-    return alcance;
-}
-
-double LaserRifle::getDispersion() const {
-    return dispersion;
-}
-
-int LaserRifle::getMuniciones() const {
-    return municiones;
-}
-
 void LaserRifle::update_weapon(){
 
     for(auto it = projectiles.begin(); it != projectiles.end(); ) {

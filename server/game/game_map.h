@@ -50,20 +50,17 @@ public:
 
     void setDuckNewPosition(int x, int y, char duck_id);
 
-    void setBulletNewPosition(int x, int y);
-    void cleanBulletOldPosition(int x, int y);
-
     char at(Position position);
 
-    bool can_move_projectile(int x, int y, int size_x, int size_y);
+    bool can_move_projectile(Position position, int size_x, int size_y);
 
-    int projectile_hits_duck(int x, int y);
+    void move_projectile(Position position, Position speed, int size_x, int size_y);
 
-    void move_projectile(int position_x, int position_y, int speed_x, int speed_y, int size_x, int size_y);
+    void clean_projectile_old_position(Position position, int size_x, int size_y);
 
-    void clean_projectile_old_position(int x, int y, int size_x, int size_y);
+    void set_projectile_new_position(Position position,  int size_x, int size_y, char letter);
 
-    void set_projectile_new_position(int x, int y,  int size_x, int size_y);
+    Position try_move_projectile_to(Position old_position, Position new_position, int size_x, int size_y, char duck_id, bool& hit_something);
 
     int get_height();
     int get_width();
@@ -74,11 +71,18 @@ public:
 
     bool duckIsOverBullet(Position position);
 
+    bool duckIsOverBanana(Position position, Position &banana_position);
+
     //METODO TEMPORAL: Imprime el mapa en la consola
     void printMap() const;
 
     void tellMap() const;
 
+    Position try_move_banana(Position old_position, Position speed, bool& hit_void);
+
+    Position try_move_grenade(Position old_position, Position speed, bool& hit_void);
+
+    bool is_throwable_touching_floor(Position position, int size_x, int size_y);
     void placeBox(Position pos);
     void removeBox(Position pos);
     bool isCollisionWithBox(Position pos, int size_x, int size_y);

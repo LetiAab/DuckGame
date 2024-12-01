@@ -29,7 +29,7 @@ void SpawnPlace::setItemId(int newItemId) {
 
 bool SpawnPlace::getSpawnPlacePositionMessage(Message& msg){
     //TODO: Esto se tendria que implementar en las hijas àra saner que item id mandar
-    std::cout << "LE PASO EL SPAWN CON x: " << position.x << " y: " << position.y << "\n";
+    //std::cout << "LE PASO EL SPAWN CON x: " << position.x << " y: " << position.y << "\n";
 
     msg.type = SPAWN_PLACE_POSITION;
     msg.spaw_place_x = position.x;
@@ -77,8 +77,11 @@ void SpawnPlace::create_items(std::vector<std::shared_ptr<Item>>& items) {
         int item_type = std::rand() % 12;
         std::shared_ptr<Item> item;
 
-        //tipos 1 y 2 son para la banana y granada que no estan implementadas aun
-        if (item_type == 2) {
+        if (item_type == 0) {
+            item = std::make_shared<Banana>(x, y);
+        } else if (item_type == 1) {
+            item = std::make_shared<Grenade>(x, y);
+        } else if (item_type == 2) {
             item = std::make_shared<PewPewLaser>(x, y);
         } else if (item_type == 3) {
             item = std::make_shared<LaserRifle>(x, y);

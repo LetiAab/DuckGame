@@ -55,22 +55,6 @@ void PewPewLaser::mostrarInformacion() const {
     std::cout << "Municiones: " << municiones << std::endl;
 }
 
-std::string PewPewLaser::getNombre() const {
-    return nombre;
-}
-
-double PewPewLaser::getAlcance() const {
-    return alcance;
-}
-
-double PewPewLaser::getDispersion() const {
-    return dispersion;
-}
-
-int PewPewLaser::getMuniciones() const {
-    return municiones;
-}
-
 void PewPewLaser::update_weapon(){
 
     for(auto it = projectiles.begin(); it != projectiles.end(); ) {

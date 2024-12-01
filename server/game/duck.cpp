@@ -34,6 +34,10 @@ bool Duck::is_in_air(){
     return map->canMoveDuckTo(position.x, position.y + 1, id_player);
 }
 
+bool Duck::next_to_wall(){
+    return (!map->canMoveDuckTo(position.x + 1, position.y, id_player) || !map->canMoveDuckTo(position.x - 1, position.y, id_player));
+}
+
 bool Duck::pickUpItem(std::shared_ptr<Item> item) {
     if (item != nullptr){
         std::cout << "Agarro el item de ID " << item->getItemId() << "\n";
@@ -97,6 +101,7 @@ int Duck::update_life(){
         is_dead = true;
     }
 
+
     if(map->duckIsOverBullet(position)){
 
         if (helmet != nullptr){ //si tengo helmet me saca el helmet (TENGO QUE AVISAR)
@@ -133,14 +138,35 @@ void Duck::update_position() {
 
     check_gravity();
     
-    int delta_x = position.x + speed_x;
-    int delta_y = position.y + speed_y;
+    int delta_x = position.x;
+    int delta_y = position.y;
+
+    if (is_slippy) {
+        int slippery_vec = (looking == LOOKING_RIGHT) ? 1 : -1;
+        delta_x += 4*slippery_vec;
+        delta_y += speed_y;
+    } else {
+        delta_x += speed_x;
+        delta_y += speed_y;
+    }
 
     Position new_pos(delta_x, delta_y);
     old_position = position;
+
+    Position banana_position {0, 0};
+    if (map->duckIsOverBanana(new_pos, banana_position)) {
+        is_slippy = true;
+    }
+
+    // std::cout << "Antes de move duck tiene x: " << position.x << " y: " << position.y << std::endl;
     //mueve al pato a la nueva posicion si esta libre o a la que este libre inmediatamente antes
     position = map->move_duck_to(position, new_pos, id_player);
+    // std::cout << "Después de move duck tiene x: " << position.x << " y: " << position.y << std::endl;
 
+    // Ver si tiene una pared al lado
+    if (next_to_wall()) {
+        is_slippy = false;
+    }
 
     if ((is_jumping || is_fluttering) && !is_in_air()){
         //si esta saltando o aleteando pero no esta en el aire, significa que aterrizo
@@ -152,13 +178,22 @@ void Duck::update_position() {
     if(!is_in_air()){
         speed_y = 0;
     }
+
 }
 
+
 void Duck::update_weapon(){
-    if(is_dead){return;}
+    //if(is_dead){return;}
     
     if (weapon != nullptr) {
-        weapon->update_weapon();
+        if (weapon->getItemId() == GRENADE_ID) {
+            // Un poco feo este if, pero sino tengo que modificar la firma de la función
+            Grenade* grenade = (Grenade*) weapon.get();
+            if (grenade->update_weapon(position.x, position.y, looking, map, id_player))
+                weapon.reset();
+        } else {
+            weapon->update_weapon();
+        }
     }
 }
 
@@ -201,7 +236,7 @@ void Duck::form_position_message(Message& msg){
 
 bool Duck::get_duck_position_message(Message& msg){
 
-    std::cout << "POSICION DEL PATO MESSAGE" << "\n";
+    // std::cout << "POSICION DEL PATO MESSAGE" << "\n";
 
     if(is_dead){return false;}
 
@@ -253,6 +288,12 @@ void Duck::setWeapon(std::shared_ptr<Weapon> new_weapon) {
     std::cout << "ASIGNO NUEVA ARMA" << "\n";
 
     switch (new_weapon->getItemId()) {
+        case BANANA_ID:
+            weapon = std::make_shared<Banana>();
+            break;
+        case GRENADE_ID:
+            weapon = std::make_shared<Grenade>();
+            break;
         case COWBOY_PISTOL_ID:
             weapon = std::make_shared<CowboyPistol>();
             break;
@@ -379,16 +420,31 @@ std::shared_ptr<Item> Duck::getItemOnHand() const {
     return onHand ? onHand : nullptr;
 }
 
-bool Duck::dropWeapon() {
+Weapon* Duck::dropWeapon() {
     if (weapon) {
         std::cout << "El jugador " << id_player << " deja caer su arma: " << std::endl;
+
+        // Basicamente le cambia la velocidad segun donde esté mirando
+        if (weapon->getItemId() == GRENADE_ID) {
+            Grenade* weapon_grenade = (Grenade*)weapon.get();
+            weapon_grenade->prepare_drop(looking);
+        } else if (weapon->getItemId() == BANANA_ID) {
+            Banana* weapon_banana = (Banana*)weapon.get();
+            weapon_banana->prepare_drop(looking);
+        }
+
         //SE ELIMINA LA REFERENCIA SOLAMENTE
         //deberia pasarle el arma a la lista de items del juego
+        Weapon* weapon_to_drop = weapon.get();
         weapon = nullptr;
-        return true;
-        
+
+        // Le asigno la posicion del pato al arma como posicion inicial
+        Position self_position = getPosition();
+        weapon_to_drop->setPosition(self_position.x, self_position.y);
+
+        return weapon_to_drop;
     }
 
-    return false;
+    return NULL;
 }
 

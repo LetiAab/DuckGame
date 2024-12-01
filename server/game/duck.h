@@ -24,6 +24,8 @@
 #include "../guns/laser_rifle.h"
 #include "../guns/shotgun.h"
 #include "../guns/sniper.h"
+#include "../guns/grenade.h"
+#include "../guns/banana.h"
 
 class GameMap;
 class Item;
@@ -73,6 +75,8 @@ public:
 
     bool is_in_air();
 
+    bool next_to_wall();
+
     bool get_duck_position_message(Message& msg);
     bool get_duck_initialize_message(Message& msg);
 
@@ -88,7 +92,7 @@ public:
     void setArmor(std::shared_ptr<Armor> new_armor);
     void setHelmet(std::shared_ptr<Helmet> new_helmet);
 
-    bool dropWeapon();
+    Weapon* dropWeapon();
 
     bool pickUpItem(std::shared_ptr<Item> item);
     void useOnHand();

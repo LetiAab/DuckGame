@@ -20,11 +20,12 @@ public:
     void mostrarInformacion() const;  
     void update_weapon();
 
-    // Getters
-    std::string getNombre() const;
-    double getAlcance() const;
-    double getDispersion() const;
     int getMuniciones() const;
+    
+    bool isUsed();
+    void setUsed(bool new_used);
+
+    bool get_throwed_position_message(Message& throwed_message);
 
     virtual bool disparar(int position_x, int position_y, char looking, GameMap* map, char id_player, bool is_looking_up) = 0;
     virtual ~Weapon() = default;  // Destructor virtual
@@ -34,6 +35,8 @@ protected:
     double alcance;
     int dispersion;
     int municiones;
+    bool used;
+    bool touching_floor;
 };
 
 #endif  // WEAPON_H

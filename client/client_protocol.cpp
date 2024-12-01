@@ -148,6 +148,14 @@ Message ClientProtocol::receive_message(){
         if (was_closed) throw LibError(errno, CLOSED_SOCKET);
         break;
     
+    case THROWABLE_ITEM:
+        skt.recvall(&message.item_id, sizeof(uint8_t), &was_closed);
+        skt.recvall(&message.item_x, sizeof(int), &was_closed);
+        skt.recvall(&message.item_y, sizeof(int), &was_closed);
+        skt.recvall(&message.item_used, sizeof(bool), &was_closed);
+        skt.recvall(&message.item_touching_floor, sizeof(bool), &was_closed);
+        break;
+
     case DUCK_PICKUP_ITEM:
     case DUCK_EQUIP_ITEM:
         skt.recvall(&message.player_id, 2, &was_closed);
@@ -179,7 +187,7 @@ Message ClientProtocol::receive_message(){
 
     case DUCK_POS_UPDATE:
 
-        //std::cout << "RECIBO EN EL PROTOCOLO EL DUCK POS UPDATE" << "\n";
+        // std::cout << "RECIBO EN EL PROTOCOLO EL DUCK POS UPDATE" << "\n";
         skt.recvall(&message.player_id, 2, &was_closed);
         skt.recvall(&message.duck_x, sizeof(int), &was_closed);
         skt.recvall(&message.duck_y, sizeof(int), &was_closed);

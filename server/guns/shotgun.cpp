@@ -64,22 +64,6 @@ void Shotgun::mostrarInformacion() const {
     std::cout << "Municiones: " << municiones << std::endl;
 }
 
-std::string Shotgun::getNombre() const {
-    return nombre;
-}
-
-double Shotgun::getAlcance() const {
-    return alcance;
-}
-
-double Shotgun::getDispersion() const {
-    return dispersion;
-}
-
-int Shotgun::getMuniciones() const {
-    return municiones;
-}
-
 void Shotgun::update_weapon(){
 
     for(auto it = projectiles.begin(); it != projectiles.end(); ) {
