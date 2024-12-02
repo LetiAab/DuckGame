@@ -84,6 +84,7 @@ void ScreenManager::showGetReadyScreen(int round) {
 
 void ScreenManager::showNextRoundScreen(uint16_t id_winner) {
     if (id_winner < 1 || id_winner > 6) return;
+    SDL_RenderSetViewport(renderer, NULL);
 
     SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer, getTexture("next-round-background"), NULL, NULL);
