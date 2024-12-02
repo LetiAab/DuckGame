@@ -19,7 +19,10 @@ private:
     TextureHandler& texture_handler;
     SDL_Texture* static_scene;
     Camera& camera;
-
+    int background_index;
+    int platform_index;
+    const std::vector<std::string> backgrounds;
+    const std::vector<std::string> platforms;
     void renderBullet(GameState* game,  int size = 20);
     void renderDucks(GameState* game);
     void renderItems(GameState* game);

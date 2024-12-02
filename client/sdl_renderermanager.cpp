@@ -3,7 +3,9 @@
 static float float_time = 0.0f;
 
 RendererManager::RendererManager(SDL_Renderer* renderer, TextureHandler& texture_handler, Camera& camera):
-    renderer(renderer), texture_handler(texture_handler), camera(camera) {}
+    renderer(renderer), texture_handler(texture_handler), camera(camera), background_index(0),
+    backgrounds({"forest", "camp-fire", "city", "miami", "industrial", "moon", "spring", }),
+    platforms({"crate", "lava", "nieve", "pasto", "pasto-tierra", "musgo", "piedra", "piedrapasto", "tierra"}){}
 
 //** Estatico **//
 void RendererManager::doRenderStatic(GameState* game) {
@@ -11,12 +13,16 @@ void RendererManager::doRenderStatic(GameState* game) {
     SDL_SetRenderTarget(renderer, static_scene);
 
     // Renderizo los objetos estaticos
-    SDL_RenderCopy(renderer, texture_handler.getTexture("forest"), NULL, NULL);
+    const std::string& background = backgrounds[background_index];
+    SDL_RenderCopy(renderer, texture_handler.getTexture(background), NULL, NULL);
+    background_index = (background_index + 1) % backgrounds.size();
 
+    const std::string& platform = platforms[platform_index];
     for (auto & crate : game->crates) {
         SDL_Rect crate_rect = {crate.x, crate.y, TILE_SIZE, TILE_SIZE};
-        SDL_RenderCopy(renderer, texture_handler.getTexture("crate"), NULL, &crate_rect);
+        SDL_RenderCopy(renderer, texture_handler.getTexture(platform), NULL, &crate_rect);
     }
+    platform_index = (platform_index + 1) % platforms.size();
 
     // RENDERIZO LOS SPAWN PLACES
     for (auto & spawn_place : game->spawn_places) {
@@ -125,6 +131,15 @@ void RendererManager::renderDucks(GameState* game) {
         SDL_RenderCopyEx(renderer, duck_texture, &src_rect, &duck_rect, 0, NULL, duck.flipType);
         SDL_SetTextureColorMod(duck_texture, 255, 255, 255); //reseteo el color
 
+        if(duck.armor_equiped != 0){
+            SDL_Rect armor_rect = transformToCameraSpace(
+                duck.x + TILE_SIZE * 2,
+              (duck.y  + TILE_SIZE * 6),
+              (TILE_SIZE * DUCK_SIZE_X / 2) + TILE_SIZE,
+              (TILE_SIZE * DUCK_SIZE_Y / 2));
+            SDL_RenderCopyEx(renderer, texture_handler.getTexture("armor"), NULL, &armor_rect, 0, NULL, duck.flipType);
+        }
+
         if (duck.weapon_equiped != 0) {
             // Para renderizar el arma en la mano del pato
             double angle = 0.0;
@@ -188,15 +203,6 @@ void RendererManager::renderDucks(GameState* game) {
                 (TILE_SIZE * DUCK_SIZE_Y / 2) + TILE_SIZE);
 
             SDL_RenderCopyEx(renderer, texture_handler.getTexture("helmet"), NULL, &helmet_rect, 0, NULL, duck.flipType);
-        }
-
-        if(duck.armor_equiped != 0){
-            SDL_Rect armor_rect = transformToCameraSpace(
-                duck.x + TILE_SIZE * 2,
-              (duck.y  + TILE_SIZE * 6),
-              (TILE_SIZE * DUCK_SIZE_X / 2) + TILE_SIZE,
-              (TILE_SIZE * DUCK_SIZE_Y / 2));
-            SDL_RenderCopyEx(renderer, texture_handler.getTexture("armor"), NULL, &armor_rect, 0, NULL, duck.flipType);
         }
 
         if (wings_texture != nullptr) {
