@@ -621,7 +621,7 @@ Duck* Game::getDuckById(char id) {
 //REFACTOR! ESTOY BUSCANDO EL ITEM Y EL SPAWN PLACE
 
 std::shared_ptr<Item> Game::getItemByPosition(Position position) {
-    int area_x_min = position.x;
+    int area_x_min = position.x - DUCK_SIZE_X/2;
     int area_x_max = position.x + DUCK_SIZE_X;
     int area_y_min = position.y;
     int area_y_max = position.y + DUCK_SIZE_Y;
@@ -647,7 +647,7 @@ std::shared_ptr<Item> Game::getItemByPosition(Position position) {
 }
 
 std::shared_ptr<Item> Game::getItemOnFloorByPosition(Position position) {
-    int area_x_min = position.x;
+    int area_x_min = position.x- DUCK_SIZE_X/2;
     int area_x_max = position.x + DUCK_SIZE_X;
     int area_y_min = position.y;
     int area_y_max = position.y + DUCK_SIZE_Y;
@@ -675,7 +675,7 @@ std::shared_ptr<Item> Game::getItemOnFloorByPosition(Position position) {
 
 SpawnPlace* Game::getSpawnPlaceByPosition(Position position) {
     // Coordenadas del área del pato
-    int area_x_min = position.x;
+    int area_x_min = position.x - DUCK_SIZE_X/2;
     int area_x_max = position.x + DUCK_SIZE_X;
     int area_y_min = position.y;
     int area_y_max = position.y + DUCK_SIZE_Y;
@@ -701,7 +701,7 @@ SpawnPlace* Game::getSpawnPlaceByPosition(Position position) {
 
 Box* Game::getBoxByPosition(Position position) {
     // Coordenadas del área del pato
-    int area_x_min = position.x;
+    int area_x_min = position.x- DUCK_SIZE_X/2;
     int area_x_max = position.x + DUCK_SIZE_X;
     int area_y_min = position.y;
     int area_y_max = position.y + DUCK_SIZE_Y;
