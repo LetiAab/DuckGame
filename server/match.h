@@ -47,6 +47,11 @@ public:
 
     Queue<std::shared_ptr<Executable>>& get_game_queue();
 
+    // Testing getters
+    int get_players_count();
+
+    bool match_running();
+
 
 };
 
