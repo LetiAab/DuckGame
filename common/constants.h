@@ -173,6 +173,11 @@ const std::vector<std::vector<uint8_t>> colors = {
 const int BUTTON_W = 239;
 const int BUTTON_H = 77;
 
+const int PADDING = 80;
+const float MAX_ZOOM = 2.0f;
+const float MIN_ZOOM = 0.5f;
+const float SMOOTH_FACTOR = 1.0f;
+
 static const char CLOSED_SOCKET[] = "Socket was closed";
 
 #endif

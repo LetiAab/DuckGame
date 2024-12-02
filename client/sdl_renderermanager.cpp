@@ -393,7 +393,6 @@ void RendererManager::doRenderDynamic(GameState* game, Message& message, uint16_
 
     SDL_Rect dest_rect = {0, 0, WINDOW_WIDTH, WINDOW_HEIGHT};
     SDL_RenderCopy(renderer, texture_handler.getTexture("static_scene"), &src_rect, &dest_rect);
-    //SDL_RenderCopy(renderer, texture_handler.getTexture("static_scene"), NULL, NULL);
 
     renderDucks(game);
     renderItems(game);
@@ -427,11 +426,10 @@ void RendererManager::updateCamera(GameState* game, Camera& camera) {
         max_y = std::max(max_y, duck.y);
     }
 
-    int padding = 80;
-    min_x = std::max(0, min_x - padding);
-    min_y = std::max(0, min_y - padding);
-    max_x = std::min(WINDOW_WIDTH, max_x + padding);
-    max_y = std::min(WINDOW_HEIGHT, max_y + padding);
+    min_x = std::max(0, min_x - PADDING);
+    min_y = std::max(0, min_y - PADDING);
+    max_x = std::min(WINDOW_WIDTH, max_x + PADDING);
+    max_y = std::min(WINDOW_HEIGHT, max_y + PADDING);
 
     int bounding_width = max_x - min_x;
     int bounding_height = max_y - min_y;
@@ -439,14 +437,14 @@ void RendererManager::updateCamera(GameState* game, Camera& camera) {
     float zoom_x = static_cast<float>(WINDOW_WIDTH) / static_cast<float>(bounding_width);
     float zoom_y = static_cast<float>(WINDOW_HEIGHT) / static_cast<float>(bounding_height);
     float new_zoom = std::min(zoom_x, zoom_y);
+    new_zoom = std::clamp(new_zoom, MIN_ZOOM, MAX_ZOOM);
 
     int center_x = std::clamp(min_x + (max_x - min_x) / 2, camera.getWidth() / 2, WINDOW_WIDTH - camera.getWidth() / 2);
     int center_y = std::clamp(min_y + (max_y - min_y) / 2, camera.getHeight() / 2, WINDOW_HEIGHT - camera.getHeight() / 2);
 
-    float smooth_factor = 1.0f;
-    camera.setZoom(camera.getZoom() + smooth_factor * (new_zoom - camera.getZoom()));
+    camera.setZoom(camera.getZoom() + SMOOTH_FACTOR * (new_zoom - camera.getZoom()));
     camera.setPosition(
-        camera.getX() + smooth_factor * ((center_x - camera.getWidth() / 2) - camera.getX()),
-        camera.getY() + smooth_factor * ((center_y - camera.getHeight() / 2) - camera.getY())
+        camera.getX() + SMOOTH_FACTOR * ((center_x - camera.getWidth() / 2) - camera.getX()),
+        camera.getY() + SMOOTH_FACTOR * ((center_y - camera.getHeight() / 2) - camera.getY())
     );
 }
