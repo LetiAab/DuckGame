@@ -6,6 +6,23 @@ Te paras en DuckGame y ejecutas
 
 sudo ./install.sh
 
+Eso te instala todo lo que necesitas y te compila las apps para que las puedas usar. Luego dentro de la carpeta build
+
+Para levantar el server
+```
+ ./taller_server 8080
+```
+
+Para levantar el cliente
+```
+ ./taller_client localhost 8080
+```
+
+Para levantar el editor
+```
+ ./taller_editor
+```
+
 
 
 
