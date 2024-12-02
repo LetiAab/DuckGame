@@ -415,31 +415,26 @@ std::shared_ptr<Item> Duck::getItemOnHand() const {
     return onHand ? onHand : nullptr;
 }
 
-Weapon* Duck::dropWeapon() {
+std::shared_ptr<Weapon> Duck::dropWeapon() {
     if (weapon) {
         std::cout << "El jugador " << id_player << " deja caer su arma: " << std::endl;
 
-        // Basicamente le cambia la velocidad segun donde esté mirando
         if (weapon->getItemId() == GRENADE_ID) {
-            Grenade* weapon_grenade = (Grenade*)weapon.get();
+            Grenade* weapon_grenade = dynamic_cast<Grenade*>(weapon.get());
             weapon_grenade->prepare_drop(looking);
+            weapon_grenade->setPosition(position.x, position.y);
         } else if (weapon->getItemId() == BANANA_ID) {
-            Banana* weapon_banana = (Banana*)weapon.get();
+            Banana* weapon_banana = dynamic_cast<Banana*>(weapon.get());
             weapon_banana->prepare_drop(looking);
+            weapon_banana->setPosition(position.x, position.y);
         }
 
-        //SE ELIMINA LA REFERENCIA SOLAMENTE
-        //deberia pasarle el arma a la lista de items del juego
-        Weapon* weapon_to_drop = weapon.get();
-        weapon = nullptr;
-
-        // Le asigno la posicion del pato al arma como posicion inicial
-        Position self_position = getPosition();
-        weapon_to_drop->setPosition(self_position.x, self_position.y);
-
-        return weapon_to_drop;
+        // Transfiere la propiedad del shared_ptr
+        return std::move(weapon);  // Transfiere ownership y pone weapon en nullptr
     }
 
-    return NULL;
+    return nullptr;
 }
+
+
 

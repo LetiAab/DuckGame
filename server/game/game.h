@@ -120,7 +120,7 @@ std::shared_ptr<Item> getItemOnFloorByPosition(Position position);
 
 SpawnPlace* getSpawnPlaceByPosition(Position position);
 
-void add_throwed_weapon(Weapon* throwed_weapon);
+void add_throwed_weapon(std::shared_ptr<Weapon> throwed_weapon);
 Box* getBoxByPosition(Position position);
 
 

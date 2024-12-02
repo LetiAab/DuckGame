@@ -35,21 +35,31 @@ Duck* Game::getDuckByPosition(Position position) {
         }
 }
 
-void Game::add_throwed_weapon(Weapon* throwed_weapon) {
-        if (throwed_weapon->getItemId() == GRENADE_ID) {
-                Grenade* casted_grenade = (Grenade*)throwed_weapon;
-                throwed_weapons.emplace_back(std::make_shared<Grenade>(casted_grenade->getPosition().x, casted_grenade->getPosition().y, casted_grenade->getCurrentTicks(), casted_grenade->speed));
-        } else if (throwed_weapon->getItemId() == BANANA_ID) {
-                Banana* casted_banana = (Banana*)throwed_weapon;
-
-                if (casted_banana->peeled) {
-                        throwed_weapons.emplace_back(std::make_shared<Banana>(casted_banana->getPosition().x, casted_banana->getPosition().y, casted_banana->speed));
-                }
-        } else {
-                std::cout << "Este arma no debería ser agregada! \n";
+void Game::add_throwed_weapon(std::shared_ptr<Weapon> throwed_weapon) {
+    if (throwed_weapon->getItemId() == GRENADE_ID) {
+        auto casted_grenade = std::dynamic_pointer_cast<Grenade>(throwed_weapon);
+        if (casted_grenade) {
+            throwed_weapons.emplace_back(std::make_shared<Grenade>(
+                casted_grenade->getPosition().x,
+                casted_grenade->getPosition().y,
+                casted_grenade->getCurrentTicks(),
+                casted_grenade->speed
+            ));
         }
-
+    } else if (throwed_weapon->getItemId() == BANANA_ID) {
+        auto casted_banana = std::dynamic_pointer_cast<Banana>(throwed_weapon);
+        if (casted_banana && casted_banana->peeled) {
+            throwed_weapons.emplace_back(std::make_shared<Banana>(
+                casted_banana->getPosition().x,
+                casted_banana->getPosition().y,
+                casted_banana->speed
+            ));
+        }
+    } else {
+        std::cout << "Este arma no debería ser agregada! \n";
+    }
 }
+
 
 void Game::simulate_throwed_weapons() {
         for(auto it = throwed_weapons.begin(); it != throwed_weapons.end(); ) {
@@ -611,7 +621,7 @@ Duck* Game::getDuckById(char id) {
 //REFACTOR! ESTOY BUSCANDO EL ITEM Y EL SPAWN PLACE
 
 std::shared_ptr<Item> Game::getItemByPosition(Position position) {
-    int area_x_min = position.x;
+    int area_x_min = position.x - DUCK_SIZE_X/2;
     int area_x_max = position.x + DUCK_SIZE_X;
     int area_y_min = position.y;
     int area_y_max = position.y + DUCK_SIZE_Y;
@@ -637,7 +647,7 @@ std::shared_ptr<Item> Game::getItemByPosition(Position position) {
 }
 
 std::shared_ptr<Item> Game::getItemOnFloorByPosition(Position position) {
-    int area_x_min = position.x;
+    int area_x_min = position.x- DUCK_SIZE_X/2;
     int area_x_max = position.x + DUCK_SIZE_X;
     int area_y_min = position.y;
     int area_y_max = position.y + DUCK_SIZE_Y;
@@ -665,7 +675,7 @@ std::shared_ptr<Item> Game::getItemOnFloorByPosition(Position position) {
 
 SpawnPlace* Game::getSpawnPlaceByPosition(Position position) {
     // Coordenadas del área del pato
-    int area_x_min = position.x;
+    int area_x_min = position.x - DUCK_SIZE_X/2;
     int area_x_max = position.x + DUCK_SIZE_X;
     int area_y_min = position.y;
     int area_y_max = position.y + DUCK_SIZE_Y;
@@ -691,7 +701,7 @@ SpawnPlace* Game::getSpawnPlaceByPosition(Position position) {
 
 Box* Game::getBoxByPosition(Position position) {
     // Coordenadas del área del pato
-    int area_x_min = position.x;
+    int area_x_min = position.x- DUCK_SIZE_X/2;
     int area_x_max = position.x + DUCK_SIZE_X;
     int area_y_min = position.y;
     int area_y_max = position.y + DUCK_SIZE_Y;
