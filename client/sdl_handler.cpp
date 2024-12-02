@@ -47,7 +47,8 @@ void SDLHandler::loadGame(GameState &game, Queue<Message> &message_queue) {
         {"duck-fluttering", "duck-fluttering", 6},
         {"duck", "duck", 1},
         {"corazon", "corazon", 1},
-        {"duck-laying-down", "duck-laying-down", 1}
+        {"duck-laying-down", "duck-laying-down", 1},
+        {"grave", "grave", 1}
     };
 
     // Cargo las texturas
@@ -60,7 +61,8 @@ void SDLHandler::loadGame(GameState &game, Queue<Message> &message_queue) {
     gameInitializer.initializeGame(message_queue, game, frame_width, frame_height);
     
     // Inicializo el render manager
-    rendererManager = std::make_unique<RendererManager>(game.renderer, handle_textures);
+    camera = std::make_unique<Camera>();
+    rendererManager = std::make_unique<RendererManager>(game.renderer, handle_textures, *camera);
 
     audioManager = std::make_unique<AudioManager>();
 

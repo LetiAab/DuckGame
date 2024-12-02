@@ -15,6 +15,7 @@ target_sources(taller_client
         sdl_renderermanager.cpp
         sdl_screenmanager.cpp
         sdl_audiomanager.cpp
+        camera.cpp
     PUBLIC
     # .h files
     client.h
@@ -31,6 +32,7 @@ target_sources(taller_client
         sdl_renderermanager.h
         sdl_screenmanager.h
         sdl_audiomanager.h
+        camera.h
     )
 
 # Path de imagenes
