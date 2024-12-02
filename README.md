@@ -1,5 +1,14 @@
 # DuckGame
 
+# Como ejecutar el script
+
+Te paras en DuckGame y ejecutas
+
+sudo ./install.sh
+
+
+
+
 # Librería SDL
 Para descargar las depencias de la librería SDL2, primero se deben ejecutar los siguientes comandos :
 ```
