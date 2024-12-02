@@ -184,11 +184,20 @@ int EventProcessor::processLobbyEvents(ScreenManager* screenManager, Queue<Comma
                     } else if (selected_match && x >= 504 && x<= WINDOW_WIDTH && y >= 269 && y <= 446) {
                         // join match
                         // si se presiona se conecta a la partida seleccionada
-                        screenManager->renderSelectedMatch(x, y, chosen_match);
-                        std::cout << "Partida seleccionada: " << chosen_match << "\n";
-                        if (command_queue.try_push(Command(id, EXISTING_MATCH_CODE, chosen_match))){
-                            std::cout << "Conectando a partida..." << "\n";
-                        };
+                        if (chosen_match == 0) {
+                            screenManager->renderSelectedMatch(x, y, chosen_match);
+                            std::cout << "Partida seleccionada: " << chosen_match << "\n";
+
+                            // Verifica si se seleccionó algo válido
+                            if (chosen_match > 0) {
+                                if (command_queue.try_push(Command(id, EXISTING_MATCH_CODE, chosen_match))) {
+                                    std::cout << "Conectando a partida...\n";
+                                }
+                            }
+                        } else {
+                            std::cout << "Ya está unido a una partida\n";
+                            screenManager->renderChosenMatch();
+                        }
                     }
                 break;
                 }

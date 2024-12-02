@@ -388,6 +388,9 @@ void ScreenManager::renderSelectedMatch(int x, int y, int& chosen_match) {
             std::cout << "Partida SELECTED : " << id << "\n";
             chosen_match = id;
 
+            selected_match_id = id;
+            selected_match_rect = rect;
+
             SDL_SetRenderDrawColor(renderer, 0, 255, 0, 50);
             SDL_RenderFillRect(renderer, &rect);
             texture_handler.saveText("8bit", std::to_string(id), {0, 0, 0, 255});
@@ -396,6 +399,14 @@ void ScreenManager::renderSelectedMatch(int x, int y, int& chosen_match) {
             break;
         }
     }
+}
+
+void ScreenManager::renderChosenMatch() {
+    SDL_SetRenderDrawColor(renderer, 0, 255, 0, 50);
+    SDL_RenderFillRect(renderer, &selected_match_rect);
+    texture_handler.saveText("8bit", std::to_string(selected_match_id), {0, 0, 0, 255});
+    SDL_RenderCopy(renderer, texture_handler.getText(std::to_string(selected_match_id)), NULL, &selected_match_rect);
+    SDL_RenderPresent(renderer);
 }
 
 ScreenManager::~ScreenManager() {

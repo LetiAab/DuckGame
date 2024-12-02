@@ -31,15 +31,17 @@ public:
     void renderAvailableMatches(std::vector<uint16_t> existing_matches);
     Button* getButton(uint8_t id);
     void renderSelectedMatch(int x, int y, int& chosen_match);
+    void renderChosenMatch();
 
 private:
     SDL_Renderer* renderer;
     TextureHandler& texture_handler;
     std::vector<Button> buttons;
     std::unordered_map<std::string, SDL_Texture*> lobby_textures;
-
     std::vector<DuckScore> sortScoreboard(std::vector<int> scoreboard);
     std::vector<std::pair<SDL_Rect, uint16_t>> matches;
+    int selected_match_id = 0;
+    SDL_Rect selected_match_rect;
 };
 
 #endif //SDL_SCREENMANAGER_H
