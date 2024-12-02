@@ -92,3 +92,12 @@ bool Match::is_match_available() {
 Queue<std::shared_ptr<Executable>>& Match::get_game_queue(){
     return game.get_game_queue();
 }
+
+// Testing getters
+int Match::get_players_count() {
+    return current_players;
+}
+
+bool Match::match_running() {
+    return is_running;
+}

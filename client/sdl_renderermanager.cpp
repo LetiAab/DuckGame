@@ -292,6 +292,7 @@ void RendererManager::renderThrowed(GameState* game) {
         //    continue;
         // Para renderizar en el spawn_place
         if (throwed_item.type == GRENADE_ID) {
+            throwed_item.used = true;
             SDL_Rect helmet_rect = transformToCameraSpace(
                 throwed_item.current_x,
                 throwed_item.current_y - TILE_SIZE * 9,
@@ -300,12 +301,6 @@ void RendererManager::renderThrowed(GameState* game) {
             SDL_RenderCopyEx(renderer, texture_handler.getTexture("grenade"), NULL, &helmet_rect, 0, NULL, SDL_FLIP_NONE);
         }
         if (throwed_item.type == BANANA_ID) {
-            std::cout << "La banana pos x: " << throwed_item.current_x << " y: " << 
-            throwed_item.current_y << " y un id " << throwed_item.type << " used: " << 
-            (int)throwed_item.used << " y touching_floor" << (int)throwed_item.touching_floor << ", lo meto a la lista \n";
-            if (throwed_item.used) {
-                std::cout << "Throwed item es true \n";
-            }
             SDL_Rect helmet_rect = transformToCameraSpace(
                 throwed_item.current_x,
                 throwed_item.current_y - TILE_SIZE * 9,
@@ -316,10 +311,9 @@ void RendererManager::renderThrowed(GameState* game) {
     }
     for (auto it = game->throwed_items.begin(); it != game->throwed_items.end();) {
         if (it->used || !it->touching_floor) {
-            std::cout << "Elimino un elemento" << "\n";
             it = game->throwed_items.erase(it);
         } else {
-            ++it; // Solo avanzas si no eliminaste
+            ++it;
         }
     }
 }
