@@ -25,6 +25,7 @@ std::unordered_map<std::string, uint8_t> item_map = {
     {"SNIPER_ID", SNIPER_ID}
 };
 
+
 LevelManager::LevelManager() : filePath("../editor/levels/level.txt"), counter(0) {
     //cargo los niveles
     //si los archivos no son modificables, deberia poder leer los que estan disponibles

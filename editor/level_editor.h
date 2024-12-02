@@ -56,7 +56,8 @@ public:
     void renderElements();
     void deleteElement(std::string key, int gridX, int gridY);
     void saveLevel();
-
+    void uploadLevel(const std::string& filePath);
+    SDL_Texture* getItemTexture(uint8_t itemId);
 
 
 private:

@@ -20,6 +20,22 @@ std::unordered_map<uint8_t, std::string> item_map = {
     {SNIPER_ID, "SNIPER_ID"}
 };
 
+std::unordered_map<std::string, uint8_t> reverse_item_map = {
+    {"ARMOR_ID", ARMOR_ID},
+    {"HELMET_ID", HELMET_ID},
+    {"BASE_WEAPON_ID", BASE_WEAPON_ID},
+    {"GRENADE_ID", GRENADE_ID},
+    {"BANANA_ID", BANANA_ID},
+    {"PEW_PEW_LASER_ID", PEW_PEW_LASER_ID},
+    {"LASER_RIFLE_ID", LASER_RIFLE_ID},
+    {"AK_47_ID", AK_47_ID},
+    {"DUEL_PISTOL_ID", DUEL_PISTOL_ID},
+    {"COWBOY_PISTOL_ID", COWBOY_PISTOL_ID},
+    {"MAGNUM_ID", MAGNUM_ID},
+    {"SHOTGUN_ID", SHOTGUN_ID},
+    {"SNIPER_ID", SNIPER_ID}
+};
+
 LevelEditor::LevelEditor()
     : window(nullptr), renderer(nullptr), backgroundTexture(nullptr), crateTexture(nullptr),
       selectedTexture(nullptr), 
@@ -196,32 +212,26 @@ void LevelEditor::drawDottedGrid() {
 
 void LevelEditor::renderToolArea(){
 
-    // Renderizar el área negra para herramientas
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_Rect toolsArea = {WINDOW_WIDTH, 0, 200, WINDOW_HEIGHT};
     SDL_RenderFillRect(renderer, &toolsArea);
 
-    // Renderizar el botón en la zona de herramientas (el sprite seleccionado)
     SDL_Rect crateButtonRect = { crateX, crateY, GRID_CELL_SIZE, GRID_CELL_SIZE };
     SDL_RenderCopy(renderer, crateTexture, nullptr, &crateButtonRect);
 
-    // Renderizar el botón en la zona de herramientas (el sprite seleccionado)
     SDL_Rect spawnPlaceRect = { spawnPlaceX, spawnPlaceY, GRID_CELL_SIZE, GRID_CELL_SIZE };
     SDL_RenderCopy(renderer, spawnPlaceTexture, nullptr, &spawnPlaceRect);
 
-    // Renderizar el botón en la zona de herramientas (el sprite seleccionado)
     SDL_Rect boxRect = { boxX, boxY, GRID_CELL_SIZE * 2, GRID_CELL_SIZE * 2 };
     SDL_RenderCopy(renderer, boxTexture, nullptr, &boxRect);
 
     SDL_Rect duckRect = { duckX, duckY, GRID_CELL_SIZE * 2, GRID_CELL_SIZE * 3 };
     SDL_RenderCopy(renderer, duckTexture, nullptr, &duckRect);
 
-    // Renderizar el botón para los items
-   // Asegúrate de que las posiciones no se sobrepongan
     int itemX = crateX;
     int itemY = crateY + GRID_CELL_SIZE * 4;
 
-    // AK47 (Tamaño multiplicado por 2 en X y Y)
+    // AK47 
     SDL_Rect ak47Rect = { itemX, itemY, GRID_CELL_SIZE * 2, GRID_CELL_SIZE * 2 };
     SDL_RenderCopy(renderer, AK47Texture, nullptr, &ak47Rect);
 
@@ -330,7 +340,12 @@ void LevelEditor::handleEvent(SDL_Event& event, bool& running) {
             if (event.key.keysym.sym == SDLK_s) {
                 saveLevel(); 
             }
+
+            if(event.key.keysym.sym == SDLK_u){
+                uploadLevel("../editor/levels/level.txt");
+            }
             break;
+
 
 
         case SDL_MOUSEBUTTONDOWN:
@@ -855,7 +870,6 @@ void LevelEditor::run() {
         SDL_Rect backgroundRect = {0, 0, WINDOW_WIDTH, WINDOW_HEIGHT};
         SDL_RenderCopy(renderer, backgroundTexture, nullptr, &backgroundRect);
 
-
         //Renderizo cuadricula
         drawDottedGrid();
 
@@ -864,7 +878,6 @@ void LevelEditor::run() {
 
         //Elementos que ya puse en el mapa
         renderElements();
-
 
         // Actualizar pantalla
         SDL_RenderPresent(renderer);
@@ -925,6 +938,133 @@ void LevelEditor::saveLevel() {
     levelFile.close();
     std::cout << "Nivel guardado exitosamente en level.txt" << std::endl;
 }
+
+
+
+// -----------------------UPLOAD--------------------------------------------
+
+bool parseCoordinates(const std::string& line, int& x, int& y) {
+    std::istringstream iss(line);
+    std::string token;
+    if (std::getline(iss, token, ',')) x = std::stoi(token);
+    if (std::getline(iss, token, ',')) y = std::stoi(token);
+    return true;
+}
+
+bool parseItem(const std::string& line, int& x, int& y, std::string& itemId) {
+    std::istringstream iss(line);
+    std::string token;
+    if (std::getline(iss, token, ',')) x = std::stoi(token);
+    if (std::getline(iss, token, ',')) y = std::stoi(token);
+    if (std::getline(iss, token, ',')) itemId = token;
+    return true;
+}
+
+SDL_Texture* LevelEditor::getItemTexture(uint8_t itemId){
+    switch(itemId){
+
+        case(AK_47_ID):
+            return AK47Texture;
+        case(COWBOY_PISTOL_ID):
+            return CowboyPistolTexture;
+        case(DUEL_PISTOL_ID):
+            return DuelPistolTexture;
+        case (LASER_RIFLE_ID):
+            return LaserRifleTexture;
+        case(MAGNUM_ID):
+            return MagnumTexture;
+        case (PEW_PEW_LASER_ID):
+            return PewPewLaserTexture;
+        case (SHOTGUN_ID):
+            return ShotgunTexture;
+        case (SNIPER_ID):
+            return SniperTexture;
+        case (ARMOR_ID):
+            return ArmorTexture;
+        case (HELMET_ID):
+            return HelmetTexture;
+        
+        case (GRENADE_ID):
+            return GrenadaTexture;
+        
+        default:
+            return BananaTexture;
+        
+
+
+    }
+}
+
+void LevelEditor::uploadLevel(const std::string& filePath) {
+    std::ifstream levelFile(filePath);
+    if (!levelFile.is_open()) {
+        std::cerr << "Error: no se pudo abrir el archivo para cargar el nivel." << std::endl;
+        return;
+    }
+
+    // Limpiar estructuras existentes antes de cargar
+    crates.clear();
+    spawn_places.clear();
+    boxes.clear();
+    items.clear();
+    ducks.clear();
+
+    std::string line;
+    int matrix_n = 0, matrix_m = 0;
+
+    // Leer dimensiones de la matriz
+    if (std::getline(levelFile, line)) matrix_n = std::stoi(line);
+    if (std::getline(levelFile, line)) matrix_m = std::stoi(line);
+
+    std::cout << "MAPA DE " << matrix_n << " X " << matrix_m; 
+
+    // Leer secciones
+    while (std::getline(levelFile, line)) {
+        if (line.empty()) continue; // Ignorar líneas vacías
+
+        if (line == "CRATES") {
+            while (std::getline(levelFile, line) && !line.empty()) {
+                int x, y;
+                if (parseCoordinates(line, x, y)) {
+                    crates[generateKey(x * TILE_SIZE, y * TILE_SIZE)] = Crate{x * TILE_SIZE, y * TILE_SIZE, crateTexture};
+                }
+            }
+        } else if (line == "SPAWN PLACE") {
+            while (std::getline(levelFile, line) && !line.empty()) {
+                int x, y;
+                if (parseCoordinates(line, x, y)) {
+                    spawn_places[generateKey(x * TILE_SIZE, y * TILE_SIZE)] = SpawnPlace{x * TILE_SIZE, y * TILE_SIZE, spawnPlaceTexture};
+                }
+            }
+        } else if (line == "BOX") {
+            while (std::getline(levelFile, line) && !line.empty()) {
+                int x, y;
+                if (parseCoordinates(line, x, y)) {
+                    boxes[generateKey(x * TILE_SIZE,y * TILE_SIZE)] =  Box{x * TILE_SIZE, y * TILE_SIZE, boxTexture};
+                }
+            }
+        } else if (line == "ITEM") {
+            while (std::getline(levelFile, line) && !line.empty()) {
+                int x, y;
+                std::string itemId;
+                if (parseItem(line, x, y, itemId)) {
+                    items[generateKey(x*TILE_SIZE, y*TILE_SIZE)] = Item{x * TILE_SIZE, y * TILE_SIZE, reverse_item_map[itemId], getItemTexture(reverse_item_map[itemId])};
+                }
+            }
+        } else if (line == "SPAWN DUCK") {
+            while (std::getline(levelFile, line) && !line.empty()) {
+                int x, y;
+                if (parseCoordinates(line, x, y)) {
+                    ducks[generateKey(x*TILE_SIZE, y*TILE_SIZE)] =  Duck{x * 4, y * 4, duckTexture};
+                }
+            }
+        }
+    }
+
+    levelFile.close();
+    std::cout << "Nivel cargado exitosamente desde " << filePath << std::endl;
+}
+
 
 
 
