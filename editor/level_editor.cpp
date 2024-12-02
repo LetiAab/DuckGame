@@ -1,4 +1,6 @@
 #include "level_editor.h"
+
+#include <chrono>
 #include <SDL_image.h>
 #include <iostream>
 
@@ -840,6 +842,8 @@ void LevelEditor::run() {
     SDL_Event event;
 
     while (running) {
+        const auto start = std::chrono::high_resolution_clock::now();
+
         while (SDL_PollEvent(&event)) {
             handleEvent(event, running);
         }
@@ -864,6 +868,14 @@ void LevelEditor::run() {
 
         // Actualizar pantalla
         SDL_RenderPresent(renderer);
+
+        const auto end = std::chrono::high_resolution_clock::now();
+        auto loop_duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+        auto sleep_duration = DELAY_TIME - loop_duration;
+
+        if (sleep_duration > 0) {
+            SDL_Delay(sleep_duration);
+        }
     }
 }
 
