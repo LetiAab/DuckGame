@@ -10,7 +10,7 @@ void DropWeaponCommand::execute(Game& game) {
     Duck* duck = game.getDuckById(char_id);
 
 
-    Weapon* dropped_gun = duck->dropWeapon();
+    std::shared_ptr<Weapon> dropped_gun = duck->dropWeapon();
     if(dropped_gun){
 
         if (dropped_gun->getItemId() == GRENADE_ID || dropped_gun->getItemId() == BANANA_ID) {

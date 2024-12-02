@@ -35,21 +35,31 @@ Duck* Game::getDuckByPosition(Position position) {
         }
 }
 
-void Game::add_throwed_weapon(Weapon* throwed_weapon) {
-        if (throwed_weapon->getItemId() == GRENADE_ID) {
-                Grenade* casted_grenade = (Grenade*)throwed_weapon;
-                throwed_weapons.emplace_back(std::make_shared<Grenade>(casted_grenade->getPosition().x, casted_grenade->getPosition().y, casted_grenade->getCurrentTicks(), casted_grenade->speed));
-        } else if (throwed_weapon->getItemId() == BANANA_ID) {
-                Banana* casted_banana = (Banana*)throwed_weapon;
-
-                if (casted_banana->peeled) {
-                        throwed_weapons.emplace_back(std::make_shared<Banana>(casted_banana->getPosition().x, casted_banana->getPosition().y, casted_banana->speed));
-                }
-        } else {
-                std::cout << "Este arma no debería ser agregada! \n";
+void Game::add_throwed_weapon(std::shared_ptr<Weapon> throwed_weapon) {
+    if (throwed_weapon->getItemId() == GRENADE_ID) {
+        auto casted_grenade = std::dynamic_pointer_cast<Grenade>(throwed_weapon);
+        if (casted_grenade) {
+            throwed_weapons.emplace_back(std::make_shared<Grenade>(
+                casted_grenade->getPosition().x,
+                casted_grenade->getPosition().y,
+                casted_grenade->getCurrentTicks(),
+                casted_grenade->speed
+            ));
         }
-
+    } else if (throwed_weapon->getItemId() == BANANA_ID) {
+        auto casted_banana = std::dynamic_pointer_cast<Banana>(throwed_weapon);
+        if (casted_banana && casted_banana->peeled) {
+            throwed_weapons.emplace_back(std::make_shared<Banana>(
+                casted_banana->getPosition().x,
+                casted_banana->getPosition().y,
+                casted_banana->speed
+            ));
+        }
+    } else {
+        std::cout << "Este arma no debería ser agregada! \n";
+    }
 }
+
 
 void Game::simulate_throwed_weapons() {
         for(auto it = throwed_weapons.begin(); it != throwed_weapons.end(); ) {
