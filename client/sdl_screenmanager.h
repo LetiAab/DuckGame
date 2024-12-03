@@ -22,7 +22,7 @@ public:
     void showNextRoundScreen(uint16_t id_winner);
     void showEndMatchScreen(uint16_t id_winner);
     void showGetReadyScreen(int round);
-    void showScoreboard(std::vector<int> scoreboard);
+    void showScoreboard(std::vector<int> scoreboard, bool end);
     void loadLobbyScreen();
     void renderStaticLobby();
     void showLobbyScreen();

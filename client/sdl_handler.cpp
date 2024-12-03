@@ -85,7 +85,6 @@ void SDLHandler::loadGame(GameState &game, Queue<Message> &message_queue) {
 
 Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queue) {
 
-    //No quise tocar mas el server entonces mapee la municion inicial aca
     std::map<uint8_t, int> weaponAmmo = {
             {PEW_PEW_LASER_ID, 12},
             {LASER_RIFLE_ID, 10},
@@ -103,7 +102,7 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
         if(message.type == END_GAME){
             std::cout << "SE TERMINO LA PARTIDA "<< "\n";
 
-            screenManager->showScoreboard(message.scoreboard);
+            screenManager->showScoreboard(message.scoreboard, true);
 
             screenManager->showEndMatchScreen(message.duck_winner);
             message.type = END_GAME;
@@ -128,7 +127,7 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
             std::cout << "Se inicializo el game "<< "\n";
             screenManager->showNextRoundScreen(message.duck_winner);
 
-            screenManager->showScoreboard(message.scoreboard);
+            screenManager->showScoreboard(message.scoreboard, false);
 
             screenManager->showGetReadyScreen(message.round);
 
