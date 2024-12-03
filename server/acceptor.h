@@ -5,8 +5,8 @@
 #include <list>
 #include <sstream>
 
-#include "common/socket.h"
-#include "common/thread.h"
+#include "../common/socket.h"
+#include "../common/thread.h"
 #include "lobby/lobby.h"
 
 

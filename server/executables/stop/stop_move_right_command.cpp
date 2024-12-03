@@ -1,6 +1,6 @@
 #include "stop_move_right_command.h"
 #include <iostream>
-#include "common/constants.h"
+#include "../../../common/constants.h"
 
 
 StopMoveRightCommand::StopMoveRightCommand(uint16_t player_id) : player_id(player_id) {}

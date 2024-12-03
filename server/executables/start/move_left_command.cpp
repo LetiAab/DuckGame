@@ -1,6 +1,6 @@
 #include "move_left_command.h"
 #include <iostream>
-#include "common/constants.h"
+#include "../../../common/constants.h"
 
 
 MoveLeftCommand::MoveLeftCommand(uint16_t player_id) : player_id(player_id) {}

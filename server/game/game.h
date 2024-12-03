@@ -3,9 +3,9 @@
 
 #include "../executables/executable.h"
 #include "game_queue_monitor.h"
-#include "common/queue.h"
-#include "common/thread.h"
-#include "common/command.h"
+#include "../../common/queue.h"
+#include "../../common/thread.h"
+#include "../../common/command.h"
 
 #include "../armor/armor.h"
 #include "../armor/helmet.h"

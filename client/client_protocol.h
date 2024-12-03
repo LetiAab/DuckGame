@@ -3,9 +3,9 @@
 #include <sstream>
 #include <string>
 
-#include "common/socket.h"
-#include "common/message.h"
-#include "common/command.h"
+#include "../common/socket.h"
+#include "../common/message.h"
+#include "../common/command.h"
 
 #include <cstdint>
 

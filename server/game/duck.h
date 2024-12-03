@@ -8,9 +8,9 @@
 
 #include "game_map.h"
 
-#include "common/constants.h"
-#include "common/position.h"
-#include "common/message.h"
+#include "../../common/constants.h"
+#include "../../common/position.h"
+#include "../../common/message.h"
 
 #include "../armor/armor.h"
 #include "../armor/helmet.h"

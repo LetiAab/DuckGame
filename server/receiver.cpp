@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include "common/liberror.h"
+#include "../common/liberror.h"
 
 
 Receiver::Receiver(ServerProtocol& protocol, Queue<std::shared_ptr<Executable>>& game_queue):

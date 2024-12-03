@@ -3,9 +3,9 @@
 #include <SDL_render.h>
 
 #include "client_game_map.h" // Si esta es la ubicación del archivo que declara ClientGameMap
-#include "common/command.h"
-#include "common/constants.h"
-#include "common/queue.h"
+#include "../common/command.h"
+#include "../common/constants.h"
+#include "../common/queue.h"
 
 struct Duck {
     int x, y;

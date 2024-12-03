@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include "common/liberror.h"
+#include "../common/liberror.h"
 
 
 ClientReceiver::ClientReceiver(ClientProtocol& protocol):

@@ -7,7 +7,7 @@
 
 #include <SDL.h>
 #include <vector>
-#include "common/constants.h"
+#include "../common/constants.h"
 #include <unordered_map>
 #include <string>
 #include <SDL_ttf.h>

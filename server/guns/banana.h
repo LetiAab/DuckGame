@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "grenade_fragment.h"
-#include "common/constants.h"
+#include "../../common/constants.h"
 #include "../guns/weapon.h"
 
 class GameMap; // Declaración anticipada de la clase GameMap
