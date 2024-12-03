@@ -190,7 +190,7 @@ void ScreenManager::showEndMatchScreen(uint16_t id_winner) {
     SDL_RenderCopy(renderer, texture_handler.getText("DUCK WINNER"), NULL, &textRect);
     SDL_RenderPresent(renderer);
 
-    SDL_Delay(4000);
+    SDL_Delay(9000);
 }
 
 void ScreenManager::showScoreboard(std::vector<int> scoreboard, bool end) {

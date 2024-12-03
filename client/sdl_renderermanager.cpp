@@ -4,8 +4,8 @@ static float float_time = 0.0f;
 
 RendererManager::RendererManager(SDL_Renderer* renderer, TextureHandler& texture_handler, Camera& camera):
     renderer(renderer), texture_handler(texture_handler), camera(camera), background_index(0),
-    backgrounds({"forest", "camp-fire", "city", "miami", "industrial", "moon", "spring", }),
-    platforms({"crate", "lava", "nieve", "pasto", "pasto-tierra", "musgo", "piedra", "piedrapasto", "tierra"}){}
+    backgrounds({"forest", "camp-fire", "city", "miami", "industrial", "moon", "spring"}),
+    platforms({"crate", "lava", "nieve", "pasto-tierra", "pasto", "musgo", "piedra"}){}
 
 //** Estatico **//
 void RendererManager::doRenderStatic(GameState* game) {

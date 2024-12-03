@@ -78,16 +78,20 @@ void SDLHandler::loadGame(GameState &game, Queue<Message> &message_queue) {
 }
 
 Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queue) {
-    
-
     Message message;
     while (message_queue.try_pop(message)) {
         switch (message.type) {
-            case END_GAME:
+            case END_GAME: {
                 std::cout << "SE TERMINO LA PARTIDA " << "\n";
                 screenManager->showScoreboard(message.scoreboard, true);
+
+                const std::string path = std::string(AUDIO_PATH) + "final-countdown.wav";
+                audioManager->loadMusic(path);
+                audioManager->playMusic(-1);
+                audioManager->setMusicVolume(60);
                 screenManager->showEndMatchScreen(message.duck_winner);
                 break;
+            }
 
             case END_ROUND:
                 std::cout << "SE TERMINO LA RONDA " << "\n";
