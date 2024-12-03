@@ -8,14 +8,12 @@
 const int ERROR = 1;
 const int SUCCESS = 0;
 
-const int DOS_BYTES = 2;
-const int UN_BYTE = 1;
-
+//Commands from client
 const uint8_t FIRST_GAME_MESSAGE = 0x02;
 const uint8_t FIRST_LOBBY_MESSAGE = 0x03;
 const uint8_t LOBBY_COMMAND_FAIL = 0x04;
 const uint8_t NEW_MATCH_CODE = 0x05;
-const uint8_t EXISTING_MATCH_CODE = 0x06; //esto es para conectarme (rarisimo el nombre, de hecho lo odio)
+const uint8_t EXISTING_MATCH_CODE = 0x06;
 const uint8_t START_MATCH_CODE = 0x07;
 const uint8_t LOBBY_STOP_CODE = 0x08;
 const uint8_t LIST_MATCH_AVAILABLE = 0x09;
@@ -50,7 +48,7 @@ const int MATCH_HAS_WINNER = 1;
 const int MATCH_NEXT_ROUND = 2;
 const int MATCH_5_ROUNDS = 3;
 
-//messages from game
+//Messages from game
 const uint8_t MAP_INICIALIZATION = 0x14;
 
 const uint8_t DUCK_POS_UPDATE = 0x15;
@@ -67,10 +65,6 @@ const uint8_t DUCK_PICKUP_ITEM = 0x36;
 const uint8_t DUCK_EQUIP_ITEM = 0x37;
 
 const uint8_t DROP_WEAPON = 0X38;
-
-const uint8_t MUTE = 0X39;
-
-
 
 const uint8_t HELMET_BROKEN = 0X77;
 const uint8_t ARMOR_BROKEN = 0X78;
@@ -100,13 +94,11 @@ const uint8_t END_FIVE_ROUNDS = 0X92;
 
 
 
-const int N_SPAWN_PLACES = 4;
-const int N_BOXES = 1;
+//-------- items----------------
+//IDS
+const int BULLET_SPEED_X = 4;
+const int BULLET_SPEED_Y = 4;
 
-
-
-
-//VOY A NECESITAR IDS PARA QUE SEPAN QUE ITEM RENDERERIZAR 
 const uint8_t ARMOR_ID = 0x39;
 const uint8_t HELMET_ID = 0x40;
 
@@ -123,8 +115,26 @@ const uint8_t MAGNUM_ID = 0x49;
 const uint8_t SHOTGUN_ID = 0x50;
 const uint8_t SNIPER_ID = 0x51;
 
-// ...
+//ALCANCE (multiplicado por el TILE_SIZE)
+const int PEW_PEW_LASER_RANGE = 140;
+const int LASER_RIFLE_RANGE = 120;
+const int AK_47_RANGE = 52;
+const int DUEL_PISTOL_RANGE = 20;
+const int COWBOY_PISTOL_RANGE = 80;
+const int MAGNUM_RANGE = 80;
+const int SHOTGUN_RANGE = 28;
+const int SNIPER_RANGE = 256;
 
+
+//MUNICIONES
+const int PEW_PEW_LASER_AMMUNITION = 12;
+const int LASER_RIFLE_AMMUNITION = 10;
+const int AK_47_AMMUNITION = 30;
+const int DUEL_PISTOL_AMMUNITION = 1;
+const int COWBOY_PISTOL_AMMUNITION = 6;
+const int MAGNUM_AMMUNITION = 6;
+const int SHOTGUN_AMMUNITION = 2;
+const int SNIPER_AMMUNITION = 3;
 
 const int GAME_TIME_SLEEP = 80;
 const int DELAY_TIME = 60;
@@ -145,17 +155,17 @@ const int PLATFORM_SIZE_Y = 2;
 
 const int DUCK_SIZE_X = 8;
 const int DUCK_SIZE_Y = 12;
-const int DUCK_TOTAL_SIZE = 96; //Cantidad total de cuadrados que ocupa el pato 9
 
 
 const int BOX_SIZE_X = 8;
 const int BOX_SIZE_Y = 8;
-const int BOX_TOTAL_SIZE = 64;
 
 
 const int BULLET_SIZE_Y = 4;
-const int BULLET_SIZE_X = 4;
+const int BULLET_SIZE_X = 2;
 
+
+//----------------------------------SDL-----------------------------------------
 const int TILE_SIZE = 4;
 
 const int WINDOW_WIDTH = TILE_SIZE * MATRIX_M;
@@ -173,6 +183,7 @@ const std::vector<std::vector<uint8_t>> colors = {
 const int BUTTON_W = 239;
 const int BUTTON_H = 77;
 
+const uint8_t MUTE = 0X39;
 const int PADDING = 80;
 const float MAX_ZOOM = 2.0f;
 const float MIN_ZOOM = 0.5f;

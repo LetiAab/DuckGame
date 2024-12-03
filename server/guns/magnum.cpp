@@ -3,13 +3,13 @@
 
 // 6 balas, Alcance: 20 tiles (20 x TILE_SIZE = 80)
 Magnum::Magnum(int x, int y)
-    : Weapon(MAGNUM_ID, "Magnum", 80, 0, 6, x, y) {}
+    : Weapon(MAGNUM_ID, "Magnum", MAGNUM_RANGE, 0, MAGNUM_AMMUNITION, x, y) {}
 
 bool Magnum::disparar(int position_x, int position_y, char looking, GameMap* map, char id_player, bool is_looking_up) {
     if (municiones > 0) {
         //la bala debe aparecer fuera del pato, o sino se mata a si mismo
-        int bullet_position_x = (looking == LOOKING_RIGHT) ? position_x + DUCK_SIZE_X : position_x -1;
-        int bullet_position_y = (is_looking_up) ? position_y - DUCK_SIZE_Y / 2 : position_y;
+        int bullet_position_x = (looking == LOOKING_RIGHT) ? position_x + DUCK_SIZE_X : position_x - BULLET_SIZE_X;
+        int bullet_position_y = (is_looking_up) ? position_y - BULLET_SIZE_Y : position_y -4;
 
         Position bullet_pos(bullet_position_x, bullet_position_y);
         //si donde debe salir la bala hay una pared, no puedo disparar
@@ -25,12 +25,12 @@ bool Magnum::disparar(int position_x, int position_y, char looking, GameMap* map
         std::uniform_int_distribution<> distrib(-3, 3);
         int random_dispersion = distrib(gen);
  
-        int direccion_x = (looking == LOOKING_RIGHT) ? 6 : -6;
+        int direccion_x = (looking == LOOKING_RIGHT) ? BULLET_SPEED_X : -BULLET_SPEED_X;
         int direccion_y = 0 + random_dispersion;  // La bala se mueve horizonalmente
 
         if(is_looking_up){
             direccion_x = 0 + random_dispersion;
-            direccion_y = -6;
+            direccion_y = -BULLET_SPEED_Y;
 
         }
 

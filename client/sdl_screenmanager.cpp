@@ -74,10 +74,20 @@ void ScreenManager::showGetReadyScreen(int round) {
         SDL_RenderCopy(renderer, static_scene, NULL, NULL);
         SDL_RenderPresent(renderer);
 
-        SDL_Delay(1000); // Espera 1 segundo entre números
+        SDL_Delay(1000);
     }
 
     SDL_DestroyTexture(static_scene);
+}
+
+void ScreenManager::showServerIsDownScreen() {
+    SDL_RenderSetViewport(renderer, NULL);
+
+    SDL_RenderClear(renderer);
+    SDL_RenderCopy(renderer, getTexture("problem"), NULL, NULL);
+    SDL_RenderPresent(renderer);
+
+    SDL_Delay(4000);
 }
 
 
@@ -185,7 +195,7 @@ void ScreenManager::showEndMatchScreen(uint16_t id_winner) {
     SDL_Delay(4000);
 }
 
-void ScreenManager::showScoreboard(std::vector<int> scoreboard) {
+void ScreenManager::showScoreboard(std::vector<int> scoreboard, bool end) {
     std::vector<DuckScore> duck_scores = sortScoreboard(scoreboard);
 
     SDL_Texture* static_scene = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -198,12 +208,19 @@ void ScreenManager::showScoreboard(std::vector<int> scoreboard) {
     SDL_RenderClear(renderer);
 
     SDL_RenderCopy(renderer, getTexture("screen"), NULL, NULL);
-
-    texture_handler.saveText("8bit_bigger", "Scoreboard", {255, 255, 255, 255});
     SDL_Point t_size;
-    SDL_QueryTexture(texture_handler.getText("Scoreboard"), NULL, NULL, &t_size.x, &t_size.y);
-    SDL_Rect textRect = {WINDOW_WIDTH / 2 - t_size.x / 2, 100, t_size.x, t_size.y};
-    SDL_RenderCopy(renderer, texture_handler.getText("Scoreboard"), NULL, &textRect);
+
+    if(end){
+        texture_handler.saveText("8bit_bigger", "Final Scores", {255, 255, 255, 255});
+        SDL_QueryTexture(texture_handler.getText("Final Scores"), NULL, NULL, &t_size.x, &t_size.y);
+        SDL_Rect textRect = {WINDOW_WIDTH / 2 - t_size.x / 2, 100, t_size.x, t_size.y};
+        SDL_RenderCopy(renderer, texture_handler.getText("Final Scores"), NULL, &textRect);
+    } else {
+        texture_handler.saveText("8bit_bigger", "Scoreboard", {255, 255, 255, 255});
+        SDL_QueryTexture(texture_handler.getText("Scoreboard"), NULL, NULL, &t_size.x, &t_size.y);
+        SDL_Rect textRect = {WINDOW_WIDTH / 2 - t_size.x / 2, 100, t_size.x, t_size.y};
+        SDL_RenderCopy(renderer, texture_handler.getText("Scoreboard"), NULL, &textRect);
+    }
 
     SDL_Texture* duck_texture = texture_handler.getTexture("duck");
     SDL_Texture* crate_texture = texture_handler.getTexture("crate");
@@ -273,7 +290,7 @@ void ScreenManager::loadLobbyScreen() {
                         {"next-round-background", "round/nightsky"},
                         {"screen", "round/screen"},
                         {"firework", "round/firework"},
-                        {"duck", "duck"}};
+                        {"problem", "technical-problem"}};
 
     // Cargar imagenes del lobby
     for (auto& texture : textures_to_load) {
@@ -281,6 +298,7 @@ void ScreenManager::loadLobbyScreen() {
         lobby_textures[texture.first] = sdl_texture;
     }
     texture_handler.loadFont("04B_16", "04B_30__.TTF", 90);
+    texture_handler.loadFont("04B_16_small", "04B_30__.TTF", 50);
     texture_handler.loadFont("8bit", "8bitOperatorPlus8-Regular.ttf", 25);
     texture_handler.loadFont("8bit_bigger", "8bitOperatorPlus8-Regular.ttf", 70);
 

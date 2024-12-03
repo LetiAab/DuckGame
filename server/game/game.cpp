@@ -384,7 +384,14 @@ bool Game::check_end_of_round(){
                 }
         }
 
-        return (ducks_alive == 1);
+        if(ducks_alive == 0){
+                char no_duck = '0';
+                round_manager.declare_round_winner(no_duck);
+                        
+                
+        }
+
+        return (ducks_alive <= 1);
 
 }
 

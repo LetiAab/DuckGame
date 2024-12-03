@@ -65,16 +65,13 @@ void SDLHandler::loadGame(GameState &game, Queue<Message> &message_queue) {
         {"grave", "grave", 1}
     };
 
-    // Cargo las texturas
     int frame_width = 0, frame_height = 0;
     for (const TextureInfo& texture_info : textures_to_load) {
         handle_textures.loadTexture(texture_info, &frame_width, &frame_height);
     }
 
-    // Recibo e inicializo los elementos del juego
     gameInitializer.initializeGame(message_queue, game, frame_width, frame_height);
-    
-    // Inicializo el render manager
+
     camera = std::make_unique<Camera>();
     rendererManager = std::make_unique<RendererManager>(game.renderer, handle_textures, *camera);
 
@@ -84,256 +81,202 @@ void SDLHandler::loadGame(GameState &game, Queue<Message> &message_queue) {
 
 
 Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queue) {
-
-    //No quise tocar mas el server entonces mapee la municion inicial aca
-    std::map<uint8_t, int> weaponAmmo = {
-            {PEW_PEW_LASER_ID, 12},
-            {LASER_RIFLE_ID, 10},
-            {AK_47_ID, 30},
-            {DUEL_PISTOL_ID, 1},
-            {COWBOY_PISTOL_ID, 6},
-            {MAGNUM_ID, 6},
-            {SHOTGUN_ID, 2},
-            {SNIPER_ID, 3}
-        };
+    
 
     Message message;
     while (message_queue.try_pop(message)) {
+        switch (message.type) {
+            case END_GAME:
+                std::cout << "SE TERMINO LA PARTIDA " << "\n";
+                screenManager->showScoreboard(message.scoreboard, true);
+                screenManager->showEndMatchScreen(message.duck_winner);
+                break;
 
-        if(message.type == END_GAME){
-            std::cout << "SE TERMINO LA PARTIDA "<< "\n";
+            case END_ROUND:
+                std::cout << "SE TERMINO LA RONDA " << "\n";
+                gameInitializer.initialize_new_round(*game, message_queue);
+                screenManager->showNextRoundScreen(message.duck_winner);
+                screenManager->showGetReadyScreen(message.round);
+                rendererManager->doRenderStatic(game);
+                break;
 
-            screenManager->showScoreboard(message.scoreboard);
+            case END_FIVE_ROUNDS:
+                std::cout << "PASARON 5 RONDAS " << "\n";
+                gameInitializer.initialize_new_round(*game, message_queue);
+                screenManager->showNextRoundScreen(message.duck_winner);
+                screenManager->showScoreboard(message.scoreboard, false);
+                screenManager->showGetReadyScreen(message.round);
+                rendererManager->doRenderStatic(game);
+                break;
 
-            screenManager->showEndMatchScreen(message.duck_winner);
-            message.type = END_GAME;
-        }
-
-        if(message.type == END_ROUND){
-            std::cout << "SE TERMINO LA RONDA "<< "\n";
-
-            gameInitializer.initialize_new_round(*game, message_queue);
-            std::cout << "SE INICIALIZO EL GAME "<< "\n";
-            screenManager->showNextRoundScreen(message.duck_winner);
-            screenManager->showGetReadyScreen(message.round);
-            std::cout << "refresco lo estatico "<< "\n";
-            rendererManager->doRenderStatic(game);
-
-        }
-
-        if(message.type == END_FIVE_ROUNDS){
-            std::cout << "PASARON 5 RONDAS "<< "\n";
-
-            gameInitializer.initialize_new_round(*game, message_queue);
-            std::cout << "Se inicializo el game "<< "\n";
-            screenManager->showNextRoundScreen(message.duck_winner);
-
-            screenManager->showScoreboard(message.scoreboard);
-
-            screenManager->showGetReadyScreen(message.round);
-
-            std::cout << "refresco lo estatico "<< "\n";
-            rendererManager->doRenderStatic(game);
-
-        }
-
-        if(message.type == SPAWN_PLACE_ITEM_UPDATE){
-
-            int pos_spawn_id = message.spawn_place_id;
-            game->spawn_places[pos_spawn_id].item_id = message.item_id;
-
-        }
-
-        if(message.type == SHOOT){
-
-            int pos_id = message.player_id - 1;
-            if(game->ducks[pos_id].current_ammo > 0){
-                game->ducks[pos_id].current_ammo -= 1;
+            case SPAWN_PLACE_ITEM_UPDATE: {
+                int pos_spawn_id = message.spawn_place_id;
+                game->spawn_places[pos_spawn_id].item_id = message.item_id;
+                break;
             }
-            //si recibo esto es que efectivamente disparé y tengo que reproducir el sonido
-            const std::string path = std::string(AUDIO_PATH) + "shoot.wav";
-            audioManager->loadSoundEffect(path);
-            audioManager->playSoundEffect();
-            audioManager->setSoundEffectVolume(100);
-        }
 
-        if(message.type == BOX_DESTROYED){
-            std::cout << "Se destruyo la caja con id: " << message.box_id << "\n";
+            case SHOOT: {
+                int pos_id = message.player_id - 1;
+                if (game->ducks[pos_id].current_ammo > 0) {
+                    game->ducks[pos_id].current_ammo -= 1;
+                }
+                const std::string path = std::string(AUDIO_PATH) + "shoot.wav";
+                audioManager->loadSoundEffect(path);
+                audioManager->playSoundEffect();
+                audioManager->setSoundEffectVolume(100);
+                break;
+            }
 
-            int box_id = message.box_id;
-            game->boxes[box_id].destroyed = true;
-            game->boxes[box_id].item_id = message.item_id;
+            case BOX_DESTROYED: {
+                std::cout << "Se destruyo la caja con id: " << message.box_id << "\n";
+                int box_id = message.box_id;
+                game->boxes[box_id].destroyed = true;
+                game->boxes[box_id].item_id = message.item_id;
+                break;
+            }
 
-        }
+            case ITEM_ON_FLOOR_UPDATE: {
+                int x = message.item_x * TILE_SIZE;
+                int y = message.item_y * TILE_SIZE;
+                std::cout << "AGARRE EL ITEM QUE ESTA EN X: " << x << " Y: " << y << "\n";
+                for (auto &item_on_floor : game->items_on_floor) {
+                    if (item_on_floor.x == x && item_on_floor.y == y) {
+                        item_on_floor.item_id = 0;
+                    }
+                }
+                break;
+            }
 
-        if (message.type == ITEM_ON_FLOOR_UPDATE) {
-            int x = message.item_x * TILE_SIZE;
-            int y = message.item_y * TILE_SIZE;
+            case THROWABLE_ITEM: {
+                bool includes = false;
+                for (ThrowedItem &throwed : game->throwed_items) {
+                    if (throwed.current_x == message.item_x && throwed.current_y == message.item_y) {
+                        includes = true;
+                        throwed.current_x = message.item_x;
+                        throwed.current_y = message.item_y;
+                        throwed.type = message.item_id;
+                        throwed.touching_floor = message.item_touching_floor;
+                        throwed.used = message.item_used;
+                    }
+                }
+                if (!includes) {
+                    ThrowedItem item = {message.item_x * TILE_SIZE, message.item_y * TILE_SIZE, message.item_id, message.item_used, message.item_touching_floor};
+                    game->throwed_items.push_back(item);
+                }
+                break;
+            }
 
-            std::cout << "AGARRE EL ITEM QUE ESTA EN X: "<< x << " Y: "<< y << "\n";
+            case DUCK_PICKUP_ITEM: {
+                int pos_id = message.player_id - 1;
 
+                if((message.item_id == PEW_PEW_LASER_ID) || (message.item_id == LASER_RIFLE_ID) || (message.item_id == AK_47_ID) || 
+                (message.item_id == COWBOY_PISTOL_ID) || (message.item_id == MAGNUM_ID) || (message.item_id == SHOTGUN_ID) ||
+                (message.item_id == DUEL_PISTOL_ID) || (message.item_id == SNIPER_ID)|| (message.item_id == GRENADE_ID)
+                || (message.item_id == BANANA_ID) || (message.item_id == BASE_WEAPON_ID)){
+                    std::cout << "agarre un ARMA A: " << static_cast<int>(message.item_id) << "\n";
+                    game->ducks[pos_id].weapon_equiped = message.item_id;
+                    game->ducks[pos_id].current_ammo = weaponAmmo[message.item_id];
 
-            // Recorrer la lista de items en el suelo hasta encontrar el que matchea con la pos que me llegó
-            for (auto& item_on_floor : game->items_on_floor) {
-                std::cout << "RECORRO LA LISTA DE ITEMS EN EL SUELO X: "<< item_on_floor.x << " Y: "<< item_on_floor.y << "\n";
+                }
+
+                if(message.item_id == HELMET_ID){
+                    std::cout << "agarre un casco" << "\n";
+                    game->ducks[pos_id].item_on_hand = message.item_id;
+                }
+
+                if(message.item_id == ARMOR_ID){
+                    std::cout << "agarre un armor" << "\n";
+                    game->ducks[pos_id].item_on_hand = message.item_id;
+                }
+            
+                break;
+            }
+            
+
+            case DUCK_EQUIP_ITEM: {
+                int pos_id = message.player_id - 1;
+                game->ducks[pos_id].item_on_hand = 0;
+
+                if((message.item_id == PEW_PEW_LASER_ID) || (message.item_id == LASER_RIFLE_ID) || (message.item_id == AK_47_ID) || 
+                (message.item_id == COWBOY_PISTOL_ID) || (message.item_id == MAGNUM_ID) || (message.item_id == SHOTGUN_ID) ||
+                (message.item_id == DUEL_PISTOL_ID) || (message.item_id == SNIPER_ID)|| (message.item_id == GRENADE_ID)
+                || (message.item_id == BANANA_ID) || (message.item_id == BASE_WEAPON_ID)){
+                    game->ducks[pos_id].weapon_equiped = message.item_id;
+                }
+
+                if(message.item_id == HELMET_ID){
+                    game->ducks[pos_id].helmet_equiped = message.item_id;
+                }
+                if(message.item_id == ARMOR_ID){
+                    game->ducks[pos_id].armor_equiped = message.item_id;
+                }
                 
-                if (item_on_floor.x == x && item_on_floor.y == y) {
-                    std::cout << "Item found at (" << x << ", " << y << ") with ID: " << static_cast<int>(item_on_floor.item_id) << std::endl;
+                break;
+            }
 
-                    item_on_floor.item_id = 0;
+            case DROP_WEAPON: {
+                int pos_id = message.player_id - 1;
+                game->ducks[pos_id].weapon_equiped = 0;
+                game->ducks[pos_id].current_ammo = 0;
+                break;
+            }
+
+            case ARMOR_BROKEN: {
+                int pos_id = message.player_id - 1;
+                game->ducks[pos_id].armor_equiped = 0;
+                break;
+            }
+
+            case HELMET_BROKEN: {
+                int pos_id = message.player_id - 1;
+                game->ducks[pos_id].helmet_equiped = 0;
+                break;
+            }
+
+            case BULLET_POS_UPDATE: {
+                bool includes = false;
+                for (Projectile &projectile : game->projectiles) {
+                    if (projectile.id == message.bullet_id) {
+                        includes = true;
+                        projectile.old_x = projectile.current_x;
+                        projectile.old_y = projectile.current_y;
+                        projectile.current_x = message.bullet_x;
+                        projectile.current_y = message.bullet_y;
+                        projectile.horizontal = message.bullet_horizontal;
+                    }
                 }
-            }
-        }
-
-
-         if(message.type == THROWABLE_ITEM) {
-            std::cout << "Llega un throwable item de pos x: " << message.item_x << " y: " << 
-            message.item_y << " y un id " << message.item_id << ", lo meto a la lista \n";
-
-            bool includes = false;
-            for (ThrowedItem& throwed: game->throwed_items) {
-                if (throwed.current_x == message.item_x && throwed.current_y == message.item_y) {
-                    includes = true;
-                    throwed.current_x = message.item_x;
-                    throwed.current_y = message.item_y;
-                    throwed.type = message.item_id;
-                    throwed.touching_floor = message.item_touching_floor;
-                    throwed.used = message.item_used;
-                    std::cout << "Ya tenia esa pos, lo actualizo \n";
+                if (!includes) {
+                    game->projectiles.push_back({message.bullet_x, message.bullet_y, 10000, 10000, message.bullet_id, message.bullet_type, 0, message.bullet_horizontal});
                 }
-            }
-            if (!includes) {
-                ThrowedItem item = ThrowedItem { message.item_x * TILE_SIZE, message.item_y * TILE_SIZE, message.item_id, message.item_used, message.item_touching_floor};
-                game->throwed_items.push_back(item);
-                std::cout << "No tenia esa pos, lo meto \n";
-            }
-        } 
-
-
-        if(message.type == DUCK_PICKUP_ITEM){
-            int pos_id = message.player_id - 1;
-
-            if((message.item_id == PEW_PEW_LASER_ID) || (message.item_id == LASER_RIFLE_ID) || (message.item_id == AK_47_ID) || 
-            (message.item_id == COWBOY_PISTOL_ID) || (message.item_id == MAGNUM_ID) || (message.item_id == SHOTGUN_ID) ||
-            (message.item_id == DUEL_PISTOL_ID) || (message.item_id == SNIPER_ID)|| (message.item_id == GRENADE_ID)
-             || (message.item_id == BANANA_ID) || (message.item_id == BASE_WEAPON_ID)){
-                std::cout << "agarre un ARMA A: " << static_cast<int>(message.item_id) << "\n";
-                game->ducks[pos_id].weapon_equiped = message.item_id;
-                game->ducks[pos_id].current_ammo = weaponAmmo[message.item_id];
-
-            }            
-
-            if(message.item_id == HELMET_ID){
-                std::cout << "agarre un casco" << "\n";
-
-                game->ducks[pos_id].item_on_hand = message.item_id;
+                break;
             }
 
-            if(message.item_id == ARMOR_ID){
-                std::cout << "agarre un armor" << "\n";
-
-                game->ducks[pos_id].item_on_hand = message.item_id;
-            }
-        }
-
-        if(message.type == DUCK_EQUIP_ITEM){
-            int pos_id = message.player_id - 1;
-            game->ducks[pos_id].item_on_hand = 0;
-
-            if((message.item_id == PEW_PEW_LASER_ID) || (message.item_id == LASER_RIFLE_ID) || (message.item_id == AK_47_ID) || 
-            (message.item_id == COWBOY_PISTOL_ID) || (message.item_id == MAGNUM_ID) || (message.item_id == SHOTGUN_ID) ||
-            (message.item_id == DUEL_PISTOL_ID) || (message.item_id == SNIPER_ID)|| (message.item_id == GRENADE_ID)
-             || (message.item_id == BANANA_ID) || (message.item_id == BASE_WEAPON_ID)){
-                game->ducks[pos_id].weapon_equiped = message.item_id;
-            }            
-
-            // si es un helmet 
-
-            if(message.item_id == HELMET_ID){
-                game->ducks[pos_id].helmet_equiped = message.item_id;
+            case KILL_DUCK: {
+                int pos_id = message.player_id - 1;
+                game->ducks[pos_id].is_dead = true;
+                break;
             }
 
-            // si es un ARMOR 
-
-            if(message.item_id == ARMOR_ID){
-                game->ducks[pos_id].armor_equiped = message.item_id;
-            }
-        }
-
-        if(message.type == DROP_WEAPON){
-            int pos_id = message.player_id - 1;
-            game->ducks[pos_id].weapon_equiped = 0;
-            game->ducks[pos_id].current_ammo = 0;
-        }
-
-        if(message.type == ARMOR_BROKEN){
-            int pos_id = message.player_id - 1;
-            game->ducks[pos_id].armor_equiped = 0;
-        }
-
-        if(message.type == HELMET_BROKEN){
-            int pos_id = message.player_id - 1;
-            game->ducks[pos_id].helmet_equiped = 0; 
-        }
-
-        if(message.type == BULLET_POS_UPDATE){
-            std::cout << "Sdl Handler, id" << message.bullet_id << " y type " << message.bullet_type << ", en x: " << 
-            message.bullet_x << " y: " << message.bullet_y << std::endl;
-            bool includes = false;
-            for (Projectile& projectile: game->projectiles) {
-                if (projectile.id == message.bullet_id) {
-                    includes = true;
-                    projectile.old_x = projectile.current_x;
-                    projectile.old_y = projectile.current_y;
-                    projectile.current_x = message.bullet_x;
-                    projectile.current_y = message.bullet_y;
-                    projectile.horizontal = message.bullet_horizontal;
-                    std::cout << "Ya tenia ese id, lo actualizo \n";
-                }
-            }
-            if (!includes) {
-                game->projectiles.push_back(Projectile{message.bullet_x, message.bullet_y, 10000, 10000, message.bullet_id, message.bullet_type, 0, message.bullet_horizontal});
-                std::cout << "No tenia ese id, lo meto \n";
-            }
-        }
-
-        if(message.type == KILL_DUCK){
-            int pos_id = message.player_id - 1;
-            //NO LO ELIMINO DE LA LISTA PORQUE ALTO KILOMBO ASI QUE MUEVO EL DIBUJO AFUERA DE LA PANTALLA
-            //game->ducks[pos_id].x = 400 * TILE_SIZE;
-            //game->ducks[pos_id].y = 400 * TILE_SIZE;
-            game->ducks[pos_id].is_dead = true;
-        }
-
-        if (message.type == DUCK_POS_UPDATE){
-
-            // std::cout << "RECIBO POS UPDATE" << "\n";
-
-            int pos_id = message.player_id - 1;
-
-            game->ducks[pos_id].x = message.duck_x * TILE_SIZE;
-            game->ducks[pos_id].y = message.duck_y * TILE_SIZE;
-
-            //con looking podemos hacer que el pato mire para arriba o aletee tambien (creo)
-            if(message.looking == LOOKING_LEFT){
-                //pato esta mirando a la izquierda
-                game->ducks[pos_id].flipType = SDL_FLIP_HORIZONTAL;
-
-            } else {
-                //pato esta mirando a la derecha
-                game->ducks[pos_id].flipType = SDL_FLIP_NONE;
+            case DUCK_POS_UPDATE: {
+                int pos_id = message.player_id - 1;
+                game->ducks[pos_id].x = message.duck_x * TILE_SIZE;
+                game->ducks[pos_id].y = message.duck_y * TILE_SIZE;
+                game->ducks[pos_id].flipType = (message.looking == LOOKING_LEFT) ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
+                game->ducks[pos_id].is_moving = message.is_moving;
+                game->ducks[pos_id].is_jumping = message.is_jumping;
+                game->ducks[pos_id].is_fluttering = message.is_fluttering;
+                game->ducks[pos_id].is_laying_down = message.is_laying_down;
+                game->ducks[pos_id].is_looking_up = message.is_looking_up;
+                break;
             }
 
-            game->ducks[pos_id].is_moving = message.is_moving;
-            game->ducks[pos_id].is_jumping = message.is_jumping;
-            game->ducks[pos_id].is_fluttering = message.is_fluttering;
-            game->ducks[pos_id].is_laying_down = message.is_laying_down;
-            game->ducks[pos_id].is_looking_up = message.is_looking_up;
-
+            default:
+                break;
         }
     }
     return message;
 }
+
 
 
 //** Lobby **//
@@ -351,38 +294,45 @@ int SDLHandler::waitForStartGame(uint16_t lobby_id, Queue<Command>& command_queu
         try {
             Message message;
             if (message_queue.try_pop(message)) {
-                if (message.type == EXIT_GAME){
-                    std::cout << "Comando para salir..." << "\n";
-                    lobby_exit = true;
-                    is_alive = false;
-                    break;
-                }
-
-                if (message.type == NEW_MATCH_CODE){
-                    std::cout << "Partida creada con id: " << static_cast<int>(message.current_match_id) << "\n";
-                    screenManager->renderNewMatchText(message.current_match_id);
-                }
-
-                if (message.type == LIST_MATCH_AVAILABLE) {
-                    screenManager->renderAvailableMatches(message.existing_matches);
-                }
-
-                if (message.type == EXISTING_MATCH_CODE){
-                    std::cout << "Conectado a partida con id: " << static_cast<int>(message.current_match_id) << "\n";
-                }
-
-                if (message.type == LOBBY_COMMAND_FAIL){
-                    std::cout << "Ups! parece que no puedes realizar esa accion" << "\n";
-                }
-
-                if (message.type == START_MATCH_CODE){
-                    chosen_match = message.current_match_id;
-                    std::cout << "Partida iniciada con id: " << static_cast<int>(chosen_match) << "\n";
-                    if (protocol.send_command(Command(lobby_id, LOBBY_STOP_CODE))){
-                        std::cout << "Me desconecte del lobby. Ahora voy a comunicarme con el juego" << "\n";
+                switch (message.type) {
+                    case EXIT_GAME:
+                        std::cout << "El servidor se desconectó" << "\n";
+                        lobby_exit = true;
                         is_alive = false;
+                        done = ERROR;
+                        screenManager->showServerIsDownScreen();
                         break;
-                    }
+
+                    case NEW_MATCH_CODE:
+                        std::cout << "Partida creada con id: " << static_cast<int>(message.current_match_id) << "\n";
+                        screenManager->renderNewMatchText(message.current_match_id);
+                        break;
+
+                    case LIST_MATCH_AVAILABLE:
+                        screenManager->renderAvailableMatches(message.existing_matches);
+                        break;
+
+                    case EXISTING_MATCH_CODE:
+                        std::cout << "Conectado a partida con id: " << static_cast<int>(message.current_match_id) << "\n";
+                        break;
+
+                    case LOBBY_COMMAND_FAIL:
+                        std::cout << "Ups! parece que no puedes realizar esa accion" << "\n";
+                        break;
+
+                    case START_MATCH_CODE:
+                        chosen_match = message.current_match_id;
+                        std::cout << "Partida iniciada con id: " << static_cast<int>(chosen_match) << "\n";
+                        if (protocol.send_command(Command(lobby_id, LOBBY_STOP_CODE))) {
+                            std::cout << "Me desconecte del lobby. Ahora voy a comunicarme con el juego" << "\n";
+                            is_alive = false;
+                            break;
+                        }
+                        break;
+
+                    default:
+                        std::cerr << "Tipo de mensaje no reconocido: " << message.type << "\n";
+                        break;
                 }
 
                 std::cout << "\n";
@@ -414,6 +364,7 @@ int SDLHandler::waitForStartGame(uint16_t lobby_id, Queue<Command>& command_queu
     }
     return done;
 }
+
 
 void SDLHandler::initializeWindow(SDL_Window*& window, SDL_Renderer*& renderer) {
     window = SDL_CreateWindow("Duck Game",
@@ -449,9 +400,6 @@ int SDLHandler::runGame(SDL_Window *window, SDL_Renderer *renderer, Queue<Comman
         while (!done) {
             const auto start = std::chrono::high_resolution_clock::now();
 
-            //PRIMERO MANDO AL SERVER
-            //no se si pasar el audio manager aca para reproducir el sonido del disparo es lo mejor
-            //pero por ahora funciona...
             done = eventProcessor.processGameEvents(window, &game, duck_id);
 
             if(game.music){
@@ -464,21 +412,18 @@ int SDLHandler::runGame(SDL_Window *window, SDL_Renderer *renderer, Queue<Comman
                 audioManager->setSoundEffectVolume(0);
             }
 
-            //LUEGO RECIBO DEL SERVER Y HAGO EL RENDER
             Message message = handleMessages(&game, message_queue);
-            //std::cout << "El message type es: " << static_cast<unsigned int>(message.type) << "\n";
 
             if(message.type == END_GAME){
                 std::cout << "TERMINO LA PARTIDA"<< "\n";
                 std::cout << "El ganador fue el pato "<< message.duck_winner  << "\n";
-
                 done = ERROR;
                 break;
             }
 
             if(message.type == EXIT_GAME){
                 std::cout << "Lo siento, parece que el servidor cerró"<< "\n";
-
+                screenManager->showServerIsDownScreen();
                 done = ERROR;
                 break;
             }
@@ -519,7 +464,7 @@ int SDLHandler::run(uint16_t lobby_id, Queue<Command>& command_queue, Queue<Mess
     screenManager->renderStaticLobby();
     screenManager->showLobbyScreen();
     if(waitForStartGame(lobby_id, command_queue, message_queue, protocol) == ERROR) {
-        std::cout << "Parece que hubo un error, el juego no empezara"<< std::endl;
+        std::cout << "Hubo un error inesperado, el juego no empezara"<< std::endl;
         SDL_DestroyWindow(window);
         SDL_DestroyRenderer(renderer);
         command_queue.close();
@@ -527,15 +472,9 @@ int SDLHandler::run(uint16_t lobby_id, Queue<Command>& command_queue, Queue<Mess
         return ERROR;
     }
 
-    if (lobby_exit) {
-        std::cout << "Sali del lobby!"<< std::endl;
-        return SUCCESS;
-    }
-
-    //recibo un nuevo id, el cual corresponde a mi pato
+    //recibo el nuevo id, el cual corresponde a mi pato
     Message first_game_message = message_queue.pop();
     duck_id = first_game_message.player_id;
-    std::cout << "My DUCK ID is: " << duck_id  << std::endl;
 
     int result = runGame(window, renderer, command_queue, message_queue);
     command_queue.close();

@@ -80,6 +80,9 @@ void Lobby::clean_disconnected_players() {
 
 void Lobby::clean_all_players() {
     for (const auto& player : lobby_players) {
+        LobbyMessage msg;
+        msg.type = EXIT_GAME;
+        player->send_lobby_message(msg);
         player->stop();
     }
 

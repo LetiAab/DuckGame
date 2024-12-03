@@ -23,6 +23,9 @@ bool ServerProtocol::send_lobby_message(const LobbyMessage& message){
     if (!skt.sendall(&message.type, sizeof(message.type), &was_closed) || was_closed) {
         throw LibError(errno, CLOSED_SOCKET);
     }
+    if(message.type == EXIT_GAME){
+        return true;
+    }
     
     if (!skt.sendall(&message.player_id, sizeof(message.player_id), &was_closed) || was_closed) {
         throw LibError(errno, CLOSED_SOCKET);

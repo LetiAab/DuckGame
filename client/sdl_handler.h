@@ -11,6 +11,7 @@
 #include "sdl_renderermanager.h"
 #include "sdl_screenmanager.h"
 #include "sdl_audiomanager.h"
+#include <map>
 
 
 class SDLHandler {
@@ -20,6 +21,17 @@ public:
     int run(uint16_t lobby_id, Queue<Command>& command_queue, Queue<Message>& message_queue, ClientProtocol& protocol);
 
 private:
+    std::map<uint8_t, int> weaponAmmo = {
+        {PEW_PEW_LASER_ID, 12},
+        {LASER_RIFLE_ID, 10},
+        {AK_47_ID, 30},
+        {DUEL_PISTOL_ID, 1},
+        {COWBOY_PISTOL_ID, 6},
+        {MAGNUM_ID, 6},
+        {SHOTGUN_ID, 2},
+        {SNIPER_ID, 3}
+    };
+
     bool is_alive;
     TextureHandler handle_textures;
     EventProcessor eventProcessor;

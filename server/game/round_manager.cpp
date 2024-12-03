@@ -52,30 +52,32 @@ bool RoundManager::check_end_of_five_rounds(){
 
 
 bool RoundManager::check_end_of_match() {
-    //verifico que pasaron 5 rondas
     if (!check_end_of_five_rounds()){
         return false;
     }
 
-    int ducks_with_ten_victories = 0;
+    int max_victories = 0;
     char winner = '0';
+    bool tie = false;
 
     for (const auto& duck : ducks) {
         if (duck.rounds_won >= 10) {
-            ducks_with_ten_victories++;
-            winner = duck.duck_id;
-            if (ducks_with_ten_victories > 1) {
-                return false; // Hay más de un pato con 10 o más victorias.
+            if (duck.rounds_won > max_victories) {
+                max_victories = duck.rounds_won;
+                winner = duck.duck_id;
+                tie = false;
+            } else if (duck.rounds_won == max_victories) {
+                tie = true;
             }
         }
     }
 
-    bool result = ducks_with_ten_victories == 1;
+    if (tie || max_victories < 10) {
+        return false;
+    }
 
-    //guardo el id del pato que gano el partido
-    if (result){duck_winner = winner; }
-
-    return result;
+    duck_winner = winner;
+    return true;
 }
 
 char RoundManager::get_duck_winner(){
