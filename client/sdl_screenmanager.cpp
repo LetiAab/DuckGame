@@ -80,6 +80,16 @@ void ScreenManager::showGetReadyScreen(int round) {
     SDL_DestroyTexture(static_scene);
 }
 
+void ScreenManager::showServerIsDownScreen() {
+    SDL_RenderSetViewport(renderer, NULL);
+
+    SDL_RenderClear(renderer);
+    SDL_RenderCopy(renderer, getTexture("problem"), NULL, NULL);
+    SDL_RenderPresent(renderer);
+
+    SDL_Delay(4000);
+}
+
 
 
 void ScreenManager::showNextRoundScreen(uint16_t id_winner) {
@@ -199,7 +209,7 @@ void ScreenManager::showScoreboard(std::vector<int> scoreboard, bool end) {
 
     SDL_RenderCopy(renderer, getTexture("screen"), NULL, NULL);
     SDL_Point t_size;
-    
+
     if(end){
         texture_handler.saveText("8bit_bigger", "Final Scores", {255, 255, 255, 255});
         SDL_QueryTexture(texture_handler.getText("Final Scores"), NULL, NULL, &t_size.x, &t_size.y);
@@ -280,7 +290,7 @@ void ScreenManager::loadLobbyScreen() {
                         {"next-round-background", "round/nightsky"},
                         {"screen", "round/screen"},
                         {"firework", "round/firework"},
-                        {"duck", "duck"}};
+                        {"problem", "technical-problem"}};
 
     // Cargar imagenes del lobby
     for (auto& texture : textures_to_load) {
@@ -288,6 +298,7 @@ void ScreenManager::loadLobbyScreen() {
         lobby_textures[texture.first] = sdl_texture;
     }
     texture_handler.loadFont("04B_16", "04B_30__.TTF", 90);
+    texture_handler.loadFont("04B_16_small", "04B_30__.TTF", 50);
     texture_handler.loadFont("8bit", "8bitOperatorPlus8-Regular.ttf", 25);
     texture_handler.loadFont("8bit_bigger", "8bitOperatorPlus8-Regular.ttf", 70);
 

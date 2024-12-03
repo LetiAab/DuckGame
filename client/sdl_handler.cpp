@@ -355,6 +355,7 @@ int SDLHandler::waitForStartGame(uint16_t lobby_id, Queue<Command>& command_queu
                     lobby_exit = true;
                     is_alive = false;
                     done = ERROR;
+                    screenManager->showServerIsDownScreen();
                     break;
                 }
 
@@ -472,6 +473,7 @@ int SDLHandler::runGame(SDL_Window *window, SDL_Renderer *renderer, Queue<Comman
 
             if(message.type == EXIT_GAME){
                 std::cout << "Lo siento, parece que el servidor cerró"<< "\n";
+                screenManager->showServerIsDownScreen();
                 done = ERROR;
                 break;
             }
