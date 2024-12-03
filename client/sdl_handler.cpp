@@ -351,9 +351,10 @@ int SDLHandler::waitForStartGame(uint16_t lobby_id, Queue<Command>& command_queu
             Message message;
             if (message_queue.try_pop(message)) {
                 if (message.type == EXIT_GAME){
-                    std::cout << "Comando para salir..." << "\n";
+                    std::cout << "Lo siento, parece que el servidor cerro" << "\n";
                     lobby_exit = true;
                     is_alive = false;
+                    done = ERROR;
                     break;
                 }
 
@@ -448,9 +449,6 @@ int SDLHandler::runGame(SDL_Window *window, SDL_Renderer *renderer, Queue<Comman
         while (!done) {
             const auto start = std::chrono::high_resolution_clock::now();
 
-            //PRIMERO MANDO AL SERVER
-            //no se si pasar el audio manager aca para reproducir el sonido del disparo es lo mejor
-            //pero por ahora funciona...
             done = eventProcessor.processGameEvents(window, &game, duck_id);
 
             if(game.music){
@@ -463,21 +461,17 @@ int SDLHandler::runGame(SDL_Window *window, SDL_Renderer *renderer, Queue<Comman
                 audioManager->setSoundEffectVolume(0);
             }
 
-            //LUEGO RECIBO DEL SERVER Y HAGO EL RENDER
             Message message = handleMessages(&game, message_queue);
-            //std::cout << "El message type es: " << static_cast<unsigned int>(message.type) << "\n";
 
             if(message.type == END_GAME){
                 std::cout << "TERMINO LA PARTIDA"<< "\n";
                 std::cout << "El ganador fue el pato "<< message.duck_winner  << "\n";
-
                 done = ERROR;
                 break;
             }
 
             if(message.type == EXIT_GAME){
                 std::cout << "Lo siento, parece que el servidor cerró"<< "\n";
-
                 done = ERROR;
                 break;
             }
@@ -526,12 +520,8 @@ int SDLHandler::run(uint16_t lobby_id, Queue<Command>& command_queue, Queue<Mess
         return ERROR;
     }
 
-    if (lobby_exit) {
-        std::cout << "Sali del lobby!"<< std::endl;
-        return SUCCESS;
-    }
 
-    //recibo un nuevo id, el cual corresponde a mi pato
+    //recibo el nuevo id, el cual corresponde a mi pato
     Message first_game_message = message_queue.pop();
     duck_id = first_game_message.player_id;
     std::cout << "My DUCK ID is: " << duck_id  << std::endl;
