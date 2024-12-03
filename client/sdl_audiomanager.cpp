@@ -44,6 +44,10 @@ void AudioManager::setMusicVolume(int volume) {
     Mix_VolumeMusic(volume);
 }
 
+bool AudioManager::isPlaying() {
+    return Mix_PlayingMusic() && Mix_VolumeMusic(-1) > 0; //con -1 devuelve el volumen actual sin cambiarlo
+}
+
 bool AudioManager::loadSoundEffect(const std::string& path) {
     soundEffect = Mix_LoadWAV(path.c_str());
     if (!soundEffect) {

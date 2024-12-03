@@ -15,6 +15,7 @@ public:
     void playMusic(int loops = -1);
     void stopMusic();
     void setMusicVolume(int volume);  // 0 - 128
+    bool isPlaying();
 
     // Métodos para manejar efectos de sonido
     bool loadSoundEffect(const std::string& path);

@@ -7,7 +7,7 @@ ScreenManager::ScreenManager(SDL_Renderer* renderer, TextureHandler& texture_han
     renderer(renderer), texture_handler(texture_handler) {}
 
 void ScreenManager::showStartScreen() {
-    SDL_Delay(1); //cambiar a 1000
+    SDL_Delay(1000);
     SDL_Texture* start_logo = texture_handler.loadSimpleTexture("start/duckgame_logo");
     SDL_Point size;
     SDL_QueryTexture(start_logo, NULL, NULL, &size.x, &size.y);
@@ -16,7 +16,7 @@ void ScreenManager::showStartScreen() {
     SDL_RenderCopy(renderer, start_logo, NULL, &start_logo_rect);
     SDL_RenderPresent(renderer);
 
-    SDL_Delay(2); // cambiar a 2000
+    SDL_Delay(2000);
     // Fade out effect
     for (int alpha = 255; alpha >= 0; alpha -= 5) {
         SDL_SetTextureAlphaMod(start_logo, alpha);
@@ -89,8 +89,6 @@ void ScreenManager::showServerIsDownScreen() {
 
     SDL_Delay(4000);
 }
-
-
 
 void ScreenManager::showNextRoundScreen(uint16_t id_winner) {
     if (id_winner < 1 || id_winner > 6) return;
@@ -265,8 +263,6 @@ void ScreenManager::showScoreboard(std::vector<int> scoreboard, bool end) {
     SDL_DestroyTexture(static_scene);
 }
 
-
-
 std::vector<DuckScore> ScreenManager::sortScoreboard(std::vector<int> scoreboard) {
     std::vector<DuckScore> duck_scores;
     for (size_t i = 0; i < scoreboard.size(); ++i) {
@@ -279,7 +275,6 @@ std::vector<DuckScore> ScreenManager::sortScoreboard(std::vector<int> scoreboard
 
     return duck_scores;
 }
-
 
 void ScreenManager::loadLobbyScreen() {
     std::unordered_map<std::string, std::string> textures_to_load = {

@@ -10,6 +10,7 @@
 SDLHandler::SDLHandler(): is_alive(true), handle_textures(nullptr), duck_id(0), lobby_exit(false) {
     SDL_Init(SDL_INIT_VIDEO);
     SDL_Init(SDL_INIT_AUDIO);
+    audioManager = std::make_unique<AudioManager>();
 }
 
 SDLHandler::~SDLHandler() {
@@ -74,11 +75,7 @@ void SDLHandler::loadGame(GameState &game, Queue<Message> &message_queue) {
 
     camera = std::make_unique<Camera>();
     rendererManager = std::make_unique<RendererManager>(game.renderer, handle_textures, *camera);
-
-    audioManager = std::make_unique<AudioManager>();
-
 }
-
 
 Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queue) {
     
@@ -277,19 +274,18 @@ Message SDLHandler::handleMessages(GameState *game, Queue<Message> &message_queu
     return message;
 }
 
-
-
 //** Lobby **//
 int SDLHandler::waitForStartGame(uint16_t lobby_id, Queue<Command>& command_queue, Queue<Message>& message_queue, ClientProtocol& protocol) {
     int done = SUCCESS;
     int chosen_match = 0;
     bool selected_match = false;
-    std::cout << "Seleccionando... " << selected_match << "\n";
+    const std::string path = std::string(AUDIO_PATH) + "quack-button.wav";
+    audioManager->loadSoundEffect(path);
 
     while (is_alive) {
         const auto start = std::chrono::high_resolution_clock::now();
 
-        done = eventProcessor.processLobbyEvents(screenManager.get(), command_queue, lobby_id, is_alive, chosen_match, selected_match);
+        done = eventProcessor.processLobbyEvents(screenManager.get(), command_queue, lobby_id, is_alive, chosen_match, selected_match, audioManager.get());
 
         try {
             Message message;
@@ -365,7 +361,6 @@ int SDLHandler::waitForStartGame(uint16_t lobby_id, Queue<Command>& command_queu
     return done;
 }
 
-
 void SDLHandler::initializeWindow(SDL_Window*& window, SDL_Renderer*& renderer) {
     window = SDL_CreateWindow("Duck Game",
                               SDL_WINDOWPOS_UNDEFINED,
@@ -375,6 +370,10 @@ void SDLHandler::initializeWindow(SDL_Window*& window, SDL_Renderer*& renderer) 
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     handle_textures = TextureHandler(renderer);
     screenManager = std::make_unique<ScreenManager>(renderer, handle_textures);
+    const std::string path = std::string(AUDIO_PATH) +"duck-game-intro.wav";
+    audioManager->loadMusic(path);
+    audioManager->playMusic(-1);
+    audioManager->setMusicVolume(30);
     screenManager->showStartScreen();
 }
 
@@ -476,6 +475,7 @@ int SDLHandler::run(uint16_t lobby_id, Queue<Command>& command_queue, Queue<Mess
     Message first_game_message = message_queue.pop();
     duck_id = first_game_message.player_id;
 
+    audioManager->stopMusic();
     int result = runGame(window, renderer, command_queue, message_queue);
     command_queue.close();
     message_queue.close();

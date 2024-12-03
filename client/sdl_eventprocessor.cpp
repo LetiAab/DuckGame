@@ -127,7 +127,7 @@ uint8_t EventProcessor::handleKeyUp(SDL_Keycode key) {
     return move;
 }
 
-int EventProcessor::processLobbyEvents(ScreenManager* screenManager, Queue<Command>& command_queue, uint16_t id, bool& is_alive, int& chosen_match, bool& selected_match) {
+int EventProcessor::processLobbyEvents(ScreenManager* screenManager, Queue<Command>& command_queue, uint16_t id, bool& is_alive, int& chosen_match, bool& selected_match, AudioManager* audioManager) {
     int done = SUCCESS;
     SDL_Event event;
     int x, y;
@@ -145,45 +145,33 @@ int EventProcessor::processLobbyEvents(ScreenManager* screenManager, Queue<Comma
                     done = ERROR;
                     if (command_queue.try_push(Command(id, LOBBY_EXIT_CODE))){
                         std::cout << "Escape!" << "\n";
-                        //command_queue.close();
-                    };
-                    //command_queue.close();
-                    /*command_queue.push(Command(id, LOBBY_EXIT_CODE));
-                    done = ERROR;*/
+                    }
                 break;
                 case SDL_MOUSEBUTTONDOWN: {
-                    std::cout << "Mouse PRESSED\n";
                     x = event.button.x;
                     y = event.button.y;
-                    std::cout << "X: " << x << " Y: " << y << "\n";
+                    audioManager->playSoundEffect();
+                    audioManager->setSoundEffectVolume(100);
 
                     if (x >= start->x && x <= start->x+BUTTON_W && y >= start->y && y <= start->y+BUTTON_H) {
                         if (command_queue.try_push(Command(id, START_MATCH_CODE, chosen_match))){
                             std::cout << "Iniciando partida..." << "\n";
                         }
-                        //is_alive = false;
                         std::cout << "Empezo el juego!\n";
 
-
                     } else if (x >= new_match->x && x <= new_match->x+BUTTON_W && y >= new_match->y && y <= new_match->y+BUTTON_H) {
-                        //selected_match = false;
                         // si se presiona se crea una nueva partida => se escribe el id de la partida nueva
                         if (command_queue.try_push(Command(id, NEW_MATCH_CODE, chosen_match))){
                             std::cout << "Creando partida..." << "\n";
                         }
                     } else if (x >= list_matches->x && x <= list_matches->x+BUTTON_W && y >= list_matches->y && y <= list_matches->y+BUTTON_H) {
-                        // list matches
-                        // aparece un menu con las partidas disponibles
-                        // luego se puede presionar una de las partidas
-                        std::cout << "Ver listado de partidas\n";
+                        // aparece un menu con las partidas disponibles, luego se puede presionar una de las partidas
                         if (command_queue.try_push(Command(id, LIST_MATCH_AVAILABLE))){
                             std::cout << "Partidas disponibles..." << "\n";
                         };
                         selected_match = true;
-                        std::cout << "Seleccionando... " << selected_match << "\n";
                     } else if (selected_match && x >= 504 && x<= WINDOW_WIDTH && y >= 269 && y <= 446) {
-                        // join match
-                        // si se presiona se conecta a la partida seleccionada
+                        // si se presiona un numero, se conecta a la partida seleccionada
                         if (chosen_match == 0) {
                             screenManager->renderSelectedMatch(x, y, chosen_match);
                             std::cout << "Partida seleccionada: " << chosen_match << "\n";
@@ -206,16 +194,20 @@ int EventProcessor::processLobbyEvents(ScreenManager* screenManager, Queue<Comma
                         auto stop_command = Command(id, LOBBY_EXIT_CODE);
                         if (command_queue.try_push(stop_command)){
                             std::cout << "Escape!" << "\n";
-                            //command_queue.close();
                         }
                         is_alive = false;
                         done = ERROR;
+                    } else if (event.key.keysym.sym == SDLK_m) {
+                        if (audioManager->isPlaying()) {
+                            audioManager->setMusicVolume(0);
+                        } else {
+                            audioManager->setMusicVolume(30);
+                        }
                     }
                 break;
                 case SDL_QUIT:
                     is_alive = false;
                     done = ERROR;
-                    //command_queue.close();
                 break;
                 default:
                     break;
