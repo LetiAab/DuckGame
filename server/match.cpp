@@ -33,9 +33,6 @@ bool Match::is_able_to_start(){
 
 void Match::start_match() {
 
-
-    //envio a cada jugador el id de su pato, el cual se usara durante todo el juego
-    //quizas tambien deberia mandarle su color (?)
     uint16_t duck_id = 1;
     for(auto& player: players){
         Message msg;
@@ -52,8 +49,6 @@ void Match::start_match() {
         player->start_playing();
     }
 
-    //cuando inicio el match tengo que crear a los patos dentro de la lista de patos del game
-
     game.set_players(players.size());
     game.start();
 
@@ -64,13 +59,11 @@ void Match::stop_match(){
     if(is_running){
         game.stop();
         game.join();
-        std::cout << "Match: joinie game"  << std::endl;
         for(auto& player: players){
             player->stop_playing();
         }
         
         players.clear();
-        std::cout << "Match: elimine a los players de mi partida"  << std::endl;
     }
 }
 

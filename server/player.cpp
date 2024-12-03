@@ -25,18 +25,14 @@ void Player::start_playing() {
 void Player::stop_playing() {
     connected = false;
     if(receiver.is_running()){
-    std::cout << "Player: voy a cerrar el protocolo"  << std::endl;
         protocol.shutdown();
     }
-    std::cout << "Player: voy a detener el receiver"  << std::endl;
+
     receiver.stop();
-    std::cout << "Player: voy a detener el sender"  << std::endl;
     sender.stop();
-    std::cout << "Player: voy a joinear el sender"  << std::endl;
     sender.join();
-    std::cout << "Player: voy a joinear el receiver"  << std::endl;
     receiver.join();
-    std::cout << "Player: listo"  << std::endl;
+    std::cout << "Player: libere mis recursos"  << std::endl;
 }
 
 uint16_t Player::get_player_id() { return player_id; }

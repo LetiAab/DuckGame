@@ -12,7 +12,6 @@ void Bullet::comenzar_trayectoria() {
 void Bullet::update_position() {
 
     if (should_erase) {
-        std::cout << "Debería eliminar esta bala pero la estoy actualizando, return \n";
         return;
     }
 
@@ -53,8 +52,6 @@ bool Bullet::get_bullet_message(Message& msg){
     msg.bullet_id = projectile_id;
     msg.bullet_type = projectile_type;
     msg.bullet_horizontal = horizontal;
-
-    //mandar flag del impacto (?)
 
     return true;
 

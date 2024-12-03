@@ -29,7 +29,6 @@ void Acceptor::run() {
         }
 
     } catch (const std::exception& e) {
-        std::cout << "Acceptor: atrape una excepcion"  << std::endl;
         is_alive = false;
     }
 }

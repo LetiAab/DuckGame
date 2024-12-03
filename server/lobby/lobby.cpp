@@ -20,7 +20,6 @@ void Lobby::run() {
     try {
         while (is_alive) {
             LobbyCommand cmd = lobby_queue.pop(); //bloqueante
-            std::cout << "Lobby: saque un comando de mi queue"  << std::endl;
             if(cmd.type == START_MATCH_CODE) {
                 process_start_match_command(cmd);
 
@@ -34,7 +33,8 @@ void Lobby::run() {
         }
 
     } catch (const ClosedQueue& e) {
-        std::cout << "Se cerró la queue del lobby\n";
+        is_alive = false;
+
     }
 }
 
@@ -53,7 +53,6 @@ void Lobby::clean_finished_matches() {
                              });
 
     matches.erase(it, matches.end());
-    //std::cout << "Lobby: borre el partido "  << std::endl;
 }
 
 void Lobby::clean_disconnected_players() {
@@ -113,7 +112,6 @@ void Lobby::stop() {
     clean_all_matches();
     std::cout << "Lobby: elimine todos los partidos"  << std::endl;
     lobby_queue.close();
-    std::cout << "Lobby: LISTO"  << std::endl;
 }
 
 Queue<LobbyCommand>& Lobby::get_lobby_queue() {
@@ -149,7 +147,6 @@ void Lobby::get_all_match_ids(std::vector<uint16_t>& match_ids) {
     for (auto& match : matches) {
         if (match->is_match_available()) {
             match_ids.push_back(match->get_match_id());
-            //std::cout << match->get_match_id() << std::endl;
         }
     }
 }
@@ -234,10 +231,8 @@ LobbyMessage Lobby::process_command(const LobbyCommand& cmd) {
     switch (type) {
         case NEW_MATCH_CODE: {
             std::unique_ptr<Match> new_match = std::make_unique<Match>(match_counter_ids);
-            //new_match->can_add_player();
 
             match_id = new_match->get_match_id();
-            //lobby_player->set_match_id(match_id);
 
             matches.push_back(std::move(new_match));
             match_counter_ids += 1;

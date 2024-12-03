@@ -60,23 +60,15 @@ bool Duck::pickUpItem(std::shared_ptr<Item> item) {
 void Duck::useOnHand() {
     if (!onHand) return;  // Verificamos si hay un item en la mano
 
-    std::cout << "Antes de los casteos" << "\n";
-
-    std::cout << "El id del item es " << onHand->getItemId() << "\n";
-
     if (auto w = std::dynamic_pointer_cast<Weapon>(onHand)) {
-        std::cout << "Entrando a set weapon, el id es " << w->getItemId() << "\n";
         setWeapon(w);
     } else if (auto a = std::dynamic_pointer_cast<Armor>(onHand)) {
-        std::cout << "Entrando a set armor" << "\n";
         setArmor(a);
     } else if (auto h = std::dynamic_pointer_cast<Helmet>(onHand)) {
-        std::cout << "Entrando a set helmet" << "\n";
         setHelmet(h);
     }
 
     onHand.reset();  // Libera el recurso
-    std::cout << "Después de reset: " << (onHand ? "No es nulo" : "Es nulo") << "\n";
 }
 
 void Duck::check_gravity(){
@@ -104,13 +96,13 @@ int Duck::update_life(){
 
     if(map->duckIsOverBullet(position)){
 
-        if (helmet != nullptr){ //si tengo helmet me saca el helmet (TENGO QUE AVISAR)
+        if (helmet != nullptr){ //si tengo helmet me saca el helmet
             helmet = nullptr;
             life_points -= 1;
             return HELMET_BROKE;
         }
 
-        if (armor != nullptr){ //si tengo armor me saca el armor (TENGO QUE AVISAR)
+        if (armor != nullptr){ //si tengo armor me saca el armor
             armor = nullptr;
             life_points -= 1;
             return ARMOR_BROKE;
@@ -126,7 +118,6 @@ int Duck::update_life(){
 
     if (is_dead) {
         map->cleanDuckOldPosition(position.x, position.y);
-        std::cout << "soy el pato muerto, me borre del mapa" << "\n";
     }
 
     return DEAD;
@@ -158,10 +149,9 @@ void Duck::update_position() {
         is_slippy = true;
     }
 
-    // std::cout << "Antes de move duck tiene x: " << position.x << " y: " << position.y << std::endl;
     //mueve al pato a la nueva posicion si esta libre o a la que este libre inmediatamente antes
     position = map->move_duck_to(position, new_pos, id_player);
-    // std::cout << "Después de move duck tiene x: " << position.x << " y: " << position.y << std::endl;
+
 
     // Ver si tiene una pared al lado
     if (next_to_wall()) {
@@ -183,11 +173,9 @@ void Duck::update_position() {
 
 
 void Duck::update_weapon(){
-    //if(is_dead){return;}
     
     if (weapon != nullptr) {
         if (weapon->getItemId() == GRENADE_ID) {
-            // Un poco feo este if, pero sino tengo que modificar la firma de la función
             Grenade* grenade = (Grenade*) weapon.get();
             if (grenade->update_weapon(position.x, position.y, looking, map, id_player))
                 weapon.reset();
@@ -236,8 +224,6 @@ void Duck::form_position_message(Message& msg){
 
 bool Duck::get_duck_position_message(Message& msg){
 
-    // std::cout << "POSICION DEL PATO MESSAGE" << "\n";
-
     if(is_dead){return false;}
 
     if(is_looking_up != was_looking_up){
@@ -253,9 +239,6 @@ bool Duck::get_duck_position_message(Message& msg){
         return true;
     }
 
-    //    std::cout << "Chequeo del mensaje, old position es x: " << old_position.x << " y: " << old_position.y <<
-    //            "y position es x: " << position.x << " y: " << position.y << "\n";
-            
     if (old_position.x == position.x && old_position.y == position.y){
         if(stop_notificated){
             return false;
@@ -355,7 +338,6 @@ bool Duck::disparar() {
     if(is_dead){return false;}
 
     if (weapon != nullptr) {
-        std::cout << "Soy pato, disparo desde x: " << position.x << " y: " << position.y << "\n";
         bool habia_municiones = (weapon->getMuniciones() > 0);
         if(!(weapon->disparar(position.x, position.y, looking, map, id_player, is_looking_up))){
             //si no pude disparar devuevlo false
@@ -429,8 +411,7 @@ std::shared_ptr<Weapon> Duck::dropWeapon() {
             weapon_banana->setPosition(position.x, position.y);
         }
 
-        // Transfiere la propiedad del shared_ptr
-        return std::move(weapon);  // Transfiere ownership y pone weapon en nullptr
+        return std::move(weapon);
     }
 
     return nullptr;

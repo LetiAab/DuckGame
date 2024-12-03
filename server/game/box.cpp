@@ -30,11 +30,9 @@ bool Box::isDestroyed() const {
 
 void Box::destroy(std::vector<std::shared_ptr<Item>>& items) {
     if (destroyed) {
-        std::cout << "La caja ya está destruida.\n";
         return;
     }
 
-    std::cout << "Rompiendo la caja en posición (" << position.x << ", " << position.y << ").\n";
     createItem(items);
     destroyed = true;
 }
@@ -84,14 +82,11 @@ void Box::createItem(std::vector<std::shared_ptr<Item>>& items) {
     item_id = item->getItemId();
     items.push_back(item);
 
-    std::cout << "La caja generó un ítem de tipo " << item_id << " en posición (" << position.x << ", " << position.y << ").\n";
 }
 
 bool Box::update_life(std::vector<std::shared_ptr<Item>>& items){
 
     if(map->boxIsOverBullet(position)){
-        std::cout << "LA CAJA ESTA SOBRE UNA BALA" << "\n";
-
         destroy(items);
         map->removeBox(position);
         return true;
