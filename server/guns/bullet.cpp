@@ -17,13 +17,8 @@ void Bullet::update_position() {
     }
 
     if(alcance <= 0){
-        //si recorrio su maximo tiene que frenar
         impacto = true;
     } else {
-
-        //std::cout << "Comienzo trayectoria desde x: " << position.x << " e y: " << position.y << std::endl;
-        //std::cout << "Speed x: " << speed.x << " y: " << speed.y << "\n";
-
 
         int delta_x = position.x + speed.x;
         int delta_y = position.y + speed.y;
@@ -34,7 +29,6 @@ void Bullet::update_position() {
         map->cleanBulletOldPosition(old_position);
         map->setBulletNewPosition(position);
         
-        //por ahora, le resto la velocidad en x ya que solo dispara en horizontal
         alcance -= (std::abs(speed.x) + std::abs(speed.y));
     }
 

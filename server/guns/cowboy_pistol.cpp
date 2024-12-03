@@ -5,11 +5,10 @@
 
 // 6 balas, Alcance: 20 tiles (20 x TILE_SIZE = 80)
 CowboyPistol::CowboyPistol(int x, int y)
-    : Weapon(COWBOY_PISTOL_ID, "Cowboy Pistol", 80, 0, 6, x, y) {}
+    : Weapon(COWBOY_PISTOL_ID, "Cowboy Pistol", COWBOY_PISTOL_RANGE, 0, COWBOY_PISTOL_AMMUNITION, x, y) {}
 
 
-//POR QUE SE LLAMA ASI LA FUNCION??????
-bool CowboyPistol::disparar_cowboy_pistol(int position_x, int position_y, char looking, GameMap* map, char id_player, bool is_looking_up) {
+bool CowboyPistol::disparar(int position_x, int position_y, char looking, GameMap* map, char id_player, bool is_looking_up) {
     if (municiones > 0) {
         //la bala debe aparecer fuera del pato, o sino se mata a si mismo
         int bullet_position_x = (looking == LOOKING_RIGHT) ? position_x + DUCK_SIZE_X : position_x -1;
@@ -22,16 +21,16 @@ bool CowboyPistol::disparar_cowboy_pistol(int position_x, int position_y, char l
             return false;
         }
 
-        int direccion_x = (looking == LOOKING_RIGHT) ? 6 : -6;
-        int direccion_y = 0;  // La bala se mueve horizonalmente
+        int direccion_x = (looking == LOOKING_RIGHT) ? BULLET_SPEED_X : -BULLET_SPEED_X;
+        int direccion_y = 0;
 
         if(is_looking_up){
             direccion_x = 0;
-            direccion_y = -6;
+            direccion_y = -BULLET_SPEED_Y;
 
         }
 
-        int bullet_id = municiones; //el id es el numero de muncion. Inteligente verdad?
+        int bullet_id = municiones;
 
         auto new_bullet = std::make_unique<Bullet>(bullet_id, bullet_pos, direccion_x, direccion_y, map, id_player, alcance, !is_looking_up);
         new_bullet->comenzar_trayectoria();

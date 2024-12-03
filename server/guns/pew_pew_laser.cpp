@@ -3,7 +3,7 @@
 
 // 12 rafagas, Alcance: 35 a 38 tiles (35 x TILE_SIZE = 140)
 PewPewLaser::PewPewLaser(int x, int y)
-    : Weapon(PEW_PEW_LASER_ID, "Pew Pew Laser", 140, 1, 12, x, y) {}
+    : Weapon(PEW_PEW_LASER_ID, "Pew Pew Laser", PEW_PEW_LASER_RANGE, 1, PEW_PEW_LASER_AMMUNITION, x, y) {}
 
 bool PewPewLaser::disparar(int position_x, int position_y, char looking, GameMap* map, char id_player, bool is_looking_up) {
     if (municiones > 0) {
@@ -18,15 +18,15 @@ bool PewPewLaser::disparar(int position_x, int position_y, char looking, GameMap
             return false;
         }
 
-        int direccion_x = (looking == LOOKING_RIGHT) ? 6 : -6;
+        int direccion_x = (looking == LOOKING_RIGHT) ? BULLET_SPEED_X : -BULLET_SPEED_X;
         int direccion_y = 0;  // La bala se mueve horizonalmente
 
         if(is_looking_up){
             direccion_x = 0;
-            direccion_y = -6;
+            direccion_y = -BULLET_SPEED_Y;
         }
         for (int i = -1; i < 2; i++){
-                int laser_id = municiones * PEW_PEW_LASER_ID + i; 
+                int laser_id = municiones * PEW_PEW_LASER_ID + i;
 
                 if(is_looking_up){
                     direccion_x = direccion_x + i;

@@ -5,7 +5,7 @@
 
 // 3 balas, Alcance: 64 tiles (64 x TILE_SIZE = 256)
 Sniper::Sniper(int x, int y)
-    : Weapon(SNIPER_ID, "Sniper", 256, 0, 3, x, y) {}  // Inicializar posición
+    : Weapon(SNIPER_ID, "Sniper", SNIPER_RANGE, 0, SNIPER_AMMUNITION, x, y) {}  // Inicializar posición
 
 bool Sniper::disparar(int position_x, int position_y, char looking, GameMap* map, char id_player, bool is_looking_up) {
     if (municiones > 0) {
@@ -20,12 +20,12 @@ bool Sniper::disparar(int position_x, int position_y, char looking, GameMap* map
             return false;
         }
 
-        int direccion_x = (looking == LOOKING_RIGHT) ? 6 : -6;
+        int direccion_x = (looking == LOOKING_RIGHT) ? BULLET_SPEED_X : -BULLET_SPEED_X;
         int direccion_y = 0;  // La bala se mueve horizonalmente
         
         if(is_looking_up){
             direccion_x = 0;
-            direccion_y = -6;
+            direccion_y = -BULLET_SPEED_Y;
         }
 
         int bullet_id = municiones; //el id es el numero de muncion. Inteligente verdad?

@@ -5,7 +5,7 @@
 
 // 1 bala, Alcance: 5 tiles
 DuelPistol::DuelPistol(int x, int y)
-    : Weapon(DUEL_PISTOL_ID, "Duel Pistol", 5, 0, 1, x, y) {}
+    : Weapon(DUEL_PISTOL_ID, "Duel Pistol", DUEL_PISTOL_RANGE, 0, DUEL_PISTOL_AMMUNITION, x, y) {}
 
 bool DuelPistol::disparar(int position_x, int position_y, char looking, GameMap* map, char id_player, bool is_looking_up) {
     if (municiones > 0) {
@@ -27,16 +27,16 @@ bool DuelPistol::disparar(int position_x, int position_y, char looking, GameMap*
         std::uniform_int_distribution<> distrib(-3, 3);
         int random_dispersion = distrib(gen);
 
-        int direccion_x = (looking == LOOKING_RIGHT) ? 6 : -6;
-        int direccion_y = 0 + random_dispersion;  // La bala se mueve horizonalmente
+        int direccion_x = (looking == LOOKING_RIGHT) ? BULLET_SPEED_X : -BULLET_SPEED_X;
+        int direccion_y = 0 + random_dispersion;
 
         if(is_looking_up){
             direccion_x = 0 + random_dispersion;
-            direccion_y = -6;
+            direccion_y = -BULLET_SPEED_Y;
 
         }
 
-        int bullet_id = municiones; //el id es el numero de muncion. Inteligente verdad?
+        int bullet_id = municiones;
 
 
 

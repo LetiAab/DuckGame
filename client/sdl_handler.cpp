@@ -65,16 +65,13 @@ void SDLHandler::loadGame(GameState &game, Queue<Message> &message_queue) {
         {"grave", "grave", 1}
     };
 
-    // Cargo las texturas
     int frame_width = 0, frame_height = 0;
     for (const TextureInfo& texture_info : textures_to_load) {
         handle_textures.loadTexture(texture_info, &frame_width, &frame_height);
     }
 
-    // Recibo e inicializo los elementos del juego
     gameInitializer.initializeGame(message_queue, game, frame_width, frame_height);
-    
-    // Inicializo el render manager
+
     camera = std::make_unique<Camera>();
     rendererManager = std::make_unique<RendererManager>(game.renderer, handle_textures, *camera);
 
@@ -297,40 +294,45 @@ int SDLHandler::waitForStartGame(uint16_t lobby_id, Queue<Command>& command_queu
         try {
             Message message;
             if (message_queue.try_pop(message)) {
-                if (message.type == EXIT_GAME){
-                    std::cout << "Lo siento, parece que el servidor cerro" << "\n";
-                    lobby_exit = true;
-                    is_alive = false;
-                    done = ERROR;
-                    screenManager->showServerIsDownScreen();
-                    break;
-                }
-
-                if (message.type == NEW_MATCH_CODE){
-                    std::cout << "Partida creada con id: " << static_cast<int>(message.current_match_id) << "\n";
-                    screenManager->renderNewMatchText(message.current_match_id);
-                }
-
-                if (message.type == LIST_MATCH_AVAILABLE) {
-                    screenManager->renderAvailableMatches(message.existing_matches);
-                }
-
-                if (message.type == EXISTING_MATCH_CODE){
-                    std::cout << "Conectado a partida con id: " << static_cast<int>(message.current_match_id) << "\n";
-                }
-
-                if (message.type == LOBBY_COMMAND_FAIL){
-                    std::cout << "Ups! parece que no puedes realizar esa accion" << "\n";
-                }
-
-                if (message.type == START_MATCH_CODE){
-                    chosen_match = message.current_match_id;
-                    std::cout << "Partida iniciada con id: " << static_cast<int>(chosen_match) << "\n";
-                    if (protocol.send_command(Command(lobby_id, LOBBY_STOP_CODE))){
-                        std::cout << "Me desconecte del lobby. Ahora voy a comunicarme con el juego" << "\n";
+                switch (message.type) {
+                    case EXIT_GAME:
+                        std::cout << "El servidor se desconectó" << "\n";
+                        lobby_exit = true;
                         is_alive = false;
+                        done = ERROR;
+                        screenManager->showServerIsDownScreen();
                         break;
-                    }
+
+                    case NEW_MATCH_CODE:
+                        std::cout << "Partida creada con id: " << static_cast<int>(message.current_match_id) << "\n";
+                        screenManager->renderNewMatchText(message.current_match_id);
+                        break;
+
+                    case LIST_MATCH_AVAILABLE:
+                        screenManager->renderAvailableMatches(message.existing_matches);
+                        break;
+
+                    case EXISTING_MATCH_CODE:
+                        std::cout << "Conectado a partida con id: " << static_cast<int>(message.current_match_id) << "\n";
+                        break;
+
+                    case LOBBY_COMMAND_FAIL:
+                        std::cout << "Ups! parece que no puedes realizar esa accion" << "\n";
+                        break;
+
+                    case START_MATCH_CODE:
+                        chosen_match = message.current_match_id;
+                        std::cout << "Partida iniciada con id: " << static_cast<int>(chosen_match) << "\n";
+                        if (protocol.send_command(Command(lobby_id, LOBBY_STOP_CODE))) {
+                            std::cout << "Me desconecte del lobby. Ahora voy a comunicarme con el juego" << "\n";
+                            is_alive = false;
+                            break;
+                        }
+                        break;
+
+                    default:
+                        std::cerr << "Tipo de mensaje no reconocido: " << message.type << "\n";
+                        break;
                 }
 
                 std::cout << "\n";
@@ -362,6 +364,7 @@ int SDLHandler::waitForStartGame(uint16_t lobby_id, Queue<Command>& command_queu
     }
     return done;
 }
+
 
 void SDLHandler::initializeWindow(SDL_Window*& window, SDL_Renderer*& renderer) {
     window = SDL_CreateWindow("Duck Game",
@@ -461,7 +464,7 @@ int SDLHandler::run(uint16_t lobby_id, Queue<Command>& command_queue, Queue<Mess
     screenManager->renderStaticLobby();
     screenManager->showLobbyScreen();
     if(waitForStartGame(lobby_id, command_queue, message_queue, protocol) == ERROR) {
-        std::cout << "Parece que hubo un error, el juego no empezara"<< std::endl;
+        std::cout << "Hubo un error inesperado, el juego no empezara"<< std::endl;
         SDL_DestroyWindow(window);
         SDL_DestroyRenderer(renderer);
         command_queue.close();
@@ -469,11 +472,9 @@ int SDLHandler::run(uint16_t lobby_id, Queue<Command>& command_queue, Queue<Mess
         return ERROR;
     }
 
-
     //recibo el nuevo id, el cual corresponde a mi pato
     Message first_game_message = message_queue.pop();
     duck_id = first_game_message.player_id;
-    std::cout << "My DUCK ID is: " << duck_id  << std::endl;
 
     int result = runGame(window, renderer, command_queue, message_queue);
     command_queue.close();

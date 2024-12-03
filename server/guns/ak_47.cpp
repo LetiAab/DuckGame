@@ -3,7 +3,7 @@
 
 // 30 balas, Alcance: 13 tiles (13 x TILE_SIZE = 52)
 Ak47::Ak47(int x, int y)
-    : Weapon(AK_47_ID, "Ak 47", 52, 0, 30, x, y) {}
+    : Weapon(AK_47_ID, "Ak 47", AK_47_RANGE, 0, AK_47_AMMUNITION, x, y) {}
 
 bool Ak47::disparar(int position_x, int position_y, char looking, GameMap* map, char id_player, bool is_looking_up) {
     if (municiones > 0) {
@@ -26,18 +26,16 @@ bool Ak47::disparar(int position_x, int position_y, char looking, GameMap* map, 
         int dispersion_disparo = (dispersion % 2 == 0) ? dispersion : (0-dispersion);
 
 
-        int direccion_x = (looking == LOOKING_RIGHT) ? 6 : -6;
-        int direccion_y = 0 + dispersion_disparo;  // La bala se mueve horizonalmente
+        int direccion_x = (looking == LOOKING_RIGHT) ? BULLET_SPEED_X : -BULLET_SPEED_X;
+        int direccion_y = 0 + dispersion_disparo;
 
         if(is_looking_up){
             direccion_x = 0 + dispersion_disparo;
-            direccion_y = -6;
+            direccion_y = -BULLET_SPEED_Y;
 
         }
 
-        int bullet_id = municiones; //el id es el numero de muncion. Inteligente verdad?
-
-
+        int bullet_id = municiones;
 
         auto new_bullet = std::make_unique<Bullet>(bullet_id, bullet_pos, direccion_x, direccion_y, map, id_player, alcance, !is_looking_up);
         new_bullet->comenzar_trayectoria();

@@ -3,7 +3,7 @@
 
 // 10 rayos, Alcance: 30 tiles (30 x TILE_SIZE = 120)
 LaserRifle::LaserRifle(int x, int y)
-    : Weapon(LASER_RIFLE_ID, "Laser Rifle", 120, 0, 10, x, y) {}
+    : Weapon(LASER_RIFLE_ID, "Laser Rifle", LASER_RIFLE_RANGE, 0, LASER_RIFLE_AMMUNITION, x, y) {}
 
 bool LaserRifle::disparar(int position_x, int position_y, char looking, GameMap* map, char id_player,  bool is_looking_up) {
     if (municiones > 0) {
@@ -18,15 +18,15 @@ bool LaserRifle::disparar(int position_x, int position_y, char looking, GameMap*
             return false;
         }
 
-        int direccion_x = (looking == LOOKING_RIGHT) ? 6 : -6;
-        int direccion_y = 6;  // La dispersion de 45 grados se hace igualando la speed de x y de y
+        int direccion_x = (looking == LOOKING_RIGHT) ? BULLET_SPEED_X : -BULLET_SPEED_X;
+        int direccion_y = BULLET_SPEED_Y;  // La dispersion de 45 grados se hace igualando la speed de x y de y
 
         if(is_looking_up){
-            direccion_x = 6;
-            direccion_y = -6;
+            direccion_x = BULLET_SPEED_X;
+            direccion_y = -BULLET_SPEED_Y;
         }
 
-        int laser_id = municiones; //el id es el numero de muncion. Inteligente verdad?
+        int laser_id = municiones;
 
         std::cout << "Creada la bala, a darle vida" << std::endl;
         auto new_laser = std::make_unique<BouncingLaser>(laser_id, laser_pos, direccion_x, direccion_y, map, id_player, alcance, !is_looking_up);

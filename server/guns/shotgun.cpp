@@ -3,7 +3,7 @@
 
 // 2 disparos, Alcance: 7 a 9 tiles (7 x TILE_SIZE = 28)
 Shotgun::Shotgun(int x, int y)
-    : Weapon(SHOTGUN_ID, "Shotgun", 28, 0, 2, x, y), recargando(false) {}
+    : Weapon(SHOTGUN_ID, "Shotgun", SHOTGUN_RANGE, 0, SHOTGUN_AMMUNITION, x, y), recargando(false) {}
 
 bool Shotgun::disparar(int position_x, int position_y, char looking, GameMap* map, char id_player, bool is_looking_up) {
     if (municiones > 0) {
@@ -22,12 +22,12 @@ bool Shotgun::disparar(int position_x, int position_y, char looking, GameMap* ma
             return false;
         }
 
-        int direccion_x = (looking == LOOKING_RIGHT) ? 6 : -6;
+        int direccion_x = (looking == LOOKING_RIGHT) ? BULLET_SPEED_X : -BULLET_SPEED_Y;
         int direccion_y = 0;  // La bala se mueve horizonalmente
 
         if(is_looking_up){
             direccion_x = 0;
-            direccion_y = -6;
+            direccion_y = -BULLET_SPEED_Y;
         }
 
         for (int i = -3; i < 4; i++){
