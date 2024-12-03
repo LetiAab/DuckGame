@@ -1,4 +1,4 @@
-#include "resolver.h"
+#include "common/resolver.h"
 
 #include <stdexcept>
 
@@ -11,8 +11,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#include "liberror.h"
-#include "resolvererror.h"
+#include "common/liberror.h"
+#include "common/resolvererror.h"
 
 Resolver::Resolver(const char* hostname, const char* servname, bool is_passive) {
     struct addrinfo hints;

@@ -2,8 +2,8 @@
 
 #include <iostream>
 
-#include "../../common/liberror.h"
-#include "../../common/constants.h"
+#include "common/liberror.h"
+#include "common/constants.h"
 
 
 LobbyReceiver::LobbyReceiver(ServerProtocol& protocol, Queue<LobbyCommand>& lobby_queue):

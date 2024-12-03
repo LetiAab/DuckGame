@@ -5,8 +5,8 @@
 #include <vector>
 
 #include "bouncing_laser.h"
-#include "../../common/constants.h"
-#include "../../common/position.h"
+#include "common/constants.h"
+#include "common/position.h"
 #include "../guns/weapon.h"
 
 class GameMap; // Declaración anticipada de la clase GameMap 

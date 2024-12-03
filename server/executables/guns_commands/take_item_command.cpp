@@ -1,6 +1,6 @@
 #include "take_item_command.h"
 #include <iostream>
-#include "../../../common/constants.h"
+#include "common/constants.h"
 
 TakeItemCommand::TakeItemCommand(uint16_t player_id) : player_id(player_id) {}
 

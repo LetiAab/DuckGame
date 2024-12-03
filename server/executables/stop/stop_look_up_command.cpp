@@ -1,6 +1,6 @@
 #include "stop_look_up_command.h"
 #include <iostream>
-#include "../../../common/constants.h"
+#include "common/constants.h"
 
 StopLookUpCommand::StopLookUpCommand(uint16_t player_id) : player_id(player_id) {}
 

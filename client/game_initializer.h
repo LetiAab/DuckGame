@@ -2,7 +2,7 @@
 #define GAME_INITIALIZER_H
 
 #include "game_state.h"
-#include "../common/message.h"
+#include "common/message.h"
 
 class GameInitializer {
 public:

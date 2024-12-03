@@ -6,7 +6,7 @@
 
 #include "bullet.h"
 #include "../game/game_map.h"
-//#include "../common/constants.h"
+//#include "common/constants.h"
 #include "weapon.h"
 
 class Bullet;  // Declaración anticipada de la clase Bullet

@@ -3,8 +3,8 @@
 
 #include "client_protocol.h"
 #include "game_initializer.h"
-#include "../common/message.h"
-#include "../common/liberror.h"
+#include "common/message.h"
+#include "common/liberror.h"
 #include "sdl_texturehandler.h"
 #include "game_state.h"
 #include "sdl_eventprocessor.h"

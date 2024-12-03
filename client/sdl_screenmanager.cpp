@@ -1,6 +1,6 @@
 #include "sdl_screenmanager.h"
 
-#include "../common/constants.h"
+#include "common/constants.h"
 #include <algorithm>
 
 ScreenManager::ScreenManager(SDL_Renderer* renderer, TextureHandler& texture_handler) :

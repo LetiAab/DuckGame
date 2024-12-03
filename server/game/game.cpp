@@ -1,6 +1,6 @@
 #include "game.h"
 
-#include "../../common/constants.h"
+#include "common/constants.h"
 #include "../guns/sniper.h"
 #include "../guns/cowboy_pistol.h"
 

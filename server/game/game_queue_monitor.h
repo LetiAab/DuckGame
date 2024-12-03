@@ -3,8 +3,8 @@
 #include <mutex>
 #include <string>
 
-#include "../../common/message.h"
-#include "../../common/queue.h"
+#include "common/message.h"
+#include "common/queue.h"
 
 #ifndef GAME_QUEUE_MONITOR_H
 #define GAME_QUEUE_MONITOR_H

@@ -1,7 +1,7 @@
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 
-#include "../common/foo.h"
+#include "common/foo.h"
 
 using ::testing::HasSubstr;
 using ::testing::ThrowsMessage;

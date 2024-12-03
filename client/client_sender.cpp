@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include "../common/liberror.h"
+#include "common/liberror.h"
 
 
 ClientSender::ClientSender(ClientProtocol& protocol): protocol(protocol), is_alive(true), command_queue() {}

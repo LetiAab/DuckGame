@@ -1,8 +1,8 @@
 #ifndef BULLET_H
 #define BULLET_H
 
-#include "../../common/message.h"
-#include "../../common/constants.h"
+#include "common/message.h"
+#include "common/constants.h"
 #include "../game/game_map.h"
 #include "projectile.h"
 

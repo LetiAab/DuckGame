@@ -1,6 +1,6 @@
 #include "camera.h"
 
-#include "../common/constants.h"
+#include "common/constants.h"
 
 Camera::Camera() : x(0), y(0), width(WINDOW_WIDTH), height(WINDOW_HEIGHT), zoom(1.0f){}
 

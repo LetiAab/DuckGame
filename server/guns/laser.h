@@ -1,8 +1,8 @@
 #ifndef LASER_H
 #define LASER_H
 
-#include "../../common/message.h"
-#include "../../common/constants.h"
+#include "common/message.h"
+#include "common/constants.h"
 #include "../game/game_map.h"
 #include "projectile.h"
 

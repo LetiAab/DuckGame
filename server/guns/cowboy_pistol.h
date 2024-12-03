@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "../../common/constants.h"
+#include "common/constants.h"
 #include "../guns/weapon.h"
 
 class Bullet;

@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "../game/item.h"
-#include "../../common/constants.h"
+#include "common/constants.h"
 #include "../game/game_map.h"
 #include "bullet.h"
 

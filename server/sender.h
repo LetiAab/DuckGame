@@ -2,9 +2,9 @@
 #include <string>
 
 
-#include "../common/queue.h"
-#include "../common/thread.h"
-#include "../common/message.h"
+#include "common/queue.h"
+#include "common/thread.h"
+#include "common/message.h"
 
 #include "server_protocol.h"
 

@@ -1,6 +1,6 @@
 #include "look_up_command.h"
 #include <iostream>
-#include "../../../common/constants.h"
+#include "common/constants.h"
 
 LookUpCommand::LookUpCommand(uint16_t player_id) : player_id(player_id) {}
 

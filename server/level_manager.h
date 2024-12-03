@@ -1,8 +1,8 @@
 #include <string>
 #include <vector>
 #include <memory>
-#include "../common/constants.h"
-#include "../common/position.h"
+#include "common/constants.h"
+#include "common/position.h"
 #include <fstream> 
 #include <unordered_map>
 

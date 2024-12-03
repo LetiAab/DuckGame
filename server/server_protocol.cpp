@@ -10,10 +10,10 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 
-#include "../common/liberror.h"
+#include "common/liberror.h"
 
 
-#include "../common/constants.h"
+#include "common/constants.h"
 
 ServerProtocol::ServerProtocol(Socket&& skt): skt(std::move(skt)) {}
 

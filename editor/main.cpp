@@ -1,4 +1,4 @@
-#include "../common/foo.h"
+#include "common/foo.h"
 #include <iostream>
 
 #include "level_editor.h"

@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include "../common/liberror.h"
+#include "common/liberror.h"
 
 
 InputHandler::InputHandler(uint16_t id, Queue<Command>& command_queue):

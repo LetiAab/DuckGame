@@ -1,7 +1,7 @@
 #include "sdl_texturehandler.h"
 #include <SDL2/SDL_image.h>
 #include "SDL2pp/Font.hh"
-#include "../common/constants.h"
+#include "common/constants.h"
 
 TextureHandler::TextureHandler(SDL_Renderer* renderer): renderer(renderer) {
     if(TTF_Init() == -1) {

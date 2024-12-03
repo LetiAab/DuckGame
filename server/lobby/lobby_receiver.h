@@ -1,9 +1,9 @@
 #include <cstdint>
 #include <string>
 
-#include "../../common/queue.h"
-#include "../../common/thread.h"
-#include "../../common/lobby_command.h"
+#include "common/queue.h"
+#include "common/thread.h"
+#include "common/lobby_command.h"
 
 #include "../server_protocol.h"
 

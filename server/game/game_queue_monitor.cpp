@@ -3,8 +3,8 @@
 #include <algorithm>
 #include <iostream>
 
-#include "../../common/constants.h"
-#include "../../common/message.h"
+#include "common/constants.h"
+#include "common/message.h"
 
 GameQueueMonitor::GameQueueMonitor() {}
 

@@ -1,6 +1,6 @@
 #include "stop_jump_command.h"
 #include <iostream>
-#include "../../../common/constants.h"
+#include "common/constants.h"
 
 
 StopJumpCommand::StopJumpCommand(uint16_t player_id) : player_id(player_id) {}

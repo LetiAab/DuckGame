@@ -3,10 +3,10 @@
 #include <cstdint>
 #include <string>
 
-#include "../../common/queue.h"
-#include "../../common/lobby_message.h"
-#include "../../common/lobby_command.h"
-#include "../../common/command.h"
+#include "common/queue.h"
+#include "common/lobby_message.h"
+#include "common/lobby_command.h"
+#include "common/command.h"
 #include "../executables/executable.h"
 
 #include "../server_protocol.h"

@@ -6,7 +6,7 @@
 #include <iostream>
 #include <random>
 
-#include "../../common/constants.h"
+#include "common/constants.h"
 #include "../guns/weapon.h"
 
 

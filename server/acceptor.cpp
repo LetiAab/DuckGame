@@ -6,7 +6,7 @@
 #include <string>
 #include <utility>
 
-#include "../common/socket.h"
+#include "common/socket.h"
 
 
 Acceptor::Acceptor(Socket& skt):

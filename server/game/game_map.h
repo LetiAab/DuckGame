@@ -3,8 +3,8 @@
 #define GAMEMAP_H
 
 #include <vector>
-#include "../../common/position.h"
-#include "../../common/constants.h"
+#include "common/position.h"
+#include "common/constants.h"
 #include "../level_manager.h"
 
 
@@ -88,9 +88,6 @@ public:
     bool isCollisionWithBox(Position pos, int size_x, int size_y);
     bool boxIsOverBullet(Position position);
 
-    // Testing
-    void set_platform(Position pos);
-    void set_void(Position pos);
 
 };
 

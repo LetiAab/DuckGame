@@ -2,7 +2,7 @@
 #define ARMOR_H
 
 #include "../game/item.h"
-#include "../../common/constants.h"
+#include "common/constants.h"
 
 class Armor : public Item {
 public:

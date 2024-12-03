@@ -3,9 +3,9 @@
 #include <cstdint>
 #include <string>
 
-#include "../common/queue.h"
-#include "../common/message.h"
-#include "../common/command.h"
+#include "common/queue.h"
+#include "common/message.h"
+#include "common/command.h"
 #include "executables/executable.h"
 
 #include "server_protocol.h"

@@ -823,13 +823,3 @@ void GameMap::removeBox(Position pos) {
         }
     }
 }
-
-// Only for testing purposes
-void GameMap::set_platform(Position pos) {
-    map[pos.y][pos.x] = PLATFORM;
-}
-
-void GameMap::set_void(Position pos) {
-    map[pos.y][pos.x] = VOID;
-}
-

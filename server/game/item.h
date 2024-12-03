@@ -1,10 +1,10 @@
 #ifndef ITEM_H
 #define ITEM_H
 
-#include "../../common/position.h"
+#include "common/position.h"
 #include <memory>
-#include "../../common/constants.h"
-#include "../../common/message.h"
+#include "common/constants.h"
+#include "common/message.h"
 
 class Item {
 protected:

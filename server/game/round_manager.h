@@ -1,5 +1,5 @@
-#include "../../common/constants.h"
-#include "../../common/message.h"
+#include "common/constants.h"
+#include "common/message.h"
 
 #ifndef ROUND_MANAGER_H
 #define ROUND_MANAGER_H
