@@ -34,8 +34,6 @@ void SDLHandler::loadGame(GameState &game, Queue<Message> &message_queue) {
         {"pasto", "platforms/pasto", 1},
         {"pasto-tierra", "platforms/pasto-tierra", 1},
         {"piedra", "platforms/piedra", 1},
-        {"piedrapasto", "platforms/piedrapasto", 1},
-        {"tierra", "platforms/tierra", 1},
         {"box", "box", 1},
         {"gun", "guns/AK-47", 1},
         {"cowboy-pistol", "guns/cowboy_pistol", 1},

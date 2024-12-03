@@ -3,7 +3,7 @@
 static float float_time = 0.0f;
 
 RendererManager::RendererManager(SDL_Renderer* renderer, TextureHandler& texture_handler, Camera& camera):
-    renderer(renderer), texture_handler(texture_handler), camera(camera), background_index(0),
+    renderer(renderer), texture_handler(texture_handler), camera(camera), image_index(0),
     backgrounds({"forest", "camp-fire", "city", "miami", "industrial", "moon", "spring"}),
     platforms({"crate", "lava", "nieve", "pasto-tierra", "pasto", "musgo", "piedra"}){}
 
@@ -13,16 +13,15 @@ void RendererManager::doRenderStatic(GameState* game) {
     SDL_SetRenderTarget(renderer, static_scene);
 
     // Renderizo los objetos estaticos
-    const std::string& background = backgrounds[background_index];
+    int random_index = std::rand() % backgrounds.size();
+    const std::string& background = backgrounds[random_index];
     SDL_RenderCopy(renderer, texture_handler.getTexture(background), NULL, NULL);
-    background_index = (background_index + 1) % backgrounds.size();
 
-    const std::string& platform = platforms[platform_index];
+    const std::string& platform = platforms[random_index];
     for (auto & crate : game->crates) {
         SDL_Rect crate_rect = {crate.x, crate.y, TILE_SIZE, TILE_SIZE};
         SDL_RenderCopy(renderer, texture_handler.getTexture(platform), NULL, &crate_rect);
     }
-    platform_index = (platform_index + 1) % platforms.size();
 
     // RENDERIZO LOS SPAWN PLACES
     for (auto & spawn_place : game->spawn_places) {
