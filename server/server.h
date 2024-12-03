@@ -4,7 +4,7 @@
 #include <iostream>
 #include <sstream>
 
-#include "common/socket.h"
+#include "../common/socket.h"
 #include "server_protocol.h"
 
 class Server {

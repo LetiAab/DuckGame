@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "laser.h"
-#include "common/constants.h"
+#include "../../common/constants.h"
 #include "../guns/weapon.h"
 
 class Laser;  // Declaración anticipada de la clase Bullet

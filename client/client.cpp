@@ -1,7 +1,7 @@
 #include "client.h"
 
-#include "common/message.h"
-#include "common/queue.h"
+#include "../common/message.h"
+#include "../common/queue.h"
 
 Client::Client(const std::string& hostname, const std::string& port):
         protocol(Socket(hostname.c_str(), port.c_str())){}

@@ -1,9 +1,9 @@
 #ifndef BOUNCING_LASER_H
 #define BOUNCING_LASER_H
 
-#include "common/message.h"
-#include "common/constants.h"
-#include "common/position.h"
+#include "../../common/message.h"
+#include "../../common/constants.h"
+#include "../../common/position.h"
 #include "../game/game_map.h"
 #include "projectile.h"
 

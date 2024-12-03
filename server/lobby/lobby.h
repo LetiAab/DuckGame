@@ -5,12 +5,12 @@
 #include <list>
 #include <sstream>
 
-#include "common/queue.h"
-#include "common/lobby_command.h"
-#include "common/lobby_message.h"
+#include "../../common/queue.h"
+#include "../../common/lobby_command.h"
+#include "../../common/lobby_message.h"
 #include "../match.h"
 #include "lobby_player.h"
-#include "common/thread.h"
+#include "../../common/thread.h"
 
 
 class Lobby : public Thread {

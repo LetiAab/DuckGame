@@ -3,8 +3,8 @@
 #define GAMEMAP_H
 
 #include <vector>
-#include "common/position.h"
-#include "common/constants.h"
+#include "../../common/position.h"
+#include "../../common/constants.h"
 #include "../level_manager.h"
 
 

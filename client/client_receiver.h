@@ -1,12 +1,12 @@
 #include <cstdint>
 #include <string>
 
-#include "common/queue.h"
-#include "common/thread.h"
-#include "common/message.h"
+#include "../common/queue.h"
+#include "../common/thread.h"
+#include "../common/message.h"
 
 #include "client_protocol.h"
-#include "common/constants.h"
+#include "../common/constants.h"
 
 #ifndef CLIENT_RECEIVER_H
 #define CLIENT_RECEIVER_H

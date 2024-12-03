@@ -1,8 +1,8 @@
 #ifndef PROJECTILE_H
 #define PROJECTILE_H
 
-#include "common/message.h"
-#include "common/constants.h"
+#include "../../common/message.h"
+#include "../../common/constants.h"
 #include "../game/game_map.h"
 
 class Projectile {

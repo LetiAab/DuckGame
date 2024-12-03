@@ -5,7 +5,7 @@
 #include "camera.h"
 #include "game_state.h"
 #include "sdl_texturehandler.h"
-#include "common/message.h"
+#include "../common/message.h"
 
 class RendererManager {
 public:

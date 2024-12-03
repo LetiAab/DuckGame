@@ -1,8 +1,8 @@
 #include "lobby.h"
 #include "../match.h"
 
-#include "common/lobby_message.h"
-#include "common/constants.h"
+#include "../../common/lobby_message.h"
+#include "../../common/constants.h"
 #include "../executables/executable.h"
 
 #include <exception>
