@@ -488,12 +488,7 @@ void Game::create_spawn_places(std::vector<Position> spawns_positions) {
 
     for (size_t i = 0; i < spawns_positions.size(); ++i) {
         Position pos = spawns_positions[i];
-        
-        std::unique_ptr<Item> item = std::make_unique<Shotgun>(pos.x, pos.y);
-        
-        spawn_places.emplace_back(std::make_unique<SpawnPlace>(Position(pos.x, pos.y), i, item->getItemId()));
-
-        items.push_back(std::move(item));
+        spawn_places.emplace_back(std::make_unique<SpawnPlace>(Position(pos.x, pos.y), i, 0));
     }
 }
 

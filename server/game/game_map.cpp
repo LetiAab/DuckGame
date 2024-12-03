@@ -12,11 +12,10 @@ const char DUCK_6 = '6';
 const char PLATFORM = 'P';
 const char ITEM = 'I';
 
-const char VOID = 'V'; //VACIO
+const char VOID = 'V';
 
 const char BOX = 'B';
 const char BANANA = 'b';
-
 const char BULLET = '*';
 
 
@@ -78,13 +77,13 @@ Position GameMap::try_move_bullet_to(Position old_position, Position new_positio
                     return Position(final_x, final_y);  // devuelvo la posición actual
                 }
                 else if (map[y][x] == BOX) {
-                   std::cout << "bala choca con una caja \n";
+                    std::cout << "bala choca con una caja \n";
 
-                   hit_something = true;
-                   // avanzo una posición más para que la bala quede "dentro" de la box
-                   final_x = next_x;
-                   final_y = next_y;
-                   return Position(final_x, final_y);
+                    hit_something = true;
+                    // avanzo una posición más para que la bala quede "dentro" de la box
+                    final_x = next_x;
+                    final_y = next_y;
+                    return Position(final_x, final_y);
                 }
                 else if (bullet_hit_other_duck(map[y][x], duck_id)) {
                     // Caso 2: choque con otro pato
@@ -442,9 +441,7 @@ bool GameMap::duckIsOverBanana(Position position, Position &banana_position) {
     // Verifica si el pato pisa una banana
     for (int i = position.x; i < position.x + DUCK_SIZE_X; ++i) {
         for (int j = position.y; j < position.y + DUCK_SIZE_Y; ++j) {
-            // std::cout << "Chequeo en posición x: " << i << " y: " << j << " que tiene un: " << map[j][i] << "\n";
             if ((j >= 0 && j < height && i >= 0 && i < width) && map[j][i] == BANANA) {
-            //    std::cout << "Pisé una banana, está en la posición x: " << i << " y: " << j << "\n";
                 banana_position = Position {i, j};
                 return true;
             }
@@ -682,60 +679,6 @@ void GameMap::clear_map() {
     }
 }
 
-void GameMap::setEscenario() {
-    // SETEO EL VACIO. SI COLISIONO CON EL VACIO MUERO
-    for (int x = 0; x < width; ++x) {
-        map[height - 1][x] = VOID;
-    }
-
-    // Piso principal
-    for (int x = 15; x < width - 15; ++x) {
-        map[height - 10][x] = PLATFORM;
-        map[height - 11][x] = PLATFORM;
-        map[height - 12][x] = PLATFORM;
-    }
-
-    for (int x = 15; x < width - 60; ++x) {
-        map[height - 50][x] = PLATFORM;
-        map[height - 51][x] = PLATFORM;
-        map[height - 52][x] = PLATFORM;
-    }
-
-
-    // Costados (barreras izquierda y derecha)
-    for (int y = 0; y < height; ++y) {
-        map[y][0] = PLATFORM;
-        map[y][width - 1] = PLATFORM;
-    }
-
-    // Plataformas adicionales de diferentes tamaños:
-    
-    for (int y = height - 100; y < height - 120; ++y) {
-        for (int x = 20; x < 25; ++x) {
-            map[y][x] = PLATFORM;
-        }
-    }
-
-    for (int y = height - 100; y < height - 105; ++y) {
-        for (int x = 100; x < 130; ++x) {
-            map[y][x] = PLATFORM;
-        }
-    }
-
-
-    for (int y = height - 30; y < height - 25; ++y) {
-        for (int x = width - 60; x < width - 50; ++x) {
-            map[y][x] = PLATFORM;
-        }
-    }
-
-    for (int y = height - 60; y < height - 55; ++y) {
-        for (int x = width - 100; x < width - 80; ++x) {
-            map[y][x] = PLATFORM;
-        }
-    }
-
-}
 
 void GameMap::set_escenario_for_round(MapConfig mapConfig){
     height = mapConfig.map_height;
