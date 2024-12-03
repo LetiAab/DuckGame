@@ -96,8 +96,8 @@ const uint8_t END_FIVE_ROUNDS = 0X92;
 
 //-------- items----------------
 //IDS
-const int BULLET_SPEED_X = 6;
-const int BULLET_SPEED_Y = 6;
+const int BULLET_SPEED_X = 4;
+const int BULLET_SPEED_Y = 4;
 
 const uint8_t ARMOR_ID = 0x39;
 const uint8_t HELMET_ID = 0x40;
@@ -162,7 +162,7 @@ const int BOX_SIZE_Y = 8;
 
 
 const int BULLET_SIZE_Y = 4;
-const int BULLET_SIZE_X = 4;
+const int BULLET_SIZE_X = 2;
 
 
 //----------------------------------SDL-----------------------------------------

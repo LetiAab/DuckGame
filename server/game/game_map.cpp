@@ -81,7 +81,7 @@ Position GameMap::try_move_bullet_to(Position old_position, Position new_positio
                    std::cout << "bala choca con una caja \n";
 
                    hit_something = true;
-                   // avanzo una posición más para que la bala quede "dentro" del pato
+                   // avanzo una posición más para que la bala quede "dentro" de la box
                    final_x = next_x;
                    final_y = next_y;
                    return Position(final_x, final_y);
@@ -176,7 +176,7 @@ Position GameMap::try_move_bouncing_laser_to(Position old_position, Position new
                     std::cout << "el laser choca con una caja \n";
 
                    hit_something = true;
-                   // avanzo una posición más para que la bala quede "dentro" del pato
+
                    final_x = next_x;
                    final_y = next_y;
                    return Position(final_x, final_y);
@@ -329,7 +329,7 @@ Position GameMap::try_move_banana(Position old_position, Position speed, bool& h
                 }
                 else if (bullet_hit_other_duck(map[y][x], '0')) {
                     // Caso 2: choque con otro pato
-                    // avanzo una posición más para que la bala quede "dentro" del pato
+                    // avanzo dos posisiones más para que la bala quede "dentro" del pato
                     
                     final_x = next_x;
                     final_y = next_y;
